@@ -1,0 +1,141 @@
+Pool Name:  Pool4File
+Pool ID:  0
+Raid Type:  Mixed
+Percent Full Threshold:  70
+Description:  
+Disk Type:  Mixed
+State:  Ready
+Status:  OK(0x0)
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Raw Capacity (Blocks):  50309738080
+Raw Capacity (GBs):  23989.553
+User Capacity (Blocks):  37444239360
+User Capacity (GBs):  17854.805
+Consumed Capacity (Blocks):  1133097984
+Consumed Capacity (GBs):  540.303
+Available Capacity (Blocks):  36311141376
+Available Capacity (GBs):  17314.501
+Percent Full:  3.026
+LUN Allocation (Blocks):  1048576000
+LUN Allocation (GBs):  500.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  84521984
+Metadata Allocation (GBs):  40.303
+Total Subscribed Capacity (Blocks):  1132572672
+Total Subscribed Capacity (GBs):  540.053
+Percent Subscribed:  3.025
+Oversubscribed by (Blocks):  0
+Oversubscribed by (GBs):  0.000
+LUN Subscribed Capacity (Blocks):  1048576000
+LUN Subscribed Capacity (GBs):  500.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  83996672
+Metadata Subscribed Capacity (GBs):  40.053
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+
+Tier Name:  Extreme Performance
+Raid Type:  r_5
+Raid Drive Count:  5
+User Capacity (GBs):  274.28
+Consumed Capacity (GBs):  10.02
+Available Capacity (GBs):  264.27
+Percent Subscribed:  3.65%
+Disks (Type):  
+
+Bus 0 Enclosure 0 Disk 4 (SAS Flash VP)
+
+Bus 0 Enclosure 0 Disk 7 (SAS Flash VP)
+
+Bus 0 Enclosure 0 Disk 5 (SAS Flash VP)
+
+Bus 0 Enclosure 0 Disk 6 (SAS Flash VP)
+
+Tier Name:  Performance
+Raid Type:  r_5
+Raid Drive Count:  5
+User Capacity (GBs):  1072.84
+Consumed Capacity (GBs):  31.31
+Available Capacity (GBs):  1041.53
+Percent Subscribed:  2.92%
+Disks (Type):  
+
+Bus 0 Enclosure 0 Disk 9 (SAS)
+
+Bus 0 Enclosure 0 Disk 10 (SAS)
+
+Bus 0 Enclosure 0 Disk 11 (SAS)
+
+Tier Name:  Capacity
+Raid Type:  r_6
+Raid Drive Count:  8
+User Capacity (GBs):  16507.68
+Consumed Capacity (GBs):  498.72
+Available Capacity (GBs):  16008.96
+Percent Subscribed:  3.02%
+Disks (Type):  
+
+Bus 1 Enclosure 0 Disk 12 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 9 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 10 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 13 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 7 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 6 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 8 (NL SAS)
+
+Bus 1 Enclosure 0 Disk 11 (NL SAS)
+
+Rebalance Percent Complete:  N/A
+Disks:  
+
+Bus 0 Enclosure 0 Disk 9
+
+Bus 1 Enclosure 0 Disk 12
+
+Bus 1 Enclosure 0 Disk 9
+
+Bus 0 Enclosure 0 Disk 4
+
+Bus 0 Enclosure 0 Disk 7
+
+Bus 1 Enclosure 0 Disk 10
+
+Bus 0 Enclosure 0 Disk 10
+
+Bus 1 Enclosure 0 Disk 13
+
+Bus 1 Enclosure 0 Disk 7
+
+Bus 1 Enclosure 0 Disk 6
+
+Bus 0 Enclosure 0 Disk 11
+
+Bus 0 Enclosure 0 Disk 5
+
+Bus 1 Enclosure 0 Disk 8
+
+Bus 1 Enclosure 0 Disk 11
+
+Bus 0 Enclosure 0 Disk 6
+LUNs:  0
+FAST Cache:  N/A
+Auto-Delete Pool Full Threshold Enabled:  Off
+Auto-Delete Pool Full High Watermark:  95.00
+Auto-Delete Pool Full Low Watermark:  85.00
+Auto-Delete Pool Full State:  Idle
+Auto-Delete Snapshot Space Used Threshold Enabled:  Off
+Auto-Delete Snapshot Space Used High Watermark:  25.00
+Auto-Delete Snapshot Space Used Low Watermark:  20.00
+Auto-Delete Snapshot Space Used State:  Idle
+

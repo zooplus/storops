@@ -1,0 +1,120 @@
+
+Storage Group Name:    server7
+Storage Group UID:     F6:F1:04:29:91:97:E5:11:85:E1:AE:04:FD:64:DC:17
+HBA/SP Pairs:
+
+  HBA UID                                          SP Name     SPPort
+  -------                                          -------     ------
+  00:80:6E:00:01:10:FF:FF:FF:FF:FF:FF:FF:FF:FF:FF   SP A         7
+Host name:             ubuntu-server7
+SPPort:                A-7v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP A         0
+Host name:             ubuntu-server7
+SPPort:                A-0v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP A         0
+Host name:             ubuntu-server7
+SPPort:                A-0v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP B         0
+Host name:             ubuntu-server7
+SPPort:                B-0v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP B         0
+Host name:             ubuntu-server7
+SPPort:                B-0v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  iqn.1993-08.org.debian:01:816ce05feaa6            SP A         4
+Host name:             ubuntu-server7
+SPPort:                A-4v0
+Initiator IP:          192.168.4.7
+TPGT:                  1
+ISID:                  33D0200
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP A         1
+Host name:             ubuntu-server7
+SPPort:                A-1v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP A         1
+Host name:             ubuntu-server7
+SPPort:                A-1v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP B         1
+Host name:             ubuntu-server7
+SPPort:                B-1v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP B         1
+Host name:             ubuntu-server7
+SPPort:                B-1v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP A         2
+Host name:             ubuntu-server7
+SPPort:                A-2v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP A         2
+Host name:             ubuntu-server7
+SPPort:                A-2v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0   SP B         2
+Host name:             ubuntu-server7
+SPPort:                B-2v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  20:00:00:90:FA:53:4C:D1:10:00:00:90:FA:53:4C:D1   SP B         2
+Host name:             ubuntu-server7
+SPPort:                B-2v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+  00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00   SP A         7
+Host name:             ubuntu-server7
+SPPort:                A-7v0
+Initiator IP:          N/A
+TPGT:                  0
+ISID:                  N/A
+
+
+HLU/ALU Pairs:
+
+  HLU Number     ALU Number
+  ----------     ----------
+    153             10
+    210             1032
+Shareable:             YES

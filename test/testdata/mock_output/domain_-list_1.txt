@@ -1,0 +1,13 @@
+Node:                 VNX5300-26.102/103-R32
+IP Address:           10.110.26.103
+Name:                 VPI-24092B
+Port:                 80
+Secure Port:          443
+IP Address:           10.110.26.102 (Master)
+Name:                 VPI-24092A
+Port:                 80
+Secure Port:          443
+IP Address:           10.110.26.105
+Name:                 Celerra_VPI-24092-CS0
+Port:                 80
+Secure Port:          443

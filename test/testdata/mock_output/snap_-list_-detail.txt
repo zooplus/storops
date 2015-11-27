@@ -1,0 +1,753 @@
+
+Name:  AppSyncSnap-20150519_063225:845-b044a654-0b16-47ac-bb39-f53df705eeca-APPSYNC_TMP_CG_20150519_063227:157_180_196
+Description:  my desc
+Creation time:  05/19/15 18:42:44
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):  4062
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  Wed_Mar_11_01:22:05_201500047
+Description:
+Creation time:  03/11/15 11:35:44
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  47
+Source CG:  N/A
+Primary LUN(s):  47
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):  4068
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  snapshot-f8368281-de86-4163-bd9a-8a0ed74a9aa7
+Description:
+Creation time:  11/19/13 11:58:38
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  18
+Source CG:  N/A
+Primary LUN(s):  18
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150806_000110:930-c8dd662a-ad30-463e-8bff-bdff59a93f89-APPSYNC_TMP_CG_20150806_000112:289_96_196
+Description:  my desc
+Creation time:  08/06/15 12:01:10
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  snapshot-a7e8d335-c9ea-4a97-be09-1224fa5c6136
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150808_000110:921-41bad7b0-e5eb-4229-b3f0-2479b4a49007-APPSYNC_TMP_CG_20150808_000112:265_251_196
+Description:  my desc
+Creation time:  08/08/15 12:01:25
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  volume-c7d8ad07-f321-4644-a195-1f4373cb11cc-mount-snap
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  07/23/14 12:28:45
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150809_000110:962-f4827d49-04dc-4e6e-8589-afe84c1ec998-APPSYNC_TMP_CG_20150809_000112:337_230_196
+Description:  my desc
+Creation time:  08/09/15 12:00:33
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150810_000110:907-6745db19-4cb1-44dd-a41a-4e812cf9b99b-APPSYNC_TMP_CG_20150810_000112:266_766_196
+Description:  my desc
+Creation time:  08/10/15 12:00:40
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150812_000100:888-debaf1ba-0c41-46c9-8ba6-34f919dd963f-APPSYNC_TMP_CG_20150812_000102:248_9_196
+Description:  my desc
+Creation time:  08/12/15 11:59:42
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  volume-b7dddc06-c568-4c4a-ac43-3c0ed0b11154-mount-snap
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  07/23/14 12:28:45
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150814_000100:907-dda06371-7db9-40bb-ba6c-be54764737f5-APPSYNC_TMP_CG_20150814_000102:313_807_196
+Description:  my desc
+Creation time:  08/14/15 11:59:58
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  20150216092405.827+00-000
+Description:
+Creation time:  02/16/15 17:24:05
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150816_000100:954-d3052e59-ef01-4d8a-950b-74eab34f172d-APPSYNC_TMP_CG_20150816_000102:720_813_196
+Description:  my desc
+Creation time:  08/16/15 11:59:36
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  Adv-Snap-1003-ID
+Description:  Adv-Snap-1003-ID
+Creation time:  02/16/15 17:25:51
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  20150217012238.034+00-000
+Description:
+Creation time:  02/17/15 09:22:38
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  99
+Source CG:  N/A
+Primary LUN(s):  99
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  volume-82c76a0a-9c1a-4419-853c-e47ac05fb842-mount-snap
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  06/04/13 20:05:51
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  volume-089a8a4d-2800-454a-8070-de5383813184-mount-snap
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  06/04/13 20:15:39
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  VNX-Adv-SnapShot-First
+Description:  VNX-Adv-SnapShot-First
+Creation time:  02/17/15 12:37:46
+Last modify time:  02/17/15 15:00:10
+Last modified by:  VNX-Adv-SnapShot-MT-First
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  VNX-Adv-SnapShot-Sec
+Description:  VNX-Adv-SnapShot-Sec
+Creation time:  02/17/15 12:57:30
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  VNX-Adv-SnapShot-First-COPY
+Description:  VNX-Adv-SnapShot-First
+Creation time:  02/17/15 12:37:46
+Last modify time:  02/17/15 15:00:10
+Last modified by:  VNX-Adv-SnapShot-MT-First
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  volume-0d797f39-132b-4b26-b661-3d2ff8dbc34a-mount-snap
+Description:
+Creation time:  06/04/13 14:29:12
+Last modify time:  06/04/13 16:13:26
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20140626_002025:686-238e89fa-5957-4542-b9fa-4f7e8bf8c10b-APPSYNC_TMP_CG_20140626_002036:215_106_8
+Description:  my desc
+Creation time:  06/26/14 15:37:09
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  8
+Source CG:  N/A
+Primary LUN(s):  8
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  snapshot-b37f7c88-de60-45fa-b48e-08469dfe4505
+Description:
+Creation time:  02/07/14 10:52:09
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  158
+Source CG:  N/A
+Primary LUN(s):  158
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  Thu_Apr__2_06:51:08_201500164
+Description:
+Creation time:  04/02/15 17:14:14
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  164
+Source CG:  N/A
+Primary LUN(s):  164
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):  4067
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  20150218015833.515+00-000
+Description:  VNX-Adv-SnapShot-Sec
+Creation time:  02/17/15 12:57:30
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  snapshot-67ca4a9c-f4cb-4beb-8053-d786afc6f252
+Description:
+Creation time:  12/04/13 12:28:06
+Last modify time:  12/04/13 12:29:50
+Last modified by:  N/A
+Source LUN(s):  41
+Source CG:  N/A
+Primary LUN(s):  41
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  Fri_Jun_07_02:15:57_201300321
+Description:
+Creation time:  06/07/13 17:46:57
+Last modify time:  07/23/14 12:28:43
+Last modified by:  N/A
+Source LUN(s):  321
+Source CG:  N/A
+Primary LUN(s):  321
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20140626_004800:704-a63da97d-479a-4e9a-8d1b-9b28814f9556-APPSYNC_TMP_CG_20140626_004811:164_33_274
+Description:  my desc
+Creation time:  06/26/14 16:04:41
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  274
+Source CG:  N/A
+Primary LUN(s):  274
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20140626_013645:625-a8b8bbc3-9e9b-46c2-b4ba-5110ecff21bd-APPSYNC_TMP_CG_20140626_013656:154_424_274
+Description:  my desc
+Creation time:  06/26/14 16:53:29
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  274
+Source CG:  N/A
+Primary LUN(s):  274
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  snapshot-83930491-11e9-43ce-aeaa-72a3eafe51f0
+Description:
+Creation time:  06/10/13 23:51:55
+Last modify time:  06/11/13 17:34:36
+Last modified by:  N/A
+Source LUN(s):  321
+Source CG:  N/A
+Primary LUN(s):  321
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  Wed_Sep_24_05:59:50_201400156
+Description:
+Creation time:  09/24/14 16:42:01
+Last modify time:  12/02/14 17:31:35
+Last modified by:  N/A
+Source LUN(s):  156
+Source CG:  N/A
+Primary LUN(s):  156
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  Wed_Sep_24_06:19:12_201400156
+Description:
+Creation time:  09/24/14 17:01:24
+Last modify time:  12/02/14 17:19:05
+Last modified by:  N/A
+Source LUN(s):  156
+Source CG:  N/A
+Primary LUN(s):  156
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  snapshot-b7cf70bd-3cb9-4bb3-8d4d-aba35663dde2
+Description:
+Creation time:  12/18/13 15:31:48
+Last modify time:  12/18/13 15:49:08
+Last modified by:  N/A
+Source LUN(s):  44
+Source CG:  N/A
+Primary LUN(s):  44
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  snapshot-1f2423f9-b2ff-475d-b97d-59344f901012
+Description:
+Creation time:  10/04/13 11:38:47
+Last modify time:  10/04/13 11:42:06
+Last modified by:  N/A
+Source LUN(s):  4015
+Source CG:  N/A
+Primary LUN(s):  4015
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  20150223063612.203+00-000
+Description:  Demo_Snapshot
+Creation time:  02/23/15 14:19:53
+Last modify time:  02/23/15 14:33:45
+Last modified by:  demo_smp
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150515_002810:849-3cc62466-9e2e-4043-b955-0f9800739951-APPSYNC_TMP_CG_20150515_002812:177_834_196
+Description:  my desc
+Creation time:  05/15/15 12:40:00
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  20150223064019.610+00-000
+Description:
+Creation time:  02/23/15 14:40:19
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  20
+Source CG:  N/A
+Primary LUN(s):  20
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150515_044500:823-db1a854b-8168-4dff-89c9-c8a7f1783afc-APPSYNC_TMP_CG_20150515_044502:182_310_197
+Description:  my desc
+Creation time:  05/15/15 16:56:50
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  197
+Source CG:  N/A
+Primary LUN(s):  197
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  volume-31c9fe9b-5415-4002-9724-a88f59c0c1fb-mount-snap
+Description:
+Creation time:  05/29/13 22:35:33
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  96
+Source CG:  N/A
+Primary LUN(s):  96
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150516_000040:771-f06ea505-9931-46dd-a323-902677b79aac-APPSYNC_TMP_CG_20150516_000042:68_376_196
+Description:  my desc
+Creation time:  05/16/15 12:12:36
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  volume-d2702d68-c3dc-4941-b5a4-94c794dace2b-mount-snap
+Description:
+Creation time:  05/29/13 22:35:33
+Last modify time:  07/23/14 12:28:46
+Last modified by:  N/A
+Source LUN(s):  96
+Source CG:  N/A
+Primary LUN(s):  96
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150517_000050:769-ee7ac575-5b77-4c06-96f0-954df64550f0-APPSYNC_TMP_CG_20150517_000052:847_989_196
+Description:  my desc
+Creation time:  05/17/15 12:12:55
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150518_000051:185-f0f04301-c86e-4f50-a002-89ded36d3ec3-APPSYNC_TMP_CG_20150518_000052:513_794_196
+Description:  my desc
+Creation time:  05/18/15 12:12:01
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  AppSyncSnap-20150519_000045:983-b2aa6a28-ceab-40f5-98ba-20c4cd34eca7-APPSYNC_TMP_CG_20150519_000047:326_851_196
+Description:  my desc
+Creation time:  05/19/15 12:11:02
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  196
+Source CG:  N/A
+Primary LUN(s):  196
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  No
+Expiration date:  Never
+
+Name:  Tue_May_14_21:50:39_201300067
+Description:
+Creation time:  05/15/13 13:16:34
+Last modify time:  07/23/14 12:28:43
+Last modified by:  N/A
+Source LUN(s):  67
+Source CG:  N/A
+Primary LUN(s):  67
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  gan_snap
+Description:
+Creation time:  05/24/13 20:06:12
+Last modify time:  07/23/14 12:28:42
+Last modified by:  N/A
+Source LUN(s):  57
+Source CG:  N/A
+Primary LUN(s):  57
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+

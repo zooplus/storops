@@ -1,0 +1,99 @@
+from time import sleep
+from unittest import TestCase
+
+from hamcrest import assert_that, equal_to
+
+from vnxCliApi.common import Cache, Dict, Enum
+
+
+class DictTest(TestCase):
+    def test_get_attr(self):
+        result = Dict()
+        result['a'] = 'A'
+        self.assertEqual('A', result.a)
+        self.assertEqual('A', result['a'])
+
+    def test_get_attr_not_exists(self):
+        result = Dict()
+        self.assertRaises(AttributeError, getattr, result, 'a')
+
+
+class SampleEnum(Enum):
+    def __init__(self):
+        pass
+
+    TYPE_A = 'type a'
+    TYPE_B = 'type b'
+
+    _option_map = {
+        None: [],
+        TYPE_A: '-a',
+        TYPE_B: '-b'
+    }
+
+    _int_index = (None, TYPE_A, TYPE_B)
+
+
+class EnumTest(TestCase):
+    def test_get_all(self):
+        self.assertEqual(2, len(SampleEnum.get_all()))
+
+    def test_get_opt(self):
+        self.assertEqual('-a', SampleEnum.get_opt(SampleEnum.TYPE_A))
+
+    def test_from_int(self):
+        self.assertEqual(SampleEnum.TYPE_B, SampleEnum.from_int(2))
+
+
+class CacheA(object):
+    def __init__(self):
+        self.base = 0
+        pass
+
+    @Cache.cache(0.2)
+    def do(self, a, b):
+        return a + b * 2 + self.base
+
+    @Cache.cache()
+    def a(self):
+        return self.base
+
+
+class CacheB(object):
+    def __init__(self):
+        self.base = 0
+        pass
+
+    @Cache.cache()
+    def do(self, a, b):
+        return a + b
+
+    @Cache.cache()
+    def b(self):
+        return CacheA().a()
+
+
+class CacheTest(TestCase):
+    def setUp(self):
+        self.a = CacheA()
+        self.b = CacheB()
+
+    def test_cache(self):
+        self.assertEqual(10, self.a.do(2, 4))
+        self.a.base = 1
+        self.assertEqual(10, self.a.do(2, 4))
+
+        self.assertEqual(6, self.b.do(2, 4))
+        self.b.base = 1
+        self.assertEqual(6, self.b.do(2, 4))
+
+    def test_cache_expired(self):
+        self.assertEqual(10, self.a.do(2, 4))
+        self.a.base = 1
+        self.assertEqual(10, self.a.do(2, 4))
+        self.assertEqual(12, self.a.do(3, 4))
+        sleep(0.6)
+        self.assertEqual(11, self.a.do(2, 4))
+
+    def test_cache_lock(self):
+        assert_that(CacheB().b(), equal_to(0))

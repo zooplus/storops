@@ -1,0 +1,17 @@
+Source LU Name:  LUN 0
+Source LU ID:  0
+Dest LU Name:  LUN 1
+Dest LU ID:  1
+Migration Rate:  high
+Current State:  MIGRATING
+Percent Complete:  50
+Time Remaining:  0 second(s)
+
+Source LU Name:  LUN 2
+Source LU ID:  2
+Dest LU Name:  LUN 3
+Dest LU ID:  3
+Migration Rate:  high
+Current State:  STOPPED - Destination full
+Percent Complete:  60
+Time Remaining:  0 second(s)

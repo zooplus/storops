@@ -1,0 +1,13 @@
+Node:                 APM00153042305
+IP Address:           10.244.211.30 (Master)
+Name:                 SPA
+Port:                 80
+Secure Port:          443
+IP Address:           10.244.211.31
+Name:                 SPB
+Port:                 80
+Secure Port:          443
+IP Address:           10.244.211.32
+Name:                 Celerra_CS0_21132
+Port:                 80
+Secure Port:          443

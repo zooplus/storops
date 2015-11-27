@@ -1,0 +1,17 @@
+
+Name:  gan_snap
+Description:  gan snap
+Creation time:  05/24/13 20:06:12
+Last modify time:  07/23/14 12:28:42
+Last modified by:  N/A
+Source LUN(s):  57
+Source CG:  N/A
+Primary LUN(s):  57
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  Yes
+Modified:  Yes
+Attached LUN(s):  
+Allow auto delete:  Yes
+Expiration date:  Never
+

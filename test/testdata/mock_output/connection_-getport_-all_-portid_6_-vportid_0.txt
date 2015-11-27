@@ -1,0 +1,43 @@
+SP:  A
+Port ID:  6
+Port WWN:  50:06:01:60:B6:E0:1C:F4:50:06:01:66:36:E0:1C:F4
+iSCSI Alias:  N/A
+Enode MAC Address:  00-60-16-48-DD-EA
+Port Speed:  0 Gb
+Auto-Negotiate:  No
+Available Speeds:  10 Gb
+Current MTU:  2240
+Available MTU Sizes:  "2240"
+Flow Control:  N/A
+Host Window:  N/A
+Replication Window:  N/A
+Available Window Sizes:  N/A
+
+Virtual Port ID:  0
+VLAN ID:  N/A
+IP Address:  N/A
+Subnet Mask:  N/A
+Gateway Address:  N/A
+Initiator Authentication:  N/A
+
+SP:  B
+Port ID:  6
+Port WWN:  50:06:01:60:B6:E0:1C:F4:50:06:01:6E:36:E0:1C:F4
+iSCSI Alias:  N/A
+Enode MAC Address:  00-60-16-4E-BA-96
+Port Speed:  0 Gb
+Auto-Negotiate:  No
+Available Speeds:  10 Gb
+Current MTU:  2240
+Available MTU Sizes:  "2240"
+Flow Control:  N/A
+Host Window:  N/A
+Replication Window:  N/A
+Available Window Sizes:  N/A
+
+Virtual Port ID:  0
+VLAN ID:  N/A
+IP Address:  N/A
+Subnet Mask:  N/A
+Gateway Address:  N/A
+Initiator Authentication:  N/A

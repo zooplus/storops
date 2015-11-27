@@ -1,0 +1,15 @@
+Name:  s2
+Description:  VNX-Adv-SnapShot-Sec
+Creation time:  02/17/15 12:57:30
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  80
+Source CG:  N/A
+Primary LUN(s):  80
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
