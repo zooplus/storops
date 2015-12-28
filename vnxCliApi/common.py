@@ -1,6 +1,7 @@
 import logging
 from collections import defaultdict
 
+import six
 from six import string_types
 from threading import Timer, Lock, Thread
 
@@ -142,10 +143,72 @@ class Cache(object):
         return decorator
 
 
-def background(func_ref, *args, **kwargs):
+def check_int(value):
+    def is_digit_str():
+        return isinstance(value, six.string_types) and value.isdigit()
+
+    def is_int():
+        return isinstance(value, int)
+
+    if is_int():
+        pass
+    elif is_digit_str():
+        value = int(value)
+    else:
+        raise ValueError('"{}" must be an integer.'.format(value))
+    return int(value)
+
+
+def check_enum(value, enum_class):
+    if hasattr(enum_class, 'get_all'):
+        get_all_func = getattr(enum_class, 'get_all')
+        candidates = get_all_func()
+        if value not in candidates:
+            raise ValueError('"{}" is not a valid value.  '
+                             'Valid values are: {}'.format(value, candidates))
+    else:
+        raise ValueError('{} is not a enum.'.format(enum_class))
+    return value
+
+
+def check_text(value):
+    if not isinstance(value, six.string_types):
+        raise ValueError('"{}" must be text.'.format(value))
+    return value
+
+
+def daemon(func_ref, *args, **kwargs):
     if not callable(func_ref):
         raise ValueError('background only accept callable inputs.')
     t = Thread(target=func_ref, args=args, kwargs=kwargs)
     t.setDaemon(True)
     t.start()
     return t
+
+
+class WeightedAverage(object):
+    def __init__(self, size=5):
+        self._data = []
+        # linear weight
+        self.weight = list(range(size, 0, -1))
+
+    def add(self, *value):
+        # the first input is the latest one.
+        self._data = list(value[::-1]) + self._data
+        self._data = self._data[:self.size]
+
+    @property
+    def size(self):
+        return len(self.weight)
+
+    def value(self):
+        total = 0.0
+        weight = 0.0
+        ret = 0.0
+        for v, w in zip(self._data, self.weight):
+            total += v * w
+            weight += w
+        if weight != 0.0:
+            ret = total / weight
+
+        return ret

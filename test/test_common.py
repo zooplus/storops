@@ -1,9 +1,9 @@
 from time import sleep
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, close_to
 
-from vnxCliApi.common import Cache, Dict, Enum
+from vnxCliApi.common import Cache, Dict, Enum, WeightedAverage
 
 
 class DictTest(TestCase):
@@ -97,3 +97,36 @@ class CacheTest(TestCase):
 
     def test_cache_lock(self):
         assert_that(CacheB().b(), equal_to(0))
+
+
+class WeightedAverageTest(TestCase):
+    def test_data_full(self):
+        avg = WeightedAverage(3)
+        avg.add(30, 24, 18, 12, 6)
+        assert_that(avg.value(), equal_to(10))
+        avg.add(30)
+        assert_that(avg.value(), equal_to(19))
+
+    def test_data_full_1(self):
+        avg = WeightedAverage(6)
+        avg.add(30, 24, 18, 12, 6, 6, 6)
+        assert_that(avg.value(), close_to(8.85, 0.01))
+        avg.add(30)
+        assert_that(avg.value(), equal_to(14))
+
+    def test_data_not_full(self):
+        avg = WeightedAverage(3)
+        avg.add(12, 6)
+        assert_that(avg.value(), equal_to(8.4))
+
+    def test_data_empty(self):
+        avg = WeightedAverage(3)
+        assert_that(avg.value(), equal_to(0))
+
+    def test_size(self):
+        avg = WeightedAverage(3)
+        assert_that(avg.size, equal_to(3))
+        avg.weight = [3]
+        avg.add(4, 5, 7)
+        assert_that(avg.size, equal_to(1))
+        assert_that(avg.value(), equal_to(7))

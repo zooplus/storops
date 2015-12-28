@@ -9,7 +9,7 @@ from vnxCliApi.cli import CliClient
 from vnxCliApi.exception import VNXModifyLunError, VNXConsistencyGroupError, \
     VNXSnapError, VNXStorageGroupError, VNXCompressionError, VNXDedupError
 from vnxCliApi.resources import \
-    VNXPort, VNXLun, VNXConsistencyGroup, VNXSystem, \
+    VNXHbaPort, VNXLun, VNXConsistencyGroup, VNXSystem, \
     VNXDomainMemberList, VNXPoolList, VNXPool, VNXLunList, \
     VNXConsistencyGroupList, VNXSPPort, VNXStorageGroupList, VNXStorageGroup, \
     VNXPoolFeature, VNXStorageGroupHBA, VNXConnectionPort, VNXSnap, \
@@ -70,6 +70,11 @@ class VNXSystemTest(TestCase):
 
         snap = self.vnx.get_snap('gan_snap')
         assert_that(snap.creation_time, equal_to('05/24/13 20:06:12'))
+
+    @patch_cli()
+    def test_get_port(self):
+        ports = self.vnx.get_port()
+        assert_that(len(ports), equal_to(20))
 
     @patch_cli()
     def test_get_migration_session_list(self):
@@ -240,65 +245,66 @@ class VNXSPPortTest(TestCase):
         assert_that(port.not_logged_in_initiators, equal_to(2))
 
 
-class VNXPortTest(TestCase):
+class VNXHbaPortTest(TestCase):
     def test_from_storage_group_hba(self):
-        hba = get_parser_config("VNXStorageGroupHBA").parse(STORAGE_GROUP_HBA)
-        port = VNXPort.from_storage_group_hba(hba)
-        self.assertEqual(VNXSPEnum.SP_A, port.sp)
-        self.assertEqual(3, port.number)
-        self.assertEqual(VNXPortTypeEnum.ISCSI, port.type)
-        self.assertIn('iqn.1991-05.com.microsoft:abc.def.dev',
-                      port.host_initiator_list)
+        hba = VNXStorageGroupHBA.parse(STORAGE_GROUP_HBA)
+        port = VNXHbaPort.from_storage_group_hba(hba)
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.port_id, equal_to(3))
+        assert_that(port.vport_id, equal_to(1))
+        assert_that(port.type, equal_to(VNXPortTypeEnum.ISCSI))
+        assert_that(port.host_initiator_list,
+                    has_item('iqn.1991-05.com.microsoft:abc.def.dev'))
 
     def test_hash(self):
         ports = {
-            VNXPort.create(VNXSPEnum.SP_A, 1),
-            VNXPort.create(VNXSPEnum.SP_B, 1),
-            VNXPort.create(VNXSPEnum.SP_A, 1)
+            VNXHbaPort.create(VNXSPEnum.SP_A, 1),
+            VNXHbaPort.create(VNXSPEnum.SP_B, 1),
+            VNXHbaPort.create(VNXSPEnum.SP_A, 1)
         }
         self.assertEqual(2, len(ports))
 
     def test_set_sp(self):
-        port = VNXPort.create('A', 3)
+        port = VNXHbaPort.create('A', 3)
         self.assertEqual(VNXSPEnum.SP_A, port.sp)
 
     def test_set_sp_error(self):
-        port = VNXPort.create('Z', 3)
+        port = VNXHbaPort.create('Z', 3)
         self.assertEqual(False, port.is_valid())
         self.assertIsNone(port.sp)
 
     def test_set_number_error(self):
-        port = VNXPort.create('A', 'a1')
+        port = VNXHbaPort.create('A', 'a1')
         self.assertEqual(False, port.is_valid())
-        self.assertIsNone(port.number)
+        self.assertIsNone(port.port_id)
 
     def test_create_tuple_input(self):
         inputs = ('a', 5)
-        port = VNXPort.create(*inputs)
+        port = VNXHbaPort.create(*inputs)
         self.assertEqual(VNXSPEnum.SP_A, port.sp)
-        self.assertEqual(5, port.number)
+        self.assertEqual(5, port.port_id)
 
     def test_get_sp_index(self):
-        port = VNXPort.create('B', '5')
-        self.assertEqual('B', port.get_sp_index())
-        self.assertEqual(5, port.number)
+        port = VNXHbaPort.create('spb', '5')
+        self.assertEqual('b', port.get_sp_index())
+        self.assertEqual(5, port.port_id)
 
     def test_equal(self):
-        spa_1 = VNXPort.create(VNXSPEnum.SP_A, 1)
-        spa_1_dup = VNXPort.create(VNXSPEnum.SP_A, 1)
-        spa_2 = VNXPort.create(VNXSPEnum.SP_A, 2)
+        spa_1 = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
+        spa_1_dup = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
+        spa_2 = VNXHbaPort.create(VNXSPEnum.SP_A, 2)
         self.assertEqual(spa_1, spa_1_dup)
         self.assertEqual(False, spa_1 == spa_2)
 
     def test_as_tuple(self):
-        port = VNXPort.create(VNXSPEnum.SP_A, 1)
+        port = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
         self.assertEqual(('SP A', 1), port.as_tuple())
 
     def test_repr(self):
-        port = VNXPort.create(VNXSPEnum.SP_B, 3)
+        port = VNXHbaPort.create(VNXSPEnum.SP_B, 3)
         self.assertEqual(port.__repr__(),
-                         '<VNXPort {SP: SP B, Number: 3,'
-                         'Host Initiator List: ()}>')
+                         '<VNXPort {sp: SP B, port_id: 3, '
+                         'vport_id: 0, host_initiator_list: ()}>')
 
 
 class VNXConsistencyGroupListTest(TestCase):
@@ -762,7 +768,7 @@ class VNXStorageGroupHBATest(TestCase):
         hba = self.test_hba()
         assert_that(hba.host_name, equal_to('abc.def.dev'))
         assert_that(hba.initiator_ip, equal_to('10.244.209.72'))
-        assert_that(hba.sp_port, equal_to('A-3v0'))
+        assert_that(hba.sp_port, equal_to('A-3v1'))
 
     def test_sp(self):
         assert_that(self.test_hba().sp, equal_to(VNXSPEnum.SP_A))
@@ -775,7 +781,7 @@ class VNXStorageGroupHBATest(TestCase):
         assert_that(self.test_hba().port_id, equal_to(3))
 
     def test_vlan(self):
-        assert_that(self.test_hba().vlan, equal_to(0))
+        assert_that(self.test_hba().vlan, equal_to(1))
 
     def test_port_type(self):
         assert_that(self.test_hba().port_type,

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import io
 import os
-from vnxCliApi import __version__
+import vnxCliApi
 
 __author__ = 'Cedric Zhuang'
 
@@ -44,7 +44,7 @@ def get_long_description():
 
 setup(
     name="vnxCliApi",
-    version=__version__,
+    version=vnxCliApi.version(),
     author="Cedric Zhuang",
     author_email="cedric.zhuang@gmail.com",
     description=get_description(),

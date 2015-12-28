@@ -9,57 +9,46 @@ from time import sleep, time
 import six
 from retryz import retry
 
-from vnxCliApi.common import Cache, background
-from vnxCliApi.enums import VNXSPEnum, VNXTieringEnum, \
-    VNXProvisionEnum, \
+from vnxCliApi.common import Cache, daemon, WeightedAverage, check_text, \
+    check_int, check_enum
+from vnxCliApi.enums import VNXSPEnum, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, has_error, VNXCompressionRate, VNXError
-from vnxCliApi.exception import VNXCompressionError, VNXSystemDownError, \
-    VNXSPDownError
+from vnxCliApi import exception as ex
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-def _retry_if_sp_down(ex):
-    return isinstance(ex, VNXSPDownError)
-
-
 def command(f):
     def func_wrapper(self, *argv, **kwargs):
-        no_poll = not kwargs.get('poll', True) or kwargs.get('no_poll', False)
+        no_poll = not kwargs.get('poll', True)
         kwargs.pop('poll', None)
-        kwargs.pop('no_poll', None)
         commands = f(self, *argv, **kwargs)
         if isinstance(commands, six.string_types):
             commands = commands.split()
         commands = list(commands)
         if no_poll:
             commands.insert(0, '-np')
-        return self.execute(commands)
+        out = self.execute(commands)
+        return out
 
     return func_wrapper
 
 
-def _check_int(value):
-    def is_digit_str():
-        return isinstance(value, six.string_types) and value.isdigit()
-
-    def is_int():
-        return isinstance(value, int)
-
-    if not (is_int() or is_digit_str()):
-        raise ValueError('"{}" must be an integer.'.format(value))
-    return value
+def _text_var(name, value):
+    return [name, check_text(value)]
 
 
-def _check_text(value):
-    if not isinstance(value, six.string_types):
-        raise ValueError('"{}" must be text.'.format(value))
-    return value
+def _int_var(name, value):
+    return [name, check_int(value)]
 
 
-def raise_if_err(out, ex_clz=None, msg=None, vnx_error=None):
+def _enum_var(name, value, enum_class):
+    return [name, check_enum(value, enum_class)]
+
+
+def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
     def on_error():
         log.error(msg)
         raise ex_clz(msg)
@@ -70,31 +59,45 @@ def raise_if_err(out, ex_clz=None, msg=None, vnx_error=None):
         msg = '{}  node detail:\n{}'.format(msg, out)
     if ex_clz is None:
         ex_clz = ValueError
-    if vnx_error is None or len(vnx_error) == 0:
+    if expected_error is None or len(expected_error) == 0:
         # check if out is empty
         if out is not None and len(out) > 0:
             on_error()
     else:
-        if not isinstance(vnx_error, (list, tuple)):
-            vnx_error = [vnx_error]
-        if has_error(out, *vnx_error):
+        if not isinstance(expected_error, (list, tuple)):
+            expected_error = [expected_error]
+        if has_error(out, *expected_error):
             on_error()
 
 
 class NaviCommand(object):
-    def __init__(self, username=None, password=None, scope=0):
+    def __init__(self, username=None, password=None, scope=0,
+                 sec_file=None, timeout=None):
         self._username = username
         self._password = password
         self._scope = scope
+        self._sec_file = sec_file
+        self._timeout = timeout
 
-    def _get_credentials(self):
-        if self._username is None or self._password is None:
+    @property
+    def timeout(self):
+        return self._timeout
+
+    def get_credentials(self):
+        if self._username is None and self._password is None:
             # use security file
-            ret = []
+            if self._sec_file is not None:
+                ret = _text_var('-secfilepath', self._sec_file)
+            else:
+                ret = []
+        elif self._username is None or self._password is None:
+            raise ValueError('username or password missing.')
         else:
             ret = ['-user', self._username,
                    '-password', self._password,
                    '-scope', self._scope]
+        if self.timeout is not None:
+            ret += _int_var('-t', self.timeout)
         return ret
 
     _cli_binary_candidates = (
@@ -114,56 +117,50 @@ class NaviCommand(object):
 
     def _get_cmd_prefix(self, ip):
         binary = self._get_binary()
-        return [binary, '-h', ip] + self._get_credentials()
+        return [binary, '-h', ip] + self.get_credentials()
 
-    def execute(self, cmd):
+    def execute(self, cmd, raise_on_rc=None, check_rc=False):
         cmd = list(map(six.text_type, cmd))
         cmd_str = ' '.join(cmd)
         log.debug('call command: %s', cmd_str)
         p = Popen(cmd, stdout=PIPE, stderr=PIPE)
         output = p.stdout.read()
+        p.poll()
+        rc = p.returncode
+        if rc is not None:
+            if rc == raise_on_rc or (check_rc and rc != 0):
+                raise ValueError('raise error on return code "{}".'
+                                 .format(rc))
         if isinstance(output, bytes):
             output = output.decode("utf-8")
         return output.strip()
 
 
-class WeightedAverage(object):
-    def __init__(self, size=5):
-        self._data = []
-        # linear weight
-        self.weight = list(range(size, 0, -1))
-
-    def add(self, *value):
-        for v in value:
-            self._data.insert(0, v)
-        while len(self._data) > self.size:
-            self._data.pop()
-
-    @property
-    def size(self):
-        return len(self.weight)
-
-    def value(self):
-        total = 0.0
-        weight = 0.0
-        ret = 0.0
-        for v, w in zip(self._data, self.weight):
-            total += v * w
-            weight += w
-        if weight != 0.0:
-            ret = total / weight
-
-        return ret
-
-
 class NodeInfo(object):
     def __init__(self, name, ip, available=None, working=False):
+        """ constructor for `NodeInfo`.
+
+        :param name: name of the node, could be `spa`, or `spb`
+        :param ip: ip address of the node
+        :param available: indicate whether this node is alive.
+        :param working: indicate whether this node is executing command.
+        :return:
+        """
         self.name = VNXSPEnum.from_str(name)
         self.ip = ip
-        self.available = available
+        self._available = available
         self.timestamp = None
         self.working = working
         self._latency = WeightedAverage()
+
+    @property
+    def available(self):
+        return self._available
+
+    @available.setter
+    def available(self, available):
+        self._available = available
+        self.timestamp = datetime.now()
 
     @property
     def latency(self):
@@ -174,10 +171,11 @@ class NodeInfo(object):
         self._latency.add(value)
 
     def __repr__(self):
-        return ('name: {}, ip: {}, available: {}, '
-                'working: {} , latency: {}, timestamp: {}'
-                .format(self.name, self.ip, self.available,
-                        self.working, self.latency, self.timestamp))
+        props_to_print = ['name', 'ip', 'available',
+                          'working', 'latency', 'timestamp']
+        info = ', '.join(['{}: {}'.format(p, getattr(self, p))
+                          for p in props_to_print])
+        return info
 
     def __str__(self):
         return self.__repr__()
@@ -195,7 +193,7 @@ class _NodeInfoMap(object):
     def is_available(self, name):
         ret = False
         name = VNXSPEnum.from_str(name)
-        if name in self._map.keys():
+        if name in self._map:
             ret = self._map[name].available
         return ret
 
@@ -207,7 +205,6 @@ class _NodeInfoMap(object):
         if node is not None:
             if available is not None:
                 node.available = available
-                node.timestamp = datetime.now()
             if working is not None:
                 node.working = working
             if latency is not None:
@@ -231,16 +228,15 @@ class _NodeInfoMap(object):
 
 
 class NodeHeartBeat(NaviCommand):
-    def __init__(self, username=None, password=None, scope=0, interval=None):
-        super(NodeHeartBeat, self).__init__(username, password, scope)
-        if interval is None:
-            interval = 60
+    def __init__(self, username=None, password=None, scope=0,
+                 interval=60, timeout=30):
+        super(NodeHeartBeat, self).__init__(username, password, scope,
+                                            timeout=timeout)
         self._node_map = _NodeInfoMap()
         self._interval = interval
-        self.timeout = 30
         self._heartbeat_thread = None
         if interval > 0:
-            self._heartbeat_thread = background(self._run)
+            self._heartbeat_thread = daemon(self._run)
         self.command_count = 0
 
     def reset(self):
@@ -249,7 +245,7 @@ class NodeHeartBeat(NaviCommand):
 
     def _get_sp_by_category(self):
         available_sp = []
-        down_sp = []
+        unavailable_sp = []
         unknown_sp = []
         nodes = self._node_map.nodes()
         for node in nodes:
@@ -259,8 +255,8 @@ class NodeHeartBeat(NaviCommand):
                 elif node.available:
                     available_sp.append(node)
                 else:
-                    down_sp.append(node)
-        return available_sp, down_sp, unknown_sp
+                    unavailable_sp.append(node)
+        return available_sp, unavailable_sp, unknown_sp
 
     def get_alive_sp_ip(self):
         def get_sp_from_list(sp_list):
@@ -273,9 +269,9 @@ class NodeHeartBeat(NaviCommand):
                 r = sp_list[0].ip
             return r
 
-        available, down, unknown = self._get_sp_by_category()
-        if len(down) == 2 or len(available) == 0 and len(unknown) == 0:
-            raise VNXSystemDownError(
+        available, unavailable, unknown = self._get_sp_by_category()
+        if len(unavailable) == 2 or len(available) == 0 and len(unknown) == 0:
+            raise ex.VNXSystemDownError(
                 'both storage processors are not available.')
         elif len(available) > 0:
             ret = get_sp_from_list(available)
@@ -305,7 +301,7 @@ class NodeHeartBeat(NaviCommand):
         self._interval = value
         if self._heartbeat_thread is None:
             # there is no loop check
-            self._heartbeat_thread = background(self._run)
+            self._heartbeat_thread = daemon(self._run)
 
     def execute_cmd(self, ip, cmd):
         self.update_by_ip(ip, working=True)
@@ -323,17 +319,16 @@ class NodeHeartBeat(NaviCommand):
         if latency is None:
             msg = '{} is not available.'.format(ip)
             log.warn(msg)
-            raise VNXSPDownError(msg)
+            raise ex.VNXSPDownError(msg)
         return out
 
     def _ping_sp(self, ip):
         cmd = self._get_cmd_prefix(ip)
-        if self.timeout is not None:
+        timeout = self.timeout
+        if timeout is not None:
             latency = self.get_latency(ip)
             if latency is not None:
-                timeout = self.timeout + latency
-            else:
-                timeout = self.timeout
+                timeout += latency
             cmd += ['-t', timeout]
         cmd += ['-np', 'getagent']
         return self.execute_cmd(ip, cmd)
@@ -343,7 +338,7 @@ class NodeHeartBeat(NaviCommand):
             self._ping_sp(node.ip)
 
         if VNXSPEnum.is_sp(node.name) and not node.working:
-            background(do)
+            daemon(do)
 
     def is_available(self, name):
         return self._node_map.is_available(name)
@@ -377,13 +372,18 @@ class NodeHeartBeat(NaviCommand):
 
 
 class CliClient(NaviCommand):
-    def __init__(self, ip=None, username=None, password=None, scope=0,
+    def __init__(self, ip=None,
+                 username=None, password=None, scope=0,
+                 sec_file=None,
+                 timeout=None,
                  heartbeat_interval=None):
-        super(CliClient, self).__init__(username, password, scope)
+        super(CliClient, self).__init__(username, password, scope,
+                                        sec_file, timeout)
 
         if heartbeat_interval is None:
             heartbeat_interval = 60
-        self._heart_beat = NodeHeartBeat(interval=heartbeat_interval)
+        self._heart_beat = NodeHeartBeat(interval=heartbeat_interval,
+                                         timeout=timeout)
         self._heart_beat.add(VNXSPEnum.SP_A, ip)
 
     def set_ip(self, spa, spb=None, cs=None):
@@ -407,9 +407,9 @@ class CliClient(NaviCommand):
     def get_pool(self, name=None, pool_id=None):
         cmd = 'storagepool -list -all'.split()
         if name is not None:
-            cmd += ['-name', _check_text(name)]
+            cmd += _text_var('-name', name)
         elif pool_id is not None:
-            cmd += ['-id', _check_int(pool_id)]
+            cmd += _int_var('-id', pool_id)
         return cmd
 
     @command
@@ -422,8 +422,7 @@ class CliClient(NaviCommand):
     def get_cg(self, name=None):
         cmd = 'snap -group -list'.split()
         if name is not None:
-            _check_text(name)
-            cmd += ['-id', name]
+            cmd += _text_var('-id', name)
         cmd.append('-detail')
         return cmd
 
@@ -435,13 +434,12 @@ class CliClient(NaviCommand):
     def get_connection_port(self, sp=None, port_id=None, vport_id=None):
         cmd = 'connection -getport -all'.split()
         if sp is not None:
-            sp = VNXSPEnum.from_str(sp).lower()[-1]
-            cmd += ['-sp', sp]
+            cmd += ['-sp', VNXSPEnum.get_sp_index(sp)]
 
         if port_id is not None:
-            cmd += ['-portid', port_id]
+            cmd += _int_var('-portid', port_id)
             if vport_id is not None:
-                cmd += ['-vportid', vport_id]
+                cmd += _int_var('-vportid', vport_id)
 
         return cmd
 
@@ -449,7 +447,7 @@ class CliClient(NaviCommand):
     def get_sg(self, name=None):
         cmd = 'storagegroup -list -host -iscsiAttributes'.split()
         if name is not None:
-            cmd += ['-gname', name]
+            cmd += _text_var('-gname', name)
         return cmd
 
     @command
@@ -460,9 +458,9 @@ class CliClient(NaviCommand):
     def _get_pool_opt(pool_id, pool_name):
         ret = []
         if pool_id is not None:
-            ret += ['-poolId', _check_int(pool_id)]
+            ret += _int_var('-poolId', pool_id)
         elif pool_name is not None:
-            ret += ['-poolName', _check_text(pool_name)]
+            ret += _text_var('-poolName', pool_name)
         else:
             raise ValueError('either pool_id or pool_name '
                              'should be supplied.')
@@ -472,21 +470,21 @@ class CliClient(NaviCommand):
     def _get_lun_opt(lun_id, lun_name, allow_empty=False):
         ret = []
         if lun_id is not None:
-            ret += ['-l', _check_int(lun_id)]
+            ret += _int_var('-l', lun_id)
         elif lun_name is not None:
-            ret += ['-name', _check_text(lun_name)]
+            ret += _text_var('-name', lun_name)
         elif not allow_empty:
             raise ValueError('either lun_id or lun_name '
                              'should be supplied.')
         return ret
 
     @staticmethod
-    def _get_primary_lun_opt(primary_lun_id, primary_lun_name):
+    def _get_primary_lun_opt(primary_lun_id=None, primary_lun_name=None):
         ret = []
         if primary_lun_id is not None:
-            ret += ['-primaryLun', _check_int(primary_lun_id)]
+            ret += _int_var('-primaryLun', primary_lun_id)
         elif primary_lun_name is not None:
-            ret += ['-primaryLunName', _check_text(primary_lun_name)]
+            ret += _text_var('-primaryLunName', primary_lun_name)
         else:
             raise ValueError('either primary lun name or '
                              'primary lun id should be supplied.')
@@ -546,7 +544,7 @@ class CliClient(NaviCommand):
         cmd += self._get_lun_opt(lun_id, lun_name)
 
         if new_name is not None:
-            cmd += ['-newName', new_name]
+            cmd += _text_var('-newName', new_name)
 
         cmd += self._get_tier_opt(new_tier)
 
@@ -561,17 +559,13 @@ class CliClient(NaviCommand):
     def enable_compression(self, lun_id=None, rate=None, pool_id=None,
                            pool_name=None, ignore_thresholds=False):
         cmd = ['compression', '-on']
-        cmd += ['-l', lun_id]
+        cmd += _int_var('-l', lun_id)
         if pool_id is not None:
-            cmd += ['-destPoolId', pool_id]
+            cmd += _int_var('-destPoolId', pool_id)
         elif pool_name is not None:
-            cmd += ['-destPoolName', pool_name]
+            cmd += _text_var('-destPoolName', pool_name)
         if rate is not None:
-            rates = VNXCompressionRate.get_all()
-            if rate not in rates:
-                raise VNXCompressionError('invalid rate: {}, should be: {}'
-                                          .format(rate, rates))
-            cmd += ['-rate', rate]
+            cmd += _enum_var('-rate', rate, VNXCompressionRate)
         if ignore_thresholds:
             cmd.append('-ignoreThresholds')
         cmd.append('-o')
@@ -580,7 +574,7 @@ class CliClient(NaviCommand):
     @command
     def disable_compression(self, lun_id, ignore_thresholds=False):
         cmd = ['compression', '-off']
-        cmd += ['-l', lun_id]
+        cmd += _int_var('-l', lun_id)
         if ignore_thresholds:
             cmd.append('-ignoreThresholds')
         cmd.append('-o')
@@ -602,7 +596,7 @@ class CliClient(NaviCommand):
     def attach_snap(self, snap_name, lun_id=None, lun_name=None):
         cmd = ['lun', '-attach']
         cmd += self._get_lun_opt(lun_id, lun_name)
-        cmd += ['-snapName', snap_name]
+        cmd += _text_var('-snapName', snap_name)
         return cmd
 
     @command
@@ -635,7 +629,8 @@ class CliClient(NaviCommand):
                         ignore_thresholds=False):
         cmd = ['lun', '-expand']
         cmd += self._get_lun_opt(lun_id, lun_name)
-        cmd += ['-capacity', _check_int(new_size), '-sq', 'gb']
+        cmd += _int_var('-capacity', new_size)
+        cmd += ['-sq', 'gb']
         if ignore_thresholds:
             cmd += ['-ignoreThresholds']
         cmd.append('-o')
@@ -643,62 +638,57 @@ class CliClient(NaviCommand):
 
     @command
     def migrate_lun(self, src_id, dst_id, rate=VNXMigrationRate.HIGH):
-        if not isinstance(src_id, int):
-            raise ValueError('source lun id should be an int: {}'
-                             .format(src_id))
-        if not isinstance(dst_id, int):
-            raise ValueError('destination lun id should be an int: {}'
-                             .format(dst_id))
-        if rate not in VNXMigrationRate.get_all():
-            raise ValueError('migration rate is "{}", should be one of: {}'
-                             .format(rate, VNXMigrationRate.get_all()))
         cmd = ['migrate', '-start']
-        cmd += ['-source', src_id]
-        cmd += ['-dest', dst_id]
-        cmd += ['-rate', rate, '-o']
+        cmd += _int_var('-source', src_id)
+        cmd += _int_var('-dest', dst_id)
+        cmd += _enum_var('-rate', rate, VNXMigrationRate)
+        cmd.append('-o')
         return cmd
 
     @command
-    def get_migration_session(self, source_id=None):
+    def get_migration_session(self, src_id=None):
         cmd = ['migrate', '-list']
-        if source_id is not None:
-            cmd += ['-source', source_id]
+        if src_id is not None:
+            cmd += _int_var('-source', src_id)
         return cmd
 
     @command
     def cancel_migrate_lun(self, src_id):
         if src_id is None:
             raise ValueError('source LUN id missing for cancel migration.')
-        return ['migrate', '-cancel', '-source', src_id, '-o']
+        cmd = ['migrate', '-cancel']
+        cmd += _int_var('-source', src_id)
+        cmd.append('-o')
+        return cmd
 
     @command
     def create_sg(self, name):
-        cmd = 'storagegroup -create -gname'.split()
-        cmd.append(name)
+        cmd = ['storagegroup', '-create']
+        cmd += _text_var('-gname', name)
         return cmd
 
     @command
     def sg_add_hlu(self, sg_name, hlu_id, alu_id):
         cmd = ['storagegroup', '-addhlu']
-        cmd += ['-hlu', hlu_id]
-        cmd += ['-alu', alu_id]
-        cmd += ['-gname', sg_name]
+        cmd += _int_var('-hlu', hlu_id)
+        cmd += _int_var('-alu', alu_id)
+        cmd += _text_var('-gname', sg_name)
         cmd.append('-o')
         return cmd
 
     @command
     def sg_remove_hlu(self, sg_name, hlu_id):
         cmd = ['storagegroup', '-removehlu']
-        cmd += ['-hlu', hlu_id]
-        cmd += ['-gname', sg_name]
+        cmd += _int_var('-hlu', hlu_id)
+        cmd += _text_var('-gname', sg_name)
         cmd.append('-o')
         return cmd
 
     @staticmethod
     def _sg_host_op(sg_name, host_name, op):
         cmd = ['storagegroup', op]
-        cmd += ['-host', host_name]
-        cmd += ['-gname', sg_name]
+        cmd += _text_var('-host', host_name)
+        cmd += _text_var('-gname', sg_name)
         cmd.append('-o')
         return cmd
 
@@ -713,21 +703,16 @@ class CliClient(NaviCommand):
     @command
     def set_path(self, sg_name, hba_uid, sp, port_id,
                  ip, host, vport_id=None):
-        sp_id = VNXSPEnum.from_str(sp)
-        if sp_id is None:
-            raise ValueError('invalid sp supplied: "{}"'.format(sp))
-        else:
-            sp_id = sp_id[-1].lower()
 
         cmd = ['storagegroup', '-setpath']
-        cmd += ['-gname', sg_name]
-        cmd += ['-hbauid', hba_uid]
-        cmd += ['-sp', sp_id]
-        cmd += ['-spport', port_id]
+        cmd += _text_var('-gname', sg_name)
+        cmd += _text_var('-hbauid', hba_uid)
+        cmd += ['-sp', VNXSPEnum.get_sp_index(sp)]
+        cmd += _int_var('-spport', port_id)
         if vport_id is not None:
-            cmd += ['-spvport', vport_id]
+            cmd += _int_var('-spvport', vport_id)
         cmd += ['-ip', ip]
-        cmd += ['-host', host]
+        cmd += _text_var('-host', host)
         cmd.append('-o')
         return cmd
 
@@ -736,16 +721,17 @@ class CliClient(NaviCommand):
         return ['port', '-removeHBA', '-hbauid', hba_uid, '-o']
 
     @command
-    def remove_sg(self, name):
-        cmd = 'storagegroup -destroy -gname'.split()
-        cmd += [name, '-o']
+    def remove_sg(self, sg_name):
+        cmd = ['storagegroup', '-destroy']
+        cmd += _text_var('-gname', sg_name)
+        cmd.append('-o')
         return cmd
 
     @command
     def get_snap(self, name=None):
         cmd = ['snap', '-list']
         if name is not None:
-            cmd += ['-id', name]
+            cmd += _text_var('-id', name)
         cmd.append('-detail')
         return cmd
 
@@ -761,14 +747,14 @@ class CliClient(NaviCommand):
     def create_snap(self, res_id, snap_name,
                     allow_rw=True, auto_delete=False):
         cmd = ['snap', '-create']
-        cmd += ['-res', res_id]
-        if isinstance(res_id, int):
-            # lun id, this is a snap for lun
-            pass
-        elif isinstance(res_id, six.string_types):
+        try:
+            cmd += _int_var('-res', res_id)
+        except ValueError:
             # string type meaning cg name
+            cmd += _text_var('-res', res_id)
             cmd += ['-resType', 'CG']
-        cmd += ['-name', snap_name]
+
+        cmd += _text_var('-name', snap_name)
         if allow_rw is not None:
             cmd += ['-allowReadWrite', self._bool_to_yes_no(allow_rw)]
         if auto_delete is not None:
@@ -780,8 +766,8 @@ class CliClient(NaviCommand):
                   ignore_migration_check=False,
                   ignore_dedup_check=False):
         cmd = ['snap', '-copy']
-        cmd += ['-id', src_name]
-        cmd += ['-name', tgt_name]
+        cmd += _text_var('-id', src_name)
+        cmd += _text_var('-name', tgt_name)
         if ignore_migration_check:
             cmd.append('-ignoreMigrationCheck')
         if ignore_dedup_check:
@@ -793,9 +779,9 @@ class CliClient(NaviCommand):
                     auto_delete=None, rw=None):
         opt = []
         if new_name is not None and name != new_name:
-            opt += ['-name', new_name]
+            opt += _text_var('-name', new_name)
         if desc is not None:
-            opt += ['-descr', desc]
+            opt += _text_var('-descr', desc)
         if auto_delete is not None:
             opt += ['-allowAutoDelete', self._bool_to_yes_no(auto_delete)]
         if rw is not None:
@@ -809,21 +795,21 @@ class CliClient(NaviCommand):
     @command
     def remove_snap(self, snap_name):
         cmd = ['snap', '-destroy']
-        cmd += ['-id', snap_name]
+        cmd += _text_var('-id', snap_name)
         cmd.append('-o')
         return cmd
 
     @staticmethod
     def _get_cg_member_repr(members):
         def member_converter(member):
-            return six.text_type(_check_int(member))
+            return six.text_type(check_int(member))
 
         return ','.join(map(member_converter, members))
 
     @command
     def create_cg(self, name, members=None, auto_delete=None):
         cmd = 'snap -group -create'.split()
-        cmd += ['-name', _check_text(name)]
+        cmd += _text_var('-name', name)
         if auto_delete is not None:
             cmd += ['-allowSnapAutoDelete', self._bool_to_yes_no(auto_delete)]
 
@@ -857,23 +843,23 @@ class CliClient(NaviCommand):
 
     @command
     def remove_cg(self, name):
-        cmd = 'snap -group -destroy -id'.split()
-        cmd.append(name)
+        cmd = 'snap -group -destroy'.split()
+        cmd += _text_var('-id', name)
         return cmd
 
     @command
     def get_ndu(self, name=None):
         cmd = 'ndu -list'.split()
         if name is not None:
-            cmd += ['-name', name]
+            cmd += _text_var('-name', name)
         return cmd
 
     @property
     def ip(self):
         return self._heart_beat.get_alive_sp_ip()
 
-    @retry(on_error=VNXSPDownError)
-    def execute(self, params):
+    @retry(on_error=ex.VNXSPDownError)
+    def execute(self, params, raise_on_rc=None, check_rc=False):
         if params is not None and len(params) > 0:
             ip = self.ip
             cmd = self._get_cmd_prefix(ip) + params

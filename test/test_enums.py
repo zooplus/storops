@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from unittest import TestCase
 import six
-from hamcrest import assert_that
+from hamcrest import assert_that, raises
 from hamcrest import equal_to
 from vnxCliApi.enums import VNXError, VNXProvisionEnum, \
     VNXTieringEnum, VNXSPEnum, has_error
@@ -77,7 +77,7 @@ class VNXErrorTest(TestCase):
     def test_sp_error_not_supported(self):
         out = ('Error returned from the target: 10.244.211.32\n'
                'CLI commands are not supported by the target storage system.')
-        err = has_error(out, VNXError.SP_NOT_AVAILABLE)
+        err = has_error(out, VNXError.NOT_A_SP)
         assert_that(err, equal_to(True))
 
     def test_sp_error_time_out(self):
@@ -141,3 +141,12 @@ class VNXSPEnumTest(TestCase):
         for k, v in six.iteritems(data):
             assert_that(VNXSPEnum.from_str(k), equal_to(v),
                         'input: {}'.format(k))
+
+    def test_get_sp_index_err(self):
+        def f():
+            VNXSPEnum.get_sp_index('abc')
+
+        assert_that(f, raises(ValueError, 'not a valid sp'))
+
+    def test_get_sp_index(self):
+        assert_that(VNXSPEnum.get_sp_index('spa'), equal_to('a'))

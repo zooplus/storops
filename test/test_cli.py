@@ -6,13 +6,12 @@ import time
 from hamcrest import assert_that, contains_string, equal_to, calling, raises, \
     less_than_or_equal_to, greater_than_or_equal_to, none, greater_than
 from test.cli_mock import patch_cli, extract_command, MockCli
-from vnxCliApi.cli import CliClient, raise_if_err, NodeHeartBeat, \
-    WeightedAverage
+from vnxCliApi.cli import CliClient, raise_if_err, NodeHeartBeat, NodeInfo, \
+    NaviCommand
 from vnxCliApi.enums import VNXTieringEnum, VNXProvisionEnum, \
     VNXSPEnum, \
     VNXMigrationRate, VNXError
-from vnxCliApi.exception import VNXException, VNXCompressionError, \
-    VNXSystemDownError
+from vnxCliApi.exception import VNXException, VNXSystemDownError
 
 __author__ = 'Cedric Zhuang'
 
@@ -31,6 +30,27 @@ class MockCliTest(TestCase):
         assert_that(MockCli.get_filename(params), equal_to('getagent'))
 
 
+class NaviCommandTest(TestCase):
+    def test_username_password(self):
+        cmd = NaviCommand('a', 'a', 1)
+        assert_that(' '.join(map(str, cmd.get_credentials())),
+                    equal_to('-user a -password a -scope 1'))
+
+    def test_default_security_file(self):
+        cmd = NaviCommand()
+        assert_that(cmd.get_credentials(), equal_to([]))
+
+    def test_security_file(self):
+        cmd = NaviCommand(sec_file=r'/a/b/c.key')
+        assert_that(' '.join(cmd.get_credentials()),
+                    equal_to('-secfilepath /a/b/c.key'))
+
+    def test_username_password_timeout(self):
+        cmd = NaviCommand('a', 'a', 1, timeout=20)
+        assert_that(' '.join(map(str, cmd.get_credentials())),
+                    equal_to('-user a -password a -scope 1 -t 20'))
+
+
 class FunctionTest(TestCase):
     def test_raise_if_err_normal(self):
         raise_if_err('')
@@ -45,7 +65,7 @@ class FunctionTest(TestCase):
     def test_raise_if_err_vnx_error(self):
         def f():
             raise_if_err('specified lun may not exist', VNXException,
-                         vnx_error=VNXError.GENERAL_NOT_FOUND)
+                         expected_error=VNXError.GENERAL_NOT_FOUND)
 
         assert_that(f, raises(VNXException, 'specified lun may not exist'))
 
@@ -53,6 +73,13 @@ class FunctionTest(TestCase):
 class CliClientTest(TestCase):
     def setUp(self):
         self.client = CliClient('10.244.211.30')
+
+    def test_password_missing(self):
+        def f():
+            client = CliClient('1.1.1.1', 'a')
+            client.get_agent()
+
+        assert_that(f, raises(ValueError, 'missing'))
 
     @patch_cli()
     def test_get_agent(self):
@@ -70,18 +97,8 @@ class CliClientTest(TestCase):
         assert_that(cmd, equal_to('getagent'))
 
     @extract_command
-    def test_get_agent_with_poll_3(self):
-        cmd = self.client.get_agent(no_poll=False)
-        assert_that(cmd, equal_to('getagent'))
-
-    @extract_command
     def test_get_agent_no_poll_1(self):
         cmd = self.client.get_agent(poll=False)
-        assert_that(cmd, equal_to('-np getagent'))
-
-    @extract_command
-    def test_get_agent_no_poll_2(self):
-        cmd = self.client.get_agent(no_poll=True)
         assert_that(cmd, equal_to('-np getagent'))
 
     @extract_command
@@ -334,7 +351,7 @@ class CliClientTest(TestCase):
             self.client.set_path('sg0', 'aaa.bbb.ccc', 'abc', 10,
                                  '10.0.0.1', 'host0', 1)
 
-        assert_that(f, raises(ValueError, 'invalid sp'))
+        assert_that(f, raises(ValueError, 'not a valid sp name'))
 
     @extract_command
     def test_remove_hba(self):
@@ -368,21 +385,21 @@ class CliClientTest(TestCase):
 
     def test_migrate_lun_error_src(self):
         def f():
-            self.client.migrate_lun('0', 1)
+            self.client.migrate_lun('a0', 1)
 
-        assert_that(f, raises(ValueError, 'source lun'))
+        assert_that(f, raises(ValueError, 'must be an integer'))
 
     def test_migrate_lun_error_dst(self):
         def f():
             self.client.migrate_lun(0, 'a')
 
-        assert_that(f, raises(ValueError, 'destination lun'))
+        assert_that(f, raises(ValueError, 'must be an integer'))
 
     def test_migrate_lun_error_rate(self):
         def f():
             self.client.migrate_lun(0, 1, 'abc')
 
-        assert_that(f, raises(ValueError, 'migration rate'))
+        assert_that(f, raises(ValueError, 'not a valid value'))
 
     @extract_command
     def test_get_migration_session_all(self):
@@ -540,7 +557,7 @@ class CliClientTest(TestCase):
         def f():
             self.client.enable_compression(12, 'abc')
 
-        assert_that(f, raises(VNXCompressionError, 'invalid rate'))
+        assert_that(f, raises(ValueError, 'not a valid value'))
 
     @extract_command
     def test_disable_compression(self):
@@ -653,19 +670,11 @@ class NodeHeartBeatTest(TestCase):
         assert_that(string, contains_string('node count: 2'))
 
 
-class WeightedAverageTest(TestCase):
-    def test_data_full(self):
-        avg = WeightedAverage(3)
-        avg.add(30, 24, 18, 12, 6)
-        assert_that(avg.value(), equal_to(10))
-        avg.add(30)
-        assert_that(avg.value(), equal_to(19))
-
-    def test_data_not_full(self):
-        avg = WeightedAverage(3)
-        avg.add(12, 6)
-        assert_that(avg.value(), equal_to(8.4))
-
-    def test_data_empty(self):
-        avg = WeightedAverage(3)
-        assert_that(avg.value(), equal_to(0))
+class NodeInfoTest(TestCase):
+    def test_repr(self):
+        info = NodeInfo('spa', '1.1.1.1', True, False)
+        info.latency = 5
+        info.latency = 14
+        expected = ('name: SP A, ip: 1.1.1.1, available: True, '
+                    'working: False, latency: 10.0, timestamp: None')
+        assert_that(repr(info), equal_to(expected))

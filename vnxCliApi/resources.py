@@ -4,16 +4,12 @@ from threading import Lock
 import re
 import six
 from vnxCliApi.cli import CliClient, raise_if_err
-from vnxCliApi.common import background
+from vnxCliApi.common import daemon, check_int
 from vnxCliApi.enums import \
     VNXProvisionEnum, VNXTieringEnum, VNXSPEnum, VNXPortTypeEnum, VNXError, \
     has_error, VNXMigrationRate
-from vnxCliApi.exception import VNXNoHluAvailableError, \
-    VNXMigrationError, VNXNoIndexException, VNXAttachSnapError, \
-    VNXDetachSnapError, VNXModifyLunError, VNXConsistencyGroupError, \
-    VNXSnapError, VNXStorageGroupError, VNXCompressionError, VNXDedupError
-from vnxCliApi.parsers import \
-    PropDescriptor, get_parser_config
+from vnxCliApi import exception as ex
+from vnxCliApi.parsers import PropDescriptor, get_parser_config
 import logging
 from past.builtins import filter
 
@@ -119,15 +115,15 @@ class VNXResource(object):
         if index_desc is not None:
             ret = getattr(self, index_desc.key)
         else:
-            raise VNXNoIndexException('{} does not have index.'
-                                      .format(self.__class__.__name__))
+            raise ex.VNXNoIndexException('{} does not have index.'
+                                         .format(self.__class__.__name__))
         return ret
 
     @property
     def existed(self):
         try:
             ret = self.get_index() is not None
-        except VNXNoIndexException:
+        except ex.VNXNoIndexException:
             # no index, check if any of the property is available
             prop = self._get_first_not_none_prop()
             ret = prop is not None
@@ -179,6 +175,9 @@ class VNXResource(object):
     def _get_tail():
         return '}>'
 
+    def _get_property_names(self):
+        return self._get_parser().get_all()
+
     def _get_properties(self, prefix=''):
 
         def formatted(k, v=None):
@@ -188,7 +187,7 @@ class VNXResource(object):
 
         props = [formatted('hash', self.__hash__()),
                  formatted('existed')]
-        for mapper in self._get_parser().get_all():
+        for mapper in self._get_property_names():
             try:
                 props.append(formatted(mapper.key))
             except AttributeError:
@@ -215,13 +214,13 @@ class VNXResource(object):
     def __getattr__(self, item):
         try:
             ret = super(object, self).__getattr__(item)
-        except AttributeError as ex:
+        except AttributeError as e:
             if item in self._property_cache:
                 ret = self._property_cache[item]
             elif item[0] != '_':
                 ret = self._get_property_from_raw(item)
             else:
-                raise ex
+                raise e
         return ret
 
     def _get_property_from_raw(self, item):
@@ -381,13 +380,19 @@ class VNXDomainMember(VNXResource):
 
 
 class VNXSystem(VNXResource):
-    def __init__(self, ip=None, username=None, password=None,
+    def __init__(self, ip=None,
+                 username=None, password=None, scope=0,
+                 sec_file=None,
+                 timeout=None,
                  heartbeat_interval=None):
         super(VNXSystem, self).__init__()
-        self._cli = CliClient(ip, username, password,
+        self._cli = CliClient(ip,
+                              username, password, scope,
+                              sec_file,
+                              timeout,
                               heartbeat_interval=heartbeat_interval)
         self._dml = VNXDomainMemberList(self._cli)
-        background(self._update_nodes_ip)
+        daemon(self._update_nodes_ip)
 
     def _update_nodes_ip(self):
         self._dml.update()
@@ -428,6 +433,9 @@ class VNXSystem(VNXResource):
 
     def get_ndu(self, name=None):
         return VNXNdu.get(self._cli, name)
+
+    def get_port(self, sp=None, port_id=None, vport_id=None):
+        return VNXConnectionPort.get(self._cli, sp, port_id, vport_id)
 
     def remove_snap(self, name):
         VNXSnap(name, self._cli).remove()
@@ -558,7 +566,7 @@ class VNXLun(VNXResource):
                                    lun_name=self._name,
                                    new_tier=new_tier)
         msg = 'error change lun tier.'
-        raise_if_err(out, VNXModifyLunError, msg)
+        raise_if_err(out, ex.VNXModifyLunError, msg)
 
     @property
     def provision(self):
@@ -590,12 +598,12 @@ class VNXLun(VNXResource):
         snap_name = VNXSnap.get_name(snap)
         out = self._cli.attach_snap(snap_name, lun_id=self.get_id(self))
         if len(out):
-            raise VNXAttachSnapError(out)
+            raise ex.VNXAttachSnapError(out)
 
     def detach_snap(self):
         out = self._cli.detach_snap(lun_id=self.get_id(self))
         if len(out):
-            raise VNXDetachSnapError(out)
+            raise ex.VNXDetachSnapError(out)
 
     def get_snap(self, name=None):
         if name is not None:
@@ -613,19 +621,19 @@ class VNXLun(VNXResource):
         src_id = self.get_id(self)
         out = self._cli.migrate_lun(src_id, tgt_id, rate)
         if len(out) > 0:
-            raise VNXMigrationError(out)
+            raise ex.VNXMigrationError(out)
 
     def expand(self, new_size, ignore_thresholds=False):
         out = self._cli.expand_pool_lun(new_size, self.get_id(self),
                                         ignore_thresholds=ignore_thresholds)
-        raise_if_err(out, VNXModifyLunError,
+        raise_if_err(out, ex.VNXModifyLunError,
                      'failed to expand lun.')
 
     def cancel_migrate(self):
         src_id = self.get_id(self)
         out = self._cli.cancel_migrate_lun(src_id)
         if len(out) > 0:
-            raise VNXMigrationError(out)
+            raise ex.VNXMigrationError(out)
 
     def get_migration_session(self):
         return VNXMigrationSession.get(self._cli, self)
@@ -637,9 +645,9 @@ class VNXLun(VNXResource):
                 lun = lun._lun_id
             else:
                 lun = lun.lun_id
-        elif isinstance(lun, six.string_types) and lun.isdigit():
-            lun = int(lun)
-        if not isinstance(lun, int):
+        try:
+            lun = check_int(lun)
+        except ValueError:
             raise ValueError('invalid lun number supplied: {}'
                              .format(lun))
         return lun
@@ -658,7 +666,7 @@ class VNXLun(VNXResource):
             out = self._cli.modify_lun(lun_id=self._lun_id,
                                        lun_name=self._name,
                                        new_name=new_name)
-            raise_if_err(out, VNXModifyLunError,
+            raise_if_err(out, ex.VNXModifyLunError,
                          'failed to change lun name.')
             self._name = new_name
 
@@ -678,20 +686,20 @@ class VNXLun(VNXResource):
     def enable_compression(self, rate=None, ignore_thresholds=None):
         lun_id = self.get_id(self)
         out = self._cli.enable_compression(lun_id, rate, ignore_thresholds)
-        raise_if_err(out, VNXCompressionError,
+        raise_if_err(out, ex.VNXCompressionError,
                      'failed to enable compression on {}.'.format(lun_id))
 
     def disable_compression(self, ignore_thresholds=None):
         lun_id = self.get_id(self)
         out = self._cli.disable_compression(lun_id, ignore_thresholds)
-        raise_if_err(out, VNXCompressionError,
+        raise_if_err(out, ex.VNXCompressionError,
                      'failed to disable compression on {}.'.format(lun_id))
 
     def _update_dedup_state(self, tgt_state):
         out = self._cli.modify_lun(lun_id=self._lun_id,
                                    lun_name=self._name,
                                    dedup=tgt_state)
-        raise_if_err(out, VNXDedupError,
+        raise_if_err(out, ex.VNXDedupError,
                      'failed to set dedup state to {} for {}.'
                      .format(tgt_state, self.get_id(self)))
 
@@ -738,7 +746,7 @@ class VNXSnap(VNXResource):
         out = self._cli.copy_snap(name, new_name,
                                   ignore_migration_check,
                                   ignore_dedup_check)
-        raise_if_err(out, VNXSnapError,
+        raise_if_err(out, ex.VNXSnapError,
                      'failed to copy snap {}.'.format(name))
         return VNXSnap(name=new_name, cli=self._cli)
 
@@ -746,7 +754,7 @@ class VNXSnap(VNXResource):
                auto_delete=None, rw=None):
         name = self._get_name()
         out = self._cli.modify_snap(name, new_name, desc, auto_delete, rw)
-        raise_if_err(out, VNXSnapError,
+        raise_if_err(out, ex.VNXSnapError,
                      'failed to modify snap {}.'.format(name))
         if new_name is not None:
             self._name = new_name
@@ -827,14 +835,14 @@ class VNXConsistencyGroup(VNXResource):
     def remove(self):
         name = self._get_name()
         out = self._cli.remove_cg(name)
-        raise_if_err(out, VNXConsistencyGroupError,
+        raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error remove cg "{}".'.format(name))
 
     def _cg_member_op(self, op, lun_list):
         id_list = VNXLun.get_id_list(*lun_list)
         name = self._get_name()
         out = op(name, *id_list)
-        raise_if_err(out, VNXConsistencyGroupError,
+        raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error change member of "{}".'.format(name))
 
     def add_member(self, *lun_list):
@@ -884,20 +892,21 @@ class VNXSPPort(VNXResource):
         return ret
 
 
-class VNXPort(VNXResource):
+class VNXHbaPort(VNXResource):
     @classmethod
     def _get_parser(cls):
-        pass
+        raise ValueError('property not found.')
 
     def __init__(self):
-        super(VNXPort, self).__init__()
+        super(VNXHbaPort, self).__init__()
         self._sp = None
-        self._number = None
+        self._port_id = None
+        self._vport_id = None
         self._type = VNXPortTypeEnum.FC
         self._host_initiator_list = []
 
     def is_valid(self):
-        return self.sp is not None and self.number is not None
+        return self.sp is not None and self.port_id is not None
 
     @property
     def sp(self):
@@ -905,34 +914,34 @@ class VNXPort(VNXResource):
 
     @sp.setter
     def sp(self, value):
-        if len(value) == 1:
-            value = 'SP {}'.format(value.upper())
-
-        if value in VNXSPEnum.get_all():
-            self._sp = value
-        else:
-            LOG.warning('{} is not a valid sp.'.format(value))
+        self._sp = VNXSPEnum.from_str(value)
 
     def get_sp_index(self):
-        ret = None
-        if self.sp is not None:
-            ret = self.sp[-1]
-        return ret
+        return VNXSPEnum.get_sp_index(self.sp)
 
     @property
-    def number(self):
-        return self._number
+    def port_id(self):
+        return self._port_id
 
-    @number.setter
-    def number(self, value):
-        if not isinstance(value, int):
-            try:
-                self._number = int(value)
-            except ValueError:
-                LOG.warning('{} is not a valid port number.'
-                            .format(value))
-        else:
-            self._number = value
+    @port_id.setter
+    def port_id(self, value):
+        try:
+            self._port_id = check_int(value)
+        except ValueError:
+            LOG.warning('{} is not a valid port id.'
+                        .format(value))
+
+    @property
+    def vport_id(self):
+        return self._vport_id
+
+    @vport_id.setter
+    def vport_id(self, value):
+        try:
+            self._vport_id = check_int(value)
+        except ValueError:
+            LOG.warning('{} is not a valid virtual port id.'
+                        .format(value))
 
     @property
     def type(self):
@@ -943,16 +952,18 @@ class VNXPort(VNXResource):
         return tuple(self._host_initiator_list)
 
     @staticmethod
-    def create(sp, number, port_type=VNXPortTypeEnum.FC):
-        port = VNXPort()
+    def create(sp, port_id, port_type=VNXPortTypeEnum.FC, vport_id=0):
+        port = VNXHbaPort()
         port.sp = sp
-        port.number = number
+        port.port_id = port_id
         port._type = port_type
+        port.vport_id = vport_id
         return port
 
     @staticmethod
     def from_storage_group_hba(sg_hba):
-        port = VNXPort.create(sg_hba.hba[1], int(sg_hba.hba[2]))
+        port = VNXHbaPort.create(sg_hba.sp, sg_hba.port_id,
+                                 vport_id=sg_hba.vlan)
         if '.' in sg_hba.hba[0]:
             port._type = VNXPortTypeEnum.ISCSI
         elif ':' in sg_hba.hba[0]:
@@ -961,22 +972,30 @@ class VNXPort(VNXResource):
         return port
 
     def as_tuple(self):
-        return self.sp, self.number
+        return self.sp, self.port_id
 
     def __repr__(self):
         return ('<VNXPort {{'
-                'SP: {}, '
-                'Number: {},'
-                'Host Initiator List: {}}}>'
-                .format(self.sp, self.number, self.host_initiator_list))
+                'sp: {}, '
+                'port_id: {}, '
+                'vport_id: {}, '
+                'host_initiator_list: {}}}>'
+                .format(self.sp,
+                        self.port_id,
+                        self.vport_id,
+                        self.host_initiator_list))
 
     def __hash__(self):
         return hash('<VNXPort {{'
-                    'SP: {}, '
-                    'Number: {}}}'.format(self.sp, self.number))
+                    'sp: {}, '
+                    'port_id: {}, '
+                    'vport_id: {}}}'
+                    .format(self.sp,
+                            self.port_id,
+                            self.vport_id))
 
     def __eq__(self, other):
-        return self.sp == other.sp and self.number == other.number
+        return self.sp == other.sp and self.port_id == other.port_id
 
 
 class VNXStorageGroup(VNXResource):
@@ -1032,7 +1051,7 @@ class VNXStorageGroup(VNXResource):
     @hba_port_map.setter
     def hba_port_map(self, hba_sp_pairs):
         def _process_cli_output(value):
-            port = VNXPort.from_storage_group_hba(value)
+            port = VNXHbaPort.from_storage_group_hba(value)
             hba = value.uid
             self._hba_port_map.append((hba, port))
 
@@ -1090,7 +1109,7 @@ class VNXStorageGroup(VNXResource):
         with self._hlu_lock:
             remain = self._hlu_full_set() - set(self.alu_hlu_map.values())
             if len(remain) == 0:
-                raise VNXNoHluAvailableError(
+                raise ex.VNXNoHluAvailableError(
                     'no hlu number available for attach.')
             ret = remain.pop()
             self.alu_hlu_map[alu] = ret
@@ -1120,18 +1139,18 @@ class VNXStorageGroup(VNXResource):
     def detach_hlu(self, lun):
         alu = VNXLun.get_id(lun)
         out = self._cli.sg_remove_hlu(self._get_name(), alu)
-        raise_if_err(out, VNXStorageGroupError,
+        raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to detach alu {}.'.format(alu))
         self._remove_alu(alu)
 
     def connect_host(self, host):
         out = self._cli.sg_connect_host(self._get_name(), host)
-        raise_if_err(out, VNXStorageGroupError,
+        raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to connect host {}.'.format(host))
 
     def disconnect_host(self, host):
         out = self._cli.sg_disconnect_host(self._get_name(), host)
-        raise_if_err(out, VNXStorageGroupError,
+        raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to disconnect host {}.'.format(host))
 
     @property

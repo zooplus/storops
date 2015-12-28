@@ -202,7 +202,7 @@ HBA UID                                          SP Name  SPPort
 -------                                          -------  ------
 iqn.1991-05.com.microsoft:abc.def.dev             SP A     3
 Host name:             abc.def.dev
-SPPort:                A-3v0
+SPPort:                A-3v1
 Initiator IP:          10.244.209.72
 TPGT:                  1
 ISID:                  10000000000
@@ -213,7 +213,7 @@ class VNXStorageGroupHBAParserTest(TestCase):
     def test_parse(self):
         data = get_parser_config("VNXStorageGroupHBA").parse(STORAGE_GROUP_HBA)
         self.assertEqual('abc.def.dev', data.host_name)
-        self.assertEqual('A-3v0', data.sp_port)
+        self.assertEqual('A-3v1', data.sp_port)
         self.assertEqual('10.244.209.72', data.initiator_ip)
         self.assertEqual('1', data.tpgt)
         self.assertEqual('10000000000', data.isid)

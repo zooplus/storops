@@ -48,6 +48,13 @@ class VNXSPEnum(Enum):
             log.warn('cannot parse "{}" to a vnx sp.'.format(value))
         return ret
 
+    @classmethod
+    def get_sp_index(cls, value):
+        value = cls.from_str(value)
+        if value is None:
+            raise ValueError('"{}" is not a valid sp name.'.format(value))
+        return value.lower()[-1]
+
 
 class VNXProvisionEnum(Enum):
     # value of spec "provisioning:type"
@@ -151,9 +158,9 @@ class VNXError(Enum):
                         '.*Message.*connection refused.*|'
                         '^Error.*Message.*Service Unavailable.*|'
                         '^A network error occurred while trying to connect.*|'
-                        '^Exception: Error occurred because of time out\s*|'
-                        '.*CLI commands are not supported '
-                        'by the target storage system.*')
+                        '^Exception: Error occurred because of time out\s*')
+    NOT_A_SP = ('.*CLI commands are not supported '
+                'by the target storage system.*')
 
     SG_NAME_IN_USE = 'Storage Group name already in use'
     SG_LUN_ALREADY_EXISTS = ('LUN already exists in the '
