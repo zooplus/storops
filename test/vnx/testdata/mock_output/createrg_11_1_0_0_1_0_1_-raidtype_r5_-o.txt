@@ -1,0 +1,2 @@
+Error: createrg command failed
+The specified number of disks are not supported for this raid type.

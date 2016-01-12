@@ -1,9 +1,16 @@
+# coding=utf-8
+from __future__ import unicode_literals
 from setuptools import setup, find_packages
 import io
 import os
-import vnxCliApi
 
 __author__ = 'Cedric Zhuang'
+
+__version__ = '0.0.3'
+
+
+def version():
+    return __version__
 
 
 def here(filename=None):
@@ -44,7 +51,7 @@ def get_long_description():
 
 setup(
     name="vnxCliApi",
-    version=vnxCliApi.version(),
+    version=version(),
     author="Cedric Zhuang",
     author_email="cedric.zhuang@gmail.com",
     description=get_description(),

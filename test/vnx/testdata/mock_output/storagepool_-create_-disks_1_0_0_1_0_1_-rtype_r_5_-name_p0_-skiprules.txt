@@ -1,0 +1,4 @@
+
+The best practices check for the storagepool's creation did not finish successfully. The storagepool will not be created
+  Rule Messages
+      Best practices suggest that for optimum performance for the RAID configuration, the number of NL SAS disks chosen for RAID 5 should be a multiple of 5. If you do not select a multiple of 5, some portion of the pool will not match the specified RAID configuration.

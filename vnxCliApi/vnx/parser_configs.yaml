@@ -1,0 +1,520 @@
+VNXSystem:
+  data_src: cli
+  properties:
+    - label: "Model:"
+    - label: "Serial No:"
+      key: serial
+    - label: "Revision:"
+    - label: "Model Type:"
+    - label: "Agent Rev:"
+    - label: "Name:"
+
+
+VNXNdu:
+  data_src: cli
+  properties:
+    - label: "Name of the software package:"
+      is_index: True
+      key: name
+    - label: "Revision of the software package:"
+      key: revision
+    - label: "Commit Required:"
+      converter: to_bool
+    - label: "Revert Possible:"
+      converter: to_bool
+    - label: "Active State:"
+      converter: to_bool
+    - label: "Is installation completed:"
+      converter: to_bool
+    - label: "Is this System Software:"
+      converter: to_bool
+
+
+VNXSP:
+  data_src: cli
+  properties:
+    - label: "SP ([AB])"
+      is_index: True
+      is_regex: True
+      key: name
+    - label: "Revision Number For the SP:"
+      key: revision
+    - label: "Serial Number For The SP:"
+      key: serial
+    - label: "Memory Size For The SP:"
+      key: memory_size
+
+
+VNXDomainMember:
+  data_src: cli
+  properties:
+    - label: "IP Address:"
+      is_index: True
+    - label: "Name:"
+    - label: "Port:"
+    - label: "Secure Port:"
+
+
+VNXPool:
+  data_src: cli
+  properties:
+    - label: "Pool Name:"
+      is_index: True
+      key: name
+    - label: "Pool ID:"
+      converter: to_int
+    - label: "Percent Full Threshold:"
+      converter: to_float
+    - label: "State:"
+    - label: "Status:"
+    - label: "Current Operation:"
+    - label: "Current Operation State:"
+    - label: "Current Operation Status:"
+    - label: "Current Operation Percent Completed:"
+      converter: to_float
+    - label: "User Capacity (GBs):"
+      converter: to_float
+    - label: "Consumed Capacity (GBs):"
+      converter: to_float
+    - label: "Available Capacity (GBs):"
+      converter: to_float
+    - label: "Total Subscribed Capacity (GBs):"
+      converter: to_float
+    - label: "LUNs:"
+      converter: to_int_arr
+    - label: "FAST Cache:"
+      converter: to_bool
+    - label: "Disks:"
+      key: disk_indices
+      converter: to_disk_indices
+      end_pattern: "LUNs:"
+
+
+VNXConsistencyGroup:
+  data_src: cli
+  properties:
+    - label: "Name:"
+      is_index: True
+    - label: "Member LUN ID(s):"
+      key: lun_list
+      converter: to_int_arr
+    - label: "State:"
+
+
+VNXPoolFeature:
+  data_src: cli
+  properties:
+    - label: "Max. Pool LUNs:"
+      option: -maxPoolLUNs
+      converter: to_int
+    - label: "Total Number of Pool LUNs:"
+      key: total_pool_luns
+      option: -numPoolLUNs
+      converter: to_int
+  default: max_pool_luns, total_pool_luns
+
+
+VNXLun:
+  data_src: cli
+  properties:
+    - label: "Current State:"
+      key: state
+      option: -state
+    - label: "UID:"
+      key: wwn
+      option: -uid
+    - label: "Status:"
+      option: -status
+    - label: "Current Operation:"
+      key: operation
+      option: -opDetails
+    - label: "User Capacity (GBs):"
+      key: total_capacity_gb
+      option: -userCap
+      converter: to_float
+    - label: "Current Owner:"
+      option: -owner
+      converter: to_sp_enum
+    - label: "Default Owner:"
+      converter: to_sp_enum
+    - label: "Attached Snapshot:"
+      option: -attachedSnapshot
+    - label: "Name:"
+    - label: LOGICAL UNIT NUMBER
+      key: lun_id
+      converter: to_int
+      is_index: True
+    - label: "Pool Name:"
+      option: -poolName
+    - label: "Is Thin LUN:"
+      option: -isThinLUN
+      converter: to_bool
+    - label: "Is Compressed:"
+      option: -isCompressed
+      converter: to_bool
+    - label: "Deduplication State:"
+      option: -dedupState
+      key: is_dedup
+      converter: to_bool
+    - label: "Initial Tier:"
+      option: -initialTier
+    - label: "Tiering Policy:"
+      option: -tieringPolicy
+    - label: "Is Private:"
+      option: -isPrivate
+      converter: to_bool
+    - label: "User Capacity (GBs):"
+      converter: to_float
+    - label: "Consumed Capacity (GBs):"
+      converter: to_float
+    - label: "Snapshot Mount Points:"
+      converter: to_int_arr
+    - label: "Attached Snapshot:"
+    - label: "Primary LUN:"
+
+
+VNXSPPort:
+  data_src: cli
+  properties:
+    - label: "SP Name:"
+      is_index: True
+      key: sp
+      converter: to_sp_enum
+    - label: "SP Port ID:"
+      is_index: True
+      key: port_id
+      converter: to_int
+    - label: "SP UID:"
+      key: wwn
+    - label: "Link Status:"
+    - label: "Port Status:"
+    - label: "Switch Present:"
+      converter: to_bool
+    - label: "Speed Value :"
+    - label: "Registered Initiators:"
+      converter: to_int
+    - label: "Logged-In Initiators:"
+      converter: to_int
+    - label: "Not Logged-In Initiators:"
+      converter: to_int
+
+
+VNXStorageGroup:
+  data_src: cli
+  properties:
+    - label: "Storage Group Name:"
+      key: name
+      is_index: True
+      option: -gname
+    - label: "Storage Group UID:"
+      key: wwn
+      option: -uid
+    - label: "Shareable:"
+      converter: to_bool
+    - label: "HLU/ALU Pairs:"
+      key: alu_hlu_map
+      converter: to_alu_hlu_map
+      end_pattern: "Shareable"
+    - label: "HBA/SP Pairs:"
+      converter: VNXStorageGroupHBAList
+      end_pattern: "HLU/ALU Pairs:"
+
+
+VNXStorageGroupHBA:
+  data_src: cli
+  properties:
+    - label:  |
+        ^\s*(\S+)\s+(SP \w)\s+(\d+)\s*$
+      is_index: True
+      is_regex: True
+      key: hba
+    - label: "Host name:"
+    - label: "SPPort:"
+    - label: "Initiator IP:"
+    - label: "TPGT:"
+    - label: "ISID:"
+
+
+VNXConnectionPort:
+  data_src: cli
+  properties:
+    - label: "SP:"
+      is_index: True
+      converter: to_sp_enum
+    - label: "Port ID:"
+      is_index: True
+      converter: to_int
+    - label: "Port WWN:"
+      key: wwn
+    - label: "iSCSI Alias:"
+      key: iscsi_alias
+    - label: "Enode MAC Address:"
+    - label: "Port Speed:"
+    - label: "Auto-Negotiate:"
+      converter: to_bool
+    - label: "Available Speed:"
+    - label: "Current MTU:"
+      converter: to_int
+    - label: "Flow Control:"
+    - label: "Host Window:"
+    - label: "Replication Window:"
+    - label: "Virtual Port ID:"
+      converter: to_int
+    - label: "VLAN ID:"
+      converter: to_int
+    - label: "IP Address:"
+    - label: "Subnet Mask:"
+    - label: "Gateway Address:"
+    - label: "Initiator Authentication:"
+
+
+VNXSnap:
+  data_src: cli
+  properties:
+    - label: "Name:"
+      is_index: True
+    - label: "Description:"
+    - label: "Creation time:"
+    - label: "Last modify time:"
+    - label: "Last modified by:"
+    - label: "Source LUN(s):"
+      converter: to_int_arr
+    - label: "Source CG:"
+    - label: "Primary LUN(s):"
+      converter: to_int_arr
+    - label: "State:"
+    - label: "Status:"
+    - label: "Allow Read/Write:"
+      converter: to_bool
+    - label: "Modified:"
+      converter: to_bool
+    - label: "Attached LUN(s):"
+      converter: to_int_arr
+    - label: "Allow auto delete:"
+      converter: to_bool
+    - label: "Expiration date:"
+
+
+VNXMigrationSession:
+  data_src: cli
+  properties:
+    - label: "Source LU Name:"
+      is_index: True
+    - label: "Source LU ID:"
+      converter: to_int
+    - label: "Dest LU Name:"
+    - label: "Dest LU ID:"
+      converter: to_int
+    - label: "Migration Rate:"
+    - label: "Current State:"
+    - label: "Percent Complete:"
+      converter: to_float
+    - label: "Time Remaining:"
+
+
+VNXMirrorView:
+  data_src: cli
+  properties:
+    - label: "MirrorView Name:"
+      is_index: True
+      key: name
+    - label: "MirrorView Description:"
+      key: description
+    - label: "MirrorView UID:"
+      key: uid
+    - label: "Logical Unit Numbers:"
+      converter: to_int
+    - label: "Remote Mirror Status:"
+    - label: "MirrorView State:"
+      key: state
+    - label: "MirrorView Faulted:"
+      key: faulted
+      converter: to_bool
+    - label: "MirrorView Transitioning:"
+      key: transitioning
+      converter: to_bool
+    - label: "Quiesce Threshold:"
+      converter: to_int
+    - label: "Minimum number of images required:"
+      converter: to_int
+    - label: "Image Size:"
+      converter: to_int
+    - label: "Image Count:"
+      converter: to_int
+    - label: "Write Intent Log Used:"
+      converter: to_bool
+    - label: "Images:"
+      converter: VNXMirrorViewImageList
+      end_pattern: "Recovery Policy:"
+    - label: "Recovery Policy:"
+      converter: to_mirror_view_recovery_policy
+    - label: "Preferred SP:"
+      converter: to_sp_enum
+    - label: "Synchronization Rate:"
+      converter: to_mirror_view_sync_rate
+    - label: "Image Faulted:"
+      converter: to_bool
+    - label: "Image Transitioning:"
+      converter: to_bool
+    - label: "Synchronizing Progress(%):"
+      converter: to_int
+
+
+VNXMirrorViewImage:
+  data_src: cli
+  properties:
+    - label: "Image UID:"
+      is_index: True
+      key: uid
+    - label: "Is Image Primary:"
+      converter: to_bool
+    - label: "Logical Unit UID:"
+    - label: "Image Condition:"
+    - label: "Preferred SP:"
+      converter: to_sp_enum
+
+
+VNXDisk:
+  data_src: cli
+  properties:
+    - label:  |
+        ^Bus\s+(\w+)\s+Enclosure\s+(\w+)\s+Disk\s+(\w+)\s*$
+      is_index: True
+      is_regex: True
+      key: disk_index
+    - label: "Vendor Id:"
+    - label: "Product Id:"
+    - label: "Product Revision:"
+    - label: "Lun:"
+      converter: to_int_arr
+    - label: "Type:"
+      converter: to_int_str_map
+    - label: "State:"
+    - label: "Hot Spare:"
+    - label: "Prct Rebuilt:"
+      converter: to_int_int_map
+    - label: "Prct Bound:"
+      converter: to_int_int_map
+    - label: "Serial Number:"
+    - label: "Sectors:"
+    - label: "Capacity:"
+      converter: to_int
+    - label: "Private:"
+      converter: to_int_int_map
+    - label: "Bind Signature:"
+    - label: "Hard Read Errors:"
+      converter: to_int
+    - label: "Hard Write Errors:"
+      converter: to_int
+    - label: "Soft Read Errors:"
+      converter: to_int
+    - label: "Soft Write Errors:"
+      converter: to_int
+    - label: "Read Retries:"
+      converter: to_int
+    - label: "Write Retries:"
+      converter: to_int
+    - label: "Remapped Sectors:"
+    - label: "Number of Reads:"
+      converter: to_int
+    - label: "Number of Writes:"
+      converter: to_int
+    - label: "Number of Luns:"
+      converter: to_int
+    - label: "Raid Group ID:"
+      converter: to_int
+    - label: "Clariion Part Number:"
+    - label: "Request Service Time:"
+    - label: "Read Requests:"
+      converter: to_int
+    - label: "Write Requests:"
+      converter: to_int
+    - label: "Kbytes Read:"
+      converter: to_int
+    - label: "Kbytes Written:"
+      converter: to_int
+    - label: "Stripe Boundary Crossing:"
+      converter: to_int
+    - label: "Drive Type:"
+    - label: "Clariion TLA Part Number:"
+    - label: "User Capacity:"
+      converter: to_int
+    - label: "Idle Ticks:"
+      converter: to_int
+    - label: "Busy Ticks:"
+      converter: to_int
+    - label: "Current Speed:"
+    - label: "Maximum Speed:"
+    - label: "Queue Max:"
+      converter: to_int
+    - label: "Queue Avg:"
+      converter: to_int
+    - label: "Prct Idle:"
+      converter: to_int 
+    - label: "Prct Busy:"
+      converter: to_int
+    - label: "Hardware Power Savings Qualified:"
+      converter: to_bool
+    - label: "Hardware Power Savings Eligible:"
+      converter: to_bool
+    - label: "Power Savings State:"
+    - label: "Current Power Savings Log Timestamp:"
+    - label: "Spinning Ticks:"
+      converter: to_int
+    - label: "Standby Ticks:"
+      converter: to_int
+    - label: "Number of Spin Ups:"
+      converter: to_int
+    - label: "Arrivals with Nonzero Queue:"
+      converter: to_int
+    - label: "High Sum of Seeks:"
+      converter: to_int
+    - label: "Idle Ticks SPA:"
+      converter: to_int
+    - label: "Idle Ticks SPB:"
+      converter: to_int
+    - label: "Busy Ticks SPA:"
+      converter: to_int
+    - label: "Busy Ticks SPB:"
+      converter: to_int
+    - label: "Queue Length:"
+      converter: to_int
+    
+
+VNXRaidGroup:
+  data_src: cli
+  properties:
+    - label: "RaidGroup ID:"
+      is_index: True
+      converter: to_int
+    - label: "RaidGroup Type:"
+      converter: to_raid_type
+    - label: "RaidGroup State:"
+      key: state
+    - label: "List of disks:"
+      converter: to_disk_indices
+      end_pattern: "List of luns:"
+    - label: "List of luns:"
+      converter: to_int_arr
+    - label: "Max Number of disks:"
+      converter: to_int
+    - label: "Max Number of luns:"
+      converter: to_int
+    - label: "Raw Capacity (Blocks):"
+      converter: to_int
+    - label: "Logical Capacity (Blocks):"
+      converter: to_int
+    - label: "Free Capacity (Blocks,non-contiguous):"
+      converter: to_int
+    - label: "Free contiguous group of unbound segments:"
+      converter: to_int
+    - label: "Defrag/Expand priority:"
+    - label: "Percent defragmented:"
+      converter: to_int
+    - label: "Percent expanded:"
+      converter: to_int
+    - label: "Disk expanding onto:"
+    - label: "Lun Expansion enabled:"
+      converter: to_bool
+    - label: "Legal RAID types:"
+      converter: to_raid_type

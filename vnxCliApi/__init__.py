@@ -1,11 +1,8 @@
-import os
+# coding=utf-8
+# please do not add unicode literal here.
+# it does not work with `__all__`.
+from vnxCliApi.vnx.resources import VNXSystem
 
-__version__ = '0.0.1'
+__author__ = 'Cedric Zhuang'
 
-
-def version():
-    build_number = os.environ.get('BUILD_NUMBER', None)
-    ret = __version__
-    if build_number is not None:
-        ret = '{}.{}'.format(ret, build_number)
-    return ret
+__all__ = ['VNXSystem', ]
