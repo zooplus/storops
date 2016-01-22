@@ -28,7 +28,7 @@ class NFSShareTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.share_manager = nfs_share.NFSShareManager(storage_manager)
 
         self.vdm = fakes.VDMTestData()

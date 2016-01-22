@@ -518,3 +518,178 @@ VNXRaidGroup:
       converter: to_bool
     - label: "Legal RAID types:"
       converter: to_raid_type
+
+
+VNXCifsServer:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: compName
+    - label: Aliases
+    - label: domain
+    - label: domainJoined
+    - label: interfaces
+    - label: mover_name
+    - label: mover
+      key: mover_id
+    - label: moverIdIsVdm
+      key: is_vdm
+    - label: type
+
+
+VNXMoverRef:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: mover
+      key: id
+
+
+VNXMover:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: mover
+      key: id
+    - label: maxSeverity
+      key: status
+    - label: version
+    - label: uptime
+    - label: role
+    - label: MoverInterface
+      key: interfaces
+    - label: LogicalNetworkDevice
+      key: devices
+    - label: MoverDnsDomain
+      key: dns_domain
+
+
+VNXVdm:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: vdm
+      key: id
+    - label: state
+    - label: mover
+      key: host_mover_id
+
+
+VNXCifsShare:
+  data_src: cli
+  properties:
+    - label: CifsServers
+      is_index: True
+    - label: fileSystem
+      key: fs_id
+    - label: mover_name
+    - label: mover
+      key: mover_id
+    - label: moverIdIsVdm
+      key: is_vdm
+    - label: name
+    - label: path
+
+
+VNXDnsDomain:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: mover_name
+    - label: servers
+
+
+VNXFileSystem:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: fileSystem
+      key: id
+    - label: type
+    - label: volumeSize
+      key: size
+    - label: storagePools
+      key: pools
+    - label: storages
+    - label: internalUse
+    - label: volume
+    - label: dataServicePolicies
+      key: policies
+
+
+VNXNasPool:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: pool
+      key: id
+    - label: movers
+      key: movers_id
+    - label: autoSize
+      key: total_size
+    - label: usedSize
+    - label: diskType
+    - label: dataServicePolicies
+      key: policies
+
+
+VNXFsSnap:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: checkpoint
+      key: id
+    - label: checkpointOf
+      key: fs_id
+    - label: state
+
+
+VNXMoverInterface:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: mover_name
+    - label: device
+    - label: ipAddress
+      key: ip_addr
+    - label: ipVersion
+    - label: netMask
+    - label: up
+    - label: vlanid
+      key: vlan_id
+
+
+VNXNfsShare:
+  data_src: cli
+  properties:
+    - label: name
+      is_index: True
+    - label: path
+    - label: AccessHosts
+    - label: RwHosts
+    - label: RoHosts
+    - label: RootHosts
+    - label: mover_name
+
+
+VNXFsMountPoint:
+  data_src: cli
+  properties:
+    - label: fileSystem
+      is_index: True
+      key: filesystem_id
+    - label: mover
+      key: mover_id
+    - label: mover_name
+    - label: moverIdIsVdm
+      key: is_vdm
+    - label: path

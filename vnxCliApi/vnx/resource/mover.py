@@ -6,7 +6,6 @@ import re
 
 import vnxCliApi.vnx.constants as const
 from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit
 from vnxCliApi.vnx.resource import file_resource
 
 __author__ = 'Jay Xu'
@@ -14,21 +13,13 @@ __author__ = 'Jay Xu'
 LOG = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class MoverRef(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'mover',
-        }
-
-        super(MoverRef, self).__init__(manager, info, attribute_map, loaded)
+class VNXMoverRef(file_resource.Resource):
+    pass
 
 
-@decorate_all_methods(log_enter_exit)
 class MoverRefManager(file_resource.ResourceManager):
     """Manage :class:`Pool` resources."""
-    resource_class = MoverRef
+    resource_class = VNXMoverRef
 
     def __init__(self, manager):
         super(MoverRefManager, self).__init__(manager)
@@ -60,8 +51,7 @@ class MoverRefManager(file_resource.ResourceManager):
                 else:
                     self.mover_ref_map[mover_name].update(item)
 
-        if (name not in self.mover_ref_map or
-                self.mover_ref_map[name].id == ''):
+        if not self._mover_id(name):
             message = ("Failed to get mover by name %(name)s." %
                        {'name': name})
             LOG.error(message)
@@ -69,24 +59,14 @@ class MoverRefManager(file_resource.ResourceManager):
 
         return self.mover_ref_map[name]
 
+    def _mover_id(self, name):
+        ret = ''
+        if name in self.mover_ref_map:
+            ret = self.mover_ref_map[name].id
+        return ret
 
-@decorate_all_methods(log_enter_exit)
-class Mover(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'mover',
-            'status': 'maxSeverity',
-            'version': 'version',
-            'uptime': 'uptime',
-            'role': 'role',
-            'interfaces': 'MoverInterface',
-            'devices': 'LogicalNetworkDevice',
-            'dns_domain': 'MoverDnsDomain',
-        }
 
-        super(Mover, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXMover(file_resource.Resource):
     def get_interconnect_id(self, dest_mover=None):
         if dest_mover:
             return self.manager.get_interconnect_id(self.name,
@@ -98,10 +78,9 @@ class Mover(file_resource.Resource):
         return self.manager.get_physical_devices(self.name)
 
 
-@decorate_all_methods(log_enter_exit)
 class MoverManager(file_resource.ResourceManager):
     """Manage :class:`Pool` resources."""
-    resource_class = Mover
+    resource_class = VNXMover
 
     def __init__(self, manager):
         super(MoverManager, self).__init__(manager)

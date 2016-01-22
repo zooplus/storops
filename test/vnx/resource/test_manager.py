@@ -15,7 +15,7 @@ from vnxCliApi.exception import VNXBackendError
 __author__ = 'Cedric Zhuang'
 
 
-class StorageManagerTestCase(unittest.TestCase):
+class VNXFileClientTestCase(unittest.TestCase):
     @mock_xml_api
     @mock_ssh_connector
     def setUp(self):
@@ -24,7 +24,7 @@ class StorageManagerTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        self.storage_manager = manager.StorageManager(
+        self.storage_manager = manager.VNXFileClient(
             host, username, password)
 
     def test_get_object_manager(self):

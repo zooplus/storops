@@ -18,7 +18,6 @@ from vnxCliApi.vnx.enums import VNXSPEnum, VNXTieringEnum, VNXProvisionEnum, \
     VNXMirrorViewRecoveryPolicy, VNXMirrorViewSyncRate, VNXLunType, \
     VNXRaidType, VNXPoolRaidType
 from vnxCliApi.vnx.heart_beat import NodeHeartBeat
-from vnxCliApi.vnx.navi_command import NaviCommand
 
 __author__ = 'Cedric Zhuang'
 
@@ -91,20 +90,29 @@ def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
             on_error()
 
 
-class CliClient(NaviCommand):
+class CliClient(object):
     def __init__(self, ip=None,
                  username=None, password=None, scope=0,
                  sec_file=None,
                  timeout=None,
-                 heartbeat_interval=None):
-        super(CliClient, self).__init__(username, password, scope,
-                                        sec_file, timeout)
-
+                 heartbeat_interval=None,
+                 naviseccli=None):
         if heartbeat_interval is None:
             heartbeat_interval = 60
-        self._heart_beat = NodeHeartBeat(interval=heartbeat_interval,
-                                         timeout=timeout)
+        self._heart_beat = NodeHeartBeat(
+            username=username,
+            password=password,
+            scope=scope,
+            sec_file=sec_file,
+            interval=heartbeat_interval,
+            timeout=timeout,
+            naviseccli=naviseccli)
         self._heart_beat.add(VNXSPEnum.SP_A, ip)
+
+    def set_binary(self, binary):
+        if binary is not None:
+            log.info('update naviseccli binary location to: {}'.format(binary))
+            self._heart_beat.set_binary(binary)
 
     def __del__(self):
         del self._heart_beat
@@ -716,7 +724,7 @@ class CliClient(NaviCommand):
     def execute(self, params, raise_on_rc=None, check_rc=False):
         if params is not None and len(params) > 0:
             ip = self.ip
-            cmd = self._get_cmd_prefix(ip) + params
+            cmd = self._heart_beat.get_cmd_prefix(ip) + params
             output = self._heart_beat.execute_cmd(ip,
                                                   cmd,
                                                   raise_on_rc,
@@ -728,7 +736,7 @@ class CliClient(NaviCommand):
 
     def execute_dual(self, params, raise_on_rc=None, check_rc=False):
         def do(sp_ip):
-            cmd_to_exec = self._get_cmd_prefix(sp_ip) + params
+            cmd_to_exec = self._heart_beat.get_cmd_prefix(sp_ip) + params
             return self._heart_beat.execute_cmd(sp_ip,
                                                 cmd_to_exec,
                                                 raise_on_rc,

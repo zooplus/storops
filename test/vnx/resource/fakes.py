@@ -23,6 +23,17 @@ __author__ = 'Jay Xu'
 
 Ki = 1024
 
+STORAGE_GROUP_HBA = """
+HBA UID                                          SP Name  SPPort
+-------                                          -------  ------
+iqn.1991-05.com.microsoft:abc.def.dev             SP A     3
+Host name:             abc.def.dev
+SPPort:                A-3v1
+Initiator IP:          10.244.209.72
+TPGT:                  1
+ISID:                  10000000000
+"""
+
 patch_retry = mock.patch(target='vnxCliApi.lib.common.const_seconds',
                          new=lambda x: 0)
 mock_xml_api = mock.patch.object(connector, "XMLAPIConnector", mock.Mock())

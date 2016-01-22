@@ -8,11 +8,33 @@ import functools
 import six
 from mock import patch
 
+from vnxCliApi.lib.common import cache
+from vnxCliApi.vnx.cli import CliClient
+from vnxCliApi.vnx.resource.system import VNXSystem
+
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 _mock_data_dir = ('testdata', 'mock_output')
+
+
+@cache()
+def t_cli():
+    """ get the test cli client
+
+    :return: test cli client
+    """
+    return CliClient("10.244.211.30", heartbeat_interval=0)
+
+
+@cache()
+def t_vnx():
+    """ get the test vnx instance
+
+    :return: test vnx instance
+    """
+    return VNXSystem('10.244.211.30', heartbeat_interval=0)
 
 
 def read_test_file(name):

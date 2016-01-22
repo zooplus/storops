@@ -7,7 +7,6 @@ from lxml import builder
 
 from vnxCliApi.connection import connector
 from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.lib import common
 from vnxCliApi.lib import xmlapi
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import filesystem, nas_pool, mover, vdm, \
@@ -19,8 +18,7 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@common.decorate_all_methods(common.log_enter_exit)
-class StorageManager(object):
+class VNXFileClient(object):
     def __init__(self, host, username, password):
         self.xml = {
             'connector': connector.XMLAPIConnector(host, username, password),

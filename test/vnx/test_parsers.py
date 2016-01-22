@@ -7,9 +7,12 @@ import six
 from hamcrest import equal_to, assert_that, not_none
 
 from test.vnx.cli_mock import read_test_file
+from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from vnxCliApi.vnx.enums import VNXSPEnum
 from vnxCliApi.vnx.parsers import \
-    VNXCliParser, PropDescriptor, get_parser_config, PropMapper
+    VNXCliParser, PropDescriptor, get_parser_config, PropMapper, \
+    is_vnx_resource
+from vnxCliApi.vnx.resource.sg import VNXStorageGroup
 
 
 class DemoParser(VNXCliParser):
@@ -135,17 +138,13 @@ class VNXCliParserTest(TestCase):
         assert_that(a0b1.b, equal_to('b1'))
         assert_that(a0b1.c, equal_to('c1'))
 
+    def test_is_vnx_resource_clz_name(self):
+        assert_that(is_vnx_resource('VNXStorageGroup'), equal_to(True))
+        assert_that(is_vnx_resource('VNXArray'), equal_to(False))
 
-STORAGE_GROUP_HBA = """
-HBA UID                                          SP Name  SPPort
--------                                          -------  ------
-iqn.1991-05.com.microsoft:abc.def.dev             SP A     3
-Host name:             abc.def.dev
-SPPort:                A-3v1
-Initiator IP:          10.244.209.72
-TPGT:                  1
-ISID:                  10000000000
-"""
+    def test_is_vnx_resource_clz(self):
+        assert_that(is_vnx_resource(VNXStorageGroup), equal_to(True))
+        assert_that(is_vnx_resource(PropDescriptor), equal_to(False))
 
 
 class VNXStorageGroupHBAParserTest(TestCase):

@@ -6,7 +6,6 @@ import logging
 from retryz import retry
 
 from vnxCliApi.exception import VNXInvalidMoverID, VNXBackendError
-from vnxCliApi.lib.common import log_enter_exit, decorate_all_methods
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -15,25 +14,14 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class DNSDomain(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'mover_name': 'mover_name',
-            'servers': 'servers',
-        }
-
-        super(DNSDomain, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXDnsDomain(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name, self.mover_name)
 
 
-@decorate_all_methods(log_enter_exit)
 class DNSDomainManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = DNSDomain
+    resource_class = VNXDnsDomain
 
     def __init__(self, manager):
         super(DNSDomainManager, self).__init__(manager)

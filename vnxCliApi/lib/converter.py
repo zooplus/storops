@@ -7,6 +7,7 @@ from datetime import datetime
 from functools import partial
 from operator import is_not
 
+from past.builtins import filter
 import six
 
 from vnxCliApi.vnx.enums import VNXSPEnum, VNXMirrorViewSyncRate, \

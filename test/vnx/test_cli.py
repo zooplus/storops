@@ -53,6 +53,18 @@ class CliClientTest(TestCase):
         self.client = CliClient('10.244.211.30', heartbeat_interval=0)
 
     @patch_cli()
+    def test_set_binary(self):
+        client = CliClient('1.1.1.1', heartbeat_interval=0,
+                           naviseccli='abc')
+        assert_that(
+            ' '.join(client._heart_beat.get_cmd_prefix('1.1.1.1')),
+            equal_to('abc -h 1.1.1.1'))
+        client.set_binary('def')
+        assert_that(
+            ' '.join(client._heart_beat.get_cmd_prefix('1.1.1.1')),
+            equal_to('def -h 1.1.1.1'))
+
+    @patch_cli()
     def test_password_missing(self):
         def f():
             client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)

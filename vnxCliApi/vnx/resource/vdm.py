@@ -9,7 +9,6 @@ from retryz import retry
 from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import VNXBackendError, \
     ObjectNotFound, VNXInvalidMoverID
-from vnxCliApi.lib import common
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -18,18 +17,7 @@ __author__ = 'Cedric Zhuang'
 LOG = logging.getLogger(__name__)
 
 
-@common.decorate_all_methods(common.log_enter_exit)
-class VDM(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'vdm',
-            'state': 'state',
-            'host_mover_id': 'mover',
-        }
-
-        super(VDM, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXVdm(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name)
 
@@ -43,10 +31,9 @@ class VDM(file_resource.Resource):
         return self.manager.get_interfaces(self.name)
 
 
-@common.decorate_all_methods(common.log_enter_exit)
 class VDMManager(file_resource.ResourceManager):
     """Manage :class:`Pool` resources."""
-    resource_class = VDM
+    resource_class = VNXVdm
 
     def __init__(self, manager):
         super(VDMManager, self).__init__(manager)

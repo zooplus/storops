@@ -28,7 +28,7 @@ class MoverRefTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.mover_ref_manager = mover.MoverRefManager(storage_manager)
 
         self.mover = fakes.MoverTestData()
@@ -91,7 +91,7 @@ class MoverTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.mover_manager = mover.MoverManager(storage_manager)
 
         self.mover = fakes.MoverTestData()

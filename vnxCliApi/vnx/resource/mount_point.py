@@ -7,8 +7,6 @@ from retryz import retry
 
 from vnxCliApi.exception import VNXInvalidMoverID, VNXBackendError, \
     ObjectNotFound
-from vnxCliApi.lib.common import decorate_all_methods
-from vnxCliApi.lib.common import log_enter_exit
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -17,27 +15,14 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class MountPoint(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'filesystem_id': 'fileSystem',
-            'mover_id': 'mover',
-            'mover_name': 'mover_name',
-            'is_vdm': 'moverIdIsVdm',
-            'path': 'path',
-        }
-
-        super(MountPoint, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXFsMountPoint(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.path, self.mover_name, is_vdm=self.is_vdm)
 
 
-@decorate_all_methods(log_enter_exit)
 class MountPointManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = MountPoint
+    resource_class = VNXFsMountPoint
 
     def __init__(self, manager):
         super(MountPointManager, self).__init__(manager)

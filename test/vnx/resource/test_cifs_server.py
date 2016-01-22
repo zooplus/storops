@@ -28,7 +28,7 @@ class CIFSServerTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.server_manager = cifs_server.CIFSServerManager(storage_manager)
 
         self.mover = fakes.MoverTestData()
@@ -57,7 +57,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.mover.mover_name,
             'is_vdm': False,
         }
-        self.server_manager.create(cifs_server_args)
+        self.server_manager.create(**cifs_server_args)
 
         # Create CIFS server on VDM
         cifs_server_args = {
@@ -69,7 +69,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
             'is_vdm': True,
         }
-        self.server_manager.create(cifs_server_args)
+        self.server_manager.create(**cifs_server_args)
 
         # Create CIFS server on VDM
         cifs_server_args = {
@@ -81,7 +81,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
             'is_vdm': True,
         }
-        self.server_manager.create(cifs_server_args)
+        self.server_manager.create(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.mover.req_get_ref()),
@@ -112,7 +112,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
             'is_vdm': True,
         }
-        self.server_manager.create(cifs_server_args)
+        self.server_manager.create(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.vdm.req_get()),
@@ -142,7 +142,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.mover.mover_name,
             'is_vdm': False,
         }
-        self.server_manager.create(cifs_server_args)
+        self.server_manager.create(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.mover.req_get_ref()),
@@ -172,7 +172,7 @@ class CIFSServerTestCase(unittest.TestCase):
         }
         self.assertRaises(VNXBackendError,
                           self.server_manager.create,
-                          cifs_server_args)
+                          **cifs_server_args)
 
         expected_calls = [
             mock.call(self.vdm.req_get()),
@@ -253,7 +253,6 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_id',
             'is_vdm',
             'type',
-            'type',
         }
         for prop in property_map:
             self.assertIn(prop, server.__dict__)
@@ -284,7 +283,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.mover.mover_name,
             'is_vdm': False,
         }
-        self.server_manager.modify(cifs_server_args)
+        self.server_manager.modify(**cifs_server_args)
 
         cifs_server_args = {
             'name': self.cifs_server.cifs_server_name[-14:],
@@ -293,7 +292,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'password': self.cifs_server.domain_password,
             'mover_name': self.vdm.vdm_name,
         }
-        self.server_manager.modify(cifs_server_args)
+        self.server_manager.modify(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.mover.req_get_ref()),
@@ -320,7 +319,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
         }
 
-        self.server_manager.modify(cifs_server_args)
+        self.server_manager.modify(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.vdm.req_get()),
@@ -345,7 +344,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
         }
 
-        self.server_manager.modify(cifs_server_args)
+        self.server_manager.modify(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.vdm.req_get()),
@@ -372,7 +371,7 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.mover.mover_name,
             'is_vdm': False,
         }
-        self.server_manager.modify(cifs_server_args)
+        self.server_manager.modify(**cifs_server_args)
 
         expected_calls = [
             mock.call(self.mover.req_get_ref()),
@@ -400,7 +399,7 @@ class CIFSServerTestCase(unittest.TestCase):
         }
         self.assertRaises(VNXBackendError,
                           self.server_manager.modify,
-                          cifs_server_args)
+                          **cifs_server_args)
 
         expected_calls = [
             mock.call(self.vdm.req_get()),
@@ -528,12 +527,12 @@ class CIFSServerTestCase(unittest.TestCase):
             'mover_name': self.vdm.vdm_name,
             'is_vdm': True,
         }
-        cifs_server = self.server_manager.create(cifs_server_args)
+        server = self.server_manager.create(**cifs_server_args)
 
-        cifs_server.modify(username=self.cifs_server.domain_user,
-                           password=self.cifs_server.domain_password)
+        server.modify(username=self.cifs_server.domain_user,
+                      password=self.cifs_server.domain_password)
 
-        cifs_server.delete()
+        server.delete()
 
         expected_calls = [
             mock.call(self.vdm.req_get()),

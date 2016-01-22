@@ -7,8 +7,7 @@ import re
 from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import ObjectNotFound
 from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit, \
-    synchronized
+from vnxCliApi.lib.common import synchronized
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -17,21 +16,7 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class NFSShare(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'path': 'path',
-            'access_hosts': 'AccessHosts',
-            'rw_hosts': 'RwHosts',
-            'ro_hosts': 'RoHosts',
-            'root_hosts': 'RootHosts',
-            'mover_name': 'mover_name',
-        }
-
-        super(NFSShare, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXNfsShare(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name, self.mover_name)
 
@@ -43,10 +28,9 @@ class NFSShare(file_resource.Resource):
         self.manager.deny_share_access(self.name, host_ip, self.mover_name, )
 
 
-@decorate_all_methods(log_enter_exit)
 class NFSShareManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = NFSShare
+    resource_class = VNXNfsShare
 
     def __init__(self, manager):
         super(NFSShareManager, self).__init__(manager)

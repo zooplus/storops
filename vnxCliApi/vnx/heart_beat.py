@@ -112,9 +112,11 @@ class _NodeInfoMap(object):
 
 class NodeHeartBeat(NaviCommand):
     def __init__(self, username=None, password=None, scope=0,
-                 interval=60, timeout=30):
+                 sec_file=None, interval=60, timeout=30, naviseccli=None):
         super(NodeHeartBeat, self).__init__(username, password, scope,
-                                            timeout=timeout)
+                                            sec_file=sec_file,
+                                            timeout=timeout,
+                                            naviseccli=naviseccli)
         self._node_map = _NodeInfoMap()
         self._interval = interval
         self._heartbeat_thread = None
@@ -216,13 +218,13 @@ class NodeHeartBeat(NaviCommand):
     def _ping_sp(self, ip):
         try:
             self.execute_cmd(ip, self.get_agent(ip))
-        except (OSError, WindowsError):
+        except OSError:
             log.debug('skip heartbeat, naviseccli not available.')
         except ex.VNXSPDownError:
             pass
 
     def get_agent(self, ip):
-        cmd = self._get_cmd_prefix(ip)
+        cmd = self.get_cmd_prefix(ip)
         timeout = self.timeout
         if timeout is not None:
             latency = self.get_latency(ip)

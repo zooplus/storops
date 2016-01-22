@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import logging
 
 from vnxCliApi.exception import ObjectNotFound, VNXBackendError
-from vnxCliApi.lib.common import log_enter_exit, decorate_all_methods
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -13,25 +12,13 @@ __author__ = 'Cedric Zhuang'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class Pool(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'pool',
-            'movers_id': 'movers',
-            'total_size': 'autoSize',
-            'used_size': 'usedSize',
-            'disk_type': 'diskType',
-            'policies': 'dataServicePolicies',
-        }
-        super(Pool, self).__init__(manager, info, attribute_map, loaded)
+class VNXNasPool(file_resource.Resource):
+    pass
 
 
-@decorate_all_methods(log_enter_exit)
 class PoolManager(file_resource.ResourceManager):
     """Manage :class:`Pool` resources."""
-    resource_class = Pool
+    resource_class = VNXNasPool
 
     def __init__(self, manager):
         super(PoolManager, self).__init__(manager)

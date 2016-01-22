@@ -7,7 +7,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, close_to
 
-from vnxCliApi.lib.common import Cache, Dict, Enum, WeightedAverage, \
+from vnxCliApi.lib.common import Dict, Enum, WeightedAverage, \
     synchronized, cache, text_var, int_var, enum_var
 from vnxCliApi.vnx.enums import VNXRaidType
 
@@ -56,7 +56,7 @@ class CacheA(object):
         self.base = 0
         pass
 
-    @Cache.cache(0.02)
+    @cache(0.02)
     def do(self, a, b):
         return a + b * 2 + self.base
 

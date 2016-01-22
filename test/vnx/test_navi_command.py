@@ -46,4 +46,4 @@ class NaviCommandTest(TestCase):
     @patch_cli(output='security_low.txt')
     def test_security_level_low(self):
         cmd = NaviCommand()
-        assert_that(cmd.get_security_level(), equal_to('low'))
+        assert_that(cmd.get_security_level('naviseccli'), equal_to('low'))

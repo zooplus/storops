@@ -1,17 +1,20 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+import glob
 import logging
 import os
 import re
 import sys
+import inspect
 
 import six
 import yaml
 
 from vnxCliApi.lib import converter as cvt
-from vnxCliApi.lib.common import Dict, Cache, cache
+from vnxCliApi.lib.common import Dict, cache
 from vnxCliApi.vnx.enums import Enum
+import vnxCliApi.vnx.resource.resource
 
 log = logging.getLogger(__name__)
 
@@ -144,7 +147,7 @@ class VNXCliParser(Enum):
         return list(d.option for d in cls.get_all() if d.option is not None)
 
     @classmethod
-    @Cache.cache()
+    @cache()
     def get_index_descriptor(cls):
         indices = cls.get_index_descriptor_list()
         # make sure only one index for each parser
@@ -229,7 +232,7 @@ class VNXCliParser(Enum):
                 if converter is not None:
                     if _is_parser(converter):
                         value = converter.parse_all(value)
-                    elif _is_vnx_resource(converter):
+                    elif is_vnx_resource(converter):
                         value = cls._convert_resource(converter, value)
                     elif callable(converter):
                         value = converter(value)
@@ -298,31 +301,46 @@ class VNXCliParser(Enum):
         return ret
 
 
-def _get_resource_module():
-    res_module = 'vnxCliApi.vnx.resources'
-    if res_module not in sys.modules:
-        __import__(res_module)
-    return sys.modules[res_module]
+@cache()
+def _rsc_sub_module_names():
+    path = os.path.abspath(__file__)
+    resource_folder = os.path.join(os.path.dirname(path), 'resource')
+    resource_files = glob.glob('{}{}*.py'.format(resource_folder, os.sep))
+    ret = []
+    for path in resource_files:
+        pkg_name = os.path.basename(path).split('.')[0]
+        full_pkg_name = '.'.join([__package__, 'resource', pkg_name])
+        ret.append(full_pkg_name)
+    return ret
+
+
+def is_vnx_resource(name):
+    if isinstance(name, six.string_types):
+        clz = get_vnx_resource_clz_by_name(name)
+    else:
+        clz = name
+    vnx_rsc_clz = vnxCliApi.vnx.resource.resource.VNXResource
+    return (clz is not None and
+            inspect.isclass(clz) and
+            issubclass(clz, vnx_rsc_clz))
+
+
+def get_vnx_resource_clz_by_name(name):
+    ret = None
+    if isinstance(name, six.string_types):
+        sub_module_names = _rsc_sub_module_names()
+        for sub_module_name in sub_module_names:
+            if sub_module_name not in sys.modules:
+                __import__(sub_module_name)
+            module = sys.modules[sub_module_name]
+            if hasattr(module, name):
+                ret = getattr(module, name)
+                break
+    return ret
 
 
 def _is_parser(c):
     return isinstance(c, type) and issubclass(c, VNXCliParser)
-
-
-def _is_vnx_resource(name):
-    if isinstance(name, type):
-        name = name.__name__
-    module = _get_resource_module()
-    try:
-        ret = hasattr(module, name)
-    except TypeError:
-        ret = False
-    return ret
-
-
-def _get_vnx_resource_clz(name):
-    module = _get_resource_module()
-    return getattr(module, name)
 
 
 class VNXCimParser(Enum):
@@ -368,10 +386,9 @@ def get_parser_config(name):
                 try:
                     ret = getattr(cvt, converter)
                 except AttributeError:
-                    if _is_vnx_resource(converter):
-                        # try resource
-                        ret = _get_vnx_resource_clz(converter)
-                    else:
+                    # retry resource
+                    ret = get_vnx_resource_clz_by_name(converter)
+                    if ret is None:
                         # try parser config
                         ret = get_parser_config(converter)
             elif len(converter_desc_list) == 2:

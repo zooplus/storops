@@ -7,8 +7,7 @@ from functools import partial
 from vnxCliApi.exception import VNXBackendError, ObjectNotFound, \
     VNXInvalidMoverID
 from vnxCliApi.lib import converter
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit, \
-    retry_per_30_s
+from vnxCliApi.lib.common import retry_per_30_s
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -19,24 +18,7 @@ log = logging.getLogger(__name__)
 retry = partial(retry_per_30_s, on_error=VNXInvalidMoverID)
 
 
-@decorate_all_methods(log_enter_exit)
-class CIFSServer(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'comp_name': 'compName',
-            'aliases': 'Aliases',
-            'domain': 'domain',
-            'domain_joined': 'domainJoined',
-            'interfaces': 'interfaces',
-            'mover_name': 'mover_name',
-            'mover_id': 'mover',
-            'is_vdm': 'moverIdIsVdm',
-            'type': 'type',
-        }
-
-        super(CIFSServer, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXCifsServer(file_resource.Resource):
     def modify(self, username, password):
         # Join/unjoin CIFS server into/from the domain
         cifs_server_args = {
@@ -47,34 +29,30 @@ class CIFSServer(file_resource.Resource):
             'mover_name': self.mover_name,
             'is_vdm': self.is_vdm,
         }
-        self.manager.modify(cifs_server_args)
+        self.manager.modify(**cifs_server_args)
 
     def delete(self):
         self.manager.delete(self.comp_name, self.mover_name, self.is_vdm)
 
 
-@decorate_all_methods(log_enter_exit)
 class CIFSServerManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = CIFSServer
+    resource_class = VNXCifsServer
 
     def __init__(self, manager):
         super(CIFSServerManager, self).__init__(manager)
         self.server_map = dict()
 
     @retry()
-    def create(self, server_args):
-        comp_name = server_args['name']
+    def create(self, name, interface_ip, mover_name,
+               is_vdm=True, net_bios_name=None, alias_name=None,
+               domain_name=None, user_name=None, password=None):
         # Maximum of 14 characters for netBIOS name
-        name = server_args['name'][-14:]
+        if net_bios_name is None:
+            net_bios_name = name[-14:]
         # Maximum of 12 characters for alias name
-        alias_name = server_args['name'][-12:]
-        interfaces = server_args['interface_ip']
-        domain_name = server_args['domain_name']
-        user_name = server_args['user_name']
-        password = server_args['password']
-        mover_name = server_args['mover_name']
-        is_vdm = server_args['is_vdm']
+        if alias_name is None:
+            alias_name = name[-12:]
 
         mover = self._get_mover(mover_name, is_vdm)
 
@@ -89,10 +67,10 @@ class CIFSServerManager(file_resource.ResourceManager):
                 self.xml_builder.Aliases(*alias_name_list),
                 self.xml_builder.JoinDomain(userName=user_name,
                                             password=password),
-                compName=comp_name,
+                compName=name,
                 domain=domain_name,
-                interfaces=interfaces,
-                name=name
+                interfaces=interface_ip,
+                name=net_bios_name
             )
         )
 
@@ -104,27 +82,27 @@ class CIFSServerManager(file_resource.ResourceManager):
             raise VNXInvalidMoverID(id=mover.id)
         elif constants.STATUS_OK != response['maxSeverity']:
             try:
-                cifs_server = self.get(comp_name, mover_name, is_vdm)
+                cifs_server = self.get(name, mover_name, is_vdm)
                 if cifs_server.domain_joined:
-                    return self.server_map[comp_name]
+                    return self.server_map[name]
             except (ObjectNotFound, VNXBackendError):
                 message = ("Failed to create CIFS server %(name)s. "
                            "Reason: %(err)s." %
-                           {'name': name,
+                           {'name': net_bios_name,
                             'err': response['problems']})
                 log.error(message)
                 raise VNXBackendError(err=message)
 
         cifs_server = {
-            'compName': comp_name,
-            'name': name,
+            'compName': name,
+            'name': net_bios_name,
             'mover_name': mover.name,
             'mover': mover.id,
             'moverIdIsVdm': is_vdm,
         }
-        self.server_map[comp_name] = self.resource_class(self, cifs_server)
+        self.server_map[name] = self.resource_class(self, cifs_server)
 
-        return self.server_map[comp_name]
+        return self.server_map[name]
 
     def get_resource(self, resource):
         return self.get(
@@ -195,28 +173,18 @@ class CIFSServerManager(file_resource.ResourceManager):
         return self.server_map
 
     @retry()
-    def modify(self, server_args):
+    def modify(self, name, mover_name, is_vdm=True,
+               domain_joined=None, username=None, password=None):
         """Make CIFS server join or un-join the domain.
 
-        :param server_args: Dictionary for CIFS server modification
-            name: CIFS server name instead of compName
-            domain_joined: True for joining the domain, false for un-joining
-            username: User name under which the domain is joined
-            password: Password associated with the user name
-            mover_name: mover or VDM name
-            is_vdm: Boolean to indicate mover or VDM
+        :param name: CIFS server name instead of compName
+        :param domain_joined: True for joining the domain, false for un-joining
+        :param username: User name under which the domain is joined
+        :param password: Password associated with the user name
+        :param mover_name: mover or VDM name
+        :param is_vdm: Boolean to indicate mover or VDM
         :raises exception.EMCVnxXMLAPIError: if modification fails.
         """
-        name = server_args['name']
-        domain_joined = server_args['domain_joined']
-        user_name = server_args['username']
-        password = server_args['password']
-        mover_name = server_args['mover_name']
-
-        if 'is_vdm' in server_args.keys():
-            is_vdm = server_args['is_vdm']
-        else:
-            is_vdm = True
 
         mover = self._get_mover(mover_name, is_vdm)
 
@@ -225,7 +193,7 @@ class CIFSServerManager(file_resource.ResourceManager):
                 self.xml_builder.DomainSetting(
                     joinDomain=converter.boolean_to_str(domain_joined),
                     password=password,
-                    userName=user_name,
+                    userName=username,
                 ),
                 mover=mover.id,
                 moverIdIsVdm=converter.boolean_to_str(is_vdm),

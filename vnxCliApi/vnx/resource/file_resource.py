@@ -4,14 +4,13 @@ from __future__ import unicode_literals
 import logging
 import re
 
-import six
 from lxml import etree as ET
 from retryz import retry
 
 from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import VNXLockRequiredException
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit
 from vnxCliApi.vnx import constants as const
+from vnxCliApi.vnx.parsers import get_parser_config
 
 __author__ = 'Cedric Zhuang'
 
@@ -24,19 +23,16 @@ class Resource(object):
     This is pretty much just a bag for attributes.
     """
 
-    def __init__(self, manager, info, attribute_map, loaded=False):
+    def __init__(self, manager, info, loaded=False):
         """Populate and bind to a manager.
 
         :param manager: BaseManager object
         :param info: dictionary representing resource attributes
-        :param attribute_map: map between dictionary key and
-            resource attributes
-        :param _loaded: prevent lazy-loading if set to True
+        :param loaded: prevent lazy-loading if set to True
         """
         self.manager = manager
         self._info = info
-        self._attribute_map = attribute_map
-        self._add_details(info, attribute_map)
+        self._add_details(info)
         self._loaded = loaded
 
     def __repr__(self):
@@ -47,12 +43,16 @@ class Resource(object):
         info = ", ".join("%s=%s" % (k, getattr(self, k)) for k in reprkeys)
         return "<%s %s>" % (self.__class__.__name__, info)
 
-    def _add_details(self, info, attribute_map):
-        for attr, obj_attr in six.iteritems(attribute_map):
+    @classmethod
+    def _get_parser(cls):
+        return get_parser_config(cls.__name__)
+
+    def _add_details(self, info):
+        for prop_desc in self._get_parser().get_all_property_descriptor():
             try:
-                if obj_attr in info:
-                    setattr(self, attr, info[obj_attr])
-                    self._info[obj_attr] = info[obj_attr]
+                if prop_desc.label in info:
+                    setattr(self, prop_desc.key, info[prop_desc.label])
+                    self._info[prop_desc.label] = info[prop_desc.label]
             except AttributeError:
                 # In this case we already defined the attribute on the class
                 pass
@@ -73,7 +73,7 @@ class Resource(object):
         if hasattr(self.manager, 'get_resource'):
             new = self.manager.get_resource(self)
             if new:
-                self._add_details(new._info, self._attribute_map)
+                self._add_details(new._info)
 
         # self.manager.get may check lazy loaded status, so the status
         # setting should be after the function self.manager.get.
@@ -97,14 +97,13 @@ class Resource(object):
         # Update resource with the input information or the one retrieved
         # from the array.
         if data:
-            self._add_details(data, self._attribute_map)
+            self._add_details(data)
             self.set_loaded(True)
         else:
             self.set_loaded(False)
             self.get()
 
 
-@decorate_all_methods(log_enter_exit)
 class ResourceManager(object):
     def __init__(self, manager):
         self.manager = manager
@@ -234,16 +233,18 @@ class ResourceManager(object):
         return False
 
     @staticmethod
-    def _get_problem_message_codes(problems):
-        return [problem['messageCode'] for problem in problems
-                if 'messageCode' in problem]
+    def _get_problem_props(problems, key):
+        return [problem[key] for problem in problems
+                if key in problem]
 
-    @staticmethod
-    def _get_problem_messages(problems):
-        return [problem['message'] for problem in problems
-                if 'message' in problem]
+    @classmethod
+    def _get_problem_message_codes(cls, problems):
+        return cls._get_problem_props(problems, 'messageCode')
 
-    @staticmethod
-    def _get_problem_diags(problems):
-        return [problem['Diagnostics'] for problem in problems
-                if 'Diagnostics' in problem]
+    @classmethod
+    def _get_problem_messages(cls, problems):
+        return cls._get_problem_props(problems, 'message')
+
+    @classmethod
+    def _get_problem_diags(cls, problems):
+        return cls._get_problem_props(problems, 'Diagnostics')

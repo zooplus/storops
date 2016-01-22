@@ -20,7 +20,6 @@ import logging
 import six
 
 from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.lib.common import log_enter_exit, decorate_all_methods
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -29,26 +28,14 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class Snapshot(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'checkpoint',
-            'fs_id': 'checkpointOf',
-            'state': 'state',
-        }
-
-        super(Snapshot, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXFsSnap(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name)
 
 
-@decorate_all_methods(log_enter_exit)
 class SnapshotManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = Snapshot
+    resource_class = VNXFsSnap
 
     def __init__(self, manager):
         super(SnapshotManager, self).__init__(manager)

@@ -10,7 +10,6 @@ from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import VNXBackendError, \
     VNXInvalidMoverID, ObjectNotFound
 from vnxCliApi.lib import converter
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -19,21 +18,7 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class CIFSShare(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'cifs_servers': 'CifsServers',
-            'fs_id': 'fileSystem',
-            'mover_name': 'mover_name',
-            'mover_id': 'mover',
-            'is_vdm': 'moverIdIsVdm',
-            'name': 'name',
-            'path': 'path',
-        }
-
-        super(CIFSShare, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXCifsShare(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name, self.mover_name, self.is_vdm)
 
@@ -51,10 +36,9 @@ class CIFSShare(file_resource.Resource):
             self.mover_name, self.name, user_name, domain, access)
 
 
-@decorate_all_methods(log_enter_exit)
 class CIFSShareManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = CIFSShare
+    resource_class = VNXCifsShare
 
     def __init__(self, manager):
         super(CIFSShareManager, self).__init__(manager)

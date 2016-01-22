@@ -30,7 +30,7 @@ class MoverInterfaceTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.mover_interface_manager = mover_interface.MoverInterfaceManager(
             storage_manager)
 
@@ -70,7 +70,7 @@ class MoverInterfaceTestCase(unittest.TestCase):
             'netMask': self.mover.net_mask,
             'device': self.mover.device_name,
         }
-        exp_interface = mover_interface.MoverInterface(
+        exp_interface = mover_interface.VNXMoverInterface(
             self.mover_interface_manager, interface)
         self.assertEqual(exp_interface, mi)
 
@@ -112,7 +112,7 @@ class MoverInterfaceTestCase(unittest.TestCase):
             'up': 'true',
             'ipVersion': 'IPv4',
         }
-        exp_interface = mover_interface.MoverInterface(
+        exp_interface = mover_interface.VNXMoverInterface(
             self.mover_interface_manager, interface)
         self.assertEqual(exp_interface, mi)
 
@@ -150,7 +150,7 @@ class MoverInterfaceTestCase(unittest.TestCase):
             'netMask': self.mover.net_mask,
             'device': self.mover.device_name,
         }
-        exp_interface = mover_interface.MoverInterface(
+        exp_interface = mover_interface.VNXMoverInterface(
             self.mover_interface_manager, interface)
         self.assertEqual(exp_interface, mi)
 
@@ -220,7 +220,7 @@ class MoverInterfaceTestCase(unittest.TestCase):
             'netMask': self.mover.net_mask,
             'device': self.mover.device_name,
         }
-        exp_interface = mover_interface.MoverInterface(
+        exp_interface = mover_interface.VNXMoverInterface(
             self.mover_interface_manager, interface)
         self.assertEqual(exp_interface, mi)
 

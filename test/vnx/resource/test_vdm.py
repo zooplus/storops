@@ -31,7 +31,7 @@ class VDMTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.vdm_manager = vdm.VDMManager(storage_manager)
 
         self.vdm = fakes.VDMTestData()
@@ -52,7 +52,7 @@ class VDMTestCase(unittest.TestCase):
         ]
         xml_connector.post.assert_has_calls(expected_calls)
 
-        exp_vdm = vdm.VDM(self.vdm_manager, dict(name=self.vdm.vdm_name))
+        exp_vdm = vdm.VNXVdm(self.vdm_manager, dict(name=self.vdm.vdm_name))
         self.assertEqual(exp_vdm, v)
 
     def test_create_vdm_with_lazy_load(self):
@@ -319,7 +319,7 @@ class VDMTestCase(unittest.TestCase):
 
         v = self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
 
-        exp_vdm = vdm.VDM(self.vdm_manager, dict(name=self.vdm.vdm_name))
+        exp_vdm = vdm.VNXVdm(self.vdm_manager, dict(name=self.vdm.vdm_name))
         self.assertEqual(exp_vdm, v)
 
         v.attach_nfs_interface(self.mover.interface_name2)

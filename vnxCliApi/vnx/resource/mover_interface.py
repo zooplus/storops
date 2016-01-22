@@ -8,7 +8,6 @@ from retryz import retry
 
 from vnxCliApi.exception import VNXInvalidMoverID, VNXBackendError, \
     ObjectNotFound
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit
 from vnxCliApi.vnx import constants as const
 from vnxCliApi.vnx.resource import file_resource
 
@@ -17,31 +16,14 @@ __author__ = 'Jay Xu'
 LOG = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class MoverInterface(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'mover_name': 'mover_name',
-            'device': 'device',
-            'ip_addr': 'ipAddress',
-            'ip_version': 'ipVersion',
-            'net_mask': 'netMask',
-            'up': 'up',
-            'vlan_id': 'vlanid',
-        }
-
-        super(MoverInterface, self).__init__(
-            manager, info, attribute_map, loaded)
-
+class VNXMoverInterface(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.ip_addr, self.mover_name)
 
 
-@decorate_all_methods(log_enter_exit)
 class MoverInterfaceManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = MoverInterface
+    resource_class = VNXMoverInterface
 
     # Maximum of 32 characters for mover interface name
     max_len_of_interface_name = 32

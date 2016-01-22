@@ -31,7 +31,7 @@ class FileSystemTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.StorageManager(host, username, password)
+        storage_manager = manager.VNXFileClient(host, username, password)
         self.filesystem_manager = filesystem.FileSystemManager(
             storage_manager)
 
@@ -68,8 +68,8 @@ class FileSystemTestCase(unittest.TestCase):
             'name': self.fs.filesystem_name,
             'volumeSize': self.fs.filesystem_size,
         }
-        exp_filesystem = filesystem.FileSystem(self.filesystem_manager,
-                                               exp_data)
+        exp_filesystem = filesystem.VNXFileSystem(self.filesystem_manager,
+                                                  exp_data)
         self.assertEqual(exp_filesystem, fs)
 
     def test_create_file_system_on_mover(self):
@@ -98,8 +98,8 @@ class FileSystemTestCase(unittest.TestCase):
             'name': self.fs.filesystem_name,
             'volumeSize': self.fs.filesystem_size,
         }
-        exp_filesystem = filesystem.FileSystem(self.filesystem_manager,
-                                               exp_data)
+        exp_filesystem = filesystem.VNXFileSystem(self.filesystem_manager,
+                                                  exp_data)
         self.assertEqual(exp_filesystem, fs)
 
     def test_create_file_system_but_already_exist(self):
@@ -128,8 +128,8 @@ class FileSystemTestCase(unittest.TestCase):
             'name': self.fs.filesystem_name,
             'volumeSize': self.fs.filesystem_size,
         }
-        exp_filesystem = filesystem.FileSystem(self.filesystem_manager,
-                                               exp_data)
+        exp_filesystem = filesystem.VNXFileSystem(self.filesystem_manager,
+                                                  exp_data)
         self.assertEqual(exp_filesystem, fs)
 
     @patch_retry
@@ -163,8 +163,8 @@ class FileSystemTestCase(unittest.TestCase):
             'name': self.fs.filesystem_name,
             'volumeSize': self.fs.filesystem_size,
         }
-        exp_filesystem = filesystem.FileSystem(self.filesystem_manager,
-                                               exp_data)
+        exp_filesystem = filesystem.VNXFileSystem(self.filesystem_manager,
+                                                  exp_data)
         self.assertEqual(exp_filesystem, fs)
 
     def test_create_file_system_with_error(self):
@@ -515,8 +515,8 @@ class FileSystemTestCase(unittest.TestCase):
             'name': self.fs.filesystem_name,
             'volumeSize': self.fs.filesystem_size,
         }
-        exp_filesystem = filesystem.FileSystem(self.filesystem_manager,
-                                               exp_data)
+        exp_filesystem = filesystem.VNXFileSystem(self.filesystem_manager,
+                                                  exp_data)
         self.assertEqual(exp_filesystem, fs)
 
         with mock.patch.object(filesystem.FileSystemManager,

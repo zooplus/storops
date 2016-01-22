@@ -79,7 +79,7 @@ class NodeHeartBeatTest(TestCase):
         hb.add('spa', '1.1.1.1', False)
         node = hb.nodes[0]
         assert_that(node.available, equal_to(False))
-        time.sleep(0.04)
+        time.sleep(0.06)
         assert_that(node.available, equal_to(True))
         assert_that(hb.command_count, greater_than(1))
 

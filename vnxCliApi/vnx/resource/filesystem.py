@@ -24,7 +24,6 @@ from retryz import retry
 from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import VNXInvalidMoverID, VNXBackendError, \
     ObjectNotFound
-from vnxCliApi.lib.common import decorate_all_methods, log_enter_exit
 from vnxCliApi.vnx import constants
 from vnxCliApi.vnx.resource import file_resource
 
@@ -33,23 +32,7 @@ __author__ = 'Jay Xu'
 LOG = logging.getLogger(__name__)
 
 
-@decorate_all_methods(log_enter_exit)
-class FileSystem(file_resource.Resource):
-    def __init__(self, manager, info, loaded=False):
-        attribute_map = {
-            'name': 'name',
-            'id': 'fileSystem',
-            'type': 'type',
-            'size': 'volumeSize',
-            'pools': 'storagePools',
-            'storages': 'storages',
-            'internal_use': 'internalUse',
-            'volume': 'volume',
-            'policies': 'dataServicePolicies',
-        }
-
-        super(FileSystem, self).__init__(manager, info, attribute_map, loaded)
-
+class VNXFileSystem(file_resource.Resource):
     def delete(self):
         self.manager.delete(self.name)
 
@@ -60,10 +43,9 @@ class FileSystem(file_resource.Resource):
             self.manager.extend(self.name, new_size, pool_id=self.pools[0])
 
 
-@decorate_all_methods(log_enter_exit)
 class FileSystemManager(file_resource.ResourceManager):
     """Manage :class:`Share` resources."""
-    resource_class = FileSystem
+    resource_class = VNXFileSystem
 
     def __init__(self, manager):
         super(FileSystemManager, self).__init__(manager)
