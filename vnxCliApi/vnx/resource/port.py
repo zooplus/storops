@@ -5,7 +5,7 @@ from past.builtins import filter
 
 from vnxCliApi.lib.common import check_int
 from vnxCliApi.vnx.enums import VNXSPEnum, VNXPortType
-from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXResource
+from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
@@ -16,10 +16,10 @@ class VNXSPPortList(VNXCliResourceList):
         return VNXSPPort
 
     def _get_raw_resource(self):
-        return self._cli.get_sp_port()
+        return self._cli.get_sp_port(poll=self.poll)
 
 
-class VNXSPPort(VNXResource):
+class VNXSPPort(VNXCliResource):
     def __init__(self, sp=None, port_id=None, cli=None):
         super(VNXSPPort, self).__init__()
         self._cli = cli
@@ -47,7 +47,7 @@ class VNXSPPort(VNXResource):
         return ret
 
 
-class VNXHbaPort(VNXResource):
+class VNXHbaPort(VNXCliResource):
     @classmethod
     def _get_parser(cls):
         raise ValueError('property not found.')
@@ -136,10 +136,10 @@ class VNXConnectionPortList(VNXCliResourceList):
         return VNXConnectionPort
 
     def _get_raw_resource(self):
-        return self._cli.get_connection_port()
+        return self._cli.get_connection_port(poll=self.poll)
 
 
-class VNXConnectionPort(VNXResource):
+class VNXConnectionPort(VNXCliResource):
     def __init__(self, sp=None, port_id=None, vport_id=None, cli=None):
         super(VNXConnectionPort, self).__init__()
         if sp is None:
@@ -151,7 +151,8 @@ class VNXConnectionPort(VNXResource):
 
     def _get_raw_resource(self):
         return self._cli.get_connection_port(
-            sp=self._sp, port_id=self._port_id, vport_id=self._vport_id)
+            sp=self._sp, port_id=self._port_id, vport_id=self._vport_id,
+            poll=self.poll)
 
     @classmethod
     def get(cls, cli, sp=None, port_id=None, vport_id=None):

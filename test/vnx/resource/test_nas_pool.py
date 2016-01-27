@@ -13,7 +13,7 @@ from vnxCliApi.vnx.resource import nas_pool
 from test import utils
 from test.vnx.resource import fakes
 from vnxCliApi.exception import ObjectNotFound, VNXBackendError
-from vnxCliApi.vnx.resource import manager
+from vnxCliApi.vnx.resource import nas_client
 
 __author__ = 'Jay Xu'
 
@@ -29,7 +29,7 @@ class StoragePoolTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.VNXFileClient(host, username, password)
+        storage_manager = nas_client.VNXNasClient(host, username, password)
         self.pool_manager = nas_pool.PoolManager(storage_manager)
 
         self.pool = fakes.PoolTestData()

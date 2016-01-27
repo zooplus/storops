@@ -180,7 +180,7 @@ class VNXResource(object):
         for name in prop_names:
             try:
                 value = getattr(self, name)
-                if isinstance(value, VNXResource):
+                if isinstance(value, VNXCliResource):
                     value = value.get_dict_repr()
                 props[name] = value
             except AttributeError:
@@ -238,7 +238,37 @@ class VNXResource(object):
         return '_cli' in dir(self) and getattr(self, '_cli') is not None
 
 
-class VNXResourceList(VNXResource):
+class _WithPoll(object):
+    def __init__(self, r):
+        self._resource = r
+        self._orig_poll = self._resource.poll
+
+    def __enter__(self):
+        pass
+
+    # noinspection PyUnusedLocal
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # return None, do not handle inner exception
+        self._resource.poll = self._orig_poll
+
+
+class VNXCliResource(VNXResource):
+    def __init__(self):
+        super(VNXCliResource, self).__init__()
+        self.poll = True
+
+    def with_poll(self):
+        ret = _WithPoll(self)
+        self.poll = True
+        return ret
+
+    def with_no_poll(self):
+        ret = _WithPoll(self)
+        self.poll = False
+        return ret
+
+
+class VNXResourceList(VNXCliResource):
     def __init__(self):
         super(VNXResourceList, self).__init__()
         self._list = []

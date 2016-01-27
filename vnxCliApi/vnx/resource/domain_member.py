@@ -6,7 +6,7 @@ import re
 from past.builtins import filter
 
 from vnxCliApi.vnx.enums import VNXSPEnum
-from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXResource
+from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
@@ -40,10 +40,10 @@ class VNXDomainMemberList(VNXCliResourceList):
         return VNXDomainMember
 
     def _get_raw_resource(self):
-        return self._cli.get_domain()
+        return self._cli.get_domain(poll=self.poll)
 
 
-class VNXDomainMember(VNXResource):
+class VNXDomainMember(VNXCliResource):
     @property
     def ip(self):
         ret = 'N/A'

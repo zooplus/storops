@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from vnxCliApi.vnx.resource.resource import VNXCliResourceList
-from vnxCliApi.vnx.resource.resource import VNXResource
+from vnxCliApi.vnx.resource.resource import VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
@@ -13,17 +13,17 @@ class VNXNduList(VNXCliResourceList):
         return VNXNdu
 
     def _get_raw_resource(self):
-        return self._cli.get_ndu()
+        return self._cli.get_ndu(poll=self.poll)
 
 
-class VNXNdu(VNXResource):
+class VNXNdu(VNXCliResource):
     def __init__(self, name=None, cli=None):
         super(VNXNdu, self).__init__()
         self._cli = cli
         self._name = name
 
     def _get_raw_resource(self):
-        return self._cli.get_ndu(name=self._name)
+        return self._cli.get_ndu(name=self._name, poll=self.poll)
 
     @classmethod
     def get(cls, cli, name=None):

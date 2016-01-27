@@ -150,6 +150,10 @@ class VNXLunError(VNXException):
     pass
 
 
+class VNXCreateLunError(VNXLunError):
+    pass
+
+
 class VNXModifyLunError(VNXLunError):
     pass
 

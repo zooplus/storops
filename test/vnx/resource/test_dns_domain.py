@@ -7,7 +7,7 @@ import mock
 
 from test.vnx.resource.fakes import mock_ssh_connector, patch_retry
 from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.vnx.resource import manager
+from vnxCliApi.vnx.resource import nas_client
 
 from test import utils
 from test.vnx.resource import fakes
@@ -27,7 +27,7 @@ class DNSDomainTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.VNXFileClient(host, username, password)
+        storage_manager = nas_client.VNXNasClient(host, username, password)
         self.dns_manager = dns_domain.DNSDomainManager(storage_manager)
 
         self.mover = fakes.MoverTestData()

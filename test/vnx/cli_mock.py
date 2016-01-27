@@ -83,7 +83,6 @@ class MockCli(object):
         params = remove_cli_binary(params)
 
         flags_to_remove = {
-            '-np': 1,
             '-t': 2,
             '-user': 2,
             '-password': 2,

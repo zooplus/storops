@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from vnxCliApi.vnx.cli import raise_if_err
-from vnxCliApi.vnx.resource.resource import VNXResource, VNXCliResourceList
+from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.disk import VNXDisk
 from vnxCliApi import exception as ex
@@ -10,13 +10,13 @@ from vnxCliApi import exception as ex
 __author__ = 'Cedric Zhuang'
 
 
-class VNXPoolFeature(VNXResource):
+class VNXPoolFeature(VNXCliResource):
     def __init__(self, cli=None):
         super(VNXPoolFeature, self).__init__()
         self._cli = cli
 
     def _get_raw_resource(self):
-        return self._cli.get_pool_feature()
+        return self._cli.get_pool_feature(poll=self.poll)
 
 
 class VNXPoolList(VNXCliResourceList):
@@ -25,10 +25,10 @@ class VNXPoolList(VNXCliResourceList):
         return VNXPool
 
     def _get_raw_resource(self):
-        return self._cli.get_pool()
+        return self._cli.get_pool(poll=self.poll)
 
 
-class VNXPool(VNXResource):
+class VNXPool(VNXCliResource):
     def __init__(self, pool_id=None, name=None, cli=None):
         super(VNXPool, self).__init__()
         self._cli = cli
@@ -60,6 +60,7 @@ class VNXPool(VNXResource):
     def rename(self, new_name):
         if new_name is not None and new_name != self._name:
             ret = self._cli.modify_storage_pool(new_name=new_name,
+                                                poll=self.poll,
                                                 **self._get_name_or_id())
             raise_if_err(ret, ex.VNXModifyPoolError)
             self._name = new_name
@@ -71,7 +72,7 @@ class VNXPool(VNXResource):
         return VNXPool(name=name, cli=cli)
 
     def remove(self):
-        ret = self._cli.remove_pool(**self._get_name_or_id())
+        ret = self._cli.remove_pool(poll=self.poll, **self._get_name_or_id())
         raise_if_err(ret, ex.VNXRemovePoolError)
 
     @classmethod
@@ -87,16 +88,18 @@ class VNXPool(VNXResource):
                    size_gb=1,
                    lun_id=None,
                    provision=None,
-                   tier=None):
+                   tier=None,
+                   ignore_thresholds=None):
         ret = self._cli.create_pool_lun(
             pool_id=self.pool_id,
             lun_name=lun_name,
             lun_id=lun_id,
             size=size_gb,
             provision=provision,
-            tier=tier)
-        if len(ret.strip()) > 0:
-            raise ValueError('error creating lun: {}'.format(ret))
+            tier=tier,
+            ignore_thresholds=ignore_thresholds,
+            poll=self.poll)
+        raise_if_err(ret, ex.VNXCreateLunError, 'error creating lun.')
         return VNXLun(lun_id, lun_name, self._cli)
 
     @staticmethod
@@ -108,8 +111,8 @@ class VNXPool(VNXResource):
         return [VNXDisk(index, self._cli) for index in self.disk_indices]
 
     def _get_raw_resource(self):
-        return self._cli.get_pool(**self._get_name_or_id())
+        return self._cli.get_pool(poll=self.poll, **self._get_name_or_id())
 
     def get_lun(self):
-        lun_list = VNXLun.get(self._cli)
+        lun_list = VNXLun.get(self._cli, poll=self.poll)
         return [l for l in lun_list if l.pool_name == self.name]

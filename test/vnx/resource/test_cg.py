@@ -69,3 +69,12 @@ class VNXConsistencyGroupTest(TestCase):
             cg.add_member(m1, m2)
 
         assert_that(f, raises(VNXConsistencyGroupError, 'Cannot add members'))
+
+    @patch_cli()
+    def test_cg_no_poll(self):
+        def f():
+            cg = VNXConsistencyGroup(name="test_cg", cli=t_cli())
+            with cg.with_no_poll():
+                cg.add_member(1, 2, 3)
+
+        assert_that(f, raises(VNXConsistencyGroupError, 'does not exist'))

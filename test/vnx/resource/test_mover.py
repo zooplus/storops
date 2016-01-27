@@ -12,7 +12,7 @@ from vnxCliApi.vnx.resource import mover
 from test import utils
 from test.vnx.resource import fakes
 from vnxCliApi.exception import ObjectNotFound, VNXBackendError
-from vnxCliApi.vnx.resource import manager
+from vnxCliApi.vnx.resource import nas_client
 
 __author__ = 'Jay Xu'
 
@@ -28,7 +28,7 @@ class MoverRefTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.VNXFileClient(host, username, password)
+        storage_manager = nas_client.VNXNasClient(host, username, password)
         self.mover_ref_manager = mover.MoverRefManager(storage_manager)
 
         self.mover = fakes.MoverTestData()
@@ -91,7 +91,7 @@ class MoverTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.VNXFileClient(host, username, password)
+        storage_manager = nas_client.VNXNasClient(host, username, password)
         self.mover_manager = mover.MoverManager(storage_manager)
 
         self.mover = fakes.MoverTestData()

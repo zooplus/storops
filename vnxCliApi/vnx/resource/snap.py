@@ -5,7 +5,7 @@ import six
 
 from vnxCliApi.vnx.cli import raise_if_err
 from vnxCliApi.vnx.resource.resource import VNXCliResourceList
-from vnxCliApi.vnx.resource.resource import VNXResource
+from vnxCliApi.vnx.resource.resource import VNXCliResource
 from vnxCliApi import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -20,14 +20,14 @@ class VNXSnapList(VNXCliResourceList):
         return self._cli.get_snap()
 
 
-class VNXSnap(VNXResource):
+class VNXSnap(VNXCliResource):
     def __init__(self, name=None, cli=None):
         super(VNXSnap, self).__init__()
         self._cli = cli
         self._name = name
 
     def _get_raw_resource(self):
-        return self._cli.get_snap(name=self._name)
+        return self._cli.get_snap(name=self._name, poll=self.poll)
 
     @classmethod
     def get(cls, cli, name=None):
@@ -38,7 +38,7 @@ class VNXSnap(VNXResource):
         return ret
 
     def remove(self):
-        self._cli.remove_snap(self._get_name())
+        self._cli.remove_snap(self._get_name(), poll=self.poll)
 
     def copy(self, new_name,
              ignore_migration_check=False,
@@ -46,7 +46,7 @@ class VNXSnap(VNXResource):
         name = self._get_name()
         out = self._cli.copy_snap(name, new_name,
                                   ignore_migration_check,
-                                  ignore_dedup_check)
+                                  ignore_dedup_check, poll=self.poll)
         raise_if_err(out, ex.VNXSnapError,
                      'failed to copy snap {}.'.format(name))
         return VNXSnap(name=new_name, cli=self._cli)
@@ -54,7 +54,8 @@ class VNXSnap(VNXResource):
     def modify(self, new_name=None, desc=None,
                auto_delete=None, rw=None):
         name = self._get_name()
-        out = self._cli.modify_snap(name, new_name, desc, auto_delete, rw)
+        out = self._cli.modify_snap(name, new_name, desc, auto_delete, rw,
+                                    poll=self.poll)
         raise_if_err(out, ex.VNXSnapError,
                      'failed to modify snap {}.'.format(name))
         if new_name is not None:

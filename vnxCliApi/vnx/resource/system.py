@@ -11,7 +11,7 @@ from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.migration import VNXMigrationSession
 from vnxCliApi.vnx.resource.ndu import VNXNdu
 from vnxCliApi.vnx.resource.port import VNXConnectionPort
-from vnxCliApi.vnx.resource.resource import VNXResource
+from vnxCliApi.vnx.resource.resource import VNXCliResource
 from vnxCliApi.vnx.resource.rg import VNXRaidGroup
 from vnxCliApi.vnx.resource.sg import VNXStorageGroup
 from vnxCliApi.vnx.resource.snap import VNXSnap
@@ -19,7 +19,7 @@ from vnxCliApi.vnx.resource.snap import VNXSnap
 __author__ = 'Cedric Zhuang'
 
 
-class VNXSystem(VNXResource):
+class VNXSystem(VNXCliResource):
     """ The system class for VNX
 
     This class act as the entry point for VNX system.
@@ -28,8 +28,7 @@ class VNXSystem(VNXResource):
     """
 
     def __init__(self, ip=None,
-                 username=None, password=None, scope=0,
-                 sec_file=None,
+                 username=None, password=None, scope=0, sec_file=None,
                  timeout=None,
                  heartbeat_interval=None,
                  naviseccli=None):
@@ -62,6 +61,11 @@ class VNXSystem(VNXResource):
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
 
+    def set_block_credential(self,
+                             username=None, password=None, scope=None,
+                             sec_file=None):
+        self._cli.set_credential(username, password, scope, sec_file)
+
     def _update_nodes_ip(self):
         self._dml.update()
         self._cli.set_ip(self.spa_ip, self.spb_ip, self.control_station_ip)
@@ -83,7 +87,7 @@ class VNXSystem(VNXResource):
         return self._dml.control_station.ip
 
     def _get_raw_resource(self):
-        return self._cli.get_agent()
+        return self._cli.get_agent(poll=self.poll)
 
     def get_pool(self, pool_id=None, name=None):
         return VNXPool.get(pool_id=pool_id, name=name, cli=self._cli)
@@ -111,27 +115,26 @@ class VNXSystem(VNXResource):
         return VNXConnectionPort.get(self._cli, sp, port_id, vport_id)
 
     def remove_snap(self, name):
-        VNXSnap(name, self._cli).remove()
+        self._remove_resource(VNXSnap(name, self._cli))
 
     def create_sg(self, name):
         return VNXStorageGroup.create(name, self._cli)
 
     def remove_sg(self, name):
-        VNXStorageGroup(name, self._cli).remove()
+        self._remove_resource(VNXStorageGroup(name, self._cli))
 
     def create_cg(self, name, members=None):
         return VNXConsistencyGroup.create(self._cli, name=name,
                                           members=members)
 
     def remove_cg(self, name):
-        VNXConsistencyGroup(name, self._cli).remove()
+        self._remove_resource(VNXConsistencyGroup(name, self._cli))
 
     def get_disk(self, disk_index=None):
         return VNXDisk.get(self._cli, disk_index)
 
     def remove_disk(self, disk_index):
-        disk = VNXDisk(disk_index, self._cli)
-        disk.remove()
+        self._remove_resource(VNXDisk(disk_index, self._cli))
 
     def install_disk(self, disk_index):
         disk = VNXDisk(disk_index, self._cli)
@@ -144,10 +147,14 @@ class VNXSystem(VNXResource):
         return VNXRaidGroup.create(self._cli, rg_id, disks, raid_type)
 
     def remove_rg(self, rg_id):
-        VNXRaidGroup(rg_id, self._cli).remove()
+        self._remove_resource(VNXRaidGroup(rg_id, self._cli))
 
     def create_pool(self, name, disks, raid_type=None):
         return VNXPool.create(self._cli, name, disks, raid_type)
 
+    def _remove_resource(self, resource):
+        resource.poll = self.poll
+        resource.remove()
+
     def remove_pool(self, name=None, pool_id=None):
-        VNXPool(pool_id, name, self._cli).remove()
+        self._remove_resource(VNXPool(pool_id, name, self._cli))

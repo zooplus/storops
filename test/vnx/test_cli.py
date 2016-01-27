@@ -19,11 +19,11 @@ class MockCliTest(TestCase):
         params = ('naviseccli -h 1.1.1.1 -user '
                   'a -password a -scope 0 -t 100 -np '
                   'getagent').split()
-        assert_that(MockCli.get_filename(params), equal_to('getagent'))
+        assert_that(MockCli.get_filename(params), equal_to('-np_getagent'))
 
     def test_get_filename_windows(self):
         params = (r'c:\install\naviseccli.exe -h 1.1.1.1 -user '
-                  'a -password a -scope 0 -t 100 -np '
+                  'a -password a -scope 0 -t 100 '
                   'getagent').split()
         assert_that(MockCli.get_filename(params), equal_to('getagent'))
 
@@ -71,6 +71,18 @@ class CliClientTest(TestCase):
             client.get_agent()
 
         assert_that(f, raises(ValueError, 'missing'))
+
+    @patch_cli()
+    def test_set_credential(self):
+        client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)
+        try:
+            client.get_agent()
+            self.fail('should have throw exception')
+        except ValueError:
+            pass
+        client.set_credential(password='a')
+        output = client.get_lun(lun_id=0)
+        assert_that(output, contains_string('LOGICAL UNIT NUMBER 0'))
 
     @patch_cli()
     def test_get_agent(self):
@@ -255,6 +267,17 @@ class CliClientTest(TestCase):
             cmd,
             equal_to('lun -create -capacity 1 -sq gb -poolId 0 -l 129 '
                      '-type Thin -deduplication on'))
+
+    @extract_command
+    def test_create_lun_ignore_threshold(self):
+        cmd = self.client.create_pool_lun(pool_id=1,
+                                          lun_id=123,
+                                          size=12,
+                                          ignore_thresholds=True)
+        assert_that(
+            cmd,
+            equal_to('lun -create -capacity 12 -sq gb -poolId 1 '
+                     '-l 123 -ignoreThresholds'))
 
     def test_create_lun_no_pool(self):
         def f():

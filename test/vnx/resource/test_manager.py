@@ -7,7 +7,7 @@ from test.vnx.resource.fakes import mock_ssh_connector
 from test.vnx.resource.fakes import mock_xml_api
 from vnxCliApi.vnx.resource import nas_pool, filesystem, mover, vdm, \
     mover_interface, dns_domain, mount_point, filesystem_snapshot, \
-    cifs_server, cifs_share, manager, nfs_share
+    cifs_server, cifs_share, nas_client, nfs_share
 
 from test.vnx.resource import fakes
 from vnxCliApi.exception import VNXBackendError
@@ -24,7 +24,7 @@ class VNXFileClientTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        self.storage_manager = manager.VNXFileClient(
+        self.storage_manager = nas_client.VNXNasClient(
             host, username, password)
 
     def test_get_object_manager(self):

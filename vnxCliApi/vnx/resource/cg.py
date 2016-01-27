@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from vnxCliApi.vnx.cli import raise_if_err
 from vnxCliApi.vnx.resource.lun import VNXLun
-from vnxCliApi.vnx.resource.resource import VNXResource, VNXCliResourceList
+from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -15,17 +15,17 @@ class VNXConsistencyGroupList(VNXCliResourceList):
         return VNXConsistencyGroup
 
     def _get_raw_resource(self):
-        return self._cli.get_cg()
+        return self._cli.get_cg(poll=self.poll)
 
 
-class VNXConsistencyGroup(VNXResource):
+class VNXConsistencyGroup(VNXCliResource):
     def __init__(self, name=None, cli=None):
         super(VNXConsistencyGroup, self).__init__()
         self._cli = cli
         self._name = name
 
     def _get_raw_resource(self):
-        return self._cli.get_cg(name=self._name)
+        return self._cli.get_cg(name=self._name, poll=self.poll)
 
     @classmethod
     def get(cls, cli, name=None):
@@ -42,14 +42,14 @@ class VNXConsistencyGroup(VNXResource):
 
     def remove(self):
         name = self._get_name()
-        out = self._cli.remove_cg(name)
+        out = self._cli.remove_cg(name, poll=self.poll)
         raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error remove cg "{}".'.format(name))
 
     def _cg_member_op(self, op, lun_list):
         id_list = VNXLun.get_id_list(*lun_list)
         name = self._get_name()
-        out = op(name, *id_list)
+        out = op(name, *id_list, poll=self.poll)
         raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error change member of "{}".'.format(name))
 

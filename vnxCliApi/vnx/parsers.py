@@ -319,7 +319,7 @@ def is_vnx_resource(name):
         clz = get_vnx_resource_clz_by_name(name)
     else:
         clz = name
-    vnx_rsc_clz = vnxCliApi.vnx.resource.resource.VNXResource
+    vnx_rsc_clz = vnxCliApi.vnx.resource.resource.VNXCliResource
     return (clz is not None and
             inspect.isclass(clz) and
             issubclass(clz, vnx_rsc_clz))

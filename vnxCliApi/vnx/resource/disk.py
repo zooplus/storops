@@ -4,12 +4,12 @@ from __future__ import unicode_literals
 import re
 
 from vnxCliApi.lib.common import check_text
-from vnxCliApi.vnx.resource.resource import VNXResource, VNXCliResourceList
+from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 
 
-class VNXDisk(VNXResource):
+class VNXDisk(VNXCliResource):
     _index_pattern = re.compile('(\w+)_(\w+)_(\w+)')
 
     def __init__(self, index=None, cli=None):
@@ -46,7 +46,8 @@ class VNXDisk(VNXResource):
         return 'bus {} enclosure {} disk {}'.format(bus, enc, disk)
 
     def _get_raw_resource(self):
-        return self._cli.get_disk(*self.parse_index(self._index))
+        return self._cli.get_disk(poll=self.poll,
+                                  *self.parse_index(self._index))
 
     @classmethod
     def parse_index(cls, index):
@@ -68,10 +69,10 @@ class VNXDisk(VNXResource):
         return ret
 
     def remove(self):
-        return self._cli.remove_disk(self._index)
+        return self._cli.remove_disk(self._index, poll=self.poll)
 
     def install(self):
-        return self._cli.install_disk(self._index)
+        return self._cli.install_disk(self._index, poll=self.poll)
 
 
 class VNXDiskList(VNXCliResourceList):
@@ -80,4 +81,4 @@ class VNXDiskList(VNXCliResourceList):
         return VNXDisk
 
     def _get_raw_resource(self):
-        return self._cli.get_disk()
+        return self._cli.get_disk(poll=self.poll)

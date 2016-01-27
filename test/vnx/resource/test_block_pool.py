@@ -7,7 +7,8 @@ from hamcrest import assert_that, raises, equal_to, is_in
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_pool_0
-from vnxCliApi.exception import VNXRemovePoolError, VNXCreatePoolError
+from vnxCliApi.exception import VNXRemovePoolError, VNXCreatePoolError, \
+    VNXCreateLunError
 from vnxCliApi.vnx.resource.block_pool import VNXPool, VNXPoolList, \
     VNXPoolFeature
 
@@ -104,6 +105,14 @@ class VNXPoolTest(TestCase):
     def test_update_with_one_key_only(self):
         pool = VNXPool(0, 'p0', t_cli())
         assert_that(pool.consumed_capacity_gbs, equal_to(540.303))
+
+    @patch_cli()
+    def test_create_lun_ignore_threshold(self):
+        def f():
+            pool = VNXPool(1, cli=t_cli())
+            assert_that(pool.create_lun('abc', ignore_thresholds=True))
+
+        assert_that(f, raises(VNXCreateLunError, 'may not exist'))
 
 
 class VNXPoolListTest(TestCase):

@@ -8,7 +8,7 @@ from vnxCliApi.vnx.cli import raise_if_err
 from vnxCliApi.vnx.enums import VNXSPEnum, VNXPortType, has_error, VNXError
 from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.port import VNXHbaPort
-from vnxCliApi.vnx.resource.resource import VNXResource, VNXCliResourceList
+from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -16,7 +16,7 @@ __author__ = 'Cedric Zhuang'
 log = logging.getLogger(__name__)
 
 
-class VNXStorageGroup(VNXResource):
+class VNXStorageGroup(VNXCliResource):
     def __init__(self, name=None, cli=None):
         super(VNXStorageGroup, self).__init__()
         self._cli = cli
@@ -28,7 +28,7 @@ class VNXStorageGroup(VNXResource):
         self._hlu_lock = Lock()
 
     def _get_raw_resource(self):
-        return self._cli.get_sg(name=self._name)
+        return self._cli.get_sg(name=self._name, poll=self.poll)
 
     @classmethod
     def get(cls, cli, name=None):
@@ -44,7 +44,7 @@ class VNXStorageGroup(VNXResource):
         return VNXStorageGroup(name, cli)
 
     def remove(self):
-        self._cli.remove_sg(self._get_name())
+        self._cli.remove_sg(self._get_name(), poll=self.poll)
 
     def has_hlu(self, hlu):
         return hlu in self.alu_hlu_map.values()
@@ -147,7 +147,8 @@ class VNXStorageGroup(VNXResource):
         lun = VNXLun.get_id(lun)
         while True:
             alu = self._get_hlu_to_add(lun)
-            out = self._cli.sg_add_hlu(self._get_name(), alu, lun)
+            out = self._cli.sg_add_hlu(self._get_name(), alu, lun,
+                                       poll=self.poll)
             if has_error(out, VNXError.SG_HOST_LUN_USED):
                 self.update()
                 continue
@@ -156,18 +157,19 @@ class VNXStorageGroup(VNXResource):
 
     def detach_hlu(self, lun):
         alu = VNXLun.get_id(lun)
-        out = self._cli.sg_remove_hlu(self._get_name(), alu)
+        out = self._cli.sg_remove_hlu(self._get_name(), alu, poll=self.poll)
         raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to detach alu {}.'.format(alu))
         self._remove_alu(alu)
 
     def connect_host(self, host):
-        out = self._cli.sg_connect_host(self._get_name(), host)
+        out = self._cli.sg_connect_host(self._get_name(), host, poll=self.poll)
         raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to connect host {}.'.format(host))
 
     def disconnect_host(self, host):
-        out = self._cli.sg_disconnect_host(self._get_name(), host)
+        out = self._cli.sg_disconnect_host(self._get_name(), host,
+                                           poll=self.poll)
         raise_if_err(out, ex.VNXStorageGroupError,
                      'failed to disconnect host {}.'.format(host))
 
@@ -189,10 +191,10 @@ class VNXStorageGroupList(VNXCliResourceList):
         self._sg_map[sg.name] = sg
 
     def _get_raw_resource(self):
-        return self._cli.get_sg()
+        return self._cli.get_sg(poll=self.poll)
 
 
-class VNXStorageGroupHBA(VNXResource):
+class VNXStorageGroupHBA(VNXCliResource):
     @property
     def sp(self):
         return VNXSPEnum.from_str(self.hba[1])

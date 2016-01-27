@@ -6,12 +6,12 @@ from vnxCliApi.lib.common import check_text
 from vnxCliApi.vnx.enums import VNXMirrorViewRecoveryPolicy
 from vnxCliApi.vnx.enums import VNXMirrorViewSyncRate
 from vnxCliApi.vnx.resource.lun import VNXLun
-from vnxCliApi.vnx.resource.resource import VNXResource, VNXCliResourceList
+from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 
 
-class VNXMirrorViewImage(VNXResource):
+class VNXMirrorViewImage(VNXCliResource):
     @staticmethod
     def get_id(image):
         if isinstance(image, VNXMirrorViewImage):
@@ -34,14 +34,14 @@ class VNXMirrorViewImageList(VNXCliResourceList):
         return VNXMirrorViewImage
 
 
-class VNXMirrorView(VNXResource):
+class VNXMirrorView(VNXCliResource):
     def __init__(self, name=None, cli=None):
         super(VNXMirrorView, self).__init__()
         self._cli = cli
         self._name = name
 
     def _get_raw_resource(self):
-        return self._cli.get_mirror_view(name=self._name)
+        return self._cli.get_mirror_view(name=self._name, poll=self.poll)
 
     @classmethod
     def get(cls, cli, name=None):
@@ -56,7 +56,8 @@ class VNXMirrorView(VNXResource):
                   sync_rate=VNXMirrorViewSyncRate.HIGH):
         lun_id = VNXLun.get_id(lun_id)
         self._cli.add_mirror_view_image(self._get_name(), sp_ip, lun_id,
-                                        recovery_policy, sync_rate)
+                                        recovery_policy, sync_rate,
+                                        poll=self.poll)
 
     def get_image(self, image_id):
         for image in self.images:
@@ -74,19 +75,23 @@ class VNXMirrorView(VNXResource):
 
     def remove_image(self, image_id):
         image_id = self._get_image_id(image_id)
-        self._cli.remove_mirror_view_image(self._get_name(), image_id)
+        self._cli.remove_mirror_view_image(self._get_name(), image_id,
+                                           poll=self.poll)
 
     def fracture_image(self, image_id):
         image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_fracture_image(self._get_name(), image_id)
+        self._cli.mirror_view_fracture_image(self._get_name(), image_id,
+                                             poll=self.poll)
 
     def sync_image(self, image_id):
         image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_sync_image(self._get_name(), image_id)
+        self._cli.mirror_view_sync_image(self._get_name(), image_id,
+                                         poll=self.poll)
 
     def promote_image(self, image_id):
         image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_promote_image(self._get_name(), image_id)
+        self._cli.mirror_view_promote_image(self._get_name(), image_id,
+                                            poll=self.poll)
 
 
 class VNXMirrorViewList(VNXCliResourceList):
@@ -99,4 +104,4 @@ class VNXMirrorViewList(VNXCliResourceList):
         self._cli = cli
 
     def _get_raw_resource(self):
-        return self._cli.get_mirror_view()
+        return self._cli.get_mirror_view(poll=self.poll)

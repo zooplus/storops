@@ -28,6 +28,17 @@ class NaviCommand(object):
     MAX_TIMEOUT = 1800
     MIN_TIMEOUT = 3
 
+    def set_credential(self, username=None, password=None, scope=None,
+                       sec_file=None):
+        if username is not None:
+            self._username = username
+        if password is not None:
+            self._password = password
+        if scope is not None:
+            self._scope = scope
+        if sec_file is not None:
+            self._sec_file = sec_file
+
     @property
     def timeout(self):
         ret = self._timeout

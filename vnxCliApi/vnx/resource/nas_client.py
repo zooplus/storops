@@ -18,7 +18,7 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-class VNXFileClient(object):
+class VNXNasClient(object):
     def __init__(self, host, username, password):
         self.xml = {
             'connector': connector.XMLAPIConnector(host, username, password),

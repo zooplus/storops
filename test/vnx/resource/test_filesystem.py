@@ -14,7 +14,7 @@ from test import utils
 from test.vnx.resource import fakes
 from vnxCliApi.connection.exceptions import SSHExecutionError
 from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.vnx.resource import manager
+from vnxCliApi.vnx.resource import nas_client
 
 __author__ = 'Jay Xu'
 
@@ -31,7 +31,7 @@ class FileSystemTestCase(unittest.TestCase):
         host = fakes.FakeData.emc_nas_server
         username = fakes.FakeData.emc_nas_login
         password = fakes.FakeData.emc_nas_password
-        storage_manager = manager.VNXFileClient(host, username, password)
+        storage_manager = nas_client.VNXNasClient(host, username, password)
         self.filesystem_manager = filesystem.FileSystemManager(
             storage_manager)
 

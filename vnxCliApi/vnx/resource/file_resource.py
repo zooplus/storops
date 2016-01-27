@@ -23,13 +23,15 @@ class Resource(object):
     This is pretty much just a bag for attributes.
     """
 
-    def __init__(self, manager, info, loaded=False):
+    def __init__(self, manager, info=None, loaded=False):
         """Populate and bind to a manager.
 
         :param manager: BaseManager object
         :param info: dictionary representing resource attributes
         :param loaded: prevent lazy-loading if set to True
         """
+        if info is None:
+            info = {}
         self.manager = manager
         self._info = info
         self._add_details(info)

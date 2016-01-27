@@ -76,7 +76,7 @@ def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
     if msg is None:
         msg = out
     else:
-        msg = '{}  node detail:\n{}'.format(msg, out)
+        msg = '{}  detail:\n{}'.format(msg, out)
     if ex_clz is None:
         ex_clz = ValueError
     if expected_error is None or len(expected_error) == 0:
@@ -113,6 +113,10 @@ class CliClient(object):
         if binary is not None:
             log.info('update naviseccli binary location to: {}'.format(binary))
             self._heart_beat.set_binary(binary)
+
+    def set_credential(self, username=None, password=None, scope=None,
+                       sec_file=None):
+        self._heart_beat.set_credential(username, password, scope, sec_file)
 
     def __del__(self):
         del self._heart_beat
@@ -273,13 +277,16 @@ class CliClient(object):
                         lun_id=None,
                         size=1,
                         provision=None,
-                        tier=None):
+                        tier=None,
+                        ignore_thresholds=None):
 
         cmd = ['lun', '-create', '-capacity', size, '-sq', 'gb']
         cmd += self._get_pool_opt(pool_id, pool_name)
         cmd += self._get_lun_opt(lun_id, lun_name)
         cmd += self._get_provision_opt(provision)
         cmd += self._get_tier_opt(tier)
+        if ignore_thresholds:
+            cmd.append('-ignoreThresholds')
         return cmd
 
     @command
