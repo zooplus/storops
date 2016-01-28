@@ -710,3 +710,8 @@ class CliClientTest(TestCase):
     def test_rename_storage_pool(self):
         cmd = self.client.modify_storage_pool(pool_id=2, new_name='p1')
         assert_that(cmd, equal_to('storagepool -modify -id 2 -newName p1 -o'))
+
+    @extract_command
+    def test_sp_network_status(self):
+        cmd = self.client.sp_network_status(VNXSPEnum.SP_A)
+        assert_that(cmd, equal_to('networkadmin -get -sp a -all'))

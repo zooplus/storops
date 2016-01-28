@@ -1,12 +1,13 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
-from vnxCliApi.lib.common import daemon
+from vnxCliApi.lib.common import daemon, cache
 from vnxCliApi.vnx.cli import CliClient
-from vnxCliApi.vnx.resource.block_pool import VNXPool
+from vnxCliApi.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from vnxCliApi.vnx.resource.cg import VNXConsistencyGroup
 from vnxCliApi.vnx.resource.disk import VNXDisk
-from vnxCliApi.vnx.resource.domain_member import VNXDomainMemberList
+from vnxCliApi.vnx.resource.vnx_domain import VNXDomainMemberList, \
+    VNXNetworkAdmin, VNXDomainNodeList
 from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.migration import VNXMigrationSession
 from vnxCliApi.vnx.resource.ndu import VNXNdu
@@ -55,7 +56,6 @@ class VNXSystem(VNXCliResource):
                               timeout,
                               heartbeat_interval=heartbeat_interval,
                               naviseccli=naviseccli)
-        self._dml = VNXDomainMemberList(self._cli)
         daemon(self._update_nodes_ip)
 
     def set_naviseccli(self, cli_binary):
@@ -67,7 +67,6 @@ class VNXSystem(VNXCliResource):
         self._cli.set_credential(username, password, scope, sec_file)
 
     def _update_nodes_ip(self):
-        self._dml.update()
         self._cli.set_ip(self.spa_ip, self.spb_ip, self.control_station_ip)
 
     @property
@@ -75,19 +74,29 @@ class VNXSystem(VNXCliResource):
         return self._cli.heartbeat
 
     @property
+    @cache()
     def spa_ip(self):
-        return self._dml.spa.ip
+        return VNXNetworkAdmin.get_spa_ip(self._cli)
 
     @property
+    @cache()
     def spb_ip(self):
-        return self._dml.spb.ip
+        return VNXNetworkAdmin.get_spb_ip(self._cli)
 
     @property
+    @cache()
     def control_station_ip(self):
-        return self._dml.control_station.ip
+        return VNXDomainNodeList.get_cs_ip(self.serial, self._cli)
+
+    @property
+    def domain(self):
+        return VNXDomainMemberList(self._cli)
 
     def _get_raw_resource(self):
         return self._cli.get_agent(poll=self.poll)
+
+    def get_pool_feature(self):
+        return VNXPoolFeature(self._cli)
 
     def get_pool(self, pool_id=None, name=None):
         return VNXPool.get(pool_id=pool_id, name=name, cli=self._cli)
@@ -158,3 +167,9 @@ class VNXSystem(VNXCliResource):
 
     def remove_pool(self, name=None, pool_id=None):
         self._remove_resource(VNXPool(pool_id, name, self._cli))
+
+    def stop_heart_beat(self):
+        self._cli.heartbeat.stop()
+
+    def __del__(self):
+        del self._cli

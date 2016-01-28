@@ -45,6 +45,44 @@ VNXSP:
       key: memory_size
 
 
+VNXNetworkAdmin:
+  data_src: cli
+  properties:
+    - label: "Storage Processor:"
+      key: sp
+      converter: to_sp_enum
+    - label: "Storage Processor Network Name:"
+      key: name
+    - label: "Port ID:"
+      converter: to_int
+    - label: "Link Status:"
+    - label: "Virtual Port ID:"
+      converter: to_int
+    - label: "VLAN ID:"
+      converter: to_int
+    - label: "Storage Processor IP Mode:"
+      key: ip_mode
+    - label: "Storage Processor IP Address:"
+      key: ip
+    - label: "Storage Processor Subnet Mask:"
+      key: subnet_mask
+    - label: "Storage Processor Gateway Address:"
+      key: gateway
+    - label: "Storage Processor IPv6 Mode:"
+      converter: to_bool
+      key: ipv6_enabled
+
+
+VNXDomainNode:
+  data_src: cli
+  properties:
+    - label: "Node:"
+      is_index: True
+    - label: "Node:"
+      converter: VNXDomainMemberList
+      key: members
+      end_pattern: "\\Z"
+
 VNXDomainMember:
   data_src: cli
   properties:
@@ -104,13 +142,44 @@ VNXConsistencyGroup:
 VNXPoolFeature:
   data_src: cli
   properties:
+    - label: "Is Virtual Provisioning Supported:"
+      converter: to_bool
+    - label: "Max. Pools:"
+      converter: to_int
+    - label: "Max. Disks Per Pool:"
+      converter: to_int
+    - label: "Max. Disks for all Pools:"
+      converter: to_int
+    - label: "Max. Disks Per Operation:"
+      converter: to_int
     - label: "Max. Pool LUNs:"
       option: -maxPoolLUNs
       converter: to_int
+    - label: "Min. Pool LUN Size(Blocks):"
+      converter: to_int
+    - label: "Max. Pool LUN Size(Blocks):"
+      converter: to_int
+    - label: "Max. Pool LUN Size(GBs):"
+      converter: to_float
     - label: "Total Number of Pool LUNs:"
       key: total_pool_luns
       option: -numPoolLUNs
       converter: to_int
+    - label: "Total Number of Pools:"
+      converter: to_int
+    - label: "Total Number of all Pool LUNs that are thin:"
+      key: total_thin_luns
+      converter: to_int
+    - label: "Total Number of all Pool LUNs that are non-thin:"
+      key: total_non_thin_luns
+      converter: to_int
+    - label: "Number of Disks used in Pools:"
+      converter: to_int
+    - label: "Available Disks:"
+      converter: to_disk_indices
+      end_pattern: "Background Operation State:"
+    - label: "Background Operation State:"
+    - label: "Background Rate:"
   default: max_pool_luns, total_pool_luns
 
 

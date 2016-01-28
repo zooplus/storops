@@ -32,6 +32,7 @@ class NodeHeartBeatTest(TestCase):
         time.sleep(0.5)
         assert_that(hb.is_available('spa'), equal_to(True))
         assert_that(hb.is_available('spb'), equal_to(True))
+        hb.stop()
 
     @patch_cli()
     def test_get_alive_sp_ip(self):
@@ -82,6 +83,7 @@ class NodeHeartBeatTest(TestCase):
         time.sleep(0.06)
         assert_that(node.available, equal_to(True))
         assert_that(hb.command_count, greater_than(1))
+        hb.stop()
 
     @patch_cli()
     def test_interval_change(self):
@@ -99,6 +101,7 @@ class NodeHeartBeatTest(TestCase):
         # 8 <= total call count <= 12
         assert_that(hb.command_count, less_than_or_equal_to(12))
         assert_that(hb.command_count, greater_than_or_equal_to(8))
+        hb.stop()
 
     @patch_cli()
     def test_interval_no_loop(self):
@@ -121,6 +124,7 @@ class NodeHeartBeatTest(TestCase):
         hb.update_by_ip(ip, latency=5.123)
         assert_that(' '.join(hb.get_agent(ip)),
                     ends_with('-h 1.1.1.1 -t 35 -np getagent'))
+        hb.stop()
 
     def test_is_all_sps_alive(self):
         hb = self.get_test_hb()

@@ -9,7 +9,6 @@ from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
 from vnxCliApi.vnx.enums import VNXLunType
 from vnxCliApi.vnx.resource.lun import VNXLun
-from vnxCliApi.vnx.resource.system import VNXSystem
 
 __author__ = 'Cedric Zhuang'
 
@@ -30,12 +29,6 @@ class VNXSystemTest(TestCase):
         assert_that(self.vnx.existed, equal_to(True))
 
     @patch_cli()
-    def test_member_ip(self):
-        assert_that(self.vnx.spa_ip, equal_to('10.244.211.30'))
-        assert_that(self.vnx.spb_ip, equal_to('10.244.211.31'))
-        assert_that(self.vnx.control_station_ip, equal_to('10.244.211.32'))
-
-    @patch_cli()
     def test_get_pool_list(self):
         pool_list = self.vnx.get_pool()
         assert_that(len(pool_list), equal_to(5))
@@ -45,12 +38,12 @@ class VNXSystemTest(TestCase):
         pool = self.vnx.get_pool(pool_id=0)
         verify_pool_0(pool)
 
-    @patch_cli(output='domain_-list_1.txt')
-    def test_get_sp_ip(self):
-        vnx = VNXSystem('10.110.26.102', heartbeat_interval=0)
-        assert_that(vnx.spa_ip, equal_to('10.110.26.102'))
-        assert_that(vnx.spb_ip, equal_to('10.110.26.103'))
-        assert_that(vnx.control_station_ip, equal_to('10.110.26.105'))
+    @patch_cli()
+    def test_member_ip(self):
+        vnx = self.vnx
+        assert_that(vnx.spa_ip, equal_to('192.168.1.52'))
+        assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
+        assert_that(vnx.control_station_ip, equal_to('192.168.1.93'))
 
     @patch_cli()
     def test_get_snap(self):
@@ -82,3 +75,9 @@ class VNXSystemTest(TestCase):
         assert_that(len(snap_luns), equal_to(45))
         for snap_lun in snap_luns:
             assert_that(snap_lun.is_snap_mount_point, equal_to(True))
+
+    @patch_cli()
+    def test_pool_feature(self):
+        pf = self.vnx.get_pool_feature()
+        assert_that(pf.max_pool_luns, equal_to(2100))
+        assert_that(pf.total_pool_luns, equal_to(3))

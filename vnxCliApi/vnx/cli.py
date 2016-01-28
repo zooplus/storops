@@ -715,6 +715,11 @@ class CliClient(object):
         cmd.append('-o')
         return cmd
 
+    @command
+    def sp_network_status(self, sp):
+        sp = VNXSPEnum.get_sp_index(sp)
+        return 'networkadmin -get -sp {} -all'.format(sp).split()
+
     @duel_command
     def remove_disk(self, disk_index):
         return 'cru_on_off -messner {} 0'.format(disk_index).split()

@@ -180,10 +180,13 @@ class NodeHeartBeat(NaviCommand):
             sleep(self.interval)
         self._heartbeat_thread = None
 
-    def __del__(self):
+    def stop(self):
         if self.interval:
             log.info('exiting heart beat.')
             self.interval = 0
+
+    def __del__(self):
+        self.stop()
 
     @property
     def nodes(self):

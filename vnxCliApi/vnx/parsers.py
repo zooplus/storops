@@ -123,11 +123,13 @@ class PropDescriptor(PropMapper):
             else:
                 # has 'end_pattern' means we need to match
                 # multi-lines including return.
+                # do NOT escape 'end_pattern' because it's
+                # already a PATTERN.
                 flags |= re.DOTALL
                 self._pattern = re.compile(
                     '^\s*{}\s*(?P<value>.*){}'.format(
                         re.escape(self.label),
-                        re.escape(self.end_pattern)),
+                        self.end_pattern),
                     flags)
         return self._pattern
 
