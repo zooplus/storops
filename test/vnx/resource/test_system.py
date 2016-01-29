@@ -59,11 +59,6 @@ class VNXSystemTest(TestCase):
         assert_that(snap.creation_time, equal_to('05/24/13 20:06:12'))
 
     @patch_cli()
-    def test_get_port(self):
-        ports = self.vnx.get_port()
-        assert_that(len(ports), equal_to(20))
-
-    @patch_cli()
     def test_get_migration_session_list(self):
         ms_list = self.vnx.get_migration_session()
         assert_that(len(ms_list), equal_to(2))
@@ -86,3 +81,11 @@ class VNXSystemTest(TestCase):
         pf = self.vnx.get_pool_feature()
         assert_that(pf.max_pool_luns, equal_to(2100))
         assert_that(pf.total_pool_luns, equal_to(3))
+
+    @patch_cli()
+    def test_sp_port(self):
+        assert_that(len(self.vnx.get_sp_port()), equal_to(32))
+
+    @patch_cli()
+    def test_connection_port(self):
+        assert_that(len(self.vnx.get_connection_port()), equal_to(20))

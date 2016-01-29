@@ -11,7 +11,7 @@ from vnxCliApi.vnx.resource.vnx_domain import VNXDomainMemberList, \
 from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.migration import VNXMigrationSession
 from vnxCliApi.vnx.resource.ndu import VNXNdu
-from vnxCliApi.vnx.resource.port import VNXConnectionPort
+from vnxCliApi.vnx.resource.port import VNXConnectionPort, VNXSPPort
 from vnxCliApi.vnx.resource.resource import VNXCliResource
 from vnxCliApi.vnx.resource.rg import VNXRaidGroup
 from vnxCliApi.vnx.resource.sg import VNXStorageGroup
@@ -120,8 +120,11 @@ class VNXSystem(VNXCliResource):
     def get_ndu(self, name=None):
         return VNXNdu.get(self._cli, name)
 
-    def get_port(self, sp=None, port_id=None, vport_id=None):
+    def get_connection_port(self, sp=None, port_id=None, vport_id=None):
         return VNXConnectionPort.get(self._cli, sp, port_id, vport_id)
+
+    def get_sp_port(self, sp=None, port_id=None):
+        return VNXSPPort.get(self._cli, sp, port_id)
 
     def remove_snap(self, name):
         self._remove_resource(VNXSnap(name, self._cli))
