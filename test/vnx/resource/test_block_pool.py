@@ -110,7 +110,15 @@ class VNXPoolTest(TestCase):
     def test_create_lun_ignore_threshold(self):
         def f():
             pool = VNXPool(1, cli=t_cli())
-            assert_that(pool.create_lun('abc', ignore_thresholds=True))
+            pool.create_lun('abc', ignore_thresholds=True)
+
+        assert_that(f, raises(VNXCreateLunError, 'may not exist'))
+
+    @patch_cli()
+    def test_create_lun_with_pool_name(self):
+        def f():
+            pool = VNXPool(name='p0', cli=t_cli())
+            pool.create_lun(lun_id=12)
 
         assert_that(f, raises(VNXCreateLunError, 'may not exist'))
 

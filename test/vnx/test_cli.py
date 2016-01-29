@@ -232,7 +232,7 @@ class CliClientTest(TestCase):
     def test_create_lun_with_name(self):
         cmd = self.client.create_pool_lun(pool_name='P0',
                                           lun_name='zzz',
-                                          size=10)
+                                          size_gb=10)
         assert_that(
             cmd,
             equal_to('lun -create -capacity 10 -sq gb '
@@ -242,7 +242,7 @@ class CliClientTest(TestCase):
     def test_create_lun_with_id(self):
         cmd = self.client.create_pool_lun(pool_id=0,
                                           lun_id=29,
-                                          size=10)
+                                          size_gb=10)
         assert_that(
             cmd,
             equal_to('lun -create -capacity 10 -sq gb -poolId 0 -l 29'))
@@ -272,7 +272,7 @@ class CliClientTest(TestCase):
     def test_create_lun_ignore_threshold(self):
         cmd = self.client.create_pool_lun(pool_id=1,
                                           lun_id=123,
-                                          size=12,
+                                          size_gb=12,
                                           ignore_thresholds=True)
         assert_that(
             cmd,

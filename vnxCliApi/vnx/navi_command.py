@@ -7,6 +7,8 @@ import os
 import six
 from subprocess import Popen, PIPE
 
+import time
+
 from vnxCliApi.exception import NaviseccliNotAvailableError
 from vnxCliApi.lib.common import int_var, text_var, synchronized, cache
 
@@ -101,17 +103,25 @@ class NaviCommand(object):
         return [binary, '-h', ip] + self.get_credentials()
 
     @classmethod
-    def execute_naviseccli(cls, cmd, raise_on_rc=None, check_rc=False):
-        cmd = list(map(six.text_type, cmd))
-        cmd_str = ' '.join(cmd)
-        log.debug('call command: %s', cmd_str)
+    def execute_naviseccli(cls, cmd,
+                           raise_on_rc=None, check_rc=False):
+        def _log_command():
+            c = list(map(six.text_type, cmd))
+            cmd_str = ' '.join(c)
+            log.debug('call command: {}'.format(cmd_str))
+
+        _log_command()
+        start = time.time()
         try:
             p = Popen(cmd, stdout=PIPE, stderr=PIPE)
         except OSError:
             raise NaviseccliNotAvailableError()
         output = p.stdout.read()
-        p.poll()
+        p.wait()
         rc = p.returncode
+        log.debug('time consumed (s): {}\n'
+                  'return code: {}\n'
+                  'output:\n{}'.format(time.time() - start, rc, output))
         if rc is not None:
             if rc == raise_on_rc or (check_rc and rc != 0):
                 raise ValueError('raise error on return code "{}".'

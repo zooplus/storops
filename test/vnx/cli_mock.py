@@ -5,6 +5,8 @@ import logging
 from os.path import join, dirname, abspath, exists
 
 import functools
+
+import re
 import six
 from mock import patch
 
@@ -78,8 +80,10 @@ class MockCli(object):
                     break
         return ret
 
-    @staticmethod
-    def get_filename(params):
+    escaped_pattern = re.compile(r"[\\/]")
+
+    @classmethod
+    def get_filename(cls, params):
         def remove_flag(arr, flag, flag_length=1):
             if flag in arr:
                 i = arr.index(flag)
@@ -104,7 +108,8 @@ class MockCli(object):
 
         for k, v in six.iteritems(flags_to_remove):
             params = remove_flag(params, k, v)
-        return '_'.join(map(six.text_type, params))
+        name = '_'.join(map(six.text_type, params))
+        return re.sub(cls.escaped_pattern, '_', name)
 
     def update_mock_output(self, output, mock_map):
         self._output = output

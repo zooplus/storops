@@ -10,7 +10,7 @@ from vnxCliApi.vnx.resource.vnx_domain import VNXDomainMemberList, \
     VNXNetworkAdmin, VNXDomainNodeList
 from vnxCliApi.vnx.resource.lun import VNXLun
 from vnxCliApi.vnx.resource.migration import VNXMigrationSession
-from vnxCliApi.vnx.resource.ndu import VNXNdu
+from vnxCliApi.vnx.resource.ndu import VNXNdu, VNXNduList
 from vnxCliApi.vnx.resource.port import VNXConnectionPort, VNXSPPort
 from vnxCliApi.vnx.resource.resource import VNXCliResource
 from vnxCliApi.vnx.resource.rg import VNXRaidGroup
@@ -56,6 +56,9 @@ class VNXSystem(VNXCliResource):
                               timeout,
                               heartbeat_interval=heartbeat_interval,
                               naviseccli=naviseccli)
+
+        self._ndu_list = VNXNduList(self._cli)
+        self._ndu_list.with_no_poll()
         daemon(self._update_nodes_ip)
 
     def set_naviseccli(self, cli_binary):
@@ -68,6 +71,10 @@ class VNXSystem(VNXCliResource):
 
     def _update_nodes_ip(self):
         self._cli.set_ip(self.spa_ip, self.spb_ip, self.control_station_ip)
+
+    def update(self, data=None):
+        super(VNXSystem, self).update(data)
+        self._ndu_list.update()
 
     @property
     def heartbeat(self):
@@ -98,7 +105,7 @@ class VNXSystem(VNXCliResource):
     def get_pool_feature(self):
         return VNXPoolFeature(self._cli)
 
-    def get_pool(self, pool_id=None, name=None):
+    def get_pool(self, name=None, pool_id=None):
         return VNXPool.get(pool_id=pool_id, name=name, cli=self._cli)
 
     def get_lun(self, lun_id=None, name=None, lun_type=None):
@@ -173,6 +180,36 @@ class VNXSystem(VNXCliResource):
 
     def stop_heart_beat(self):
         self._cli.heartbeat.stop()
+
+    def is_compression_enabled(self):
+        return self._ndu_list.is_compression_enabled()
+
+    def is_dedup_enabled(self):
+        return self._ndu_list.is_dedup_enabled()
+
+    def is_snap_enabled(self):
+        return self._ndu_list.is_snap_enabled()
+
+    def is_mirror_view_async_enabled(self):
+        return self._ndu_list.is_mirror_view_async_enabled()
+
+    def is_mirror_view_sync_enabled(self):
+        return self._ndu_list.is_mirror_view_sync_enabled()
+
+    def is_mirror_view_enabled(self):
+        return self._ndu_list.is_mirror_view_enabled()
+
+    def is_thin_enabled(self):
+        return self._ndu_list.is_thin_enabled()
+
+    def is_sancopy_enabled(self):
+        return self._ndu_list.is_sancopy_enabled()
+
+    def is_auto_tiering_enabled(self):
+        return self._ndu_list.is_auto_tiering_enabled()
+
+    def is_fast_cache_enabled(self):
+        return self._ndu_list.is_fast_cache_enabled()
 
     def __del__(self):
         del self._cli

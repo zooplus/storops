@@ -6,7 +6,7 @@ import os
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 
 
 def version():

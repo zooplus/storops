@@ -27,3 +27,50 @@ class VNXNduTest(TestCase):
         assert_that(ndu.active_state, equal_to(True))
         assert_that(ndu.is_installation_completed, equal_to(True))
         assert_that(ndu.is_this_system_software, equal_to(False))
+
+    @patch_cli(output='-np_ndu_-list_-name_-Deduplication_no.txt')
+    def test_is_dedup_enabled_false(self):
+        assert_that(VNXNdu.is_dedup_enabled(t_cli()), equal_to(False))
+
+    @patch_cli()
+    def test_is_dedup_enabled(self):
+        assert_that(VNXNdu.is_dedup_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_compression_enabled(self):
+        assert_that(VNXNdu.is_compression_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_snap_enabled(self):
+        assert_that(VNXNdu.is_snap_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_mirror_view_async_enabled(self):
+        assert_that(VNXNdu.is_mirror_view_async_enabled(t_cli()),
+                    equal_to(True))
+
+    @patch_cli()
+    def test_is_mirror_view_sync_enabled(self):
+        assert_that(VNXNdu.is_mirror_view_sync_enabled(t_cli()),
+                    equal_to(True))
+
+    @patch_cli()
+    def test_is_mirror_view_enabled(self):
+        assert_that(VNXNdu.is_mirror_view_enabled(t_cli()),
+                    equal_to(True))
+
+    @patch_cli()
+    def test_is_thin_enabled(self):
+        assert_that(VNXNdu.is_thin_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_sancopy_enabled(self):
+        assert_that(VNXNdu.is_sancopy_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_auto_tiering_enabled(self):
+        assert_that(VNXNdu.is_auto_tiering_enabled(t_cli()), equal_to(True))
+
+    @patch_cli()
+    def test_is_fast_cache_enabled(self):
+        assert_that(VNXNdu.is_fast_cache_enabled(t_cli()), equal_to(True))

@@ -89,3 +89,16 @@ class VNXSystemTest(TestCase):
     @patch_cli()
     def test_connection_port(self):
         assert_that(len(self.vnx.get_connection_port()), equal_to(20))
+
+    @patch_cli()
+    def test_is_feature_enabled(self):
+        assert_that(self.vnx.is_compression_enabled(), equal_to(True))
+        assert_that(self.vnx.is_snap_enabled(), equal_to(True))
+        assert_that(self.vnx.is_dedup_enabled(), equal_to(True))
+        assert_that(self.vnx.is_mirror_view_async_enabled(), equal_to(True))
+        assert_that(self.vnx.is_mirror_view_sync_enabled(), equal_to(True))
+        assert_that(self.vnx.is_mirror_view_enabled(), equal_to(True))
+        assert_that(self.vnx.is_thin_enabled(), equal_to(True))
+        assert_that(self.vnx.is_sancopy_enabled(), equal_to(True))
+        assert_that(self.vnx.is_auto_tiering_enabled(), equal_to(True))
+        assert_that(self.vnx.is_fast_cache_enabled(), equal_to(True))

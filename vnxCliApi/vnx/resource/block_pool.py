@@ -84,17 +84,18 @@ class VNXPool(VNXCliResource):
         return ret
 
     def create_lun(self,
-                   lun_name,
+                   lun_name=None,
                    size_gb=1,
                    lun_id=None,
                    provision=None,
                    tier=None,
                    ignore_thresholds=None):
         ret = self._cli.create_pool_lun(
-            pool_id=self.pool_id,
+            pool_name=self._name,
+            pool_id=self._pool_id,
             lun_name=lun_name,
             lun_id=lun_id,
-            size=size_gb,
+            size_gb=size_gb,
             provision=provision,
             tier=tier,
             ignore_thresholds=ignore_thresholds,
