@@ -3,10 +3,11 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, none
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
+from vnxCliApi import VNXSystem
 from vnxCliApi.vnx.enums import VNXLunType
 from vnxCliApi.vnx.resource.lun import VNXLun
 
@@ -14,7 +15,6 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXSystemTest(TestCase):
-    @patch_cli()
     def setUp(self):
         self.vnx = t_vnx()
 
@@ -44,6 +44,11 @@ class VNXSystemTest(TestCase):
         assert_that(vnx.spa_ip, equal_to('192.168.1.52'))
         assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
         assert_that(vnx.control_station_ip, equal_to('192.168.1.93'))
+
+    @patch_cli(mock_map={'-np_domain': 'domain_-list_no_cs.txt'})
+    def test_member_ip_no_cs(self):
+        vnx = VNXSystem('1.1.1.1', heartbeat_interval=0)
+        assert_that(vnx.control_station_ip, none())
 
     @patch_cli()
     def test_get_snap(self):

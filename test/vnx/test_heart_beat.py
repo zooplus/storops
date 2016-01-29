@@ -34,6 +34,12 @@ class NodeHeartBeatTest(TestCase):
         assert_that(hb.is_available('spb'), equal_to(True))
         hb.stop()
 
+    def test_add(self):
+        hb = NodeHeartBeat(interval=0)
+        hb.add('spa', '1.1.1.1')
+        hb.add('cs', None)
+        assert_that(hb.is_available('cs'), equal_to(False))
+
     @patch_cli()
     def test_get_alive_sp_ip(self):
         hb = NodeHeartBeat(interval=0)

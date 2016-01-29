@@ -1,0 +1,9 @@
+Node:                 APM00153042305
+IP Address:           192.168.1.53
+Name:                 vnx2_1_53
+Port:                 80
+Secure Port:          443
+IP Address:           192.168.1.52 (Master)
+Name:                 vnx2_1_52
+Port:                 80
+Secure Port:          443

@@ -54,17 +54,29 @@ def read_test_file(name):
 
 
 class MockCli(object):
-    def __init__(self):
-        self._output = None
-        self._mock_map = None
+    def __init__(self, output=None, mock_map=None):
+        self._output = output
+        self._mock_map = mock_map
 
     def mock_execute(self, params, raise_on_rc=None, check_rc=False, **_):
-
+        normalized_param = self.get_filename(params)
+        from_map = self.get_file_in_mock_map(normalized_param)
         if self._output is not None:
             filename = self._output
+        elif from_map:
+            filename = from_map
         else:
-            filename = '{}.txt'.format(self.get_filename(params))
+            filename = '{}.txt'.format(normalized_param)
         return read_test_file(filename)
+
+    def get_file_in_mock_map(self, param):
+        ret = None
+        if self._mock_map is not None:
+            for key in self._mock_map.keys():
+                if param.startswith(key):
+                    ret = self._mock_map[key]
+                    break
+        return ret
 
     @staticmethod
     def get_filename(params):
@@ -100,7 +112,7 @@ class MockCli(object):
 
 
 def patch_cli(output=None, mock_map=None):
-    cli = MockCli()
+    cli = MockCli(output, mock_map)
 
     def decorator(func):
         @functools.wraps(func)
@@ -108,7 +120,6 @@ def patch_cli(output=None, mock_map=None):
                       'NaviCommand.execute_naviseccli',
                new=cli.mock_execute)
         def func_wrapper(self):
-            cli.update_mock_output(output, mock_map)
             return func(self)
 
         return func_wrapper

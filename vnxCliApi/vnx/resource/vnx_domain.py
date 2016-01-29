@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+import logging
 import re
 
 from past.builtins import filter
@@ -10,6 +11,9 @@ from vnxCliApi.vnx.enums import VNXSPEnum
 from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
+
+
+log = logging.getLogger(__name__)
 
 
 class VNXDomainNodeList(VNXCliResourceList):
@@ -34,7 +38,12 @@ class VNXDomainNodeList(VNXCliResourceList):
         dnl = VNXDomainNodeList(cli)
         dnl.with_no_poll()
         node = dnl.get_node(serial)
-        return node.control_station.ip_address
+        if node.control_station is None:
+            log.info('system {} does not has control station.'.format(serial))
+            ret = None
+        else:
+            ret = node.control_station.ip_address
+        return ret
 
 
 class VNXDomainNode(VNXCliResource):

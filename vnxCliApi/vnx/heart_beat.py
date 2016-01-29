@@ -250,7 +250,7 @@ class NodeHeartBeat(NaviCommand):
         return self._node_map.is_available(name)
 
     def add(self, name, ip, available=None, working=False):
-        if name is not None:
+        if name is not None and ip is not None:
             node = NodeInfo(name, ip, available, working)
             self._node_map.update(node)
 
