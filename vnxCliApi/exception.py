@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
@@ -41,6 +55,9 @@ class VNXException(Exception):
                 # log the issue and the kwargs
                 log.error(
                     'missing param in format string: "{}"'.format(message))
+            except IndexError:
+                # format error, use original message
+                pass
         elif isinstance(message, Exception):
             message = six.text_type(message)
 
@@ -64,7 +81,7 @@ class NaviseccliNotAvailableError(VNXException):
                " and available in path.")
 
 
-class ObjectNotFound(VNXException):
+class VNXObjectNotFound(VNXException):
     message = "object is not found.  {err}"
 
 
@@ -201,4 +218,32 @@ class VNXModifyPoolError(VNXPoolError):
 
 
 class VNXRemovePoolError(VNXPoolError):
+    pass
+
+
+class VNXFsError(VNXException):
+    pass
+
+
+class VNXFsExistedError(VNXFsError):
+    pass
+
+
+class VNXFsSnapError(VNXException):
+    pass
+
+
+class VNXFsSnapExistedError(VNXFsSnapError):
+    pass
+
+
+class VNXMoverInterfaceError(VNXException):
+    pass
+
+
+class VNXMoverInterfaceNotFound(VNXException):
+    pass
+
+
+class VNXMoverInterfaceNotAttached(VNXException):
     pass

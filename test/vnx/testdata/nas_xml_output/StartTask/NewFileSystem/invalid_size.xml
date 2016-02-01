@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="705526">
+            <Status maxSeverity="error">
+                <Problem messageCode="13421850484" component="CS_CORE" message="File system of the specified size cannot be created." severity="error">
+                    <Description>File system of the specified size cannot be created because it does not conform to the size requirements of the file system type. File systems of common log type must have a minimum size of 2 MB. File systems of split log type (default option) must have a minimum size of 1 GB. The maximum supported size of file systems is 16 TB.</Description>
+                    <Action>Create a filesystem with a valid file size.</Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

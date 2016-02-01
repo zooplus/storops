@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
@@ -10,14 +24,14 @@ from operator import is_not
 from past.builtins import filter
 import six
 
-from vnxCliApi.vnx.enums import VNXSPEnum, VNXMirrorViewSyncRate, \
-    VNXMirrorViewRecoveryPolicy, VNXRaidType
+from vnxCliApi.vnx import enums
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
-NAs = ['N/A', 'Unbound']
+NAs = ['N/A', 'Unbound', 'None', 'Disabled',
+       'This disk does not belong to a RAIDGroup']
 
 
 def to_bool(str_input):
@@ -27,18 +41,20 @@ def to_bool(str_input):
     return ret
 
 
-def to_int_arr(str_input):
-    def to_int_silent_error(value):
-        ret = None
-        try:
-            if len(value) > 0:
-                ret = int(value)
-        except ValueError:
-            if value not in NAs:
-                log.warn('cannot convert "{}" to int.'.format(value))
-        return ret
+def to_wwn(str_input):
+    str_input = str_input.upper()
+    if ':' not in str_input:
+        items = [str_input[i:i + 2] for i in range(0, len(str_input), 2)]
+        ret = ':'.join(items)
+    else:
+        ret = str_input
+    return ret
 
-    ints = map(to_int_silent_error, re.split(',| ', str_input))
+
+def to_int_arr(inputs):
+    if isinstance(inputs, six.string_types):
+        inputs = re.split(',| ', inputs)
+    ints = map(to_int, inputs)
     return list(filter(partial(is_not, None), ints))
 
 
@@ -80,9 +96,13 @@ def to_int(value):
     ret = None
     if value is not None:
         try:
-            ret = int(value)
+            if isinstance(value, six.integer_types):
+                ret = value
+            elif len(value) > 0:
+                ret = int(value)
         except ValueError:
-            pass
+            if value not in NAs:
+                log.warn('cannot convert "{}" to int.'.format(value))
     return ret
 
 
@@ -164,10 +184,12 @@ def _to_enum(enum_class):
     return _enum_converter
 
 
-to_sp_enum = _to_enum(VNXSPEnum)
-to_mirror_view_recovery_policy = _to_enum(VNXMirrorViewRecoveryPolicy)
-to_mirror_view_sync_rate = _to_enum(VNXMirrorViewSyncRate)
-to_raid_type = _to_enum(VNXRaidType)
+to_sp_enum = _to_enum(enums.VNXSPEnum)
+to_mirror_view_recovery_policy = _to_enum(enums.VNXMirrorViewRecoveryPolicy)
+to_mirror_view_sync_rate = _to_enum(enums.VNXMirrorViewSyncRate)
+to_raid_type = _to_enum(enums.VNXRaidType)
+to_port_type = _to_enum(enums.VNXPortType)
+to_hex = enums.to_hex
 
 
 def boolean_to_str(value, true_str='true', false_str='false'):

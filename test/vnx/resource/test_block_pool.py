@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
@@ -75,9 +89,10 @@ class VNXPoolTest(TestCase):
     @patch_cli()
     def test_get_disk(self):
         pool = VNXPool(pool_id=1, cli=t_cli())
-        assert_that(len(pool.disks), equal_to(2))
-        disk = pool.disks[0]
-        assert_that(disk.serial_number, is_in(('W7H59L3G', 'Z1Y3F94M')))
+        disks = pool.disks
+        assert_that(len(disks), equal_to(3))
+        assert_that(disks[0].serial_number,
+                    is_in(('6XS2EAKG', 'S0PFNECC304969', '6XS2QCG1')))
 
     @patch_cli()
     def test_create_pool(self):
@@ -160,6 +175,11 @@ class VNXPoolFeatureTest(TestCase):
         assert_that(f.total_thin_luns, equal_to(2))
         assert_that(f.total_non_thin_luns, equal_to(1))
         assert_that(f.number_of_disks_used_in_pools, equal_to(15))
-        assert_that(f.available_disks, has_items('1_0_14', '1_0_5'))
+        assert_that(f.available_disk_indices, has_items('0_0_B8', '0_0_B9'))
         assert_that(f.background_operation_state, equal_to('None'))
         assert_that(f.background_rate, equal_to('Medium'))
+
+    @patch_cli()
+    def test_available_disks(self):
+        f = VNXPoolFeature(t_cli())
+        assert_that(len(f.available_disks), equal_to(2))

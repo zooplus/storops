@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
@@ -14,7 +28,7 @@ from vnxCliApi.exception import OptionMissingError
 from vnxCliApi.lib.common import check_int, text_var, int_var, enum_var, \
     yes_no_var
 from vnxCliApi.vnx.enums import VNXSPEnum, VNXTieringEnum, VNXProvisionEnum, \
-    VNXMigrationRate, has_error, VNXCompressionRate, \
+    VNXMigrationRate, VNXCompressionRate, \
     VNXMirrorViewRecoveryPolicy, VNXMirrorViewSyncRate, VNXLunType, \
     VNXRaidType, VNXPoolRaidType
 from vnxCliApi.vnx.heart_beat import NodeHeartBeat
@@ -66,28 +80,6 @@ def duel_command(f):
         return self.execute_dual(commands)
 
     return func_wrapper
-
-
-def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
-    def on_error():
-        log.error(msg)
-        raise ex_clz(msg)
-
-    if msg is None:
-        msg = out
-    else:
-        msg = '{}  detail:\n{}'.format(msg, out)
-    if ex_clz is None:
-        ex_clz = ValueError
-    if expected_error is None or len(expected_error) == 0:
-        # check if out is empty
-        if out is not None and len(out) > 0:
-            on_error()
-    else:
-        if not isinstance(expected_error, (list, tuple)):
-            expected_error = [expected_error]
-        if has_error(out, *expected_error):
-            on_error()
 
 
 class CliClient(object):

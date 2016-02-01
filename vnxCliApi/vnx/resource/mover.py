@@ -1,197 +1,262 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
-import re
-
-import vnxCliApi.vnx.constants as const
-from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.vnx.resource import file_resource
+from vnxCliApi.lib.common import check_int
+from vnxCliApi.vnx.enums import VNXPortType
+from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXResource
 
 __author__ = 'Jay Xu'
 
 LOG = logging.getLogger(__name__)
 
 
-class VNXMoverRef(file_resource.Resource):
-    pass
+class VNXMoverRefList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverRef
+
+    def _get_raw_resource(self):
+        return self._cli.get_mover(full=False)
 
 
-class MoverRefManager(file_resource.ResourceManager):
-    """Manage :class:`Pool` resources."""
-    resource_class = VNXMoverRef
+class VNXMoverRef(VNXResource):
+    _full_prop = False
 
-    def __init__(self, manager):
-        super(MoverRefManager, self).__init__(manager)
-        self.mover_ref_map = dict()
+    def __init__(self, name=None, mover_id=None, cli=None):
+        super(VNXMoverRef, self).__init__()
+        self._name = name
+        self._mover_id = mover_id
+        self._cli = cli
 
-    def get(self, name):
-        if self._cache_missed(name, self.mover_ref_map):
-            request = self._build_query_package(
-                self.xml_builder.MoverQueryParams(
-                    self.xml_builder.AspectSelection(movers='true')
-                )
-            )
+        # cache for members
+        self._host = None
 
-            response = self._send_request(request)
+    def update(self, data=None):
+        super(VNXMoverRef, self).update(data)
 
-            if const.STATUS_ERROR == response['maxSeverity']:
-                message = (("Failed to get movers information. "
-                            "Status: %(status)s. Reason: %(err)s.") %
-                           {'status': response['maxSeverity'],
-                            'err': response['problems']})
-                LOG.error(message)
-                raise VNXBackendError(err=message)
-
-            for item in response['objects']:
-                mover_name = item['name']
-                if mover_name not in self.mover_ref_map:
-                    self.mover_ref_map[mover_name] = self.resource_class(
-                        self, item, loaded=True)
-                else:
-                    self.mover_ref_map[mover_name].update(item)
-
-        if not self._mover_id(name):
-            message = ("Failed to get mover by name %(name)s." %
-                       {'name': name})
-            LOG.error(message)
-            raise ObjectNotFound(err=message)
-
-        return self.mover_ref_map[name]
-
-    def _mover_id(self, name):
-        ret = ''
-        if name in self.mover_ref_map:
-            ret = self.mover_ref_map[name].id
-        return ret
-
-
-class VNXMover(file_resource.Resource):
-    def get_interconnect_id(self, dest_mover=None):
-        if dest_mover:
-            return self.manager.get_interconnect_id(self.name,
-                                                    dest_mover.name)
-        else:
-            return self.manager.get_interconnect_id(self.name, self.name)
-
-    def get_physical_devices(self):
-        return self.manager.get_physical_devices(self.name)
-
-
-class MoverManager(file_resource.ResourceManager):
-    """Manage :class:`Pool` resources."""
-    resource_class = VNXMover
-
-    def __init__(self, manager):
-        super(MoverManager, self).__init__(manager)
-        self.mover_map = dict()
-
-    def get(self, name):
-        mover_ref_manager = self.manager.get_object_manager('mover_ref')
-
-        if self._cache_missed(name, self.mover_map):
-            mover_ref = mover_ref_manager.get(name)
-
-            request = self._build_query_package(
-                self.xml_builder.MoverQueryParams(
-                    self.xml_builder.AspectSelection(
-                        moverDeduplicationSettings='true',
-                        moverDnsDomains='true',
-                        moverInterfaces='true',
-                        moverNetworkDevices='true',
-                        moverNisDomains='true',
-                        moverRoutes='true',
-                        movers='true',
-                        moverStatuses='true'
-                    ),
-                    mover=mover_ref.id
-                )
-            )
-
-            response = self._send_request(request)
-
-            message = ("Failed to get mover by name %(name)s." %
-                       {'name': name})
-            if const.STATUS_ERROR == response['maxSeverity']:
-                LOG.error(message)
-                raise VNXBackendError(err=message)
-            elif not response['objects']:
-                LOG.error(message)
-                raise ObjectNotFound(err=message)
-
-            item = response['objects'][0]
-            if name not in self.mover_map:
-                self.mover_map[name] = self.resource_class(self, item,
-                                                           loaded=True)
-            else:
-                self.mover_map[name].update(item)
-
-            mover = self.mover_map[name]
-
-            internal_devices = []
-            if mover.interfaces:
-                for interface in mover.interfaces:
-                    if self._is_internal_device(interface['device']):
-                        internal_devices.append(interface)
-
-                mover.interfaces = [var for var in mover.interfaces if
-                                    var not in internal_devices]
-
-        return self.mover_map[name]
-
-    @staticmethod
-    def _is_internal_device(device):
-        for device_type in ('mge', 'fxg', 'tks', 'fsn'):
-            if device.find(device_type) == 0:
-                return True
+    @property
+    def is_vdm(self):
         return False
 
-    def get_interconnect_id(self, source, destination):
-        header = [
-            'id',
-            'name',
-            'source_server',
-            'destination_system',
-            'destination_server',
-        ]
+    def get_mover_id(self):
+        if self._mover_id is not None:
+            ret = self._mover_id
+        else:
+            ret = self.mover_id
+        return ret
 
-        conn_id = None
+    def _get_raw_resource(self):
+        if self._mover_id is not None:
+            resp = self._cli.get_mover(mover_id=self._mover_id,
+                                       full=self._full_prop)
+        elif self._name is not None:
+            resp = self._cli.get_mover(full=self._full_prop)
+            resp.filter_object(name=self._name)
+        else:
+            raise ValueError('mover_id or name should be supplied.')
+        return resp
 
-        command_nas_cel = [
-            'env', 'NAS_DB=/nas', '/nas/bin/nas_cel',
-            '-interconnect', '-l',
-        ]
-        out, err = self._execute_cmd(command_nas_cel)
+    @classmethod
+    def get_id(cls, item):
+        if isinstance(item, VNXMoverRef):
+            ret = item.get_mover_id()
+        else:
+            ret = check_int(item)
+        return ret
 
-        lines = out.strip().split('\n')
-        for line in lines:
-            if line.strip().split() == header:
-                LOG.info('Found the header of the command '
-                         '/nas/bin/nas_cel -interconnect -l.')
-            else:
-                interconn = line.strip().split()
-                if interconn[2] == source and interconn[4] == destination:
-                    conn_id = interconn[0]
+    def create_dns(self, domain_name, ip):
+        if isinstance(ip, (list, tuple)):
+            ip = ' '.join(ip)
+        resp = self._cli.create_dns_domain(self.get_mover_id(), domain_name,
+                                           ip)
+        resp.raise_if_err()
+        return resp
+
+    def remove_dns(self, domain_name):
+        resp = self._cli.remove_dns_domain(self.get_mover_id(), domain_name)
+        resp.raise_if_err()
+        return resp
+
+    @property
+    def host(self):
+        if self._host is None:
+            self._host = VNXMoverHost(host_id=self.host_id, cli=self._cli)
+        return self._host
+
+    @property
+    def physical_devices(self):
+        return self.host.physical_device
+
+    @property
+    def fc_devices(self):
+        return [device for device in self.physical_devices
+                if device.type == VNXPortType.FC]
+
+    @property
+    def ethernet_devices(self):
+        return [device for device in self.physical_devices
+                if device.type == VNXPortType.ETHERNET]
+
+    def get_interconnect_id(self, source=None, destination=None):
+        if source is None:
+            source = self.name
+        if destination is None:
+            destination = self.name
+
+        out = self._cli.get_mover_interconnect_id_list()
+
+        for line in out.strip().split('\n'):
+            _id, name, src, dest_system, dest = line.strip().split()
+            if src == source and dest == destination:
+                conn_id = check_int(_id)
+                break
+        else:
+            conn_id = None
 
         return conn_id
 
-    def get_physical_devices(self, mover_name):
 
-        physical_network_devices = []
+class VNXMoverList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMover
 
-        cmd_sysconfig = [
-            'env', 'NAS_DB=/nas', '/nas/bin/server_sysconfig', mover_name,
-            '-pci'
-        ]
+    def _get_raw_resource(self):
+        return self._cli.get_mover()
 
-        out, err = self._execute_cmd(cmd_sysconfig)
 
-        re_pattern = ('0:\s*(?P<name>\S+)\s*IRQ:\s*(?P<irq>\d+)\n'
-                      '.*\n'
-                      '\s*Link:\s*(?P<link>[A-Za-z]+)')
+class VNXMover(VNXMoverRef):
+    _full_prop = True
 
-        for device in re.finditer(re_pattern, out):
-            if 'Up' in device.group('link'):
-                physical_network_devices.append(device.group('name'))
+    @property
+    def interfaces(self):
+        ret = []
+        for i in self.mover_interfaces:
+            i._mover = self
+            i._cli = self._cli
+            ret.append(i)
+        return ret
 
-        return physical_network_devices
+    def create_interface(self, device, ip, net_mask, vlan_id=0, name=None):
+        mover_id = self.get_mover_id()
+        if hasattr(device, 'name'):
+            device = device.name
+        resp = self._cli.create_mover_interface(
+            mover_id, device, ip, net_mask, vlan_id, name)
+        resp.raise_if_err()
+        return VNXMoverInterface(mover=self, cli=self._cli, ip=ip)
+
+    def remove_interface(self, ip):
+        interface = next(i for i in self.interfaces if i.ip_addr == ip)
+        return interface.remove()
+
+
+class VNXMoverInterfaceList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverInterface
+
+
+class VNXMoverInterface(VNXResource):
+    def __init__(self, mover=None, ip=None, cli=None):
+        super(VNXMoverInterface, self).__init__()
+        self._cli = cli
+        self._mover = mover
+        self._ip = ip
+
+    def _get_raw_resource(self):
+        self._mover.update()
+        interface = next(i for i in self._mover.interfaces
+                         if i.ip_addr == self._ip)
+        return interface.parsed_resource
+
+    def get_ip(self):
+        if self._ip is not None:
+            ret = self._ip
+        else:
+            ret = self.ip_addr
+        return ret
+
+    def remove(self):
+        mover_id = self._mover.get_mover_id()
+        resp = self._cli.remove_mover_interface(mover_id, self.get_ip())
+        resp.raise_if_err()
+        return resp
+
+
+class VNXMoverLogicalNetworkDeviceList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverLogicalNetworkDevice
+
+
+class VNXMoverLogicalNetworkDevice(VNXResource):
+    pass
+
+
+class VNXMoverRouteList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverRoute
+
+
+class VNXMoverRoute(VNXResource):
+    pass
+
+
+class VNXMoverDeduplicationSettings(VNXResource):
+    pass
+
+
+class VNXMoverHostList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverHost
+
+    def _get_raw_resource(self):
+        return self._cli.get_mover_host()
+
+
+class VNXMoverHost(VNXResource):
+    def __init__(self, host_id=None, cli=None):
+        super(VNXMoverHost, self).__init__()
+        self._host_id = host_id
+        self._cli = cli
+
+    def _get_raw_resource(self):
+        return self._cli.get_mover_host(self._host_id)
+
+
+class VNXMoverMotherboard(VNXResource):
+    pass
+
+
+class VNXMoverPhysicalDeviceList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXMoverPhysicalDevice
+
+
+class VNXMoverPhysicalDevice(VNXResource):
+    @property
+    def is_internal(self):
+        ret = False
+        if self.name:
+            header = self.name[:3]
+            ret = header in ('mge', 'fxg', 'tks', 'fsn')
+        return ret

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewStandaloneCifsServer interfaces="10.110.24.194"
+                                             localAdminPassword="password"
+                                             workgroup="work" name="s2">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases/>
+                    </NewStandaloneCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

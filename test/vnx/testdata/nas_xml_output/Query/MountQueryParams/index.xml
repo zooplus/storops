@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="get_all.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MountQueryParams/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_by_mover_2.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MountQueryParams>
+                        <MoverOrVdm mover="2" moverIdIsVdm="false"/>
+                    </MountQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_path_zhuanc.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MountQueryParams path="/zhuanc_fs_100g">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                    </MountQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_not_found.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MountQueryParams path="/not_found">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                    </MountQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_same_path_different_mover.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MountQueryParams path="/same"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

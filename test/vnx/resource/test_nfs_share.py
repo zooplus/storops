@@ -1,467 +1,173 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
-import copy
 import unittest
 
-import mock
+from hamcrest import assert_that, has_item, raises
+from hamcrest import equal_to
 
-from test import utils
-from test.vnx.resource import fakes
-from test.vnx.resource.fakes import mock_ssh_connector, patch_retry
-from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.connection.exceptions import SSHExecutionError
-from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.vnx import constants
-from vnxCliApi.vnx.resource import nas_client
-from vnxCliApi.vnx.resource import nfs_share
+from test.vnx.nas_mock import t_nas, patch_nas
+from vnxCliApi.exception import VNXBackendError
+from vnxCliApi.vnx.resource.mover import VNXMover
+from vnxCliApi.vnx.resource.nfs_share import VNXNfsShareList, NfsHostConfig, \
+    VNXNfsShare
 
 __author__ = 'Jay Xu'
 
 
-class NFSShareTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.ssh_hook = utils.SSHSideEffect()
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.share_manager = nfs_share.NFSShareManager(storage_manager)
-
-        self.vdm = fakes.VDMTestData()
-        self.nfs_share = fakes.NFSShareTestData()
-
-    def test_create_nfs_share(self):
-        self.ssh_hook.append(self.nfs_share.output_create())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.create(name=self.nfs_share.share_name,
-                                  mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_create(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_create_nfs_share_with_error(self):
-        expt_err = SSHExecutionError(
-            stdout=self.nfs_share.fake_output)
-        self.ssh_hook.append(ex=expt_err)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.create,
-                          name=self.nfs_share.share_name,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_create(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_delete_nfs_share(self):
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_delete_succeed())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.delete(name=self.nfs_share.share_name,
-                                  mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_delete_nfs_share_not_found(self):
-        expt_not_found = SSHExecutionError(
-            stdout=self.nfs_share.output_get_but_not_found())
-        self.ssh_hook.append(ex=expt_not_found)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.delete(name=self.nfs_share.share_name,
-                                  mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_get(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    @patch_retry
-    def test_delete_nfs_share_locked(self):
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        expt_locked = SSHExecutionError(
-            stdout=self.nfs_share.output_delete_but_locked())
-        self.ssh_hook.append(ex=expt_locked)
-        self.ssh_hook.append(self.nfs_share.output_delete_succeed())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.delete(name=self.nfs_share.share_name,
-                                  mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_delete_nfs_share_with_error(self):
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        expt_err = SSHExecutionError(
-            stdout=self.nfs_share.fake_output)
-        self.ssh_hook.append(ex=expt_err)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.delete,
-                          name=self.nfs_share.share_name,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_get_nfs_share(self):
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.get(name=self.nfs_share.share_name,
-                               mover_name=self.vdm.vdm_name,
-                               check_exit_code=True)
-
-        # Get NFS share from cache
-        self.share_manager.get(name=self.nfs_share.share_name,
-                               mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_get(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_get_nfs_share_not_found(self):
-        expt_not_found = SSHExecutionError(
-            stdout=self.nfs_share.output_get_but_not_found())
-        self.ssh_hook.append(ex=expt_not_found)
-        self.ssh_hook.append(self.nfs_share.output_get_but_not_found())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(ObjectNotFound,
-                          self.share_manager.get,
-                          name=self.nfs_share.share_name,
-                          mover_name=self.vdm.vdm_name,
-                          check_exit_code=True)
-
-        self.share_manager.get(name=self.nfs_share.share_name,
-                               mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_get_nfs_share_with_error(self):
-        expt_err = SSHExecutionError(
-            stdout=self.nfs_share.fake_output)
-        self.ssh_hook.append(ex=expt_err)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.get,
-                          name=self.nfs_share.share_name,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_get(),
-                               check_exit_code=False)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_share_access(self):
-        rw_hosts = copy.deepcopy(self.nfs_share.rw_hosts)
-        rw_hosts.append(self.nfs_share.nfs_host_ip)
-
-        ro_hosts = copy.deepcopy(self.nfs_share.ro_hosts)
-        ro_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts, ro_hosts=ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts))
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.share_manager.allow_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name,
-            access_level=constants.ACCESS_LEVEL_RW)
-
-        self.share_manager.allow_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name,
-            access_level=constants.ACCESS_LEVEL_RO)
-
-        self.share_manager.allow_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name,
-            access_level=constants.ACCESS_LEVEL_RW)
-
-        self.share_manager.allow_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name,
-            access_level=constants.ACCESS_LEVEL_RW)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(
-                rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts)),
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(
-                rw_hosts=self.nfs_share.rw_hosts, ro_hosts=ro_hosts)),
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(
-                rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts)),
-            mock.call(self.nfs_share.cmd_get()),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_share_access_not_found(self):
-        expt_not_found = SSHExecutionError(
-            stdout=self.nfs_share.output_get_but_not_found())
-        self.ssh_hook.append(ex=expt_not_found)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.assertRaises(ObjectNotFound,
-                          self.share_manager.allow_share_access,
-                          share_name=self.nfs_share.share_name,
-                          host_ip=self.nfs_share.nfs_host_ip,
-                          mover_name=self.vdm.vdm_name,
-                          access_level=constants.ACCESS_LEVEL_RW)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_get())]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_rw_share_access(self):
-        rw_hosts = copy.deepcopy(self.nfs_share.rw_hosts)
-        rw_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.share_manager.deny_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(self.nfs_share.rw_hosts,
-                                                    self.nfs_share.ro_hosts)),
-            mock.call(self.nfs_share.cmd_get()),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_ro_share_access(self):
-        ro_hosts = copy.deepcopy(self.nfs_share.ro_hosts)
-        ro_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts, ro_hosts=ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-
-        ro_hosts.remove(self.nfs_share.nfs_host_ip)
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.share_manager.deny_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name)
-
-        self.share_manager.deny_share_access(
-            share_name=self.nfs_share.share_name,
-            host_ip=self.nfs_share.nfs_host_ip,
-            mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(self.nfs_share.rw_hosts,
-                                                    self.nfs_share.ro_hosts)),
-            mock.call(self.nfs_share.cmd_get()),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_share_not_found(self):
-        expt_not_found = SSHExecutionError(
-            stdout=self.nfs_share.output_get_but_not_found())
-        self.ssh_hook.append(ex=expt_not_found)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.assertRaises(ObjectNotFound,
-                          self.share_manager.deny_share_access,
-                          share_name=self.nfs_share.share_name,
-                          host_ip=self.nfs_share.nfs_host_ip,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.nfs_share.cmd_get())]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_rw_share_with_error(self):
-        rw_hosts = copy.deepcopy(self.nfs_share.rw_hosts)
-        rw_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts))
-        expt_not_found = SSHExecutionError(
-            stdout=self.nfs_share.output_get_but_not_found())
-        self.ssh_hook.append(ex=expt_not_found)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.deny_share_access,
-                          share_name=self.nfs_share.share_name,
-                          host_ip=self.nfs_share.nfs_host_ip,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_get()),
-            mock.call(self.nfs_share.cmd_set_access(self.nfs_share.rw_hosts,
-                                                    self.nfs_share.ro_hosts)),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_access_with_nfs_share_resource(self):
-        rw_hosts = copy.deepcopy(self.nfs_share.rw_hosts)
-        rw_hosts.append(self.nfs_share.nfs_host_ip)
-
-        ro_hosts = copy.deepcopy(self.nfs_share.ro_hosts)
-        ro_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_create())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_delete_succeed())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        share = self.share_manager.create(name=self.nfs_share.share_name,
-                                          mover_name=self.vdm.vdm_name)
-
-        share.allow_share_access(host_ip=self.nfs_share.nfs_host_ip)
-
-        share.delete()
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_create(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_set_access(
-                rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts),
-                check_exit_code=True),
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=False),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_access_with_nfs_share_resource(self):
-        rw_hosts = copy.deepcopy(self.nfs_share.rw_hosts)
-        rw_hosts.append(self.nfs_share.nfs_host_ip)
-
-        self.ssh_hook.append(self.nfs_share.output_create())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=rw_hosts, ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_set_access_success())
-        self.ssh_hook.append(self.nfs_share.output_get_succeed(
-            rw_hosts=self.nfs_share.rw_hosts,
-            ro_hosts=self.nfs_share.ro_hosts))
-        self.ssh_hook.append(self.nfs_share.output_delete_succeed())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = utils.EMCNFSShareMock(
-            side_effect=self.ssh_hook)
-
-        share = self.share_manager.create(name=self.nfs_share.share_name,
-                                          mover_name=self.vdm.vdm_name)
-
-        share.deny_share_access(host_ip=self.nfs_share.nfs_host_ip)
-
-        share.delete()
-
-        ssh_calls = [
-            mock.call(self.nfs_share.cmd_create(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=True),
-            mock.call(self.nfs_share.cmd_set_access(
-                self.nfs_share.rw_hosts, self.nfs_share.ro_hosts),
-                check_exit_code=True),
-            mock.call(self.nfs_share.cmd_get(), check_exit_code=False),
-            mock.call(self.nfs_share.cmd_delete(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+class VNXNfsShareTest(unittest.TestCase):
+    @patch_nas()
+    def test_get_all_share(self):
+        shares = VNXNfsShareList(t_nas())
+        assert_that(len(shares), equal_to(26))
+        share = next(s for s in shares if s.path == '/EEE')
+        self.verify_share_eee(share)
+
+    @patch_nas()
+    def test_get_share_by_path(self):
+        path = '/EEE'
+        shares = VNXNfsShareList(t_nas(), path=path)
+        assert_that(len(shares), equal_to(1))
+        share = next(s for s in shares if s.path == path)
+        self.verify_share_eee(share)
+
+    @patch_nas()
+    def test_get_share_by_mover_id(self):
+        mover = self.get_mover_1()
+        shares = VNXNfsShareList(t_nas(), mover=mover)
+        assert_that(len(shares), equal_to(24))
+        share = next(s for s in shares if s.path == '/EEE')
+        self.verify_share_eee(share)
+
+    @staticmethod
+    def verify_share_eee(share):
+        assert_that(share.path, equal_to('/EEE'))
+        assert_that(share.read_only, equal_to(False))
+        assert_that(share.fs_id, equal_to(213))
+        assert_that(share.mover_id, equal_to(1))
+        assert_that(len(share.root_hosts), equal_to(41))
+        assert_that(share.access_hosts, has_item('10.110.43.94'))
+        assert_that(len(share.access_hosts), equal_to(41))
+        assert_that(share.access_hosts, has_item('10.110.43.94'))
+        assert_that(len(share.rw_hosts), equal_to(41))
+        assert_that(share.rw_hosts, has_item('10.110.43.94'))
+        assert_that(len(share.ro_hosts), equal_to(41))
+        assert_that(share.ro_hosts, has_item('10.110.43.94'))
+
+    @patch_nas()
+    def test_modify_not_exists(self):
+        def f():
+            host_config = NfsHostConfig(
+                root_hosts=['1.1.1.1', '2.2.2.2'],
+                ro_hosts=['3.3.3.3'],
+                rw_hosts=['4.4.4.4', '5.5.5.5'],
+                access_hosts=['6.6.6.6'])
+            mover = self.get_mover_1()
+            share = VNXNfsShare(cli=t_nas(), mover=mover, path='/not_found')
+            share.modify(ro=False, host_config=host_config)
+
+        assert_that(f, raises(VNXBackendError, 'does not exist'))
+
+    @patch_nas()
+    def test_modify_success(self):
+        host_config = NfsHostConfig(access_hosts=['7.7.7.7'])
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        resp = share.modify(ro=True, host_config=host_config)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_nas()
+    def test_create_no_host(self):
+        def f():
+            mover = self.get_mover_1()
+            VNXNfsShare.create(cli=t_nas(), mover=mover, path='/invalid')
+
+        assert_that(f, raises(VNXBackendError, 'is invalid'))
+
+    @patch_nas()
+    def test_create_success(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare.create(cli=t_nas(), mover=mover, path='/EEE')
+        assert_that(share.path, equal_to('/EEE'))
+        assert_that(share.mover_id, equal_to(1))
+        assert_that(share.existed, equal_to(True))
+        assert_that(share.fs_id, equal_to(243))
+
+    @patch_nas()
+    def test_create_with_host_config(self):
+        mover = self.get_mover_1()
+        host_config = NfsHostConfig(
+            root_hosts=['1.1.1.1', '2.2.2.2'],
+            ro_hosts=['3.3.3.3'],
+            rw_hosts=['4.4.4.4', '5.5.5.5'],
+            access_hosts=['6.6.6.6'])
+        share = VNXNfsShare.create(cli=t_nas(), mover=mover, path='/FFF',
+                                   host_config=host_config)
+        assert_that(share.fs_id, equal_to(247))
+        assert_that(share.path, equal_to('/FFF'))
+        assert_that(share.existed, equal_to(True))
+        assert_that(share.access_hosts, has_item('6.6.6.6'))
+
+    @patch_nas()
+    def test_remove_success(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        resp = share.remove()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_nas()
+    def test_remove_not_found(self):
+        def f():
+            mover = self.get_mover_1()
+            share = VNXNfsShare(cli=t_nas(), mover=mover, path='/not_found')
+            share.remove()
+
+        assert_that(f, raises(VNXBackendError, 'Invalid argument'))
+
+    @staticmethod
+    def get_mover_1():
+        return VNXMover(mover_id=1, cli=t_nas())
+
+    @patch_nas()
+    def test_mover_property(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        mover = share.mover
+        assert_that(mover.existed, equal_to(True))
+        assert_that(mover.role, equal_to('primary'))
+
+    @patch_nas()
+    def test_fs_property(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        fs = share.fs
+        assert_that(fs.existed, equal_to(True))
+        assert_that(fs.fs_id, equal_to(243))
+
+    @patch_nas()
+    def test_allow_ro_hosts(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/minjie_fs1')
+        resp = share.allow_ro_access('1.1.1.1', '2.2.2.2')
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_nas()
+    def test_deny_hosts(self):
+        mover = self.get_mover_1()
+        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/minjie_fs2')
+        resp = share.deny_access('1.1.1.1', '2.2.2.2')
+        assert_that(resp.is_ok(), equal_to(True))

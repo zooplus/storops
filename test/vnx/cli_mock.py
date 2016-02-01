@@ -1,8 +1,21 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
-from os.path import join, dirname, abspath, exists
 
 import functools
 
@@ -10,6 +23,7 @@ import re
 import six
 from mock import patch
 
+from test.vnx import ConnectorMock
 from vnxCliApi.lib.common import cache
 from vnxCliApi.vnx.cli import CliClient
 from vnxCliApi.vnx.resource.system import VNXSystem
@@ -17,8 +31,6 @@ from vnxCliApi.vnx.resource.system import VNXSystem
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
-
-_mock_data_dir = ('testdata', 'mock_output')
 
 
 @cache()
@@ -39,48 +51,24 @@ def t_vnx():
     return VNXSystem('10.244.211.30', heartbeat_interval=0)
 
 
-def read_test_file(name):
-    p = dirname(abspath(__file__))
-    p = join(p, *_mock_data_dir)
-    p = join(p, name)
-    ret = ''
-    if not exists(p):
-        log.warn('cannot find mock output file: %s, '
-                 'default to empty string.', p)
-    else:
-        with open(p) as f:
-            log.debug('read mock file: %s', p)
-            ret = f.read()
+class MockCli(ConnectorMock):
+    base_folder = 'block_output'
 
-    return ret
+    def get_folder(self, inputs):
+        return self.base_folder
 
-
-class MockCli(object):
-    def __init__(self, output=None, mock_map=None):
-        self._output = output
-        self._mock_map = mock_map
-
-    def mock_execute(self, params, raise_on_rc=None, check_rc=False, **_):
-        normalized_param = self.get_filename(params)
-        from_map = self.get_file_in_mock_map(normalized_param)
-        if self._output is not None:
-            filename = self._output
-        elif from_map:
-            filename = from_map
-        else:
-            filename = '{}.txt'.format(normalized_param)
-        return read_test_file(filename)
-
-    def get_file_in_mock_map(self, param):
-        ret = None
-        if self._mock_map is not None:
-            for key in self._mock_map.keys():
-                if param.startswith(key):
-                    ret = self._mock_map[key]
-                    break
-        return ret
+    def mock_execute(self, params, *args, **_):
+        return self.get_mock_output(params)
 
     escaped_pattern = re.compile(r"[\\/]")
+
+    flags_to_remove = {
+        '-t': 2,
+        '-user': 2,
+        '-password': 2,
+        '-scope': 2,
+        '-h': 2
+    }
 
     @classmethod
     def get_filename(cls, params):
@@ -98,22 +86,11 @@ class MockCli(object):
 
         params = remove_cli_binary(params)
 
-        flags_to_remove = {
-            '-t': 2,
-            '-user': 2,
-            '-password': 2,
-            '-scope': 2,
-            '-h': 2
-        }
-
-        for k, v in six.iteritems(flags_to_remove):
+        for k, v in cls.flags_to_remove.items():
             params = remove_flag(params, k, v)
         name = '_'.join(map(six.text_type, params))
-        return re.sub(cls.escaped_pattern, '_', name)
-
-    def update_mock_output(self, output, mock_map):
-        self._output = output
-        self._mock_map = mock_map
+        name = re.sub(cls.escaped_pattern, '_', name)
+        return '{}.txt'.format(name)
 
 
 def patch_cli(output=None, mock_map=None):
@@ -145,10 +122,8 @@ def extract_command(func):
         return ' '.join(map(six.text_type, commands))
 
     @functools.wraps(func)
-    @patch(target='vnxCliApi.vnx.cli.CliClient.execute',
-           new=mock)
-    @patch(target='vnxCliApi.vnx.cli.CliClient.execute_dual',
-           new=mock)
+    @patch(target='vnxCliApi.vnx.cli.CliClient.execute', new=mock)
+    @patch(target='vnxCliApi.vnx.cli.CliClient.execute_dual', new=mock)
     def func_wrapper(self):
         return func(self)
 

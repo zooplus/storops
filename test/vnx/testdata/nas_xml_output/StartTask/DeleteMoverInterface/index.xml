@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <DeleteMoverInterface mover="1" ipAddress="1.1.1.1"/>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

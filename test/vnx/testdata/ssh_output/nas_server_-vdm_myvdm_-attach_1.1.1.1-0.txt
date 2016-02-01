@@ -1,0 +1,14 @@
+id        = 4
+name      = myvdm
+acl       = 0
+type      = vdm
+server    = server_2
+rootfs    = root_fs_vdm_myvdm
+I18N mode = UNICODE
+mountedfs =
+member_of =
+status    :
+  defined = enabled
+   actual = loaded, ready
+Interfaces to services mapping:
+

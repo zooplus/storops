@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
@@ -7,8 +21,11 @@ import six
 from hamcrest import assert_that, raises
 from hamcrest import equal_to
 
+from test.vnx.nas_mock import MockXmlPost
+from vnxCliApi.exception import VNXException
 from vnxCliApi.vnx.enums import VNXError, VNXProvisionEnum, \
-    VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType
+    VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType, raise_if_err
+from vnxCliApi.vnx.resource.nas_client import NasXmlResponse
 
 
 class VNXErrorTest(TestCase):
@@ -89,6 +106,31 @@ class VNXErrorTest(TestCase):
                "Message : select: The connect timed out.")
         err = has_error(out, VNXError.SP_NOT_AVAILABLE)
         assert_that(err, equal_to(True))
+
+    def test_raise_if_err_normal(self):
+        raise_if_err('')
+        # no raises
+
+    def test_raise_if_err_non_empty(self):
+        def f():
+            raise_if_err('error msg', msg="error received")
+
+        assert_that(f, raises(ValueError, "error received"))
+
+    def test_raise_if_err_vnx_error(self):
+        def f():
+            raise_if_err('specified lun may not exist', VNXException,
+                         expected_error=VNXError.GENERAL_NOT_FOUND)
+
+        assert_that(f, raises(VNXException, 'specified lun may not exist'))
+
+    def test_raise_if_err_nas_response_input(self):
+        def f():
+            resp = NasXmlResponse(MockXmlPost.read_file('fs_not_found.xml'))
+            raise_if_err(resp, VNXException,
+                         expected_error=VNXError.FS_NOT_FOUND)
+
+        assert_that(f, raises(VNXException, 'not found'))
 
 
 class VNXProvisionEnumTest(TestCase):

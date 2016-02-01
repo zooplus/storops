@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="not_found.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <ModifyNfsExport path="/not_found" mover="1"
+                                     readOnly="false">
+                        <RootHosts>
+                            <li>1.1.1.1</li>
+                            <li>2.2.2.2</li>
+                        </RootHosts>
+                        <RoHosts>
+                            <li>3.3.3.3</li>
+                        </RoHosts>
+                        <RwHosts>
+                            <li>4.4.4.4</li>
+                            <li>5.5.5.5</li>
+                        </RwHosts>
+                        <AccessHosts>
+                            <li>6.6.6.6</li>
+                        </AccessHosts>
+                    </ModifyNfsExport>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <ModifyNfsExport path="/EEE" mover="1" readOnly="true">
+                        <AccessHosts>
+                            <li>7.7.7.7</li>
+                        </AccessHosts>
+                    </ModifyNfsExport>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <ModifyNfsExport path="/minjie_fs1" mover="1">
+                        <AccessHosts>
+                            <li>1.1.1.1</li>
+                            <li>2.2.2.2</li>
+                        </AccessHosts>
+                        <RoHosts>
+                            <li>1.1.1.1</li>
+                            <li>2.2.2.2</li>
+                        </RoHosts>
+                        <RootHosts>
+                            <li>2.2.2.2</li>
+                            <li>10.244.23.101</li>
+                            <li>1.1.1.1</li>
+                        </RootHosts>
+                    </ModifyNfsExport>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <ModifyNfsExport path="/minjie_fs2" mover="1">
+                        <AccessHosts/>
+                        <RoHosts/>
+                        <RootHosts>
+                            <li>10.244.23.101</li>
+                        </RootHosts>
+                    </ModifyNfsExport>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

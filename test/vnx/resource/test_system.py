@@ -1,14 +1,29 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, none
+from hamcrest import assert_that, equal_to, none, instance_of
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
 from vnxCliApi import VNXSystem
 from vnxCliApi.vnx.enums import VNXLunType
+from vnxCliApi.vnx.resource.disk import VNXDisk
 from vnxCliApi.vnx.resource.lun import VNXLun
 
 __author__ = 'Cedric Zhuang'
@@ -39,7 +54,7 @@ class VNXSystemTest(TestCase):
         verify_pool_0(pool)
 
     @patch_cli()
-    def test_member_ip(self):
+    def test_member_ips(self):
         vnx = VNXSystem('10.244.211.30', heartbeat_interval=0)
         assert_that(vnx.spa_ip, equal_to('192.168.1.52'))
         assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
@@ -102,3 +117,11 @@ class VNXSystemTest(TestCase):
         assert_that(self.vnx.is_sancopy_enabled(), equal_to(True))
         assert_that(self.vnx.is_auto_tiering_enabled(), equal_to(True))
         assert_that(self.vnx.is_fast_cache_enabled(), equal_to(True))
+
+    @patch_cli()
+    def test_available_disks(self):
+        disks = self.vnx.get_available_disks()
+        assert_that(len(disks), equal_to(2))
+        for disk in disks:
+            assert_that(disk, instance_of(VNXDisk))
+            assert_that(disk.existed, equal_to(True))

@@ -1,345 +1,140 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
-
 import unittest
 
-import ddt
-import mock
+from hamcrest import assert_that, greater_than_or_equal_to, raises
+from hamcrest import equal_to
 
-from test.vnx.resource.fakes import mock_ssh_connector, patch_retry
-from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.vnx.resource import vdm
-
-from test import utils
-from test.vnx.resource import fakes
-from vnxCliApi.connection.exceptions import SSHExecutionError
-from vnxCliApi.exception import VNXBackendError, ObjectNotFound
-from vnxCliApi.vnx.resource import nas_client
+from test.vnx.nas_mock import t_nas, patch_nas
+from vnxCliApi.vnx.enums import VNXShareType
+from vnxCliApi.exception import VNXBackendError, \
+    VNXInvalidMoverID, VNXMoverInterfaceNotFound, VNXMoverInterfaceNotAttached
+from vnxCliApi.vnx.resource.vdm import VNXVdmList, VNXVdm
 
 __author__ = 'Jay Xu'
 
 
-@ddt.ddt
-class VDMTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.hook = utils.RequestSideEffect()
-        self.ssh_hook = utils.SSHSideEffect()
+class VNXVdmTest(unittest.TestCase):
+    @patch_nas()
+    def test_get_all(self):
+        vdm_list = VNXVdmList(t_nas())
+        assert_that(len(vdm_list), greater_than_or_equal_to(1))
+        dm = next(dm for dm in vdm_list if dm.vdm_id == 2)
+        self.verify_vdm_2(dm)
 
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.vdm_manager = vdm.VDMManager(storage_manager)
+    @patch_nas()
+    def test_get_by_id_invalid(self):
+        dm = VNXVdm(vdm_id=1, cli=t_nas())
+        assert_that(dm.existed, equal_to(False))
 
-        self.vdm = fakes.VDMTestData()
-        self.mover = fakes.MoverTestData()
+    @patch_nas()
+    def test_get_by_id_2(self):
+        dm = VNXVdm(vdm_id=2, cli=t_nas())
+        self.verify_vdm_2(dm)
 
-    def test_create_vdm_(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
+    @patch_nas()
+    def test_get_by_name(self):
+        dm = VNXVdm(name='VDM_ESA', cli=t_nas())
+        self.verify_vdm_2(dm)
 
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_nas()
+    def test_get_by_name_not_found(self):
+        dm = VNXVdm(name='not_found', cli=t_nas())
+        assert_that(dm.existed, equal_to(False))
 
-        v = self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
+    @staticmethod
+    def verify_vdm_2(dm):
+        assert_that(dm.root_fs_id, equal_to(199))
+        assert_that(dm.mover_id, equal_to(1))
+        assert_that(dm.name, equal_to('VDM_ESA'))
+        assert_that(dm.existed, equal_to(True))
+        assert_that(dm.vdm_id, equal_to(2))
+        assert_that(dm.state, equal_to('loaded'))
+        assert_that(dm.status, equal_to('ok'))
+        assert_that(dm.is_vdm, equal_to(True))
 
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-        exp_vdm = vdm.VNXVdm(self.vdm_manager, dict(name=self.vdm.vdm_name))
-        self.assertEqual(exp_vdm, v)
-
-    def test_create_vdm_with_lazy_load(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
-        self.hook.append(self.vdm.resp_get_succeed())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        vdm = self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
-        self.assertEqual(self.vdm.vdm_id, vdm.id)
-        self.assertEqual(self.vdm.mover_id, vdm.host_mover_id)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-            mock.call(self.vdm.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_create_vdm_but_already_exist(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_create_but_already_exist())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        # Create VDM which already exists.
-        self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    @patch_retry
+    @patch_nas()
     def test_create_vdm_invalid_mover_id(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_invalid_mover_id())
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
+        def f():
+            VNXVdm.create(t_nas(), 3, 'myVdm')
 
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+        assert_that(f, raises(VNXInvalidMoverID))
 
-        # Create VDM with invalid mover ID
-        self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
+    @patch_nas()
+    def test_create_vdm(self):
+        dm = VNXVdm.create(t_nas(), 2, 'myVdm')
+        assert_that(dm.name, equal_to('myVdm'))
+        assert_that(dm.vdm_id, equal_to(3))
+        assert_that(dm.mover_id, equal_to(2))
+        assert_that(dm.root_fs_id, equal_to(245))
 
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
+    @patch_nas()
+    def test_remove_vdm(self):
+        dm = VNXVdm(vdm_id=3, cli=t_nas())
+        resp = dm.remove()
+        assert_that(resp.is_ok(), equal_to(True))
 
-    def test_create_vdm_with_error(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_task_error())
+    @patch_nas()
+    def test_remove_vdm_not_found(self):
+        def f():
+            dm = VNXVdm(vdm_id=5, cli=t_nas())
+            dm.remove()
 
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+        assert_that(f, raises(VNXBackendError, 'not found'))
 
-        # Create VDM with invalid mover ID
-        self.assertRaises(VNXBackendError,
-                          self.vdm_manager.create,
-                          name=self.vdm.vdm_name,
-                          mover_name=self.mover.mover_name)
+    @patch_nas()
+    def test_attach_interface(self):
+        dm = VNXVdm(name='myvdm', cli=t_nas())
+        dm.attach_nfs_interface('1.1.1.1-0')
 
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
+    @patch_nas()
+    def test_attach_interface_not_found(self):
+        def f():
+            dm = VNXVdm(name='myvdm', cli=t_nas())
+            dm.attach_nfs_interface('1.1.1.2-0')
 
-    def test_get_vdm(self):
-        self.hook.append(self.vdm.resp_get_succeed())
+        assert_that(f, raises(VNXMoverInterfaceNotFound, 'not exist'))
 
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_nas()
+    def test_detach_interface(self):
+        dm = VNXVdm(name='myvdm', cli=t_nas())
+        dm.detach_nfs_interface('1.1.1.1-0')
 
-        vdm = self.vdm_manager.get(self.vdm.vdm_name)
-        self.assertIn(self.vdm.vdm_name, self.vdm_manager.vdm_map)
-        property_map = [
-            'name',
-            'id',
-            'state',
-            'host_mover_id',
-        ]
-        for prop in property_map:
-            self.assertIn(prop, vdm.__dict__)
+    @patch_nas()
+    def test_detach_interface_not_found(self):
+        def f():
+            dm = VNXVdm(name='myvdm', cli=t_nas())
+            dm.detach_nfs_interface('1.1.1.2-0')
 
-        expected_calls = [mock.call(self.vdm.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
+        assert_that(f, raises(VNXMoverInterfaceNotFound, 'not exist'))
 
-    @ddt.data(fakes.VDMTestData().resp_get_without_value(),
-              fakes.VDMTestData().resp_get_succeed('fake'))
-    def test_get_vdm_but_not_found(self, xml_resp):
-        self.hook.append(xml_resp)
+    @patch_nas()
+    def test_detach_interface_not_attached(self):
+        def f():
+            dm = VNXVdm(name='myvdm', cli=t_nas())
+            dm.detach_nfs_interface('1.1.1.3-0')
 
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+        assert_that(f, raises(VNXMoverInterfaceNotAttached, 'attached'))
 
-        # Get VDM which does not exist
-        self.assertRaises(ObjectNotFound,
-                          self.vdm_manager.get,
-                          self.vdm.vdm_name)
-
-        expected_calls = [mock.call(self.vdm.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_get_vdm_with_error(self):
-        self.hook.append(self.vdm.resp_task_error())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        # Get VDM which does not exist
-        self.assertRaises(VNXBackendError,
-                          self.vdm_manager.get,
-                          self.vdm.vdm_name)
-
-        expected_calls = [mock.call(self.vdm.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_vdm(self):
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.vdm_manager.delete(self.vdm.vdm_name)
-
-        expected_calls = [
-            mock.call(self.vdm.req_get()),
-            mock.call(self.vdm.req_delete()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_vdm_but_not_found(self):
-        self.hook.append(self.vdm.resp_get_but_not_found())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.vdm_manager.delete(self.vdm.vdm_name)
-
-        expected_calls = [mock.call(self.vdm.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_vdm_but_failed_to_get_vdm(self):
-        self.hook.append(self.vdm.resp_get_error())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.vdm_manager.delete,
-                          self.vdm.vdm_name)
-
-        expected_calls = [mock.call(self.vdm.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_vdm_with_error(self):
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.vdm.resp_task_error())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.vdm_manager.delete,
-                          self.vdm.vdm_name)
-
-        expected_calls = [
-            mock.call(self.vdm.req_get()),
-            mock.call(self.vdm.req_delete()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_attach_detach_nfs_interface(self):
-        self.ssh_hook.append()
-        self.ssh_hook.append()
-
-        ssh_connector = self.vdm_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.vdm_manager.attach_nfs_interface(self.vdm.vdm_name,
-                                              self.mover.interface_name2)
-        self.vdm_manager.detach_nfs_interface(self.vdm.vdm_name,
-                                              self.mover.interface_name2)
-
-        ssh_calls = [
-            mock.call(self.vdm.cmd_attach_nfs_interface(),
-                      check_exit_code=False),
-            mock.call(self.vdm.cmd_detach_nfs_interface(),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_detach_nfs_interface_with_error(self):
-        self.ssh_hook.append(ex=SSHExecutionError(
-            stdout=self.vdm.fake_output))
-        self.ssh_hook.append(self.vdm.output_get_interfaces(
-            self.mover.interface_name2))
-        self.ssh_hook.append(ex=SSHExecutionError(
-            stdout=self.vdm.fake_output))
-        self.ssh_hook.append(self.vdm.output_get_interfaces(
-            nfs_interface=fakes.FakeData.interface_name1))
-
-        ssh_connector = self.vdm_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.vdm_manager.detach_nfs_interface,
-                          self.vdm.vdm_name,
-                          self.mover.interface_name2)
-
-        self.vdm_manager.detach_nfs_interface(self.vdm.vdm_name,
-                                              self.mover.interface_name2)
-
-        ssh_calls = [
-            mock.call(self.vdm.cmd_detach_nfs_interface(),
-                      check_exit_code=True),
-            mock.call(self.vdm.cmd_get_interfaces(), check_exit_code=False),
-            mock.call(self.vdm.cmd_detach_nfs_interface(),
-                      check_exit_code=True),
-            mock.call(self.vdm.cmd_get_interfaces(), check_exit_code=False),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_get_cifs_nfs_interface(self):
-        self.ssh_hook.append(self.vdm.output_get_interfaces())
-
-        ssh_connector = self.vdm_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        interfaces = self.vdm_manager.get_interfaces(self.vdm.vdm_name)
-        self.assertIsNotNone(interfaces['cifs'])
-        self.assertIsNotNone(interfaces['nfs'])
-
-        ssh_calls = [
-            mock.call(self.vdm.cmd_get_interfaces(), check_exit_code=False)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_operations_with_vdm_resource(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.vdm.resp_task_succeed())
-
-        xml_connector = self.vdm_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.ssh_hook.append()
-        self.ssh_hook.append(self.vdm.output_get_interfaces())
-        self.ssh_hook.append()
-
-        ssh_connector = self.vdm_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        v = self.vdm_manager.create(self.vdm.vdm_name, self.mover.mover_name)
-
-        exp_vdm = vdm.VNXVdm(self.vdm_manager, dict(name=self.vdm.vdm_name))
-        self.assertEqual(exp_vdm, v)
-
-        v.attach_nfs_interface(self.mover.interface_name2)
-        v.get_interfaces()
-        v.detach_nfs_interface(self.mover.interface_name2)
-        v.delete()
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.vdm.req_create()),
-            mock.call(self.vdm.req_get()),
-            mock.call(self.vdm.req_delete()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-        ssh_calls = [
-            mock.call(self.vdm.cmd_attach_nfs_interface(),
-                      check_exit_code=False),
-            mock.call(self.vdm.cmd_get_interfaces(), check_exit_code=False),
-            mock.call(self.vdm.cmd_detach_nfs_interface(),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+    @patch_nas()
+    def test_get_interfaces(self):
+        dm = VNXVdm(name='VDM_ESA', cli=t_nas())
+        ifs = dm.get_interfaces()
+        assert_that(len(ifs), equal_to(1))
+        interface = ifs[0]
+        assert_that(interface.name, equal_to('10-110-24-195'))
+        assert_that(interface.share_type, equal_to(VNXShareType.NFS))

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <CifsShare path="\EG_TEST_POOL\EG_CIFS2" fileSystem="167"
+                   name="EG_CIFS2" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\EG_TEST_POOL_DM1\EG_SF_DM1" fileSystem="168"
+                   name="EG_SF_DM1" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\Min_ESA23_CIFS_SMB1_Thick_VNX191" fileSystem="110"
+                   name="Min_ESA23_CIFS_SMB1_Thick_VNX191" mover="1"
+                   moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\Min_ESA23_CIFS_SMB1_Thin_VNX191" fileSystem="109"
+                   name="Min_ESA23_CIFS_SMB1_Thin_VNX191" mover="1"
+                   moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\Min_ESA23_CIFS_SMB2_Thick_VNX191" fileSystem="112"
+                   name="Min_ESA23_CIFS_SMB2_Thick_VNX191" mover="1"
+                   moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\Min_ESA23_CIFS_SMB2_Thin_VNX191" fileSystem="111"
+                   name="Min_ESA23_CIFS_SMB2_Thin_VNX191" mover="1"
+                   moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\eDRA_Dont_Delete" fileSystem="216" name="PDSmgr"
+                   mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_phqxq7\SFPath_7c0mgs" fileSystem="126"
+                   name="SFName_7c0mgs" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_3ufmjv\SFPath_8f0l97" fileSystem="153"
+                   name="SFName_8f0l97" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_ca1j7h\SFPath_8wtkps" fileSystem="124"
+                   name="SFName_8wtkps" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_ln4wso\SFPath_q9xvi1" fileSystem="154"
+                   name="SFName_q9xvi1" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_9teogv\SFPath_r748yo" fileSystem="119"
+                   name="SFName_r748yo" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_npkm24\SFPath_ulpysm" fileSystem="127"
+                   name="SFName_ulpysm" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_llhcsl\SFPath_xxk6v2" fileSystem="120"
+                   name="SFName_xxk6v2" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\SFPPath_ltx4bh\esi_cifs" fileSystem="47"
+                   name="esi_cifs" mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+        <CifsShare path="\zhuanc_fs_100g" fileSystem="211" maxUsers="10"
+                   comment="100g cifs share for zhuanc" name="zhuanc_cifs_100g"
+                   mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+    </Response>
+</ResponsePacket>

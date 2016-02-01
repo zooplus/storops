@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
@@ -6,7 +20,7 @@ from unittest import TestCase
 import six
 from hamcrest import equal_to, assert_that, not_none
 
-from test.vnx.cli_mock import read_test_file
+from test.vnx.cli_mock import MockCli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from vnxCliApi.vnx.enums import VNXSPEnum
 from vnxCliApi.vnx.parsers import \
@@ -182,8 +196,8 @@ class VNXStorageGroupHBAParserTest(TestCase):
 class VNXStorageGroupParserTest(TestCase):
     def test_parse(self):
         parser = get_parser_config('VNXStorageGroup')
-        output = read_test_file('storagegroup_-list_-host_-iscsiAttributes_'
-                                '-gname_microsoft.txt')
+        output = MockCli.read_file('storagegroup_-list_-host_-iscsiAttributes_'
+                                   '-gname_microsoft.txt')
         sg = parser.parse(output)
         self.assertEqual(True, sg.shareable)
         self.assertEqual('microsoft', sg.name)
@@ -201,7 +215,7 @@ class VNXStorageGroupParserTest(TestCase):
 
 class VNXConsistencyGroupParserTest(TestCase):
     def test_parse(self):
-        output = read_test_file('snap_-group_-list_-detail.txt')
+        output = MockCli.read_file('snap_-group_-list_-detail.txt')
         parser = get_parser_config('VNXConsistencyGroup')
         cgs = parser.parse_all(output)
         cg = six.next((c for c in cgs if c.name == 'test cg name'), None)
@@ -217,7 +231,7 @@ class VNXConsistencyGroupParserTest(TestCase):
 
 class VNXPoolPropertiesTest(TestCase):
     def test_parse(self):
-        output = read_test_file('storagepool_-list_-all_-id_1.txt')
+        output = MockCli.read_file('storagepool_-list_-all_-id_1.txt')
         parser = get_parser_config('VNXPool')
         pool = parser.parse(output)
         self.assertEqual('Ready', pool.state)
@@ -263,7 +277,7 @@ class VNXPoolFeatureParserTest(TestCase):
 
 class VNXLunPropertiesTest(TestCase):
     def test_parse(self):
-        output = read_test_file('lun_-list_-all_-l_19.txt')
+        output = MockCli.read_file('lun_-list_-all_-l_19.txt')
         parser = get_parser_config('VNXLun')
         parsed = parser.parse(output)
         wwn = '60:06:01:60:1A:50:35:00:CC:22:61:D6:76:B1:E4:11'

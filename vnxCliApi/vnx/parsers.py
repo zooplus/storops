@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import glob
@@ -98,6 +112,22 @@ class PropDescriptor(PropMapper):
     def is_index(self):
         return self._is_index
 
+    @staticmethod
+    def _convert_resource(converter, value):
+        # try to find the resource with same name first
+        return converter().update(value)
+
+    def convert(self, value):
+        converter = self.converter
+        if converter is not None:
+            if _is_parser(converter):
+                value = converter.parse_all(value)
+            elif is_vnx_resource(converter):
+                value = self._convert_resource(converter, value)
+            elif callable(converter):
+                value = converter(value)
+        return value
+
     @property
     def end_pattern(self):
         return self._end_pattern
@@ -134,8 +164,18 @@ class PropDescriptor(PropMapper):
         return self._pattern
 
 
-class VNXCliParser(Enum):
-    data_src = 'cli'
+class VNXOutputParser(Enum):
+    @property
+    def data_src(self):
+        raise NotImplemented('must be implemented by sub-class')
+
+    @classmethod
+    def parse_all(cls, output, properties=None):
+        raise NotImplemented('must be implemented by sub-class')
+
+    @classmethod
+    def parse(cls, output, properties=None):
+        raise NotImplemented('must be implemented by sub-class')
 
     @classmethod
     @cache()
@@ -176,6 +216,10 @@ class VNXCliParser(Enum):
     def get_property_options(cls):
         properties = cls.get_all_property_descriptor()
         return [p.option for p in properties if p.option is not None]
+
+
+class VNXCliParser(VNXOutputParser):
+    data_src = 'cli'
 
     @classmethod
     def _split_by_index(cls, output):
@@ -230,14 +274,7 @@ class VNXCliParser(Enum):
                     value = value.strip()
                 else:
                     value = matched.groups()
-                converter = p.converter
-                if converter is not None:
-                    if _is_parser(converter):
-                        value = converter.parse_all(value)
-                    elif is_vnx_resource(converter):
-                        value = cls._convert_resource(converter, value)
-                    elif callable(converter):
-                        value = converter(value)
+                value = p.convert(value)
                 matched_value = value
             elif p.is_index:
                 # index must have a match, skip this invalid input
@@ -245,11 +282,6 @@ class VNXCliParser(Enum):
                 break
             ret[p.key] = matched_value
         return ret
-
-    @staticmethod
-    def _convert_resource(converter, value):
-        # try to find the resource with same name first
-        return converter().update(value)
 
     @classmethod
     def parse_all(cls, output, properties=None):
@@ -303,6 +335,38 @@ class VNXCliParser(Enum):
         return ret
 
 
+class VNXXmlApiParser(VNXOutputParser):
+    data_src = 'xmlapi'
+
+    @classmethod
+    def parse_all(cls, output, properties=None):
+        if hasattr(output, 'objects'):
+            output = output.objects
+        return [cls._parse_object(obj) for obj in output]
+
+    @classmethod
+    def parse(cls, output, properties=None):
+        if hasattr(output, 'objects') and len(output.objects):
+            ret = cls._parse_object(output.first_object, properties)
+        elif isinstance(output, (list, tuple)) and len(output) > 0:
+            ret = cls._parse_object(output[0], properties)
+        else:
+            ret = Dict()
+        return ret
+
+    @classmethod
+    def _parse_object(cls, obj, properties=None):
+        if properties is None:
+            properties = cls.get_all_property_descriptor()
+
+        ret = {}
+        for p in properties:
+            if p.label in obj.keys():
+                value = p.convert(obj[p.label])
+                ret[p.key] = value
+        return ret
+
+
 @cache()
 def _rsc_sub_module_names():
     path = os.path.abspath(__file__)
@@ -321,7 +385,7 @@ def is_vnx_resource(name):
         clz = get_vnx_resource_clz_by_name(name)
     else:
         clz = name
-    vnx_rsc_clz = vnxCliApi.vnx.resource.resource.VNXCliResource
+    vnx_rsc_clz = vnxCliApi.vnx.resource.resource.VNXResource
     return (clz is not None and
             inspect.isclass(clz) and
             issubclass(clz, vnx_rsc_clz))
@@ -342,10 +406,10 @@ def get_vnx_resource_clz_by_name(name):
 
 
 def _is_parser(c):
-    return isinstance(c, type) and issubclass(c, VNXCliParser)
+    return isinstance(c, type) and issubclass(c, VNXOutputParser)
 
 
-class VNXCimParser(Enum):
+class VNXCimParser(VNXOutputParser):
     data_src = 'cim'
 
 
@@ -358,6 +422,15 @@ def get_parser_config(name):
         filename = os.path.join(pwd, config_filename)
         with open(filename, 'r') as stream:
             ret = yaml.load(stream)
+        return ret
+
+    def get_base_clz(data_src):
+        if data_src == 'cli':
+            ret = VNXCliParser
+        elif data_src == 'xmlapi':
+            ret = VNXXmlApiParser
+        else:
+            raise ValueError('data_src {} not supported.'.format(data_src))
         return ret
 
     def get_converter(converter_str):
@@ -423,9 +496,13 @@ def get_parser_config(name):
     properties = []
     for i in range(len(config['properties'])):
         properties.append(init_descriptor(config['properties'][i], i))
+
     clz_member_map = {}
     for p in properties:
         clz_member_map[p.key.upper()] = p
-    clz = type(str(name), (VNXCliParser,), clz_member_map)
+
+    base_clz = get_base_clz(config['data_src'])
+
+    clz = type(str(name), (base_clz,), clz_member_map)
     setattr(clz, 'data_src', config['data_src'])
     return clz

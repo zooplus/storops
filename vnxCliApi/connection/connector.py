@@ -125,9 +125,13 @@ class XMLAPIConnector(object):
 class SSHConnector(object):
     """SSH Connection to the specified host."""
 
-    def __init__(self, host, username, password, port=22, debug=True):
-        self.transport = paramiko.Transport((host, port))
+    def __init__(self, host, username, password, port=22):
+        self.transport = None
+        self.init_connection(host, password, port, username)
+        self.isLive = True
 
+    def init_connection(self, host, password, port, username):
+        self.transport = paramiko.Transport((host, port))
         # Currently we only support to use the password to ssh.
         if password:
             try:
@@ -137,8 +141,6 @@ class SSHConnector(object):
                              'Reason:%s.' % six.text_type(ex))
                 LOG.error(error_msg)
                 raise ex
-        self.isLive = True
-        self.debug = debug
 
     def execute(self, command, timeout=None, check_exit_code=True):
         """Executes the given command on the remote host."""
@@ -201,8 +203,9 @@ class SSHConnector(object):
         """Try to close the ssh connection if not explicitly closed."""
         self.close()
 
-    def _ssh_command_log(self, command, stdout, stderr):
-        if self.debug:
-            LOG.debug('[SSH Command] %(cmd)s. '
-                      '[stdout] %(out)s, [stderr] %(err)s' %
-                      {'cmd': command, 'out': stdout, 'err': stderr})
+    @staticmethod
+    def _ssh_command_log(command, stdout, stderr):
+        LOG.debug('[SSH Command] {}\n'
+                  '[stdout] {}\n'
+                  '[stderr] {}\n'
+                  .format(command, stdout, stderr))

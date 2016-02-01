@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <NfsExport readOnly="false" fileSystem="247" mover="1" path="/FFF">
+            <AccessHosts>
+                <li>6.6.6.6</li>
+            </AccessHosts>
+            <RwHosts>
+                <li>4.4.4.4</li>
+                <li>5.5.5.5</li>
+            </RwHosts>
+            <RoHosts>
+                <li>3.3.3.3</li>
+            </RoHosts>
+            <RootHosts>
+                <li>1.1.1.1</li>
+                <li>2.2.2.2</li>
+            </RootHosts>
+        </NfsExport>
+    </Response>
+</ResponsePacket>

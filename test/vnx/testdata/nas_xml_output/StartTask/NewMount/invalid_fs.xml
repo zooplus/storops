@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1200454">
+            <Status maxSeverity="error">
+                <Problem messageCode="13421841441" component="CS_CORE"
+                         message="invalid filesystem specified"
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
@@ -9,6 +23,13 @@ import six
 from vnxCliApi.lib.common import Enum
 
 log = logging.getLogger(__name__)
+
+
+def to_hex(number):
+    h = hex(number)
+    if h.endswith('L'):
+        h = h[:-1]
+    return h
 
 
 class VNXSPEnum(Enum):
@@ -193,20 +214,43 @@ class VNXError(Enum):
     SNAP_NOT_ATTACHED = ('The specified Snapshot mount point '
                          'is not currently attached.')
 
+    NAS_GENERAL_ERROR = 13690601492
+
+    INVALID_VDM_ID = 14227341325
+    VDM_EXIST = 13421840550
+    INVALID_MOVER_ID = 14227341323
+
+    FS_NOT_FOUND = 18522112101
+    FS_EXIST = 13691191325
+
+    FS_SNAP_EXIST = 13690535947
+
+    MOVER_INTERFACE_NAME_EXIST = 13421840550
+    MOVER_INTERFACE_EXIST = 13691781136
+    MOVER_INTERFACE_INVALID_VLAN_ID = 13421850371
+    MOVER_INTERFACE_NON_EXISTANCE = 13691781134
+    MOVER_INTERFACE_NOT_ATTACHED = 'not currently attached'
+
+    JOIN_DOMAIN = 13157007726
+    UNJOIN_DOMAIN = 13157007723
+
     @staticmethod
     def _match(output, error_code):
         is_match = False
         if VNXError._is_enum(error_code):
             error_code = getattr(VNXError, error_code)
 
-        if isinstance(error_code, int):
-            error_code = hex(error_code)
+        if isinstance(error_code, six.integer_types):
+            error_code = to_hex(error_code)
 
         if hasattr(output, 'message'):
             output = output.message
         elif hasattr(output, 'why'):
             # for EvError
             output = getattr(output, 'why')
+        elif hasattr(output, 'hex_problem_message_codes'):
+            codes = getattr(output, 'hex_problem_message_codes')
+            output = ' '.join(codes)
         else:
             try:
                 output = output.get('why')
@@ -238,11 +282,38 @@ def has_error(output, *error_codes):
     return VNXError.has_error(output, *error_codes)
 
 
+def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
+    def on_error():
+        log.error(msg)
+        raise ex_clz(msg)
+
+    if msg is None:
+        if hasattr(out, 'get_status_msg'):
+            msg = out.get_status_msg()
+        else:
+            msg = out
+    else:
+        msg = '{}  detail:\n{}'.format(msg, out)
+    if ex_clz is None:
+        ex_clz = ValueError
+    if not expected_error:
+        # check if out is empty
+        if out is not None and len(out) > 0:
+            on_error()
+    else:
+        if not isinstance(expected_error, (list, tuple)):
+            expected_error = [expected_error]
+        if has_error(out, *expected_error):
+            on_error()
+
+
 class VNXPortType(Enum):
     FC = 'FC'
     ISCSI = 'iSCSI'
     FCOE = 'FCoE'
     SAS = 'SAS'
+    ETHERNET = 'ethernet'
+    OTHER = 'other'
 
     _int_index = (None, FC, ISCSI, FCOE, SAS)
 
@@ -294,3 +365,15 @@ class VNXPoolRaidType(Enum):
     RAID5 = 'r_5'
     RAID6 = 'r_6'
     RAID10 = 'r_10'
+
+
+class VNXAccessLevel(Enum):
+    RW = 'rw'
+    RO = 'ro'
+    ACCESS = 'access'
+    ROOT = 'root'
+
+
+class VNXShareType(Enum):
+    NFS = 'nfs'
+    CIFS = 'cifs'

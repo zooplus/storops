@@ -1,5 +1,20 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
+
 
 from unittest import TestCase
 
@@ -22,6 +37,18 @@ class ConverterTest(TestCase):
     def test_to_int_arr_space_str(self):
         ret = converter.to_int_arr('Unbound')
         assert_that(ret, equal_to([]))
+
+    def test_to_wwn(self):
+        ret = converter.to_wwn('ab1234')
+        assert_that(ret, equal_to('AB:12:34'))
+
+    def test_to_wwn_no_change(self):
+        ret = converter.to_wwn('ab:12:34')
+        assert_that(ret, equal_to('AB:12:34'))
+
+    def test_to_wwn_not_aligned(self):
+        ret = converter.to_wwn('ab123')
+        assert_that(ret, equal_to('AB:12:3'))
 
     def test_to_int_arr_empty_input(self):
         ret = converter.to_int_arr('')
@@ -107,6 +134,14 @@ class ConverterTest(TestCase):
         ret = converter.to_float('1234')
         assert_that(ret, equal_to(1234))
 
+    def test_to_int_arr_from_str_arr(self):
+        ret = converter.to_int_arr(['12', '23'])
+        assert_that(ret, has_items(12, 23))
+
     def test_int_disabled(self):
         ret = converter.to_int('Disabled')
         assert_that(ret, none())
+
+    def test_to_hex(self):
+        ret = converter.to_hex(13691781134)
+        assert_that(ret, equal_to('0x33018000e'))

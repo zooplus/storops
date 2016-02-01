@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <PacketFault maxSeverity="error">
+        <Problem messageCode="14227341329" facility="Prevalidator"
+                 component="API"
+                 message="User request is not compliant with XML API schema."
+                 severity="error">
+            <Description>The user request is not compliant with the XML API
+                Schema.
+            </Description>
+            <Action>Refer to the XML API v2 schema/documentation and correct
+                your user program logic.
+            </Action>
+            <Diagnostics>
+                Exception tag: 1530e0982ce
+                Exception message: cvc-pattern-valid: Value 'test_domain' is
+                not facet-valid with respect to pattern
+                '[a-zA-Z0-9 -�]+((([\-_][a-zA-Z0-9 -�]+))+)?[.]([a-zA-Z0-9 -�]+((([\-_][a-zA-Z0-9 -�]+))+)?(([.][a-zA-Z0-9 -�]+((([\-_][a-zA-Z0-9 -�]+))+)?)+)?([.])?)?'
+                for type 'W2kDomainName'.
+            </Diagnostics>
+        </Problem>
+    </PacketFault>
+</ResponsePacket>

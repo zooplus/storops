@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import json
@@ -94,6 +108,10 @@ class VNXResource(object):
         # use class name as the default
         return get_parser_config(cls.__name__)
 
+    @property
+    def parsed_resource(self):
+        return self._parsed_resource
+
     def update(self, data=None):
         if data is None:
             data = self._get_raw_resource()
@@ -101,7 +119,7 @@ class VNXResource(object):
         if isinstance(data, dict):
             self._parsed_resource = data
         else:
-            self._parsed_resource = self._parse_cli(data)
+            self._parsed_resource = self._parse_raw(data)
         return self
 
     def get_index(self):
@@ -139,7 +157,7 @@ class VNXResource(object):
     def _get_parsed_resource(self):
         return self._get_raw_resource()
 
-    def _parse_cli(self, data):
+    def _parse_raw(self, data):
         return self._get_parser().parse(data)
 
     @classmethod
@@ -180,7 +198,7 @@ class VNXResource(object):
         for name in prop_names:
             try:
                 value = getattr(self, name)
-                if isinstance(value, VNXCliResource):
+                if isinstance(value, VNXResource):
                     value = value.get_dict_repr()
                 props[name] = value
             except AttributeError:
@@ -226,8 +244,8 @@ class VNXResource(object):
             for property_mapper in parser.get_all():
                 key = property_mapper.key
                 if key == item:
-                    ret = self._parsed_resource[
-                        getattr(property_mapper, str(mapper_key))]
+                    prop_name = getattr(property_mapper, str(mapper_key))
+                    ret = self._parsed_resource.get(prop_name, None)
                     if property_mapper.cache:
                         self._property_cache[key] = ret
                     break
@@ -285,15 +303,19 @@ class VNXResourceList(VNXCliResource):
         if data is not None and isinstance(data, dict):
             parsed_list = data
         else:
-            parsed_list = self._parse_cli(data)
+            parsed_list = self._parse_raw(data)
 
         for i in parsed_list:
             item = self.get_resource_class()()
             item.update(i)
-            self._list.append(item)
+            if self.filter(item):
+                self._list.append(item)
         return self
 
-    def _parse_cli(self, data):
+    def filter(self, _):
+        return True
+
+    def _parse_raw(self, data):
         return self._get_parser().parse_all(data)
 
     @classmethod

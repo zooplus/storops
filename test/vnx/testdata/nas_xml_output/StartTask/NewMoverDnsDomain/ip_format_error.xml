@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <PacketFault maxSeverity="error">
+        <Problem messageCode="14227341329" facility="Prevalidator" component="API" message="User request is not compliant with XML API schema." severity="error">
+            <Description>The user request is not compliant with the XML API Schema.</Description>
+            <Action>Refer to the XML API v2 schema/documentation and correct your user program logic.</Action>
+            <Diagnostics>
+Exception tag: 1530ef26cdd
+Exception message: cvc-pattern-valid: Value '1.1.1.1,2.2.2.2' is not facet-valid with respect to pattern '.{0}|[0-9]|[/%:a-zA-Z0-9][/\-%:._a-zA-Z0-9]*[/%:a-zA-Z0-9]' for type 'IpAddr'.
+</Diagnostics>
+        </Problem>
+    </PacketFault>
+</ResponsePacket>

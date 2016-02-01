@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
@@ -6,10 +20,10 @@ from unittest import TestCase
 from hamcrest import assert_that, contains_string, equal_to, calling, raises
 
 from test.vnx.cli_mock import patch_cli, extract_command, MockCli
-from vnxCliApi.exception import VNXException, VNXSystemDownError
-from vnxCliApi.vnx.cli import CliClient, raise_if_err
+from vnxCliApi.exception import VNXSystemDownError
+from vnxCliApi.vnx.cli import CliClient
 from vnxCliApi.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
-    VNXSPEnum, VNXMigrationRate, VNXError, VNXLunType, VNXRaidType
+    VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType
 
 __author__ = 'Cedric Zhuang'
 
@@ -19,32 +33,13 @@ class MockCliTest(TestCase):
         params = ('naviseccli -h 1.1.1.1 -user '
                   'a -password a -scope 0 -t 100 -np '
                   'getagent').split()
-        assert_that(MockCli.get_filename(params), equal_to('-np_getagent'))
+        assert_that(MockCli.get_filename(params), equal_to('-np_getagent.txt'))
 
     def test_get_filename_windows(self):
         params = (r'c:\install\naviseccli.exe -h 1.1.1.1 -user '
                   'a -password a -scope 0 -t 100 '
                   'getagent').split()
-        assert_that(MockCli.get_filename(params), equal_to('getagent'))
-
-
-class FunctionTest(TestCase):
-    def test_raise_if_err_normal(self):
-        raise_if_err('')
-        # no raises
-
-    def test_raise_if_err_non_empty(self):
-        def f():
-            raise_if_err('error msg', msg="error received")
-
-        assert_that(f, raises(ValueError, "error received"))
-
-    def test_raise_if_err_vnx_error(self):
-        def f():
-            raise_if_err('specified lun may not exist', VNXException,
-                         expected_error=VNXError.GENERAL_NOT_FOUND)
-
-        assert_that(f, raises(VNXException, 'specified lun may not exist'))
+        assert_that(MockCli.get_filename(params), equal_to('getagent.txt'))
 
 
 class CliClientTest(TestCase):

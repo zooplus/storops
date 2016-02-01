@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Checkpoint checkpointOf="223" name="Tan_Manual_CheckPoint"
+                    state="active" time="1441377451" fileSystemSize="3341"
+                    checkpoint="228">
+            <roFileSystemHosts mover="1" moverIdIsVdm="false"/>
+        </Checkpoint>
+        <Checkpoint checkpointOf="222" name="ESA" state="active"
+                    time="1455778803" fileSystemSize="54" checkpoint="230">
+            <roFileSystemHosts mover="1" moverIdIsVdm="false"/>
+        </Checkpoint>
+    </Response>
+</ResponsePacket>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="get_host_1.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MoverHostQueryParams moverHost="1">
+                        <AspectSelection moverMotherboards="true"
+                                         fibreChannelConnections="true"
+                                         moverHosts="true"
+                                         physicalDevices="true"/>
+                    </MoverHostQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_all.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MoverHostQueryParams>
+                        <AspectSelection moverMotherboards="true"
+                                         fibreChannelConnections="true"
+                                         moverHosts="true"
+                                         physicalDevices="true"/>
+                    </MoverHostQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="not_found.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <MoverHostQueryParams moverHost="5">
+                        <AspectSelection moverMotherboards="true"
+                                         fibreChannelConnections="true"
+                                         moverHosts="true"
+                                         physicalDevices="true"/>
+                    </MoverHostQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

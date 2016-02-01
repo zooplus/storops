@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1192905">
+            <Status maxSeverity="error">
+                <Problem messageCode="13690535947" component="APL"
+                         message="'Tan_Manual_CheckPoint' is already in use."
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

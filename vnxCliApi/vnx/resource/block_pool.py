@@ -1,10 +1,24 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
-from vnxCliApi.vnx.cli import raise_if_err
+from vnxCliApi.vnx.enums import raise_if_err
 from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi.vnx.resource.lun import VNXLun
-from vnxCliApi.vnx.resource.disk import VNXDisk
+from vnxCliApi.vnx.resource.disk import VNXDiskList
 from vnxCliApi import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -17,6 +31,10 @@ class VNXPoolFeature(VNXCliResource):
 
     def _get_raw_resource(self):
         return self._cli.get_pool_feature(poll=self.poll)
+
+    @property
+    def available_disks(self):
+        return VNXDiskList(self._cli, self.available_disk_indices)
 
 
 class VNXPoolList(VNXCliResourceList):
@@ -113,7 +131,7 @@ class VNXPool(VNXCliResource):
 
     @property
     def disks(self):
-        return [VNXDisk(index, self._cli) for index in self.disk_indices]
+        return VNXDiskList(self._cli, self.disk_indices)
 
     def _get_raw_resource(self):
         return self._cli.get_pool(poll=self.poll, **self._get_name_or_id())

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <CifsServer type="W2K" localUsers="false" name="TEST" mover="1"
+                    moverIdIsVdm="false">
+            <Aliases/>
+            <W2KServerData domain="TEST.DEV" compName="TEST"
+                           domainJoined="false"/>
+        </CifsServer>
+    </Response>
+</ResponsePacket>

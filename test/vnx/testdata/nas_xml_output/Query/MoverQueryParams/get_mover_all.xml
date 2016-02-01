@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Mover name="server_2" host="1" role="primary" standbys="2"
+               i18NMode="UNICODE" failoverPolicy="auto" mover="1"/>
+        <MoverStatus version="T8.1.7.70" csTime="1455517045" clock="1455547309"
+                     timezone="GMT" uptime="7086723" mover="1">
+            <Status maxSeverity="ok"/>
+        </MoverStatus>
+        <Mover name="server_3" host="2" role="standby" standbyFors="1"
+               i18NMode="ASCII" failoverPolicy="none" mover="2"/>
+        <MoverStatus version="T8.1.7.70" csTime="1455517046" clock="1455547294"
+                     timezone="GMT" uptime="11360129" mover="2">
+            <Status maxSeverity="ok"/>
+        </MoverStatus>
+        <MoverInterface name="TAN" device="fxg-8-0" ipVersion="IPv4"
+                        netMask="255.0.0.0" broadcastAddr="10.255.255.255"
+                        macAddr="0:60:16:69:54:54" mtu="1500" up="true"
+                        vlanid="0" mover="1" ipAddress="10.110.42.83"/>
+        <MoverInterface name="el30" device="cge0" ipVersion="IPv4"
+                        netMask="255.255.0.0" broadcastAddr="172.18.255.255"
+                        macAddr="2:60:48:20:b:0" mtu="1500" up="true"
+                        vlanid="0" mover="1" ipAddress="172.18.70.2"/>
+        <MoverInterface name="el31" device="cge1" ipVersion="IPv4"
+                        netMask="255.255.0.0" broadcastAddr="172.18.255.255"
+                        macAddr="2:60:48:20:b:1" mtu="1500" up="true"
+                        vlanid="0" mover="1" ipAddress="172.18.71.2"/>
+        <MoverInterface name="el30" device="cge0" ipVersion="IPv4"
+                        netMask="255.255.0.0" broadcastAddr="172.18.255.255"
+                        macAddr="2:60:48:20:13:0" mtu="1500" up="true"
+                        vlanid="0" mover="2" ipAddress="172.18.70.3"/>
+        <MoverInterface name="el31" device="cge1" ipVersion="IPv4"
+                        netMask="255.255.0.0" broadcastAddr="172.18.255.255"
+                        macAddr="2:60:48:20:13:1" mtu="1500" up="true"
+                        vlanid="0" mover="2" ipAddress="172.18.71.3"/>
+        <MoverRoute destination="172.18.0.0" interface="172.18.70.2"
+                    ipVersion="IPv4" netMask="255.255.0.0"
+                    gateway="172.18.70.2" mover="1"/>
+        <MoverRoute destination="10.0.0.0" interface="10.110.42.83"
+                    ipVersion="IPv4" netMask="255.0.0.0" gateway="10.110.42.83"
+                    mover="1"/>
+        <MoverRoute destination="127.0.0.1" interface="127.0.0.1"
+                    ipVersion="IPv4" netMask="255.255.255.255"
+                    gateway="127.0.0.1" mover="1"/>
+        <MoverRoute destination="172.18.0.0" interface="172.18.70.3"
+                    ipVersion="IPv4" netMask="255.255.0.0"
+                    gateway="172.18.70.3" mover="2"/>
+        <MoverRoute destination="127.0.0.1" interface="127.0.0.1"
+                    ipVersion="IPv4" netMask="255.255.255.255"
+                    gateway="127.0.0.1" mover="2"/>
+        <LogicalNetworkDevice speed="FD10000" interfaces="10.110.42.83"
+                              type="physical-ethernet" mover="1"
+                              name="fxg-8-0"/>
+        <LogicalNetworkDevice speed="FD10000" type="physical-ethernet"
+                              mover="1" name="fxg-8-1"/>
+        <LogicalNetworkDevice speed="FD10000" type="physical-ethernet"
+                              mover="2" name="fxg-8-0"/>
+        <LogicalNetworkDevice speed="FD10000" type="physical-ethernet"
+                              mover="2" name="fxg-8-1"/>
+        <MoverDeduplicationSettings accessTime="15" modificationTime="15"
+                                    maximumSize="8388608" minimumSize="24"
+                                    caseSensitive="false"
+                                    duplicateDetectionMethod="sha1"
+                                    minimumScanInterval="7"
+                                    fileExtensionExcludeList=""
+                                    savVolHighWatermark="90"
+                                    backupDataHighWatermark="90"
+                                    CPULowWatermark="40" CPUHighWatermark="90"
+                                    cifsCompressionEnabled="true" mover="1"/>
+    </Response>
+</ResponsePacket>
+

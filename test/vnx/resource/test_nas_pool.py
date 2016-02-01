@@ -1,94 +1,69 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import unittest
 
-import ddt
-import mock
+from hamcrest import assert_that, equal_to, has_items
 
-from test.vnx.resource.fakes import mock_ssh_connector
-from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.vnx.resource import nas_pool
-
-from test import utils
-from test.vnx.resource import fakes
-from vnxCliApi.exception import ObjectNotFound, VNXBackendError
-from vnxCliApi.vnx.resource import nas_client
+from test.vnx.nas_mock import t_nas, patch_post
+from vnxCliApi.vnx.resource.nas_pool import VNXNasPool, VNXNasPoolList
 
 __author__ = 'Jay Xu'
 
 
-@ddt.ddt
-class StoragePoolTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.hook = utils.RequestSideEffect()
+class VNXNasPoolTest(unittest.TestCase):
+    @patch_post()
+    def test_get_all(self):
+        pool_list = VNXNasPoolList(cli=t_nas())
+        assert_that(len(pool_list), equal_to(6))
 
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.pool_manager = nas_pool.PoolManager(storage_manager)
+    @patch_post()
+    def test_get_by_name(self):
+        pool = VNXNasPool(name='vnx-sg_test', cli=t_nas())
+        self.verify_pool_vnx_sg_test(pool)
 
-        self.pool = fakes.PoolTestData()
+    @patch_post()
+    def test_get_by_pool_id(self):
+        pool = VNXNasPool(pool_id=63, cli=t_nas())
+        self.verify_pool_vnx_sg_test(pool)
 
-    def test_get_pool(self):
-        self.hook.append(self.pool.resp_get_succeed())
-        self.hook.append(self.pool.resp_get_succeed(id='new_id'))
+    @patch_post()
+    def test_get_by_name_not_found(self):
+        pool = VNXNasPool(name='not_found', cli=t_nas())
+        assert_that(pool.existed, equal_to(False))
 
-        xml_connector = self.pool_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    def verify_pool_vnx_sg_test(self, pool):
+        assert_that(pool.movers_id, has_items(1, 2))
+        assert_that(pool.member_volumes, has_items(105))
+        assert_that(pool.name, equal_to('vnx-sg_test'))
+        assert_that(pool.description, equal_to("vnx-sg_test on 000196800192"))
+        assert_that(pool.may_contain_slices_default, equal_to(False))
+        assert_that(pool.disk_type, equal_to('Mixed'))
+        assert_that(pool.size, equal_to(0))
+        assert_that(pool.used_size, equal_to(0))
+        assert_that(pool.total_size, equal_to(2077))
+        assert_that(pool.virtual_provisioning, equal_to(True))
+        assert_that(pool.is_homogeneous, equal_to(True))
+        assert_that(pool.template_pool, equal_to(63))
+        assert_that(pool.stripe_count, equal_to(8))
+        assert_that(pool.stripe_size, equal_to(256))
+        assert_that(pool.pool_id, equal_to(63))
 
-        pool = self.pool_manager.get(self.pool.pool_name)
-        self.assertIn(self.pool.pool_name, self.pool_manager.pool_map)
-        property_map = [
-            'name',
-            'movers_id',
-            'total_size',
-            'used_size',
-            'disk_type',
-            'policies',
-            'id',
-        ]
-        for prop in property_map:
-            self.assertIn(prop, pool.__dict__)
-
-        self.pool_manager.get_all()
-        update_pool = self.pool_manager.pool_map[self.pool.pool_name]
-        self.assertEqual('new_id', update_pool.id)
-
-        expected_calls = [
-            mock.call(self.pool.req_get()),
-            mock.call(self.pool.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    @ddt.data(fakes.PoolTestData().resp_get_without_value(),
-              fakes.PoolTestData().resp_get_succeed(name='other'))
-    def test_get_pool_but_not_found(self, xml_resp):
-        self.hook.append(xml_resp)
-
-        xml_connector = self.pool_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(ObjectNotFound,
-                          self.pool_manager.get,
-                          self.pool.pool_name)
-
-        expected_calls = [mock.call(self.pool.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_get_pool_with_error(self):
-        self.hook.append(self.pool.resp_get_error())
-
-        xml_connector = self.pool_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.pool_manager.get,
-                          self.pool.pool_name)
-
-        expected_calls = [mock.call(self.pool.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
+    def test_get_id(self):
+        pool = VNXNasPool(pool_id=12)
+        assert_that(pool.get_id(pool), equal_to(12))
+        assert_that(pool.get_id('22'), equal_to(22))

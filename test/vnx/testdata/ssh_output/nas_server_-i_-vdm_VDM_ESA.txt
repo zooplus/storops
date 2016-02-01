@@ -1,0 +1,15 @@
+id        = 2
+name      = VDM_ESA
+acl       = 0
+type      = vdm
+server    = server_2
+rootfs    = root_fs_vdm_VDM_ESA
+I18N mode = UNICODE
+mountedfs = Min_ESA31_VDM_VNX191,Min_ESA_GenerateIO_VNX191_NFS3 VDM
+member_of =
+status    :
+  defined = enabled
+   actual = loaded, active
+Interfaces to services mapping:
+ interface=10-110-24-195 :vdm
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1197200">
+            <Status maxSeverity="error">
+                <Problem messageCode="13691191305" component="APL"
+                         message="The following parameters are not valid: size = -1024."
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+                <Problem messageCode="13691191305" component="APL"
+                         message="The following parameters are not valid: size = -1024."
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+                <Problem messageCode="13691191323" component="APL"
+                         message="A volume or storage MB must be specified."
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

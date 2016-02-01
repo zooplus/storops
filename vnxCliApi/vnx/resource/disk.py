@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import re
@@ -76,6 +90,22 @@ class VNXDisk(VNXCliResource):
 
 
 class VNXDiskList(VNXCliResourceList):
+    def __init__(self, cli=None, disk_indices=None):
+        super(VNXDiskList, self).__init__(cli)
+        if disk_indices is not None:
+            self._disk_indices = [index.lower() for index in disk_indices
+                                  if index is not None]
+        else:
+            self._disk_indices = None
+
+    def filter(self, disk):
+        if self._disk_indices:
+            index = disk.index
+            ret = index and index.lower() in self._disk_indices
+        else:
+            ret = True
+        return ret
+
     @classmethod
     def get_resource_class(cls):
         return VNXDisk

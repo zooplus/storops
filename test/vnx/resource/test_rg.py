@@ -1,14 +1,29 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, raises
+from hamcrest import assert_that, equal_to, raises, instance_of
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.verifiers import verify_raid0
 from vnxCliApi.exception import VNXCreateRaidGroupError, \
     VNXRemoveRaidGroupError
+from vnxCliApi.vnx.resource.disk import VNXDisk
 from vnxCliApi.vnx.resource.rg import VNXRaidGroup
 
 __author__ = 'Cedric Zhuang'
@@ -51,3 +66,12 @@ class VNXRaidGroupTest(TestCase):
             VNXRaidGroup(11, t_cli()).remove()
 
         assert_that(f, raises(VNXRemoveRaidGroupError, 'Not Found'))
+
+    @patch_cli()
+    def test_disks(self):
+        rg = VNXRaidGroup(4, t_cli())
+        disks = rg.disks
+        assert_that(len(disks), equal_to(5))
+        for disk in disks:
+            assert_that(disk, instance_of(VNXDisk))
+            assert_that(disk.existed, equal_to(True))

@@ -1,450 +1,112 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import unittest
 
-import ddt
-import mock
+from hamcrest import assert_that, equal_to, raises, has_item
 
-from test import utils
-from test.vnx.resource import fakes
-from test.vnx.resource.fakes import mock_ssh_connector, patch_retry
-from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.connection.exceptions import SSHExecutionError
+from test.vnx.nas_mock import t_nas, patch_nas
 from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx import constants
-from vnxCliApi.vnx.resource import cifs_share
-from vnxCliApi.vnx.resource import nas_client
+from vnxCliApi.vnx.resource.cifs_share import VNXCifsShareList, VNXCifsShare
+from vnxCliApi.vnx.resource.fs import VNXFileSystem
+from vnxCliApi.vnx.resource.mover import VNXMover
 
 __author__ = 'Jay Xu'
 
 
-@ddt.ddt
-class CIFSShareTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.hook = utils.RequestSideEffect()
-        self.ssh_hook = utils.SSHSideEffect()
+class VNXCifsShareTest(unittest.TestCase):
+    # todo: add test for share access commands
 
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.share_manager = cifs_share.CIFSShareManager(storage_manager)
+    @patch_nas()
+    def test_get_all(self):
+        shares = VNXCifsShareList(cli=t_nas())
+        assert_that(len(shares), equal_to(16))
+        share = next(s for s in shares if s.name == 'zhuanc_cifs_100g')
+        self.verify_share_zhuanc(share)
 
-        self.vdm = fakes.VDMTestData()
-        self.mover = fakes.MoverTestData()
-        self.cifs_share = fakes.CIFSShareTestData()
-        self.cifs_server = fakes.CIFSServerTestData()
+    @staticmethod
+    def verify_share_zhuanc(share):
+        assert_that(share.path, equal_to('\zhuanc_fs_100g'))
+        assert_that(share.fs_id, equal_to(211))
+        assert_that(share.max_users, equal_to(10))
+        assert_that(share.comment, equal_to('100g cifs share for zhuanc'))
+        assert_that(share.name, equal_to('zhuanc_cifs_100g'))
+        assert_that(share.mover_id, equal_to(1))
+        assert_that(share.is_vdm, equal_to(False))
+        assert_that(share.cifs_server_names, has_item('CIFS'))
 
-    def test_create_cifs_share(self):
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
+    @patch_nas()
+    def test_get_by_mover(self):
+        mover = self.get_mover_1()
+        shares = VNXCifsShareList(cli=t_nas(), mover=mover)
+        for share in shares:
+            assert_that(share.mover.get_mover_id(),
+                        equal_to(mover.get_mover_id()))
+            assert_that(share.mover.is_vdm, equal_to(mover.is_vdm))
 
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    def get_mover_1(self):
+        mover = VNXMover(mover_id=1, cli=t_nas())
+        return mover
 
-        self.share_manager.create(
-            name=self.cifs_share.share_name,
-            server_name=self.cifs_share.cifs_server_name[-14:],
-            mover_name=self.vdm.vdm_name,
-            is_vdm=True)
+    @patch_nas()
+    def test_get_by_share_name(self):
+        shares = VNXCifsShareList(cli=t_nas(), share_name='zhuanc_cifs_100g')
+        assert_that(len(shares), equal_to(1))
+        self.verify_share_zhuanc(shares[0])
 
-        self.share_manager.create(
-            name=self.cifs_share.share_name,
-            server_name=self.cifs_share.cifs_server_name[-14:],
-            mover_name=self.mover.mover_name,
-            is_vdm=False)
-
-        expected_calls = [
-            mock.call(self.vdm.req_get()),
-            mock.call(self.cifs_share.req_create(self.vdm.vdm_id)),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_create(self.mover.mover_id, False)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    @patch_retry
-    def test_create_cifs_share_invalid_mover_id(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_invalid_mover_id())
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.share_manager.create(
-            name=self.cifs_share.share_name,
-            server_name=self.cifs_share.cifs_server_name[-14:],
-            mover_name=self.mover.mover_name,
-            is_vdm=False)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_create(self.mover.mover_id, False)),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_create(self.mover.mover_id, False)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_create_cifs_share_with_error(self):
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.cifs_share.resp_task_error())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.create,
-                          name=self.cifs_share.share_name,
-                          server_name=self.cifs_share.cifs_server_name[-14:],
-                          mover_name=self.vdm.vdm_name,
-                          is_vdm=True)
-
-        expected_calls = [
-            mock.call(self.vdm.req_get()),
-            mock.call(self.cifs_share.req_create(self.vdm.vdm_id)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_cifs_share(self):
-        self.hook.append(self.cifs_share.resp_get_succeed(self.vdm.vdm_id))
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-        self.hook.append(self.cifs_share.resp_get_succeed(self.mover.mover_id,
-                                                          False))
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.share_manager.delete(
-            name=self.cifs_share.share_name,
-            mover_name=self.vdm.vdm_name,
-            is_vdm=True)
-
-        self.share_manager.delete(
-            name=self.cifs_share.share_name,
-            mover_name=self.mover.mover_name,
-            is_vdm=False)
-
-        expected_calls = [
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.vdm.req_get()),
-            mock.call(self.cifs_share.req_delete(self.vdm.vdm_id)),
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_delete(self.mover.mover_id, False)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_cifs_share_not_found(self):
-        self.hook.append(self.cifs_share.resp_get_error())
-        self.hook.append(self.cifs_share.resp_get_without_value())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.delete,
-                          name=self.cifs_share.share_name,
-                          mover_name=self.vdm.vdm_name,
-                          is_vdm=True)
-
-        self.share_manager.delete(
-            name=self.cifs_share.share_name,
-            mover_name=self.vdm.vdm_name,
-            is_vdm=True)
-
-        expected_calls = [
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.cifs_share.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    @patch_retry
-    def test_delete_cifs_share_invalid_mover_id(self):
-        self.hook.append(self.cifs_share.resp_get_succeed(self.mover.mover_id,
-                                                          False))
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_invalid_mover_id())
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.share_manager.delete(
-            name=self.cifs_share.share_name,
-            mover_name=self.mover.mover_name,
-            is_vdm=False)
-
-        expected_calls = [
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_delete(self.mover.mover_id, False)),
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.cifs_share.req_delete(self.mover.mover_id, False)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_delete_cifs_share_with_error(self):
-        self.hook.append(self.cifs_share.resp_get_succeed(self.vdm.vdm_id))
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.cifs_share.resp_task_error())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.delete,
-                          name=self.cifs_share.share_name,
-                          mover_name=self.vdm.vdm_name,
-                          is_vdm=True)
-
-        expected_calls = [
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.vdm.req_get()),
-            mock.call(self.cifs_share.req_delete(self.vdm.vdm_id)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
+    @patch_nas()
     def test_get_cifs_share(self):
-        self.hook.append(self.cifs_share.resp_get_succeed(self.vdm.vdm_id))
+        mover = self.get_mover_1()
+        share = VNXCifsShare(name='zhuanc_cifs_100g', mover=mover, cli=t_nas())
+        self.verify_share_zhuanc(share)
 
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_nas()
+    def test_get_not_found(self):
+        mover = self.get_mover_1()
+        cifs = VNXCifsShare(name='not_exists', mover=mover, cli=t_nas())
+        assert_that(cifs.existed, equal_to(False))
 
-        self.share_manager.get(self.cifs_share.share_name)
+    @patch_nas()
+    def test_create_invalid_path(self):
+        def f():
+            mover = self.get_mover_1()
+            VNXCifsShare.create(t_nas(), 'test_zhuanc', 'CIFS', mover,
+                                path='/test_zhuanc')
 
-        expected_calls = [mock.call(self.cifs_share.req_get())]
-        xml_connector.post.assert_has_calls(expected_calls)
+        assert_that(f, raises(VNXBackendError, 'Invalid path'))
 
-    def test_disable_share_access(self):
-        self.ssh_hook.append('Command succeeded')
+    @patch_nas()
+    def test_create_success(self):
+        fs = VNXFileSystem(name='zzz', cli=t_nas())
+        mover = self.get_mover_1()
+        share = VNXCifsShare.create(t_nas(), fs, 'CIFS', mover)
+        assert_that(share.path, equal_to('\zzz'))
 
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
+    @patch_nas()
+    def test_remove_success(self):
+        share = VNXCifsShare(name='zzz', mover=self.get_mover_1(), cli=t_nas())
+        resp = share.remove()
+        assert_that(resp.is_ok(), equal_to(True))
 
-        self.share_manager.disable_share_access(
-            share_name=self.cifs_share.share_name,
-            mover_name=self.vdm.vdm_name)
+    @patch_nas()
+    def test_remove_not_found(self):
+        def f():
+            share = VNXCifsShare(name='yyy', mover=self.get_mover_1(),
+                                 cli=t_nas())
+            share.remove('CIFS')
 
-        ssh_calls = [mock.call(self.cifs_share.cmd_disable_access(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_disable_share_access_with_error(self):
-        self.ssh_hook.append(ex=SSHExecutionError(
-            stdout=self.cifs_share.fake_output))
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.disable_share_access,
-                          share_name=self.cifs_share.share_name,
-                          mover_name=self.vdm.vdm_name)
-
-        ssh_calls = [mock.call(self.cifs_share.cmd_disable_access(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_share_access(self):
-        self.ssh_hook.append(self.cifs_share.output_allow_access())
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.allow_share_access(
-            mover_name=self.vdm.vdm_name,
-            share_name=self.cifs_share.share_name,
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [mock.call(self.cifs_share.cmd_change_access(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_share_access_duplicate_ACE(self):
-        expt_dup_ace = SSHExecutionError(
-            stdout=self.cifs_share.output_allow_access_but_duplicate_ace())
-        self.ssh_hook.append(ex=expt_dup_ace)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.allow_share_access(
-            mover_name=self.vdm.vdm_name,
-            share_name=self.cifs_share.share_name,
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [mock.call(self.cifs_share.cmd_change_access(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_allow_share_access_with_error(self):
-        expt_err = SSHExecutionError(
-            self.cifs_share.fake_output)
-        self.ssh_hook.append(ex=expt_err)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.allow_share_access,
-                          mover_name=self.vdm.vdm_name,
-                          share_name=self.cifs_share.share_name,
-                          user_name=self.cifs_server.domain_user,
-                          domain=self.cifs_server.domain_name,
-                          access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [mock.call(self.cifs_share.cmd_change_access(),
-                               check_exit_code=True)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_share_access(self):
-        self.ssh_hook.append('Command succeeded')
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.deny_share_access(
-            mover_name=self.vdm.vdm_name,
-            share_name=self.cifs_share.share_name,
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [
-            mock.call(self.cifs_share.cmd_change_access(action='revoke'),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_share_access_no_ace(self):
-        expt_no_ace = SSHExecutionError(
-            stdout=self.cifs_share.output_deny_access_but_no_ace())
-        self.ssh_hook.append(ex=expt_no_ace)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.deny_share_access(
-            mover_name=self.vdm.vdm_name,
-            share_name=self.cifs_share.share_name,
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [
-            mock.call(self.cifs_share.cmd_change_access(action='revoke'),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_share_access_but_no_user_found(self):
-        expt_no_user = SSHExecutionError(
-            stdout=self.cifs_share.output_deny_access_but_no_user_found())
-        self.ssh_hook.append(ex=expt_no_user)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.share_manager.deny_share_access(
-            mover_name=self.vdm.vdm_name,
-            share_name=self.cifs_share.share_name,
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [
-            mock.call(self.cifs_share.cmd_change_access(action='revoke'),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_deny_share_access_with_error(self):
-        expt_err = SSHExecutionError(
-            self.cifs_share.fake_output)
-        self.ssh_hook.append(ex=expt_err)
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.share_manager.deny_share_access,
-                          mover_name=self.vdm.vdm_name,
-                          share_name=self.cifs_share.share_name,
-                          user_name=self.cifs_server.domain_user,
-                          domain=self.cifs_server.domain_name,
-                          access=constants.CIFS_ACL_FULLCONTROL)
-
-        ssh_calls = [
-            mock.call(self.cifs_share.cmd_change_access(action='revoke'),
-                      check_exit_code=True),
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
-
-    def test_operations_with_cifs_share_resource(self):
-        self.hook.append(self.vdm.resp_get_succeed())
-        self.hook.append(self.cifs_share.resp_task_succeed())
-        self.hook.append(self.cifs_share.resp_get_succeed(self.vdm.vdm_id))
-        self.hook.append(self.cifs_share.resp_task_succeed())
-
-        xml_connector = self.share_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.ssh_hook.append('Command succeeded')
-        self.ssh_hook.append(self.cifs_share.output_allow_access())
-        self.ssh_hook.append('Command succeeded')
-
-        ssh_connector = self.share_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        share = self.share_manager.create(
-            name=self.cifs_share.share_name,
-            server_name=self.cifs_share.cifs_server_name[-14:],
-            mover_name=self.vdm.vdm_name,
-            is_vdm=True)
-
-        share.disable_share_access()
-
-        share.allow_share_access(
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        share.deny_share_access(
-            user_name=self.cifs_server.domain_user,
-            domain=self.cifs_server.domain_name,
-            access=constants.CIFS_ACL_FULLCONTROL)
-
-        share.delete()
-
-        expected_calls = [
-            mock.call(self.vdm.req_get()),
-            mock.call(self.cifs_share.req_create(self.vdm.vdm_id)),
-            mock.call(self.cifs_share.req_get()),
-            mock.call(self.cifs_share.req_delete(self.vdm.vdm_id)),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-        ssh_calls = [
-            mock.call(self.cifs_share.cmd_disable_access(),
-                      check_exit_code=True),
-            mock.call(self.cifs_share.cmd_change_access(),
-                      check_exit_code=True),
-            mock.call(self.cifs_share.cmd_change_access(action='revoke'),
-                      check_exit_code=True)
-        ]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+        assert_that(f, raises(VNXBackendError, 'No such file'))

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Mover name="server_2" host="1" role="primary" standbys="2"
+               i18NMode="UNICODE" failoverPolicy="auto" mover="1"/>
+        <Mover name="server_3" host="2" role="standby" standbyFors="1"
+               i18NMode="ASCII" failoverPolicy="none" mover="2"/>
+    </Response>
+</ResponsePacket>

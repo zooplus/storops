@@ -1,260 +1,289 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
-
 import unittest
 
-import mock
+from hamcrest import assert_that, equal_to, none, only_contains, raises
 
-from test.vnx.resource.fakes import mock_ssh_connector
-from test.vnx.resource.fakes import mock_xml_api
-from vnxCliApi.vnx.resource import mover
-
-from test import utils
-from test.vnx.resource import fakes
-from vnxCliApi.exception import ObjectNotFound, VNXBackendError
-from vnxCliApi.vnx.resource import nas_client
+from test.vnx.nas_mock import t_nas, patch_post, patch_nas
+from vnxCliApi.vnx.enums import VNXPortType
+from vnxCliApi.exception import VNXBackendError
+from vnxCliApi.vnx.resource.mover import VNXMoverList, VNXMover, \
+    VNXMoverRefList, VNXMoverRef, VNXMoverHost, VNXMoverHostList
 
 __author__ = 'Jay Xu'
 
 
-class MoverRefTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.hook = utils.RequestSideEffect()
-        self.ssh_hook = utils.SSHSideEffect()
+class VNXMoverRefTest(unittest.TestCase):
+    @patch_post()
+    def test_get_all(self):
+        movers = VNXMoverRefList(t_nas())
+        assert_that(len(movers), equal_to(2))
+        dm = next(dm for dm in movers if dm.mover_id == 1)
+        self.verify_dm_ref_1(dm)
 
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.mover_ref_manager = mover.MoverRefManager(storage_manager)
-
-        self.mover = fakes.MoverTestData()
-
+    @patch_post()
     def test_get(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
+        dm = VNXMoverRef(mover_id=1, cli=t_nas())
+        self.verify_dm_ref_1(dm)
 
-        xml_connector = self.mover_ref_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_post()
+    def test_get_not_existed(self):
+        dm = VNXMoverRef(mover_id=5, cli=t_nas())
+        assert_that(dm.existed, equal_to(False))
 
-        mover_ref = self.mover_ref_manager.get(self.mover.mover_name)
-        self.assertIn(self.mover.mover_name,
-                      self.mover_ref_manager.mover_ref_map)
+    @patch_post()
+    def test_get_by_name(self):
+        dm = VNXMoverRef(name='server_2', cli=t_nas())
+        self.verify_dm_ref_1(dm)
 
-        property_map = [
-            'name',
-            'id',
-        ]
-        for prop in property_map:
-            self.assertIn(prop, mover_ref.__dict__)
+    @patch_post()
+    def test_get_by_name_not_found(self):
+        dm = VNXMoverRef(name='server_5', cli=t_nas())
+        assert_that(dm.existed, equal_to(False))
 
-        expected_calls = [mock.call(self.mover.req_get_ref())]
-        xml_connector.post.assert_has_calls(expected_calls)
+    @staticmethod
+    def verify_dm_ref_1(dm):
+        assert_that(dm.mover_id, equal_to(1))
+        assert_that(dm.i18n_mode, equal_to('UNICODE'))
+        assert_that(dm.name, equal_to('server_2'))
+        assert_that(dm.existed, equal_to(True))
+        assert_that(dm.standby_fors, none())
+        assert_that(dm.failover_policy, equal_to('auto'))
+        assert_that(dm.host_id, equal_to(1))
+        assert_that(dm.role, equal_to('primary'))
+        assert_that(dm.standbys, only_contains(2))
 
-    def test_get_but_not_found(self):
-        self.hook.append(self.mover.resp_get_ref_succeed(name='other'))
+    def test_get_id(self):
+        dm = VNXMover(mover_id=12)
+        assert_that(dm.get_id(dm), equal_to(12))
+        assert_that(dm.get_id('22'), equal_to(22))
 
-        xml_connector = self.mover_ref_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_post()
+    def test_mover_host(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        VNXMoverHostTest.verify_mover_host_1(dm.host)
 
-        self.assertRaises(ObjectNotFound,
-                          self.mover_ref_manager.get,
-                          self.mover.mover_name)
+    @patch_post()
+    def test_create_dns(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        resp = dm.create_dns('tt', '1.1.1.1')
+        assert_that(resp.is_ok(), equal_to(True))
 
-        expected_calls = [mock.call(self.mover.req_get_ref())]
-        xml_connector.post.assert_has_calls(expected_calls)
+    @patch_post()
+    def test_create_dns_format_error(self):
+        def f():
+            dm = VNXMover(mover_id=1, cli=t_nas())
+            dm.create_dns('tt', '1.1.1.1,2.2.2.2')
 
-    def test_get_with_error(self):
-        self.hook.append(self.mover.resp_get_error())
+        assert_that(f, raises(VNXBackendError, 'not facet-valid'))
 
-        xml_connector = self.mover_ref_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_post()
+    def test_create_dns_multiple(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        resp = dm.create_dns('tt', ['1.1.1.1', '2.2.2.2'])
+        assert_that(resp.is_ok(), equal_to(True))
 
-        self.assertRaises(VNXBackendError,
-                          self.mover_ref_manager.get,
-                          self.mover.mover_name)
+    @patch_post()
+    def test_remove_dns(self):
+        dm = VNXMoverRef(mover_id=1, cli=t_nas())
+        resp = dm.remove_dns('tt')
+        assert_that(resp.is_ok(), equal_to(True))
 
-        expected_calls = [mock.call(self.mover.req_get_ref())]
-        xml_connector.post.assert_has_calls(expected_calls)
+    @patch_post()
+    def test_remove_dns_not_exist(self):
+        def f():
+            dm = VNXMoverRef(mover_id=1, cli=t_nas())
+            dm.remove_dns('bb')
 
+        assert_that(f, raises(VNXBackendError, 'server_2'))
 
-class MoverTestCase(unittest.TestCase):
-    @mock_xml_api
-    @mock_ssh_connector
-    def setUp(self):
-        super(self.__class__, self).setUp()
-        self.hook = utils.RequestSideEffect()
-        self.ssh_hook = utils.SSHSideEffect()
+    @patch_post()
+    def test_physical_devices(self):
+        dm = VNXMoverRef(mover_id=1, cli=t_nas())
+        assert_that(len(dm.physical_devices), equal_to(9))
 
-        host = fakes.FakeData.emc_nas_server
-        username = fakes.FakeData.emc_nas_login
-        password = fakes.FakeData.emc_nas_password
-        storage_manager = nas_client.VNXNasClient(host, username, password)
-        self.mover_manager = mover.MoverManager(storage_manager)
+    @patch_post()
+    def test_fc_devices(self):
+        dm = VNXMoverRef(mover_id=1, cli=t_nas())
+        assert_that(len(dm.fc_devices), equal_to(4))
 
-        self.mover = fakes.MoverTestData()
+    @patch_post()
+    def test_ethernet_devices(self):
+        dm = VNXMoverRef(mover_id=1, cli=t_nas())
+        assert_that(len(dm.ethernet_devices), equal_to(4))
 
-    def test_get(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.mover.resp_get_succeed())
+    @patch_post()
+    def test_create_interface(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        interface = dm.create_interface('cge-1-0', '1.1.1.1', '255.255.255.0')
+        assert_that(interface.name, equal_to('1.1.1.1-0'))
+        assert_that(interface.broadcast_addr, equal_to('1.1.1.255'))
 
-        xml_connector = self.mover_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @patch_post()
+    def test_remove_interface(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        resp = dm.remove_interface('1.1.1.1')
+        assert_that(resp.is_ok(), equal_to(True))
 
-        mover = self.mover_manager.get(self.mover.mover_name)
-
-        self.assertIn(self.mover.mover_name, self.mover_manager.mover_map)
-        property_map = [
-            'name',
-            'id',
-            'status',
-            'version',
-            'uptime',
-            'role',
-            'interfaces',
-            'devices',
-            'dns_domain',
-        ]
-        for prop in property_map:
-            self.assertIn(prop, mover.__dict__)
-
-        # Invoke get() in the second time to ensure the information from cache
-        self.mover_manager.get(self.mover.mover_name)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.mover.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_get_mover_failed_to_get_mover_ref(self):
-        self.hook.append(self.mover.resp_get_error())
-
-        xml_connector = self.mover_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.mover_manager.get,
-                          self.mover.mover_name)
-
-        expected_calls = [mock.call(self.mover.req_get_ref())]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_get_mover_but_not_found(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.mover.resp_get_without_value())
-
-        xml_connector = self.mover_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(ObjectNotFound,
-                          self.mover_manager.get,
-                          name=self.mover.mover_name)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.mover.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-    def test_get_mover_with_error(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.mover.resp_get_error())
-
-        xml_connector = self.mover_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
-
-        self.assertRaises(VNXBackendError,
-                          self.mover_manager.get,
-                          name=self.mover.mover_name)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.mover.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
+    @patch_nas()
     def test_get_interconnect_id(self):
-        self.ssh_hook.append(self.mover.output_get_interconnect_id())
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        assert_that(dm.get_interconnect_id(), equal_to(20001))
 
-        ssh_connector = self.mover_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
 
-        conn_id = self.mover_manager.get_interconnect_id(
-            self.mover.mover_name, self.mover.mover_name)
-        self.assertEqual(self.mover.interconnect_id, conn_id)
+class VNXMoverTest(unittest.TestCase):
+    @patch_post()
+    def test_get_all(self):
+        movers = VNXMoverList(t_nas())
+        assert_that(len(movers), equal_to(2))
+        mover1 = next(dm for dm in movers if dm.mover_id == 1)
+        self.verify_dm_1(mover1)
 
-        ssh_calls = [mock.call(self.mover.cmd_get_interconnect_id(),
-                               check_exit_code=False)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+    @patch_post()
+    def test_get(self):
+        mover1 = VNXMover(mover_id=1, cli=t_nas())
+        self.verify_dm_1(mover1)
 
-    def test_get_physical_devices(self):
-        self.ssh_hook.append(self.mover.output_get_physical_devices())
+    @staticmethod
+    def verify_dm_1(dm):
+        assert_that(dm.status, equal_to('ok'))
+        assert_that(dm.mover_id, equal_to(1))
+        assert_that(dm.uptime, equal_to(7086723))
+        assert_that(dm.i18n_mode, equal_to('UNICODE'))
+        assert_that(dm.name, equal_to('server_2'))
+        assert_that(dm.existed, equal_to(True))
+        assert_that(dm.version, equal_to('T8.1.7.70'))
+        assert_that(dm.standby_fors, none())
+        assert_that(dm.dns_domain, none())
+        assert_that(dm.failover_policy, equal_to('auto'))
+        assert_that(dm.host_id, equal_to(1))
+        assert_that(dm.role, equal_to('primary'))
+        assert_that(dm.standbys, only_contains(2))
+        assert_that(dm.timezone, equal_to('GMT'))
+        interface = next(i for i in dm.interfaces if i.name == 'el30')
+        assert_that(interface.mover_id, equal_to(1))
+        assert_that(interface.ip_addr, equal_to('172.18.70.2'))
+        assert_that(interface.name, equal_to('el30'))
+        assert_that(interface.existed, equal_to(True))
+        assert_that(interface.broadcast_addr, equal_to('172.18.255.255'))
+        assert_that(interface.net_mask, equal_to('255.255.0.0'))
+        assert_that(interface.up, equal_to(True))
+        assert_that(interface.mtu, equal_to(1500))
+        assert_that(interface.ip_version, equal_to('IPv4'))
+        assert_that(interface.mac_addr, equal_to('2:60:48:20:b:0'))
+        assert_that(interface.device, equal_to('cge0'))
+        assert_that(interface.vlan_id, equal_to(0))
+        dedup_settings = dm.dedup_settings
+        assert_that(dedup_settings.cpu_high_watermark, equal_to(90))
+        assert_that(dedup_settings.minimum_scan_interval, equal_to(7))
+        assert_that(dedup_settings.duplicate_detection_method,
+                    equal_to('sha1'))
+        assert_that(dedup_settings.mover_id, equal_to(1))
+        assert_that(dedup_settings.minimum_size, equal_to(24))
+        assert_that(dedup_settings.access_time, equal_to(15))
+        assert_that(dedup_settings.file_extension_exclude_list, equal_to(''))
+        assert_that(dedup_settings.case_sensitive, equal_to(False))
+        assert_that(dedup_settings.cifs_compression_enabled, equal_to(True))
+        assert_that(dedup_settings.modification_time, equal_to(15))
+        assert_that(dedup_settings.sav_vol_high_watermark, equal_to(90))
+        assert_that(dedup_settings.backup_data_high_watermark, equal_to(90))
+        assert_that(dedup_settings.maximum_size, equal_to(8388608))
+        assert_that(dedup_settings.cpu_low_watermark, equal_to(40))
+        assert_that(dedup_settings.existed, equal_to(True))
+        device = next(i for i in dm.devices if i.name == 'fxg-8-0')
+        assert_that(device.mover_id, equal_to(1))
+        assert_that(device.name, equal_to('fxg-8-0'))
+        assert_that(device.existed, equal_to(True))
+        assert_that(device.type, equal_to('physical-ethernet'))
+        assert_that(device.interfaces, equal_to('10.110.42.83'))
+        assert_that(device.speed, equal_to('FD10000'))
+        route = next(i for i in dm.route if i.destination == '172.18.0.0')
+        assert_that(route.mover_id, equal_to(1))
+        assert_that(route.existed, equal_to(True))
+        assert_that(route.destination, equal_to('172.18.0.0'))
+        assert_that(route.net_mask, equal_to('255.255.0.0'))
+        assert_that(route.ip_version, equal_to('IPv4'))
+        assert_that(route.interface, equal_to('172.18.70.2'))
+        assert_that(route.gateway, equal_to('172.18.70.2'))
 
-        ssh_connector = self.mover_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
 
-        devices = self.mover_manager.get_physical_devices(
-            self.mover.mover_name)
-        self.assertIn(self.mover.device_name, devices)
+class VNXMoverHostTest(unittest.TestCase):
+    @patch_post()
+    def test_get_by_id(self):
+        mh = VNXMoverHost(host_id=1, cli=t_nas())
+        self.verify_mover_host_1(mh)
 
-        ssh_calls = [mock.call(self.mover.cmd_get_physical_devices(),
-                               check_exit_code=False)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+    @patch_post()
+    def test_get_all(self):
+        mh_list = VNXMoverHostList(t_nas())
+        assert_that(len(mh_list), equal_to(2))
+        mh = next(mh for mh in mh_list if mh.host_id == 1)
+        self.verify_mover_host_1(mh)
 
-    def test_operations_with_mover_resource(self):
-        self.hook.append(self.mover.resp_get_ref_succeed())
-        self.hook.append(self.mover.resp_get_succeed())
+    @patch_post()
+    def test_get_by_id_not_found(self):
+        mh = VNXMoverHost(host_id=5, cli=t_nas())
+        assert_that(mh.existed, equal_to(False))
 
-        xml_connector = self.mover_manager.xml_connector
-        xml_connector.post = utils.EMCMock(side_effect=self.hook)
+    @classmethod
+    def verify_mover_host_1(cls, mh):
+        assert_that(mh.host_id, equal_to(1))
+        assert_that(mh.slot, equal_to(2))
+        assert_that(mh.existed, equal_to(True))
+        assert_that(mh.mover_id, equal_to(1))
+        assert_that(mh.status, equal_to('ok'))
+        motherboard = mh.motherboard
+        assert_that(motherboard.existed, equal_to(True))
+        assert_that(motherboard.mover_host, equal_to(1))
+        assert_that(motherboard.bus_speed, equal_to(4800))
+        assert_that(motherboard.memory_size, equal_to(12288))
+        assert_that(motherboard.cpu_type, equal_to('Intel Four Core Westmere'))
+        assert_that(motherboard.cpu_speed, equal_to(2133))
+        assert_that(motherboard.board_type, equal_to('CMB-Argonaut'))
+        fcp02 = next(device for device in mh.physical_device
+                     if device.name == 'fcp-0-2')
+        cls.verify_fcp_02(fcp02)
+        cge13 = next(device for device in mh.physical_device
+                     if device.name == 'cge-1-3')
+        cls.verify_cge13(cge13)
 
-        self.ssh_hook.append(self.mover.output_get_interconnect_id())
-        self.ssh_hook.append(self.mover.output_get_interconnect_id())
-        self.ssh_hook.append(self.mover.output_get_physical_devices())
+    @staticmethod
+    def verify_cge13(cge13):
+        assert_that(cge13.existed, equal_to(True))
+        assert_that(cge13.name, equal_to('cge-1-3'))
+        assert_that(cge13.irq, equal_to(27))
+        assert_that(cge13.mover_host, equal_to(1))
+        assert_that(cge13.port_number, equal_to(0))
+        assert_that(cge13.allowed_speeds,
+                    equal_to('FD1000 FD100 HD100 FD10 HD10 auto'))
+        assert_that(cge13.port_wwn, none())
+        assert_that(cge13.type, equal_to(VNXPortType.ETHERNET))
+        assert_that(cge13.description, equal_to('Broadcom Gigabit'))
+        assert_that(cge13.is_internal, equal_to(False))
 
-        ssh_connector = self.mover_manager.ssh_connector
-        ssh_connector.execute = mock.Mock(side_effect=self.ssh_hook)
-
-        mover = self.mover_manager.get(self.mover.mover_name)
-
-        self.assertIn(self.mover.mover_name, self.mover_manager.mover_map)
-        property_map = [
-            'name',
-            'id',
-            'status',
-            'version',
-            'uptime',
-            'role',
-            'interfaces',
-            'devices',
-            'dns_domain',
-        ]
-        for prop in property_map:
-            self.assertIn(prop, mover.__dict__)
-
-        conn_id = mover.get_interconnect_id(mover)
-        self.assertEqual(self.mover.interconnect_id, conn_id)
-
-        conn_id = mover.get_interconnect_id()
-        self.assertEqual(self.mover.interconnect_id, conn_id)
-
-        devices = mover.get_physical_devices()
-        self.assertIn(self.mover.device_name, devices)
-
-        expected_calls = [
-            mock.call(self.mover.req_get_ref()),
-            mock.call(self.mover.req_get()),
-        ]
-        xml_connector.post.assert_has_calls(expected_calls)
-
-        ssh_calls = [
-            mock.call(self.mover.cmd_get_interconnect_id(),
-                      check_exit_code=False),
-            mock.call(self.mover.cmd_get_interconnect_id(),
-                      check_exit_code=False),
-            mock.call(self.mover.cmd_get_physical_devices(),
-                      check_exit_code=False)]
-        ssh_connector.execute.assert_has_calls(ssh_calls)
+    @staticmethod
+    def verify_fcp_02(fcp02):
+        assert_that(fcp02.existed, equal_to(True))
+        assert_that(fcp02.name, equal_to('fcp-0-2'))
+        assert_that(fcp02.irq, equal_to(22))
+        assert_that(fcp02.mover_host, equal_to(1))
+        assert_that(fcp02.port_number, equal_to(0))
+        assert_that(fcp02.allowed_speeds, none())
+        assert_that(fcp02.port_wwn, equal_to('50:06:01:62:47:60:44:06'))
+        assert_that(fcp02.type, equal_to(VNXPortType.FC))
+        assert_that(fcp02.description, equal_to('PMC QE8'))
+        assert_that(fcp02.is_internal, equal_to(False))

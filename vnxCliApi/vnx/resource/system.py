@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 from vnxCliApi.lib.common import daemon, cache
@@ -59,7 +73,8 @@ class VNXSystem(VNXCliResource):
 
         self._ndu_list = VNXNduList(self._cli)
         self._ndu_list.with_no_poll()
-        daemon(self._update_nodes_ip)
+        if heartbeat_interval:
+            daemon(self._update_nodes_ip)
 
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
@@ -75,6 +90,7 @@ class VNXSystem(VNXCliResource):
     def update(self, data=None):
         super(VNXSystem, self).update(data)
         self._ndu_list.update()
+        self._update_nodes_ip()
 
     @property
     def heartbeat(self):
@@ -151,6 +167,13 @@ class VNXSystem(VNXCliResource):
 
     def get_disk(self, disk_index=None):
         return VNXDisk.get(self._cli, disk_index)
+
+    def get_available_disks(self):
+        pool_feature = VNXPoolFeature(self._cli)
+        pool_feature.poll = self.poll
+        disks = pool_feature.available_disks
+        disks.poll = self.poll
+        return disks
 
     def remove_disk(self, disk_index):
         self._remove_resource(VNXDisk(disk_index, self._cli))

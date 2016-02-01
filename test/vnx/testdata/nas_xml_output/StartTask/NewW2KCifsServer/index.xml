@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewW2KCifsServer interfaces="10.110.24.194"
+                                      compName="s8" domain="test.dev"
+                                      name="s8">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases/>
+                    </NewW2KCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="invalid_domain_name.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewW2KCifsServer domain="test_domain" compName="test"
+                                      name="test">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases>
+                        </Aliases>
+                    </NewW2KCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="no_default_nt_server.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewW2KCifsServer domain="test.dev" compName="test"
+                                      name="test">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases>
+                        </Aliases>
+                    </NewW2KCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="net_bios_existed.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewW2KCifsServer interfaces="10.110.24.194"
+                                      compName="test" domain="test.dev"
+                                      name="test">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases>
+                        </Aliases>
+                    </NewW2KCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="existed_alias.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewW2KCifsServer interfaces="10.110.24.194"
+                                      compName="test-cifs-s8" domain="test.dev"
+                                      name="test-cifs-s8">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <Aliases>
+                            <li>test-cifs-s8</li>
+                        </Aliases>
+                    </NewW2KCifsServer>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

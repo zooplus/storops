@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Checkpoint checkpointOf="222" name="test" state="active"
+                    time="1455892490" fileSystemSize="54" checkpoint="242">
+            <roFileSystemHosts mover="1" moverIdIsVdm="false"/>
+        </Checkpoint>
+    </Response>
+</ResponsePacket>

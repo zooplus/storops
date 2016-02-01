@@ -1,4 +1,18 @@
 # coding=utf-8
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
 from __future__ import unicode_literals
 
 import logging
@@ -22,16 +36,10 @@ class XMLAPIParser(object):
         #     <Alias>
         #         <li> interface_1 </li>
         #     </Alias>
-        self.is_QueryStatus = False
-        self.is_CifsServers = False
-        self.is_Aliases = False
-        self.is_MoverStatus = False
-        self.is_TaskResponse = False
-        self.is_Vdm = False
-        self.is_Interfaces = False
         self.tag = None
 
         self.elt = {}
+        self.stack = []
 
     @staticmethod
     def _remove_ns(tag):
@@ -52,18 +60,26 @@ class XMLAPIParser(object):
         events = ("start", "end")
 
         context = etree.iterparse(six.BytesIO(xml.encode('utf-8')),
-                                  events=events)
+                                  events=events, encoding='utf-8')
         for action, elem in context:
             self.tag = self._remove_ns(elem.tag)
 
             func = self._get_func(action, self.tag)
+            self.track_stack(action, elem)
+
             if func in vars(XMLAPIParser):
                 if action == 'start':
                     eval('self.' + func)(elem, result)
                 elif action == 'end':
-                    eval('self.' + func)()
+                    eval('self.' + func)(elem, result)
 
         return result
+
+    def track_stack(self, action, elem):
+        if action == 'start':
+            self.stack.append(elem)
+        elif action == 'end':
+            self.stack.pop()
 
     @staticmethod
     def _get_func(action, tag):
@@ -78,23 +94,16 @@ class XMLAPIParser(object):
         return func_name.lower()
 
     @staticmethod
-    def _copy_property(source, target, props, list_property=None):
-        for key in props:
-            if key in source:
-                target[key] = source[key]
-
-        if list_property:
-            for key in list_property:
-                if key in source:
-                    target[key] = source[key].split()
+    def _copy_property(source, target):
+        for key in source:
+            target[key] = source[key]
 
     @classmethod
-    def _append_elm_property(cls, elm, result, props, identifier):
+    def _append_elm_property(cls, elm, result, identifier):
         for obj in result['objects']:
             if cls.has_identifier(obj, elm, identifier):
                 for key, value in elm.attrib.items():
-                    if key in props:
-                        obj[key] = value
+                    obj[key] = value
 
     @staticmethod
     def has_identifier(obj, elm, identifier):
@@ -102,10 +111,9 @@ class XMLAPIParser(object):
                 identifier in elm.attrib and
                 elm.attrib[identifier] == obj[identifier])
 
-    def _append_element(self, elm, result, props, list_property,
-                        identifier):
+    def _append_element(self, elm, result, identifier):
         sub_elm = {}
-        self._copy_property(elm.attrib, sub_elm, props, list_property)
+        self._copy_property(elm.attrib, sub_elm)
 
         for obj in result['objects']:
             if self.has_identifier(obj, elm, identifier):
@@ -115,36 +123,35 @@ class XMLAPIParser(object):
                     obj[self.tag] = [sub_elm]
 
     def start_task_response(self, elm, result):
-        self.is_TaskResponse = True
         result['type'] = 'TaskResponse'
-        self._copy_property(elm.attrib, result, ['taskId'])
-
-    def end_task_response(self):
-        self.is_TaskResponse = False
+        self._copy_property(elm.attrib, result)
 
     @staticmethod
     def start_fault(_, result):
         result['type'] = 'Fault'
 
+    def _parent_tag(self):
+        if len(self.stack) >= 2:
+            parent = self.stack[-2]
+            ret = self._remove_ns(parent.tag)
+        else:
+            ret = None
+        return ret
+
     def start_status(self, elm, result):
-        if self.is_TaskResponse:
+        parent_tag = self._parent_tag()
+        if parent_tag == 'TaskResponse':
             result['maxSeverity'] = elm.attrib['maxSeverity']
-        elif self.is_MoverStatus or self.is_Vdm:
+        elif parent_tag in ['MoverStatus', 'Vdm', 'MoverHost']:
             self.elt['maxSeverity'] = elm.attrib['maxSeverity']
 
     def start_query_status(self, elm, result):
-        self.is_QueryStatus = True
         result['type'] = 'QueryStatus'
-        self._copy_property(elm.attrib, result, ['maxSeverity'])
-
-    def end_query_status(self):
-        self.is_QueryStatus = False
+        self._copy_property(elm.attrib, result)
 
     def start_problem(self, elm, result):
         self.elt = {}
-        props = ('message', 'messageCode')
-
-        self._copy_property(elm.attrib, self.elt, props)
+        self._copy_property(elm.attrib, self.elt)
         result['problems'].append(self.elt)
 
     def start_description(self, elm, _):
@@ -157,164 +164,112 @@ class XMLAPIParser(object):
         self.elt['Diagnostics'] = elm.text
 
     def start_file_system(self, elm, result):
-        self.elt = {}
-        props = (
-            'fileSystem',
-            'name',
-            'type',
-            'storages',
-            'volume',
-            'dataServicePolicies',
-            'internalUse',
-        )
-        list_property = ('storagePools',)
-
-        self._copy_property(elm.attrib, self.elt, props, list_property)
-        result['objects'].append(self.elt)
+        self._as_object(elm, result)
 
     def start_file_system_capacity_info(self, elm, result):
-        props = ('volumeSize',)
-
         identifier = 'fileSystem'
 
-        self._append_elm_property(elm, result, props, identifier)
+        self._append_elm_property(elm, result, identifier)
 
     def start_storage_pool(self, elm, result):
-        self.elt = {}
-        props = ('name', 'autoSize', 'usedSize', 'diskType', 'pool',
-                 'dataServicePolicies', 'virtualProvisioning')
-        list_property = ('movers',)
-
-        self._copy_property(elm.attrib, self.elt, props, list_property)
-        result['objects'].append(self.elt)
+        self._as_object(elm, result)
 
     def start_system_storage_pool_data(self, elm, _):
-        props = ('greedy', 'isBackendPool')
-
-        self._copy_property(elm.attrib, self.elt, props)
+        self._copy_property(elm.attrib, self.elt)
 
     def start_mover(self, elm, result):
-        self.elt = {}
-        props = ('name', 'host', 'mover', 'role')
-        list_property = ('ntpServers', 'standbyFors', 'standbys')
+        self._as_object(elm, result)
 
-        self._copy_property(elm.attrib, self.elt, props, list_property)
+    def start_mover_host(self, elm, result):
+        self._as_object(elm, result)
+
+    def start_nfs_export(self, elm, result):
+        self._as_object(elm, result)
+
+    def _as_object(self, elm, result):
+        self.elt = {}
+        self._copy_property(elm.attrib, self.elt)
         result['objects'].append(self.elt)
 
     def start_mover_status(self, elm, result):
-        self.is_MoverStatus = True
-
-        props = ('version', 'csTime', 'clock', 'timezone', 'uptime')
-
         identifier = 'mover'
+        self._append_elm_property(elm, result, identifier)
 
-        self._append_elm_property(elm, result, props, identifier)
+    def start_mover_route(self, elm, result):
+        self._append_element(elm, result, 'mover')
 
-    def end_mover_status(self):
-        self.is_MoverStatus = False
+    def start_mover_deduplication_settings(self, elm, result):
+        self._append_element(elm, result, 'mover')
 
     def start_mover_dns_domain(self, elm, result):
-        props = ('name', 'protocol')
-        list_property = ('servers',)
-
-        identifier = 'mover'
-
-        self._append_element(elm, result, props, list_property, identifier)
+        self._append_element(elm, result, 'mover')
 
     def start_mover_interface(self, elm, result):
-        props = (
-            'name',
-            'device',
-            'up',
-            'ipVersion',
-            'netMask',
-            'ipAddress',
-            'vlanid',
-        )
-
-        identifier = 'mover'
-
-        self._append_element(elm, result, props, None, identifier)
+        self._append_element(elm, result, 'mover')
 
     def start_logical_network_device(self, elm, result):
-        props = ('name', 'type', 'speed')
-        list_property = ('interfaces',)
-        identifier = 'mover'
-
-        self._append_element(elm, result, props, list_property, identifier)
+        self._append_element(elm, result, 'mover')
 
     def start_vdm(self, elm, result):
-        self.is_Vdm = True
+        self._as_object(elm, result)
 
-        self.elt = {}
-        props = ('name', 'state', 'mover', 'vdm')
-
-        self._copy_property(elm.attrib, self.elt, props)
-        result['objects'].append(self.elt)
-
-    def end_vdm(self):
-        self.is_Vdm = False
-
-    def start_interfaces(self, elm, result):
-        self.is_Interfaces = True
-        self.elt['Interfaces'] = []
-
-    def end_interfaces(self):
-        self.is_Interfaces = False
+    def _add_element(self, name, item):
+        if name not in self.elt:
+            self.elt[name] = []
+        self.elt[name].append(item)
 
     def start_li(self, elm, _):
-        if self.is_CifsServers:
-            self.elt['CifsServers'].append(elm.text)
-        elif self.is_Aliases:
-            self.elt['Aliases'].append(elm.text)
-        elif self.is_Interfaces:
-            self.elt['Interfaces'].append(elm.text)
+        parent_tag = self._parent_tag()
+        host_nodes = ('AccessHosts', 'RwHosts', 'RoHosts', 'RootHosts')
+        if parent_tag == 'CifsServers':
+            self._add_element('CifsServers', elm.text)
+        elif parent_tag == 'Aliases':
+            self._add_element('Aliases', elm.text)
+        elif parent_tag == 'Interfaces':
+            self._add_element('Interfaces', elm.text)
+        elif parent_tag in host_nodes:
+            if parent_tag not in self.elt:
+                self.elt[parent_tag] = []
+            self.elt[parent_tag].append(elm.text)
 
     def start_cifs_server(self, elm, result):
-        self.elt = {}
-        props = ('type', 'localUsers', 'name', 'mover', 'moverIdIsVdm')
-
-        list_property = ('interfaces',)
-
-        self._copy_property(elm.attrib, self.elt, props, list_property)
-        result['objects'].append(self.elt)
-
-    def start_aliases(self, elm, result):
-        self.is_Aliases = True
-        self.elt['Aliases'] = []
-
-    def end_aliases(self):
-        self.is_Aliases = False
+        self._as_object(elm, result)
 
     def start_w2k_server_data(self, elm, _):
-        props = ('domain', 'compName', 'domainJoined')
-
-        self._copy_property(elm.attrib, self.elt, props)
+        self._copy_property(elm.attrib, self.elt)
 
     def start_cifs_share(self, elm, result):
-        self.elt = {}
-        props = ('path', 'fileSystem', 'name', 'mover', 'moverIdIsVdm')
-
-        self._copy_property(elm.attrib, self.elt, props)
-        result['objects'].append(self.elt)
-
-    def start_cifs_servers(self, elm, result):
-        self.is_CifsServers = True
-        self.elt['CifsServers'] = []
-
-    def end_cifs_servers(self):
-        self.is_CifsServers = False
+        self._as_object(elm, result)
 
     def start_checkpoint(self, elm, result):
-        self.elt = {}
-        props = ('checkpointOf', 'name', 'checkpoint', 'state')
+        self._as_object(elm, result)
 
-        self._copy_property(elm.attrib, self.elt, props)
-        result['objects'].append(self.elt)
+    def start_ro_file_system_hosts(self, elm, _):
+        self._copy_property(elm.attrib, self.elt)
+
+    def start_standalone_server_data(self, elm, _):
+        self._copy_property(elm.attrib, self.elt)
+
+    def start_fibre_channel_device_data(self, elm, _):
+        self._copy_attrib_to_parent(elm)
+
+    def start_network_device_data(self, elm, _):
+        self._copy_attrib_to_parent(elm)
+
+    def _copy_attrib_to_parent(self, elm):
+        if len(self.stack) >= 2:
+            parent = self.stack[-2]
+            for k, v in elm.attrib.items():
+                parent.attrib[k] = v
+
+    def start_mover_motherboard(self, elm, result):
+        self._append_element(elm, result, 'moverHost')
+
+    def end_physical_device(self, elm, result):
+        self._append_element(elm, result, 'moverHost')
+
+    def start_fc_descriptor(self, elm, result):
+        self._append_element(elm, result, 'moverHost')
 
     def start_mount(self, elm, result):
-        self.elt = {}
-        props = ('fileSystem', 'path', 'mover', 'moverIdIsVdm')
-
-        self._copy_property(elm.attrib, self.elt, props)
-        result['objects'].append(self.elt)
+        self._as_object(elm, result)

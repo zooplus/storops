@@ -34,6 +34,8 @@ class HTTPClient(object):
                  timeout=None, retries=None,
                  http_log_debug=True):
         self.base_url = base_url
+        if retries is None:
+            retries = float('inf')
         self.retries = retries
         self.http_log_debug = http_log_debug
 

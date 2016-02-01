@@ -177,6 +177,7 @@ VNXPoolFeature:
       converter: to_int
     - label: "Available Disks:"
       converter: to_disk_indices
+      key: available_disk_indices
       end_pattern: "Background Operation State:"
     - label: "Background Operation State:"
     - label: "Background Rate:"
@@ -507,7 +508,7 @@ VNXDisk:
     - label: "Drive Type:"
     - label: "Clariion TLA Part Number:"
     - label: "User Capacity:"
-      converter: to_int
+      converter: to_float
     - label: "Idle Ticks:"
       converter: to_int
     - label: "Busy Ticks:"
@@ -590,7 +591,7 @@ VNXRaidGroup:
 
 
 VNXCifsServer:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
@@ -598,74 +599,225 @@ VNXCifsServer:
     - label: Aliases
     - label: domain
     - label: domainJoined
+      converter: to_bool
     - label: interfaces
-    - label: mover_name
     - label: mover
       key: mover_id
+      converter: to_int
     - label: moverIdIsVdm
       key: is_vdm
+      converter: to_bool
     - label: type
+    - label: localUsers
+      converter: to_bool
+    - label: workgroup
 
 
 VNXMoverRef:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: mover
-      key: id
+      key: mover_id
+      converter: to_int
+    - label: role
+    - label: host
+      key: host_id
+      converter: to_int
+    - label: standbys
+      converter: to_int_arr
+    - label: standbyFors
+      converter: to_int_arr
+    - label: i18NMode
+      key: i18n_mode
+    - label: failoverPolicy
 
 
 VNXMover:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: mover
-      key: id
+      key: mover_id
+      converter: to_int
     - label: maxSeverity
       key: status
+    - label: standbys
+      converter: to_int_arr
+    - label: standbyFors
+      converter: to_int_arr
+    - label: i18NMode
+      key: i18n_mode
+    - label: failoverPolicy
     - label: version
     - label: uptime
+      converter: to_int
+    - label: timezone
     - label: role
+    - label: host
+      key: host_id
+      converter: to_int
     - label: MoverInterface
-      key: interfaces
+      key: mover_interfaces
+      converter: VNXMoverInterfaceList
     - label: LogicalNetworkDevice
       key: devices
+      converter: VNXMoverLogicalNetworkDeviceList
     - label: MoverDnsDomain
       key: dns_domain
+    - label: MoverRoute
+      key: route
+      converter: VNXMoverRouteList
+    - label: MoverDeduplicationSettings
+      key: dedup_settings
+      converter: VNXMoverDeduplicationSettings
+
+
+VNXMoverHost:
+  data_src: xmlapi
+  properties:
+    - label: moverHost
+      key: host_id
+      is_index: True
+      converter: to_int
+    - label: slot
+      converter: to_int
+    - label: mover
+      key: mover_id
+      converter: to_int
+    - label: maxSeverity
+      key: status
+    - label: MoverMotherboard
+      key: motherboard
+      converter: VNXMoverMotherboard
+    - label: PhysicalDevice
+      converter: VNXMoverPhysicalDeviceList
+
+
+VNXMoverMotherboard:
+  data_src: xmlapi
+  properties:
+    - label: boardType
+    - label: cpuType
+    - label: cpuSpeed
+      converter: to_int
+    - label: busSpeed
+      converter: to_int
+    - label: memorySize
+      converter: to_int
+    - label: moverHost
+      converter: to_int
+
+
+VNXMoverPhysicalDevice:
+  data_src: xmlapi
+  properties:
+    - label: type
+      converter: to_port_type
+    - label: description
+    - label: portNumber
+      converter: to_int
+    - label: irq
+      converter: to_int
+    - label: moverHost
+      converter: to_int
+    - label: name
+    - label: portWWN
+      converter: to_wwn
+    - label: allowedSpeeds
+
+VNXMoverRoute:
+  data_src: xmlapi
+  properties:
+    - label: destination
+      is_index: True
+    - label: interface
+    - label: ipVersion
+    - label: netMask
+    - label: gateway
+    - label: mover
+      key: mover_id
+      converter: to_int
+
+
+VNXMoverDeduplicationSettings:
+  data_src: xmlapi
+  properties:
+    - label: accessTime
+      converter: to_int
+    - label: modificationTime
+      converter: to_int
+    - label: maximumSize
+      converter: to_int
+    - label: minimumSize
+      converter: to_int
+    - label: caseSensitive
+      converter: to_bool
+    - label: duplicateDetectionMethod
+    - label: minimumScanInterval
+      converter: to_int
+    - label: fileExtensionExcludeList
+    - label: savVolHighWatermark
+      converter: to_int
+    - label: backupDataHighWatermark
+      converter: to_int
+    - label: CPULowWatermark
+      converter: to_int
+    - label: CPUHighWatermark
+      converter: to_int
+    - label: cifsCompressionEnabled
+      converter: to_bool
+    - label: mover
+      key: mover_id
+      is_index: True
+      converter: to_int
 
 
 VNXVdm:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: vdm
-      key: id
+      key: vdm_id
+      converter: to_int
     - label: state
     - label: mover
-      key: host_mover_id
+      key: mover_id
+      converter: to_int
+    - label: rootFileSystem
+      key: root_fs_id
+      converter: to_int
+    - label: maxSeverity
+      key: status
 
 
 VNXCifsShare:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: CifsServers
+      key: cifs_server_names
       is_index: True
     - label: fileSystem
       key: fs_id
-    - label: mover_name
+      converter: to_int
     - label: mover
       key: mover_id
+      converter: to_int
     - label: moverIdIsVdm
       key: is_vdm
+      converter: to_bool
     - label: name
     - label: path
+    - label: maxUsers
+      converter: to_int
+    - label: comment
 
 
 VNXDnsDomain:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
@@ -674,91 +826,166 @@ VNXDnsDomain:
 
 
 VNXFileSystem:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: fileSystem
-      key: id
+      key: fs_id
+      converter: to_int
     - label: type
     - label: volumeSize
       key: size
+      converter: to_int
     - label: storagePools
       key: pools
+      converter: to_int_arr
     - label: storages
+      converter: to_int
     - label: internalUse
+      converter: to_bool
     - label: volume
+      converter: to_int
     - label: dataServicePolicies
       key: policies
 
 
 VNXNasPool:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: pool
-      key: id
+      key: pool_id
+      converter: to_int
     - label: movers
       key: movers_id
+      converter: to_int_arr
+    - label: memberVolumes
+      converter: to_int_arr
+    - label: storageSystems
+      converter: to_int_arr
+    - label: description
+    - label: mayContainSlicesDefault
+      converter: to_bool
+    - label: size
+      converter: to_int
+    - label: virtualProvisioning
+      converter: to_bool
+    - label: isHomogeneous
+      converter: to_bool
     - label: autoSize
       key: total_size
+      converter: to_int
     - label: usedSize
+      converter: to_int
     - label: diskType
+    - label: templatePool
+      converter: to_int
+    - label: stripeCount
+      converter: to_int
+    - label: stripeSize
+      converter: to_int
     - label: dataServicePolicies
       key: policies
 
 
 VNXFsSnap:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
       is_index: True
     - label: checkpoint
-      key: id
+      key: snap_id
+      converter: to_int
     - label: checkpointOf
       key: fs_id
+      converter: to_int
     - label: state
+    - label: fileSystemSize
+    - label: mover
+      key: mover_id
+      converter: to_int
+    - label: moverIdIsVdm
+      key: is_vdm
+      converter: to_bool
 
 
 VNXMoverInterface:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: name
-      is_index: True
-    - label: mover_name
+    - label: mover
+      key: mover_id
+      converter: to_int
+    - label: macAddr
+    - label: broadcastAddr
     - label: device
     - label: ipAddress
       key: ip_addr
+      is_index: True
     - label: ipVersion
     - label: netMask
     - label: up
+      converter: to_bool
+    - label: mtu
+      converter: to_int
     - label: vlanid
       key: vlan_id
+      converter: to_int
+
+
+VNXMoverLogicalNetworkDevice:
+  data_src: xmlapi
+  properties:
+    - label: speed
+    - label: name
+      is_index: True
+    - label: mover
+      key: mover_id
+      converter: to_int
+    - label: type
+    - label: interfaces
 
 
 VNXNfsShare:
-  data_src: cli
+  data_src: xmlapi
   properties:
-    - label: name
+    - label: readOnly
+      converter: to_bool
+    - label: fileSystem
+      converter: to_int
+      key: fs_id
+    - label: mover
+      converter: to_int
+      key: mover_id
       is_index: True
     - label: path
+      is_index: True
     - label: AccessHosts
     - label: RwHosts
     - label: RoHosts
     - label: RootHosts
-    - label: mover_name
 
 
 VNXFsMountPoint:
-  data_src: cli
+  data_src: xmlapi
   properties:
     - label: fileSystem
       is_index: True
-      key: filesystem_id
+      key: fs_id
+      converter: to_int
     - label: mover
       key: mover_id
-    - label: mover_name
+      converter: to_int
+    - label: disabled
+      converter: to_bool
+    - label: ntCredential
+      converter: to_bool
+    - label: mover
+      key: mover_id
+      converter: to_int
     - label: moverIdIsVdm
       key: is_vdm
+      converter: to_bool
     - label: path

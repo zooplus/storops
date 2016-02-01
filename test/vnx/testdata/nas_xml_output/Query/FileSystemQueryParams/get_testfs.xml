@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <FileSystem name="testfs" type="uxfs" volume="665" storagePools="32"
+                    storages="1" containsSlices="true" internalUse="false"
+                    fileSystem="244">
+            <RwFileSystemHosts mover="2" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="2048" fileSystem="244">
+            <ResourceUsage spaceTotal="1953" spaceUsed="1" filesTotal="251902"
+                           filesUsed="10"/>
+        </FileSystemCapacityInfo>
+    </Response>
+</ResponsePacket>
