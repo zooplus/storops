@@ -106,10 +106,10 @@ class NaviCommand(object):
     def execute_naviseccli(cls, cmd,
                            raise_on_rc=None, check_rc=False):
         def _log_command():
-            c = list(map(six.text_type, cmd))
-            cmd_str = ' '.join(c)
+            cmd_str = ' '.join(cmd)
             log.debug('call command: {}'.format(cmd_str))
 
+        cmd = list(map(six.text_type, cmd))
         _log_command()
         start = time.time()
         try:
