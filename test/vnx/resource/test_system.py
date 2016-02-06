@@ -40,7 +40,7 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_member_ip(self):
-        vnx = self.vnx
+        vnx = VNXSystem('10.244.211.30', heartbeat_interval=0)
         assert_that(vnx.spa_ip, equal_to('192.168.1.52'))
         assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
         assert_that(vnx.control_station_ip, equal_to('192.168.1.93'))

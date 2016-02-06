@@ -109,11 +109,15 @@ class VNXLun(VNXCliResource):
             ret = VNXLunList(cli, lun_type)
         else:
             ret = VNXLun(lun_id, name, cli)
+        ret.poll = poll
         return ret
 
     def create_snap(self, name, allow_rw=None, auto_delete=None):
-        self._cli.create_snap(self.lun_id, name, allow_rw, auto_delete,
-                              poll=self.poll)
+        out = self._cli.create_snap(self.get_id(self), name, allow_rw,
+                                    auto_delete,
+                                    poll=self.poll)
+        raise_if_err(out, ex.VNXCreateSnapError,
+                     'failed to create snap "{}"'.format(name))
         return VNXSnap(name, self._cli)
 
     def attach_snap(self, snap):
@@ -181,9 +185,12 @@ class VNXLun(VNXCliResource):
         return list(map(cls.get_id, lun_list))
 
     def remove(self, remove_snapshots=False, force_detach=False):
-        self._cli.remove_pool_lun(self.get_id(self),
-                                  remove_snapshots=remove_snapshots,
-                                  force_detach=force_detach, poll=self.poll)
+        out = self._cli.remove_pool_lun(self._lun_id,
+                                        self._name,
+                                        remove_snapshots=remove_snapshots,
+                                        force_detach=force_detach,
+                                        poll=self.poll)
+        raise_if_err(out, ex.VNXRemoveLunError, 'failed to remove lun.')
 
     def rename(self, new_name):
         if new_name is not None and self._name != new_name:

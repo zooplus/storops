@@ -2,19 +2,18 @@
 from __future__ import unicode_literals
 
 import logging
-import re
 import six
 
 __author__ = 'Cedric Zhuang'
 
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
-class EMCException(Exception):
+class VNXException(Exception):
     """Base EMC Exception
 
     To correctly use this class, inherit from it and define
-    a 'message' property. That message will get printf'd
+    a 'message' property. That message will be formatted
     with the keyword arguments provided to the constructor.
 
     """
@@ -22,47 +21,42 @@ class EMCException(Exception):
     code = 500
     headers = {}
 
-    def __init__(self, message=None, detail_data=None, **kwargs):
-        if detail_data is None:
-            detail_data = {}
+    def __init__(self, message=None, **kwargs):
+        if message is None:
+            message = self.message
 
-        self.kwargs = kwargs
-        self.detail_data = detail_data
+        self.kwargs = self._insert_default_code(kwargs)
+        self.message = self._update_message(message, kwargs)
 
-        if 'code' not in self.kwargs:
+        super(VNXException, self).__init__(self.message)
+
+    @staticmethod
+    def _update_message(message, kwargs):
+        if isinstance(message, six.string_types):
             try:
-                self.kwargs['code'] = self.code
-            except AttributeError:
-                pass
-        for k, v in six.iteritems(self.kwargs):
-            if isinstance(v, Exception):
-                self.kwargs[k] = six.text_type(v)
+                message = message.format(**kwargs)
 
-        if not message:
-            try:
-                message = self.message % kwargs
-
-            except TypeError:
+            except KeyError:
                 # kwargs doesn't match a variable in the message
                 # log the issue and the kwargs
-                LOG.exception('Exception in string format operation.')
-                for name, value in six.iteritems(kwargs):
-                    LOG.error("%(name)s: %(value)s", {
-                        'name': name, 'value': value})
-                else:
-                    # at least get the core message out if something happened
-                    message = self.message
+                log.error(
+                    'missing param in format string: "{}"'.format(message))
         elif isinstance(message, Exception):
             message = six.text_type(message)
 
-        if re.match('.*[^\.]\.\.$', message):
-            message = message[:-1]
-        self.msg = message
-        super(EMCException, self).__init__(message)
+        return message
 
-
-class VNXException(EMCException):
-    pass
+    @classmethod
+    def _insert_default_code(cls, kwargs):
+        if 'code' not in kwargs:
+            try:
+                kwargs['code'] = cls.code
+            except AttributeError:
+                pass
+        for k, v in six.iteritems(kwargs):
+            if isinstance(v, Exception):
+                kwargs[k] = six.text_type(v)
+        return kwargs
 
 
 class NaviseccliNotAvailableError(VNXException):
@@ -70,32 +64,28 @@ class NaviseccliNotAvailableError(VNXException):
                " and available in path.")
 
 
-class ObjectNotFound(EMCException):
-    message = "[EMC] Object is not found. %(err)s."
+class ObjectNotFound(VNXException):
+    message = "object is not found.  {err}"
 
 
-class OptionMissingError(EMCException):
+class OptionMissingError(VNXException):
     pass
 
 
-class BackendError(VNXException):
-    message = "[EMC] Backend error. %(err)s."
-
-
 class VNXBackendError(VNXException):
-    message = "[EMC] VNX Backend error. %(err)s."
+    message = "backend error.  {err}"
 
 
 class VNXInvalidMoverID(VNXException):
-    message = "[EMC] Invalid mover or vdm %(id)s."
+    message = "invalid mover or vdm.  {id}"
 
 
 class VNXLockRequiredException(VNXException):
-    message = "[EMC] Unable to acquire lock(s)."
+    message = "unable to acquire lock."
 
 
-class InvalidParameterValue(EMCException):
-    message = "%(err)s"
+class InvalidParameterValue(VNXException):
+    message = "{err}"
 
 
 class VNXTimeoutError(VNXException):
@@ -138,11 +128,19 @@ class VNXSnapError(VNXException):
     pass
 
 
+class VNXCreateSnapError(VNXException):
+    pass
+
+
 class VNXAttachSnapError(VNXSnapError):
     pass
 
 
 class VNXDetachSnapError(VNXSnapError):
+    pass
+
+
+class VNXRemoveSnapError(VNXSnapError):
     pass
 
 
@@ -155,6 +153,10 @@ class VNXCreateLunError(VNXLunError):
 
 
 class VNXModifyLunError(VNXLunError):
+    pass
+
+
+class VNXRemoveLunError(VNXLunError):
     pass
 
 

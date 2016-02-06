@@ -38,7 +38,8 @@ class VNXSnap(VNXCliResource):
         return ret
 
     def remove(self):
-        self._cli.remove_snap(self._get_name(), poll=self.poll)
+        out = self._cli.remove_snap(self._get_name(), poll=self.poll)
+        raise_if_err(out, ex.VNXRemoveSnapError)
 
     def copy(self, new_name,
              ignore_migration_check=False,

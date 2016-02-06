@@ -9,7 +9,7 @@ from hamcrest import assert_that, equal_to, contains_string, has_item, \
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
 from vnxCliApi.exception import VNXModifyLunError, VNXCompressionError, \
-    VNXDedupError
+    VNXDedupError, VNXRemoveLunError, VNXCreateSnapError
 from vnxCliApi.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from vnxCliApi.vnx.resource.lun import VNXLun, VNXLunList
@@ -302,6 +302,23 @@ class VNXLunTest(TestCase):
 
         assert_that(method_call, raises(VNXDedupError, 'disabled or'))
         assert_that(set_property, raises(VNXDedupError, 'disabled or'))
+
+    @patch_cli()
+    def test_remove_lun_error(self):
+        def f():
+            l1 = VNXLun(name='l1', cli=t_cli())
+            l1.remove()
+
+        assert_that(f, raises(VNXRemoveLunError, 'failed to remove'))
+
+    @patch_cli()
+    def test_create_snap(self):
+        def f():
+            l1 = VNXLun(lun_id=11, cli=t_cli())
+            l1.create_snap('s1')
+
+        assert_that(f, raises(VNXCreateSnapError,
+                              'Cannot create the snapshot'))
 
 
 class VNXLunListTest(TestCase):

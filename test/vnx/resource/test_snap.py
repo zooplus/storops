@@ -6,7 +6,7 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, raises
 
 from test.vnx.cli_mock import patch_cli, t_cli
-from vnxCliApi.exception import VNXSnapError
+from vnxCliApi.exception import VNXSnapError, VNXRemoveSnapError
 from vnxCliApi.vnx.resource.snap import VNXSnap
 
 __author__ = 'Cedric Zhuang'
@@ -70,3 +70,12 @@ class VNXSnapTest(TestCase):
             self.fail('should have raise an exception.')
         except VNXSnapError:
             assert_that(snap._name, equal_to('s2'))
+
+    @patch_cli()
+    def test_remove_snap(self):
+        def f():
+            snap = VNXSnap(cli=t_cli(), name='s3')
+            snap.remove()
+
+        assert_that(f, raises(VNXRemoveSnapError,
+                              'Cannot destroy the snapshot'))
