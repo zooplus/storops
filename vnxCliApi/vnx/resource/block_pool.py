@@ -90,16 +90,20 @@ class VNXPool(VNXCliResource):
                    provision=None,
                    tier=None,
                    ignore_thresholds=None):
+        pool = {}
+        if self._pool_id is not None:
+            pool['pool_id'] = self._pool_id
+        else:
+            pool['pool_name'] = self._get_name()
         ret = self._cli.create_pool_lun(
-            pool_name=self._name,
-            pool_id=self._pool_id,
             lun_name=lun_name,
             lun_id=lun_id,
             size_gb=size_gb,
             provision=provision,
             tier=tier,
             ignore_thresholds=ignore_thresholds,
-            poll=self.poll)
+            poll=self.poll,
+            **pool)
         raise_if_err(ret, ex.VNXCreateLunError, 'error creating lun.')
         return VNXLun(lun_id, lun_name, self._cli)
 

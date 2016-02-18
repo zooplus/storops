@@ -6,7 +6,7 @@ from threading import Lock
 
 from vnxCliApi.vnx.cli import raise_if_err
 from vnxCliApi.vnx.enums import VNXSPEnum, VNXPortType, has_error, VNXError
-from vnxCliApi.vnx.resource.lun import VNXLun
+import vnxCliApi.vnx.resource.lun
 from vnxCliApi.vnx.resource.port import VNXHbaPort
 from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi import exception as ex
@@ -47,15 +47,15 @@ class VNXStorageGroup(VNXCliResource):
         self._cli.remove_sg(self._get_name(), poll=self.poll)
 
     def has_hlu(self, hlu):
-        return hlu in self.alu_hlu_map.values()
+        return hlu in self.used_hlu_numbers
 
     def has_alu(self, lun):
-        alu = VNXLun.get_id(lun)
-        return alu in self.alu_hlu_map.keys()
+        alu = vnxCliApi.vnx.resource.lun.VNXLun.get_id(lun)
+        return alu in self.used_alu_numbers
 
     def get_hlu(self, lun):
-        alu = VNXLun.get_id(lun)
-        return self.alu_hlu_map.get(alu, None)
+        alu = vnxCliApi.vnx.resource.lun.VNXLun.get_id(lun)
+        return self.get_alu_hlu_map().get(alu, None)
 
     def is_valid(self):
         return len(self.name) > 0 and len(self.uid) > 0
@@ -122,44 +122,58 @@ class VNXStorageGroup(VNXCliResource):
             cls._hlu_full = set(range(1, cls.get_max_luns_per_sg() + 1))
         return set(cls._hlu_full)
 
+    def get_alu_hlu_map(self):
+        if self.alu_hlu_map is None:
+            self._update_property_cache('alu_hlu_map', {})
+        return self.alu_hlu_map
+
+    @property
+    def used_hlu_numbers(self):
+        return self.get_alu_hlu_map().values()
+
+    @property
+    def used_alu_numbers(self):
+        return self.get_alu_hlu_map().keys()
+
     def _get_hlu_to_add(self, alu):
         ret = None
         with self._hlu_lock:
-            remain = self._hlu_full_set() - set(self.alu_hlu_map.values())
+            remain = self._hlu_full_set() - set(self.used_hlu_numbers)
             if len(remain) == 0:
                 raise ex.VNXNoHluAvailableError(
                     'no hlu number available for attach.')
             ret = remain.pop()
-            self.alu_hlu_map[alu] = ret
+            self.get_alu_hlu_map()[alu] = ret
         return ret
 
     def _remove_alu(self, alu):
         ret = None
         with self._hlu_lock:
             if self.has_alu(alu):
-                ret = self.alu_hlu_map.pop(alu)
+                ret = self.get_alu_hlu_map().pop(alu)
         return ret
 
     class _HluOccupiedError(Exception):
         pass
 
-    def attach_hlu(self, lun):
-        lun = VNXLun.get_id(lun)
+    def attach_alu(self, lun):
+        alu = vnxCliApi.vnx.resource.lun.VNXLun.get_id(lun)
         while True:
-            alu = self._get_hlu_to_add(lun)
-            out = self._cli.sg_add_hlu(self._get_name(), alu, lun,
+            hlu = self._get_hlu_to_add(alu)
+            out = self._cli.sg_add_hlu(self._get_name(), hlu, alu,
                                        poll=self.poll)
             if has_error(out, VNXError.SG_HOST_LUN_USED):
                 self.update()
                 continue
             break
-        return VNXLun(self._cli, lun)
+        return vnxCliApi.vnx.resource.lun.VNXLun(self._cli, alu)
 
-    def detach_hlu(self, lun):
-        alu = VNXLun.get_id(lun)
-        out = self._cli.sg_remove_hlu(self._get_name(), alu, poll=self.poll)
+    def detach_alu(self, lun):
+        alu = vnxCliApi.vnx.resource.lun.VNXLun.get_id(lun)
+        hlu = self.get_hlu(lun)
+        out = self._cli.sg_remove_hlu(self._get_name(), hlu, poll=self.poll)
         raise_if_err(out, ex.VNXStorageGroupError,
-                     'failed to detach alu {}.'.format(alu))
+                     'failed to detach hlu {}/alu {}.'.format(hlu, alu))
         self._remove_alu(alu)
 
     def connect_host(self, host):
@@ -189,6 +203,11 @@ class VNXStorageGroupList(VNXCliResourceList):
 
     def add_sg(self, sg):
         self._sg_map[sg.name] = sg
+
+    def detach_alu(self, lun):
+        for sg in self:
+            if sg.has_alu(lun):
+                sg.detach_alu(lun)
 
     def _get_raw_resource(self):
         return self._cli.get_sg(poll=self.poll)

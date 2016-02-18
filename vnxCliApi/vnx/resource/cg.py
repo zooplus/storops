@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from vnxCliApi.vnx.cli import raise_if_err
-from vnxCliApi.vnx.resource.lun import VNXLun
+import vnxCliApi.vnx.resource.lun
 from vnxCliApi.vnx.resource.resource import VNXCliResource, VNXCliResourceList
 from vnxCliApi import exception as ex
 
@@ -16,6 +16,10 @@ class VNXConsistencyGroupList(VNXCliResourceList):
 
     def _get_raw_resource(self):
         return self._cli.get_cg(poll=self.poll)
+
+    def remove_member(self, *lun_list):
+        for cg in self:
+            cg.remove_member(*lun_list)
 
 
 class VNXConsistencyGroup(VNXCliResource):
@@ -37,7 +41,9 @@ class VNXConsistencyGroup(VNXCliResource):
 
     @classmethod
     def create(cls, cli, name, members=None, auto_delete=None):
-        cli.create_cg(name, members, auto_delete)
+        out = cli.create_cg(name, members, auto_delete)
+        raise_if_err(out, ex.VNXCreateConsistencyGroupError,
+                     'error creating cg {}.'.format(name))
         return VNXConsistencyGroup(name=name, cli=cli)
 
     def remove(self):
@@ -47,7 +53,8 @@ class VNXConsistencyGroup(VNXCliResource):
                      'error remove cg "{}".'.format(name))
 
     def _cg_member_op(self, op, lun_list):
-        id_list = VNXLun.get_id_list(*lun_list)
+        clz = vnxCliApi.vnx.resource.lun.VNXLun
+        id_list = clz.get_id_list(*lun_list)
         name = self._get_name()
         out = op(name, *id_list, poll=self.poll)
         raise_if_err(out, ex.VNXConsistencyGroupError,
@@ -57,7 +64,13 @@ class VNXConsistencyGroup(VNXCliResource):
         self._cg_member_op(self._cli.add_cg_member, lun_list)
 
     def remove_member(self, *lun_list):
+        lun_list = list(filter(self.has_member, lun_list))
         self._cg_member_op(self._cli.remove_cg_member, lun_list)
 
     def replace_member(self, *lun_list):
         self._cg_member_op(self._cli.replace_cg_member, lun_list)
+
+    def has_member(self, lun):
+        clz = vnxCliApi.vnx.resource.lun.VNXLun
+        lun_id = clz.get_id(lun)
+        return lun_id in self.lun_list

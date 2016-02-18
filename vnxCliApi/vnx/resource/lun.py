@@ -9,6 +9,8 @@ from vnxCliApi.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
 from vnxCliApi.vnx.resource.resource import VNXCliResourceList, VNXCliResource
 import vnxCliApi.vnx.resource.block_pool
 from vnxCliApi.vnx.resource.migration import VNXMigrationSession
+import vnxCliApi.vnx.resource.sg
+import vnxCliApi.vnx.resource.cg
 from vnxCliApi.vnx.resource.snap import VNXSnap
 
 __author__ = 'Cedric Zhuang'
@@ -184,12 +186,42 @@ class VNXLun(VNXCliResource):
     def get_id_list(cls, *lun_list):
         return list(map(cls.get_id, lun_list))
 
-    def remove(self, remove_snapshots=False, force_detach=False):
+    def detach_from_sg(self, sg=None):
+        if sg is None:
+            clz = vnxCliApi.vnx.resource.sg.VNXStorageGroupList
+            obj = clz(cli=self._cli)
+        else:
+            obj = sg
+        obj.detach_alu(self)
+
+    def detach_from_cg(self, cg=None):
+        if cg is None:
+            clz = vnxCliApi.vnx.resource.cg.VNXConsistencyGroupList
+            obj = clz(cli=self._cli)
+        else:
+            obj = cg
+        obj.remove_member(self)
+
+    def remove(self, remove_snapshots=False, force_detach=False,
+               detach_from_sg=False, detach_from_cg=False, force=False):
+        if force:
+            remove_snapshots = True
+            force_detach = True
+            detach_from_sg = True
+            detach_from_cg = True
+
+        if detach_from_sg:
+            self.detach_from_sg()
+
+        if detach_from_cg:
+            self.detach_from_cg()
+
         out = self._cli.remove_pool_lun(self._lun_id,
                                         self._name,
                                         remove_snapshots=remove_snapshots,
                                         force_detach=force_detach,
                                         poll=self.poll)
+
         raise_if_err(out, ex.VNXRemoveLunError, 'failed to remove lun.')
 
     def rename(self, new_name):

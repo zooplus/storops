@@ -59,18 +59,18 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.initiator_uid_list), equal_to(5))
 
     @patch_cli()
-    def test_attach_hlu(self):
+    def test_attach_alu(self):
         sg = self.test_sg()
         lun = VNXLun(name='x', cli=t_cli())
         assert_that(sg.has_alu(0), equal_to(False))
-        sg.attach_hlu(lun)
+        sg.attach_alu(lun)
         assert_that(sg.has_alu(0), equal_to(True))
         assert_that(sg.get_hlu(0), equal_to(1))
 
     @patch_cli()
     def test_detach_hlu(self):
         sg = self.test_sg()
-        sg.detach_hlu(10)
+        sg.detach_alu(10)
         assert_that(sg.has_hlu(10), equal_to(False))
 
     @patch_cli()

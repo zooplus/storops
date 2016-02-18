@@ -213,6 +213,9 @@ class VNXResource(object):
                 raise e
         return ret
 
+    def _update_property_cache(self, name, value):
+        self._property_cache[name] = value
+
     def _get_property_from_raw(self, item):
         ret = None
         parser = self._get_parser()

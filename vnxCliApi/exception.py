@@ -172,6 +172,10 @@ class VNXConsistencyGroupError(VNXException):
     pass
 
 
+class VNXCreateConsistencyGroupError(VNXConsistencyGroupError):
+    pass
+
+
 class VNXRaidGroupError(VNXException):
     pass
 
