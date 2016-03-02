@@ -20,11 +20,11 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, has_item, raises
 
 from test.vnx.cli_mock import patch_cli, t_cli
-from vnxCliApi.exception import VNXConsistencyGroupError
-from vnxCliApi.vnx.parsers import get_parser_config
-from vnxCliApi.vnx.resource.cg import VNXConsistencyGroup
-from vnxCliApi.vnx.resource.cg import VNXConsistencyGroupList
-from vnxCliApi.vnx.resource.lun import VNXLun
+from storops.exception import VNXConsistencyGroupError
+from storops.vnx.parsers import get_parser_config
+from storops.vnx.resource.cg import VNXConsistencyGroup
+from storops.vnx.resource.cg import VNXConsistencyGroupList
+from storops.vnx.resource.lun import VNXLun
 
 __author__ = 'Cedric Zhuang'
 

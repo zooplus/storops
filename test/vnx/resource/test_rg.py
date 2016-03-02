@@ -21,10 +21,10 @@ from hamcrest import assert_that, equal_to, raises, instance_of
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.verifiers import verify_raid0
-from vnxCliApi.exception import VNXCreateRaidGroupError, \
+from storops.exception import VNXCreateRaidGroupError, \
     VNXRemoveRaidGroupError
-from vnxCliApi.vnx.resource.disk import VNXDisk
-from vnxCliApi.vnx.resource.rg import VNXRaidGroup
+from storops.vnx.resource.disk import VNXDisk
+from storops.vnx.resource.rg import VNXRaidGroup
 
 __author__ = 'Cedric Zhuang'
 

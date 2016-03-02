@@ -20,10 +20,10 @@ from hamcrest import assert_that, greater_than_or_equal_to, raises
 from hamcrest import equal_to
 
 from test.vnx.nas_mock import t_nas, patch_nas
-from vnxCliApi.vnx.enums import VNXShareType
-from vnxCliApi.exception import VNXBackendError, \
+from storops.vnx.enums import VNXShareType
+from storops.exception import VNXBackendError, \
     VNXInvalidMoverID, VNXMoverInterfaceNotFound, VNXMoverInterfaceNotAttached
-from vnxCliApi.vnx.resource.vdm import VNXVdmList, VNXVdm
+from storops.vnx.resource.vdm import VNXVdmList, VNXVdm
 
 __author__ = 'Jay Xu'
 

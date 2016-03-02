@@ -21,9 +21,9 @@ from hamcrest import assert_that, has_item, raises
 from hamcrest import equal_to
 
 from test.vnx.nas_mock import t_nas, patch_nas
-from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx.resource.mover import VNXMover
-from vnxCliApi.vnx.resource.nfs_share import VNXNfsShareList, NfsHostConfig, \
+from storops.exception import VNXBackendError
+from storops.vnx.resource.mover import VNXMover
+from storops.vnx.resource.nfs_share import VNXNfsShareList, NfsHostConfig, \
     VNXNfsShare
 
 __author__ = 'Jay Xu'

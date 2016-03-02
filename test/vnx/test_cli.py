@@ -20,9 +20,9 @@ from unittest import TestCase
 from hamcrest import assert_that, contains_string, equal_to, calling, raises
 
 from test.vnx.cli_mock import patch_cli, extract_command, MockCli
-from vnxCliApi.exception import VNXSystemDownError
-from vnxCliApi.vnx.cli import CliClient
-from vnxCliApi.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
+from storops.exception import VNXSystemDownError
+from storops.vnx.cli import CliClient
+from storops.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
     VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType
 
 __author__ = 'Cedric Zhuang'

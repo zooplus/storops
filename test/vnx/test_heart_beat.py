@@ -23,8 +23,8 @@ from hamcrest import assert_that, equal_to, ends_with, contains_string, \
     has_items
 
 from test.vnx.cli_mock import patch_cli
-from vnxCliApi.exception import VNXSystemDownError
-from vnxCliApi.vnx.heart_beat import NodeInfo, NodeHeartBeat
+from storops.exception import VNXSystemDownError
+from storops.vnx.heart_beat import NodeInfo, NodeHeartBeat
 
 __author__ = 'Cedric Zhuang'
 

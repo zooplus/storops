@@ -20,10 +20,10 @@ import unittest
 from hamcrest import assert_that, greater_than_or_equal_to, equal_to, raises
 
 from test.vnx.nas_mock import t_nas, patch_post
-from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx.resource.mount_point import VNXFsMountPointList, \
+from storops.exception import VNXBackendError
+from storops.vnx.resource.mount_point import VNXFsMountPointList, \
     VNXFsMountPoint
-from vnxCliApi.vnx.resource.mover import VNXMover
+from storops.vnx.resource.mover import VNXMover
 
 __author__ = 'Jay Xu'
 

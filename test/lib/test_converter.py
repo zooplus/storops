@@ -20,7 +20,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, has_items
 
-from vnxCliApi.lib import converter
+from storops.lib import converter
 
 __author__ = 'Cedric Zhuang'
 

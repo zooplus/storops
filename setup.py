@@ -22,7 +22,7 @@ import os
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.0.13'
+__version__ = '0.0.14'
 
 
 def version():
@@ -52,7 +52,7 @@ def read_requirements(filename):
 
 
 def get_description():
-    return "VNX CLI Python API."
+    return "VNX Python API."
 
 
 def get_long_description():
@@ -66,7 +66,7 @@ def get_long_description():
 
 
 setup(
-    name="vnxCliApi",
+    name="storops",
     version=version(),
     author="Cedric Zhuang",
     author_email="cedric.zhuang@gmail.com",

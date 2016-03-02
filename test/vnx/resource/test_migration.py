@@ -20,8 +20,8 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to
 
 from test.vnx.cli_mock import t_cli, patch_cli
-from vnxCliApi.vnx.enums import VNXMigrationRate
-from vnxCliApi.vnx.resource.migration import VNXMigrationSession
+from storops.vnx.enums import VNXMigrationRate
+from storops.vnx.resource.migration import VNXMigrationSession
 
 __author__ = 'Cedric Zhuang'
 

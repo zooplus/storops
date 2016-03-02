@@ -21,10 +21,10 @@ from hamcrest import assert_that, equal_to, none, instance_of
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
-from vnxCliApi import VNXSystem
-from vnxCliApi.vnx.enums import VNXLunType
-from vnxCliApi.vnx.resource.disk import VNXDisk
-from vnxCliApi.vnx.resource.lun import VNXLun
+from storops import VNXSystem
+from storops.vnx.enums import VNXLunType
+from storops.vnx.resource.disk import VNXDisk
+from storops.vnx.resource.lun import VNXLun
 
 __author__ = 'Cedric Zhuang'
 

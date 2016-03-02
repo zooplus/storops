@@ -21,8 +21,8 @@ from hamcrest import assert_that, equal_to, raises
 
 from test.vnx.nas_mock import t_nas, patch_post
 
-from vnxCliApi.exception import VNXFsSnapExistedError
-from vnxCliApi.vnx.resource.fs_snap import VNXFsSnapList, VNXFsSnap
+from storops.exception import VNXFsSnapExistedError
+from storops.vnx.resource.fs_snap import VNXFsSnapList, VNXFsSnap
 
 __author__ = 'Jay Xu'
 

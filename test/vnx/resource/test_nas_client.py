@@ -21,9 +21,9 @@ from hamcrest import assert_that, equal_to, raises, contains_string, \
     only_contains
 
 from test.vnx.nas_mock import MockXmlPost
-from vnxCliApi.exception import VNXObjectNotFound, \
+from storops.exception import VNXObjectNotFound, \
     VNXInvalidMoverID
-from vnxCliApi.vnx.resource.nas_client import NasXmlResponse, XmlStatus
+from storops.vnx.resource.nas_client import NasXmlResponse, XmlStatus
 
 __author__ = 'Cedric Zhuang'
 

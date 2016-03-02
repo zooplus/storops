@@ -21,10 +21,10 @@ from hamcrest import assert_that, raises, equal_to, has_item, none
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
-from vnxCliApi.vnx.enums import VNXSPEnum, VNXPortType
-from vnxCliApi.vnx.resource.port import VNXHbaPort, VNXSPPort, \
+from storops.vnx.enums import VNXSPEnum, VNXPortType
+from storops.vnx.resource.port import VNXHbaPort, VNXSPPort, \
     VNXConnectionPort
-from vnxCliApi.vnx.resource.sg import VNXStorageGroupHBA
+from storops.vnx.resource.sg import VNXStorageGroupHBA
 
 __author__ = 'Cedric Zhuang'
 

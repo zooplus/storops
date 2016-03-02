@@ -24,9 +24,9 @@ import six
 from mock import patch
 
 from test.vnx import ConnectorMock
-from vnxCliApi.lib.common import cache
-from vnxCliApi.vnx.cli import CliClient
-from vnxCliApi.vnx.resource.system import VNXSystem
+from storops.lib.common import cache
+from storops.vnx.cli import CliClient
+from storops.vnx.resource.system import VNXSystem
 
 __author__ = 'Cedric Zhuang'
 
@@ -98,7 +98,7 @@ def patch_cli(output=None, mock_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='vnxCliApi.vnx.navi_command.'
+        @patch(target='storops.vnx.navi_command.'
                       'NaviCommand.execute_naviseccli',
                new=cli.mock_execute)
         def func_wrapper(self):
@@ -122,8 +122,8 @@ def extract_command(func):
         return ' '.join(map(six.text_type, commands))
 
     @functools.wraps(func)
-    @patch(target='vnxCliApi.vnx.cli.CliClient.execute', new=mock)
-    @patch(target='vnxCliApi.vnx.cli.CliClient.execute_dual', new=mock)
+    @patch(target='storops.vnx.cli.CliClient.execute', new=mock)
+    @patch(target='storops.vnx.cli.CliClient.execute_dual', new=mock)
     def func_wrapper(self):
         return func(self)
 

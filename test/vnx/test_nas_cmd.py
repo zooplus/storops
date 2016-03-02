@@ -19,8 +19,8 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to
 
-from vnxCliApi.vnx.nas_cmd import NasCommand
-from vnxCliApi.vnx.resource.cifs_share import CifsAccessControl
+from storops.vnx.nas_cmd import NasCommand
+from storops.vnx.resource.cifs_share import CifsAccessControl
 
 __author__ = 'Cedric Zhuang'
 

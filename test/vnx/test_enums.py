@@ -22,10 +22,10 @@ from hamcrest import assert_that, raises
 from hamcrest import equal_to
 
 from test.vnx.nas_mock import MockXmlPost
-from vnxCliApi.exception import VNXException
-from vnxCliApi.vnx.enums import VNXError, VNXProvisionEnum, \
+from storops.exception import VNXException
+from storops.vnx.enums import VNXError, VNXProvisionEnum, \
     VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType, raise_if_err
-from vnxCliApi.vnx.resource.nas_client import NasXmlResponse
+from storops.vnx.resource.nas_client import NasXmlResponse
 
 
 class VNXErrorTest(TestCase):

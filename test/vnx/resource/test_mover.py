@@ -19,9 +19,9 @@ import unittest
 from hamcrest import assert_that, equal_to, none, only_contains, raises
 
 from test.vnx.nas_mock import t_nas, patch_post, patch_nas
-from vnxCliApi.vnx.enums import VNXPortType
-from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx.resource.mover import VNXMoverList, VNXMover, \
+from storops.vnx.enums import VNXPortType
+from storops.exception import VNXBackendError
+from storops.vnx.resource.mover import VNXMoverList, VNXMover, \
     VNXMoverRefList, VNXMoverRef, VNXMoverHost, VNXMoverHostList
 
 __author__ = 'Jay Xu'

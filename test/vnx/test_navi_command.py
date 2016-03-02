@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import equal_to, assert_that
 
 from test.vnx.cli_mock import patch_cli
-from vnxCliApi.vnx.navi_command import NaviCommand
+from storops.vnx.navi_command import NaviCommand
 
 __author__ = 'Cedric Zhuang'
 

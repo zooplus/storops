@@ -21,9 +21,9 @@ from hamcrest import equal_to, assert_that, raises, none, instance_of
 
 from test.vnx.nas_mock import patch_post, t_nas
 
-from vnxCliApi.exception import VNXBackendError, VNXInvalidMoverID, \
+from storops.exception import VNXBackendError, VNXInvalidMoverID, \
     VNXFsExistedError
-from vnxCliApi.vnx.resource.fs import VNXFileSystem, VNXFileSystemList
+from storops.vnx.resource.fs import VNXFileSystem, VNXFileSystemList
 
 __author__ = 'Jay Xu'
 

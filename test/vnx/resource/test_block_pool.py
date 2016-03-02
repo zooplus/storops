@@ -21,9 +21,9 @@ from hamcrest import assert_that, raises, equal_to, is_in, has_items
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_pool_0
-from vnxCliApi.exception import VNXRemovePoolError, VNXCreatePoolError, \
+from storops.exception import VNXRemovePoolError, VNXCreatePoolError, \
     VNXCreateLunError
-from vnxCliApi.vnx.resource.block_pool import VNXPool, VNXPoolList, \
+from storops.vnx.resource.block_pool import VNXPool, VNXPoolList, \
     VNXPoolFeature
 
 __author__ = 'Cedric Zhuang'

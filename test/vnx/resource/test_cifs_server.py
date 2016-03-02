@@ -22,8 +22,8 @@ from hamcrest import assert_that, greater_than_or_equal_to, \
 from hamcrest import equal_to
 
 from test.vnx.nas_mock import t_nas, patch_post
-from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx.resource.cifs_server import VNXCifsServerList, \
+from storops.exception import VNXBackendError
+from storops.vnx.resource.cifs_server import VNXCifsServerList, \
     VNXCifsServer, \
     CifsDomain
 

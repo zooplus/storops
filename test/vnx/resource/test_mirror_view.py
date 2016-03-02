@@ -22,9 +22,9 @@ from hamcrest import equal_to
 
 from test.vnx.cli_mock import patch_cli
 from test.vnx.cli_mock import t_cli
-from vnxCliApi.vnx.enums import VNXMirrorViewRecoveryPolicy, \
+from storops.vnx.enums import VNXMirrorViewRecoveryPolicy, \
     VNXMirrorViewSyncRate, VNXSPEnum
-from vnxCliApi.vnx.resource.mirror_view import VNXMirrorView, \
+from storops.vnx.resource.mirror_view import VNXMirrorView, \
     VNXMirrorViewImage
 
 __author__ = 'Cedric Zhuang'

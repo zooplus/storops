@@ -22,11 +22,11 @@ from hamcrest import equal_to, assert_that, not_none
 
 from test.vnx.cli_mock import MockCli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
-from vnxCliApi.vnx.enums import VNXSPEnum
-from vnxCliApi.vnx.parsers import \
+from storops.vnx.enums import VNXSPEnum
+from storops.vnx.parsers import \
     VNXCliParser, PropDescriptor, get_parser_config, PropMapper, \
     is_vnx_resource
-from vnxCliApi.vnx.resource.sg import VNXStorageGroup
+from storops.vnx.resource.sg import VNXStorageGroup
 
 
 class DemoParser(VNXCliParser):

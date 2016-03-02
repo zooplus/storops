@@ -27,8 +27,8 @@ from mock import patch
 
 from test.vnx import ConnectorMock, read_test_file
 from test.vnx.cli_mock import MockCli
-from vnxCliApi.lib.common import cache
-from vnxCliApi.vnx.resource.nas_client import VNXNasClient
+from storops.lib.common import cache
+from storops.vnx.resource.nas_client import VNXNasClient
 
 __author__ = 'Cedric Zhuang'
 
@@ -105,11 +105,11 @@ def patch_post(output=None, mock_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='vnxCliApi.connection.connector.XMLAPIConnector.post',
+        @patch(target='storops.connection.connector.XMLAPIConnector.post',
                new=xml.mock_post)
-        @patch(target='vnxCliApi.connection.connector.XMLAPIConnector._login',
+        @patch(target='storops.connection.connector.XMLAPIConnector._login',
                new=lambda a, b, c, d: 0)
-        @patch(target='vnxCliApi.lib.common.const_seconds',
+        @patch(target='storops.lib.common.const_seconds',
                new=lambda x: 0)
         def func_wrapper(*args, **kwargs):
             return func(*args, **kwargs)
@@ -140,9 +140,9 @@ def patch_ssh(output=None, mock_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='vnxCliApi.connection.connector.SSHConnector.execute',
+        @patch(target='storops.connection.connector.SSHConnector.execute',
                new=ssh.mock_execute)
-        @patch(target='vnxCliApi.connection.connector.SSHConnector.'
+        @patch(target='storops.connection.connector.SSHConnector.'
                       'init_connection',
                new=ssh.mock_init_connection)
         def func_wrapper(*args, **kwargs):
@@ -159,15 +159,15 @@ def patch_nas(xml_output=None, xml_map=None, ssh_output=None, ssh_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='vnxCliApi.connection.connector.XMLAPIConnector.post',
+        @patch(target='storops.connection.connector.XMLAPIConnector.post',
                new=xml.mock_post)
-        @patch(target='vnxCliApi.connection.connector.XMLAPIConnector._login',
+        @patch(target='storops.connection.connector.XMLAPIConnector._login',
                new=lambda a, b, c, d: 0)
-        @patch(target='vnxCliApi.lib.common.const_seconds',
+        @patch(target='storops.lib.common.const_seconds',
                new=lambda x: 0)
-        @patch(target='vnxCliApi.connection.connector.SSHConnector.execute',
+        @patch(target='storops.connection.connector.SSHConnector.execute',
                new=ssh.mock_execute)
-        @patch(target='vnxCliApi.connection.connector.SSHConnector.'
+        @patch(target='storops.connection.connector.SSHConnector.'
                       'init_connection',
                new=ssh.mock_init_connection)
         def func_wrapper(*args, **kwargs):

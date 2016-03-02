@@ -20,10 +20,10 @@ import unittest
 from hamcrest import assert_that, equal_to, raises, has_item
 
 from test.vnx.nas_mock import t_nas, patch_nas
-from vnxCliApi.exception import VNXBackendError
-from vnxCliApi.vnx.resource.cifs_share import VNXCifsShareList, VNXCifsShare
-from vnxCliApi.vnx.resource.fs import VNXFileSystem
-from vnxCliApi.vnx.resource.mover import VNXMover
+from storops.exception import VNXBackendError
+from storops.vnx.resource.cifs_share import VNXCifsShareList, VNXCifsShare
+from storops.vnx.resource.fs import VNXFileSystem
+from storops.vnx.resource.mover import VNXMover
 
 __author__ = 'Jay Xu'
 

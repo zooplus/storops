@@ -21,7 +21,7 @@ from hamcrest import assert_that, raises, equal_to, has_items
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.verifiers import verify_disk_4_0_e8
-from vnxCliApi.vnx.resource.disk import VNXDisk, VNXDiskList
+from storops.vnx.resource.disk import VNXDisk, VNXDiskList
 
 __author__ = 'Cedric Zhuang'
 

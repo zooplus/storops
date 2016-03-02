@@ -20,7 +20,7 @@ import unittest
 from hamcrest import assert_that, equal_to, has_items
 
 from test.vnx.nas_mock import t_nas, patch_post
-from vnxCliApi.vnx.resource.nas_pool import VNXNasPool, VNXNasPoolList
+from storops.vnx.resource.nas_pool import VNXNasPool, VNXNasPoolList
 
 __author__ = 'Jay Xu'
 

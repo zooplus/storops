@@ -20,9 +20,9 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, contains_string, is_not, raises
 
 from test.vnx.cli_mock import t_cli, patch_cli
-from vnxCliApi.exception import VNXObjectNotFound
-from vnxCliApi.vnx.enums import VNXSPEnum
-from vnxCliApi.vnx.resource.vnx_domain import VNXDomainNodeList, \
+from storops.exception import VNXObjectNotFound
+from storops.vnx.enums import VNXSPEnum
+from storops.vnx.resource.vnx_domain import VNXDomainNodeList, \
     VNXNetworkAdmin
 
 __author__ = 'Cedric Zhuang'

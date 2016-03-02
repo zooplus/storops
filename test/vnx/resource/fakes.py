@@ -32,5 +32,5 @@ TPGT:                  1
 ISID:                  10000000000
 """
 
-patch_retry = mock.patch(target='vnxCliApi.lib.common.const_seconds',
+patch_retry = mock.patch(target='storops.lib.common.const_seconds',
                          new=lambda x: 0)

@@ -22,9 +22,9 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, close_to
 
-from vnxCliApi.lib.common import Dict, Enum, WeightedAverage, \
+from storops.lib.common import Dict, Enum, WeightedAverage, \
     synchronized, cache, text_var, int_var, enum_var
-from vnxCliApi.vnx.enums import VNXRaidType
+from storops.vnx.enums import VNXRaidType
 
 
 class DictTest(TestCase):

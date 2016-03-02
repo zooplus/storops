@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to
 
 from test.vnx.cli_mock import patch_cli, t_cli
-from vnxCliApi.vnx.resource.ndu import VNXNdu
+from storops.vnx.resource.ndu import VNXNdu
 
 __author__ = 'Cedric Zhuang'
 

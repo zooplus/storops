@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from hamcrest import assert_that, equal_to, has_items, has_item, none
 
-from vnxCliApi.vnx.enums import VNXSPEnum, VNXProvisionEnum, VNXTieringEnum, \
+from storops.vnx.enums import VNXSPEnum, VNXProvisionEnum, VNXTieringEnum, \
     VNXRaidType
 
 __author__ = 'Cedric Zhuang'

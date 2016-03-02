@@ -22,12 +22,12 @@ from hamcrest import assert_that, equal_to, contains_string, has_item, \
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
-from vnxCliApi.exception import VNXModifyLunError, VNXCompressionError, \
+from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXDedupError, VNXRemoveLunError, VNXCreateSnapError
-from vnxCliApi.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
+from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
-from vnxCliApi.vnx.resource.lun import VNXLun, VNXLunList
-from vnxCliApi.vnx.resource.snap import VNXSnap
+from storops.vnx.resource.lun import VNXLun, VNXLunList
+from storops.vnx.resource.snap import VNXSnap
 
 __author__ = 'Cedric Zhuang'
 

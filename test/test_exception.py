@@ -19,7 +19,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to
 
-from vnxCliApi.exception import VNXException
+from storops.exception import VNXException
 
 __author__ = 'Cedric Zhuang'
 
