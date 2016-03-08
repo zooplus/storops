@@ -19,12 +19,12 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to
 
-from storops.exception import VNXException
+from storops.exception import StoropsException
 
 __author__ = 'Cedric Zhuang'
 
 
-class DemoException(VNXException):
+class DemoException(StoropsException):
     message = 'hello, {name}.'
 
 
@@ -47,5 +47,5 @@ class ExceptionTest(TestCase):
         assert_that(str(ex), equal_to('code is 500'))
 
     def test_exception_convert_to_message(self):
-        ex = VNXException(message=StrangeException())
+        ex = StoropsException(message=StrangeException())
         assert_that(str(ex), equal_to('strange exception'))

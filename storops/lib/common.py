@@ -15,8 +15,10 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import json
 import logging
 import types
+from enum import Enum as _Enum
 from collections import defaultdict
 from functools import partial
 
@@ -24,27 +26,93 @@ import functools
 import six
 import time
 
+import sys
 from retryz import retry
-from six import string_types
-from threading import Timer, Lock, Thread
+from threading import Lock, Thread
+
+from storops.exception import EnumValueNotFoundError
 
 log = logging.getLogger(__name__)
 
 
-class Enum(object):
-    @classmethod
-    def get_all(cls):
-        return [getattr(cls, member) for member in dir(cls)
-                if cls._is_enum(member)]
+class JsonPrinter(object):
+    def _get_properties(self, dec=0):
+        raise NotImplementedError('need a property-value dictionary')
+
+    def get_dict_repr(self, dec=0):
+        props = self._get_properties(dec)
+        return {self.__class__.__name__: props}
+
+    def json(self, indent=None):
+        return json.dumps(self.get_dict_repr(), indent=indent)
+
+    def __repr__(self):
+        return self.json(indent=4)
+
+    def __str__(self):
+        return self.json()
+
+
+class EnumList(JsonPrinter):
+    def _get_properties(self, dec=0):
+        super(EnumList, self)._get_properties(dec)
+
+    def __init__(self):
+        super(EnumList, self).__init__()
+        self._list = []
+        self._iter = None
 
     @classmethod
-    def _is_enum(cls, name):
-        return (isinstance(name, string_types) and
-                hasattr(cls, name) and name.isupper())
+    def get_enum_class(cls):
+        raise NotImplementedError('enum class of this list is not defined.')
+
+    @classmethod
+    def parse(cls, values):
+        ret = None
+        if values is not None:
+            ret = cls()
+            ret._list = [ret.get_enum_class().parse(v) for v in values]
+        return ret
+
+    def get_dict_repr(self, dec=0):
+        items = [item.get_dict_repr(dec - 1) for item in self.list]
+        return {self.__class__.__name__: items}
+
+    @property
+    def list(self):
+        return self._list
+
+    def __len__(self):
+        return len(self.list)
+
+    def __iter__(self):
+        self._iter = self.list.__iter__()
+        return self
+
+    def next(self):
+        return next(self._iter)
+
+    def __next__(self):
+        return self.next()
+
+    def __getitem__(self, item):
+        return self.list[item]
+
+
+class Enum(_Enum):
+    @classmethod
+    def verify(cls, value):
+        if value is not None and not isinstance(value, cls):
+            raise ValueError('{} is not an instance of {}.'
+                             .format(value, cls.__name__))
+
+    @classmethod
+    def get_all(cls):
+        return list(cls)
 
     @classmethod
     def get_opt(cls, value):
-        option_map = getattr(cls, '_option_map', None)
+        option_map = cls.get_option_map()
         if option_map is None:
             raise NotImplementedError('Option map is not defined for {}.'
                                       .format(cls.__name__))
@@ -56,22 +124,44 @@ class Enum(object):
         return ret
 
     @classmethod
-    def from_int(cls, value):
-        int_index = getattr(cls, '_int_index', None)
-        if int_index is None:
-            raise NotImplementedError('Integer index is not defined for {}.'
-                                      .format(cls.__name__))
-
-        found = False
-        try:
-            ret = int_index[value]
-            found = True
-        except IndexError:
+    def parse(cls, value):
+        if isinstance(value, six.string_types):
+            ret = cls.from_str(value)
+        elif isinstance(value, six.integer_types):
+            ret = cls.from_int(value)
+        elif isinstance(value, cls):
+            ret = value
+        elif value is None:
             ret = None
+        else:
+            raise ValueError(
+                'not supported value type: {}.'.format(type(value)))
+        return ret
 
-        if not found or ret is None:
-            raise ValueError('{} is not a valid value for {}.'
-                             .format(cls.__name__))
+    def is_equal(self, value):
+        if isinstance(value, six.string_types):
+            ret = self.value.lower() == value.lower()
+        else:
+            ret = self.value == value
+        return ret
+
+    @classmethod
+    def from_int(cls, value):
+        ret = None
+        int_index = cls.get_int_index()
+        if int_index is not None:
+            try:
+                ret = int_index[value]
+            except IndexError:
+                pass
+        else:
+            try:
+                ret = next(i for i in cls.get_all() if i.is_equal(value))
+            except StopIteration:
+                pass
+        if ret is None:
+            raise EnumValueNotFoundError('{} is not a valid value for {}.'
+                                         .format(value, cls.__name__))
         return ret
 
     @classmethod
@@ -79,13 +169,21 @@ class Enum(object):
         ret = None
         if value is not None:
             for item in cls.get_all():
-                if item.lower() == value.lower():
+                if item.is_equal(value):
                     ret = item
                     break
             else:
                 log.warn('cannot parse "{}" to a {}.'
                          .format(value, cls.__name__))
         return ret
+
+    @classmethod
+    def get_option_map(cls):
+        raise None
+
+    @classmethod
+    def get_int_index(cls):
+        return None
 
 
 class Dict(dict):
@@ -119,11 +217,17 @@ def get_config_prop(conf, prop, default=None):
     return value
 
 
-class Cache(object):
-    _cache = defaultdict(lambda: {})
+def _cache_holder():
+    return defaultdict(lambda: {})
 
-    lock_map_lock = Lock()
-    lock_map = {}
+
+def _cache_lock_holder():
+    return defaultdict(lambda: Lock())
+
+
+class Cache(object):
+    _cache = _cache_holder()
+    _lock_map = _cache_lock_holder()
 
     def __init__(self):
         pass
@@ -133,60 +237,115 @@ class Cache(object):
         return func.__hash__()
 
     @classmethod
-    def get_cache(cls, func):
-        return cls._cache[cls.get_key(func)]
+    def get_cache(cls, key):
+        return cls._cache[key]
 
     @classmethod
-    def clear_func_cache(cls, func):
-        cls._cache[cls.get_key(func)] = {}
+    def clear_cache(cls, func=None):
+        if func is not None:
+            cls._cache[cls.get_key(func)] = {}
+        else:
+            cls._cache = _cache_holder()
+            cls._lock_map = _cache_lock_holder()
 
     @classmethod
     def get_cache_lock(cls, key):
-        if key not in cls.lock_map:
-            cls.lock_map[key] = Lock()
-        return cls.lock_map[key]
+        return cls._lock_map[key]
+
+    @staticmethod
+    def _clear_cache(val_cache=None, key=None):
+        if key in val_cache:
+            del (val_cache[key])
+
+    @staticmethod
+    def _hash(li):
+        return hash(frozenset(li))
 
     @classmethod
-    def cache(cls, seconds=None):
-        def clear_cache(val_cache, key):
-            if key in val_cache:
-                del (val_cache[key])
+    def result_cache_key_gen(cls, *args, **kwargs):
+        return cls._hash(args), cls._hash(kwargs.items())
 
-        def decorator(func):
-            def _key_gen(*args, **kwargs):
-                return args, hash(frozenset(kwargs.items()))
-
-            @functools.wraps(func)
-            def func_wrapper(*args, **kwargs):
-                key = _key_gen(*args, **kwargs)
-                val_cache = cls.get_cache(func)
+    @classmethod
+    def _get_value_from_cache(cls, func, val_cache, lock, *args, **kwargs):
+        key = cls.result_cache_key_gen(*args, **kwargs)
+        if key in val_cache:
+            ret = val_cache[key]
+        else:
+            with lock:
                 if key in val_cache:
                     ret = val_cache[key]
                 else:
                     ret = func(*args, **kwargs)
-                    lock = cls.get_cache_lock(func)
-                    lock.acquire()
-                    if key in val_cache:
-                        ret = val_cache[key]
-                    else:
-                        val_cache[key] = ret
-                        if seconds is not None:
-                            Timer(seconds, clear_cache,
-                                  (val_cache, key)).start()
-                    lock.release()
-                return ret
+                    val_cache[key] = ret
+        return ret
 
-            return func_wrapper
+    @classmethod
+    def cache(cls, func):
+        """ Global cache decorator
 
-        return decorator
+        :param func: the function to be decorated
+        :return: the decorator
+        """
+
+        @functools.wraps(func)
+        def func_wrapper(*args, **kwargs):
+            func_key = cls.get_key(func)
+            val_cache = cls.get_cache(func_key)
+            lock = cls.get_cache_lock(func_key)
+
+            return cls._get_value_from_cache(
+                func, val_cache, lock, *args, **kwargs)
+
+        return func_wrapper
+
+    @staticmethod
+    def get_self_cache(the_self, key):
+        prop_name = '_self_cache_'
+        if not hasattr(the_self, prop_name):
+            setattr(the_self, prop_name, _cache_holder())
+        return getattr(the_self, prop_name)[key]
+
+    @staticmethod
+    def get_self_cache_lock(the_self, key):
+        prop_name = '_self_cache_lock_'
+        if not hasattr(the_self, prop_name):
+            setattr(the_self, prop_name, _cache_lock_holder())
+        return getattr(the_self, prop_name)[key]
+
+    @classmethod
+    def instance_cache(cls, func):
+        """ Save the cache to `self`
+
+        This decorator take it for granted that the decorated function
+        is a method.  The first argument of the function is `self`.
+
+        :param func: function to decorate
+        :return: the decorator
+        """
+
+        @functools.wraps(func)
+        def func_wrapper(*args, **kwargs):
+            if not args:
+                raise ValueError('`self` is not available.')
+            else:
+                the_self = args[0]
+            func_key = cls.get_key(func)
+            val_cache = cls.get_self_cache(the_self, func_key)
+            lock = cls.get_self_cache_lock(the_self, func_key)
+
+            return cls._get_value_from_cache(
+                func, val_cache, lock, *args, **kwargs)
+
+        return func_wrapper
 
 
 cache = Cache.cache
+instance_cache = Cache.instance_cache
 
 
 def check_int(value):
     def is_digit_str():
-        return isinstance(value, six.string_types) and value.isdigit()
+        return isinstance(value, six.string_types) and str(value).isdigit()
 
     def is_int():
         return isinstance(value, int)
@@ -204,9 +363,12 @@ def check_enum(value, enum_class):
     if hasattr(enum_class, 'get_all'):
         get_all_func = getattr(enum_class, 'get_all')
         candidates = get_all_func()
-        if value not in candidates:
+        parsed_enum = enum_class.parse(value)
+        if parsed_enum not in candidates:
             raise ValueError('"{}" is not a valid value.  '
                              'Valid values are: {}'.format(value, candidates))
+        else:
+            value = parsed_enum.value
     else:
         raise ValueError('{} is not a enum.'.format(enum_class))
     return value
@@ -300,21 +462,16 @@ class SynchronizedDecorator(object):
         def get_lock(f, o):
             key = get_key(f, o)
             if key not in cls.lock_map:
-                cls.lock_map_lock.acquire()
-                if key not in cls.lock_map:
-                    cls.lock_map[key] = Lock()
-                cls.lock_map_lock.release()
+                with cls.lock_map_lock:
+                    if key not in cls.lock_map:
+                        cls.lock_map[key] = Lock()
             return cls.lock_map[key]
 
         def wrap(f):
             @functools.wraps(f)
             def new_func(*args, **kw):
-                func_lock = get_lock(f, obj)
-                try:
-                    func_lock.acquire()
+                with get_lock(f, obj):
                     return f(*args, **kw)
-                finally:
-                    func_lock.release()
 
             return new_func
 
@@ -367,3 +524,13 @@ class Credential(object):
     def __init__(self, user=None, password=None):
         self.user = user
         self.password = password
+
+
+def get_clz_from_module(module_name, clz_name):
+    ret = None
+    if module_name not in sys.modules:
+        __import__(module_name)
+    module = sys.modules[module_name]
+    if hasattr(module, clz_name):
+        ret = getattr(module, clz_name)
+    return ret

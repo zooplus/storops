@@ -1,0 +1,34 @@
+{
+  "id": "N-345",
+  "state": 2,
+  "instanceId": "root/emc:EMC_UEM_TransactionJobLeaf%InstanceID=N-345",
+  "description": "job.applicationprovisioningservice.job.DeleteApplication",
+  "stateChangeTime": "2016-03-22T10:39:20.097Z",
+  "submitTime": "2016-03-22T10:39:20.033Z",
+  "estRemainTime": "00:00:29.000",
+  "progressPct": 0,
+  "tasks": [
+    {
+      "state": 0,
+      "name": "job.applicationprovisioningservice.task.DeleteApplicationPrecondition"
+    },
+    {
+      "state": 0,
+      "name": "job.fileservice.task.DeleteFileSystemPrecondition"
+    },
+    {
+      "state": 0,
+      "name": "job.fileservice.task.DeleteFileSystem"
+    },
+    {
+      "state": 0,
+      "name": "job.applicationprovisioningservice.task.DeleteApplication"
+    }
+  ],
+  "owner": "System",
+  "requestId": "",
+  "methodName": "storageResource.delete",
+  "isJobCancelable": false,
+  "isJobCancelled": false,
+  "clientData": ""
+}

@@ -1,0 +1,61 @@
+{
+  "content": {
+    "name": "preferredInterfaceSettings",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of Preferred Interface Settings object. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the Preferred Interface Settings object. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "Identifier of the file server instance that uses this Preferred Interface Settings object. Only one Preferred Interface Settings object per file server is supported. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "productionIpV4",
+        "type": "fileInterface",
+        "description": "Requested IPv4 production preferred interface ",
+        "displayValue": "productionIpV4"
+      },
+      {
+        "name": "productionIpV6",
+        "type": "fileInterface",
+        "description": "Requested IPv6 production preferred interface ",
+        "displayValue": "productionIpV6"
+      },
+      {
+        "name": "backupIpV4",
+        "type": "fileInterface",
+        "description": "Requested IPv4 backup preferred interface ",
+        "displayValue": "backupIpV4"
+      },
+      {
+        "name": "backupIpV6",
+        "type": "fileInterface",
+        "description": "Requested IPv6 backup preferred interface ",
+        "displayValue": "backupIpV6"
+      },
+      {
+        "name": "sourceParameters",
+        "type": "preferredInterfaceSourceParameters",
+        "description": "Requested production preferred interfaces of the source NAS server. <p/> On the destination side of the active replication session: <li>The replicated IPv4 and IPv6 production interface settings are returned in the sourceParameters.productionIpV4 and sourceParameters.productionIpV6 fields.</li> <li>Regardless of the replicationPolicy settings, this property returns the replicated settings.</li> Without the active replication session or on the source side of such session: <li>Property is not populated.</li> ",
+        "displayValue": "sourceParameters"
+      },
+      {
+        "name": "replicationPolicy",
+        "type": "ReplicationPolicyEnum",
+        "description": "Acting replication policy of the production preferred interfaces. <p/> On the destination side of the active replication session: <li>Replicated means that the settings for the production IPv4 and IPv6 preferred interface settings are replicated from the source side.</li> <li>Overridden means that the settings for the production IPv4 and IPv6 preferred interface settings are overridden on the destination side.</li> Without the active replication session or on the source side of such session: <li>Property is not populated.</li> ",
+        "displayValue": "replicationPolicy"
+      }
+    ]
+  }
+}

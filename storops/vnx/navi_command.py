@@ -163,7 +163,7 @@ class NaviCommand(object):
 
     @staticmethod
     @synchronized()
-    @cache()
+    @cache
     def _init_security_level(binary):
         # have to specify the specified class
         # otherwise cls could be different for different subclass

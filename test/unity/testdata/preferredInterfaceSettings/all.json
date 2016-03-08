@@ -1,0 +1,21 @@
+{
+  "@base": "https://10.244.223.66/api/types/preferredInterfaceSettings/instances?fields=id,instanceId,replicationPolicy,sourceParameters,productionIpV6.id,backupIpV6.id,productionIpV4.id,backupIpV4.id,nasServer.id&per_page=2000&compact=true",
+  "updated": "2016-03-16T08:03:43.147Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "preferred_if_2",
+        "instanceId": "root/emc:EMC_UEM_PreferredInterfaceSettingsLeaf%InstanceID=preferred_if_2",
+        "nasServer": {
+          "id": "nas_2"
+        }
+      }
+    }
+  ]
+}

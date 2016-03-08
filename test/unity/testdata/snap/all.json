@@ -1,0 +1,95 @@
+{
+  "@base": "https://10.244.223.66/api/types/snap/instances?fields=accessType,attachedWWN,creationTime,creatorType,description,expirationTime,id,instanceId,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,name,operationalStatus,size,state,lun.id,storageResource.id,ioLimitPolicy.id,snapGroup.id,creatorSchedule.id,creatorUser.id,parentSnap.id&per_page=2000&compact=true",
+  "updated": "2016-03-15T17:02:41.409Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "38654705785",
+        "creatorType": 2,
+        "state": 2,
+        "operationalStatus": [
+          2
+        ],
+        "instanceId": "root/emc:EMC_UEM_VolumeSnapLeaf%InstanceID=38654705785",
+        "name": "2016-03-15_10:56:08",
+        "description": "",
+        "creationTime": "2016-03-15T02:56:57.979Z",
+        "isSystemSnap": false,
+        "isModifiable": false,
+        "isReadOnly": false,
+        "isModified": false,
+        "isAutoDelete": true,
+        "size": 4294967296,
+        "storageResource": {
+          "id": "sv_6"
+        },
+        "lun": {
+          "id": "sv_6"
+        },
+        "creatorUser": {
+          "id": "user_admin"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "171798691852",
+        "creatorType": 2,
+        "accessType": 1,
+        "state": 2,
+        "operationalStatus": [
+          2
+        ],
+        "instanceId": "root/emc:EMC_UEM_FilesystemSnapLeaf%InstanceID=171798691852",
+        "name": "esa_nfs1_2016-03-15_10:56:29",
+        "description": "",
+        "creationTime": "2016-03-15T02:57:27.092Z",
+        "isSystemSnap": false,
+        "isModifiable": false,
+        "isReadOnly": false,
+        "isModified": false,
+        "isAutoDelete": true,
+        "size": 5368709120,
+        "storageResource": {
+          "id": "res_3"
+        },
+        "creatorUser": {
+          "id": "user_admin"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "171798691853",
+        "creatorType": 2,
+        "accessType": 1,
+        "state": 2,
+        "operationalStatus": [
+          2
+        ],
+        "instanceId": "root/emc:EMC_UEM_FilesystemSnapLeaf%InstanceID=171798691853",
+        "name": "esa_cifs1_2016-03-15_11:23:39",
+        "description": "",
+        "creationTime": "2016-03-15T03:24:36.369Z",
+        "isSystemSnap": false,
+        "isModifiable": false,
+        "isReadOnly": false,
+        "isModified": false,
+        "isAutoDelete": true,
+        "size": 5368709120,
+        "storageResource": {
+          "id": "res_4"
+        },
+        "creatorUser": {
+          "id": "user_admin"
+        }
+      }
+    }
+  ]
+}

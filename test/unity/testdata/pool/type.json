@@ -1,0 +1,193 @@
+{
+  "content": {
+    "name": "pool",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the pool instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the pool instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "objectId",
+        "type": "Integer",
+        "description": "Unique object ID of SYSAPI::MLUPool object. ",
+        "displayValue": "objectId"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the pool, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Pool name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<PoolOpStatusEnum>",
+        "description": "Operational statuses for the pool. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Pool description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "storageResourceType",
+        "type": "StorageResourceTypeEnum",
+        "description": "Storage resource type for which the pool was primary created ",
+        "displayValue": "storageResourceType"
+      },
+      {
+        "name": "raidType",
+        "type": "RaidTypeEnum",
+        "description": "RAID type with which the pool is configured. A value of Mixed indicates that the pool consists of multiple RAID types. ",
+        "displayValue": "raidType"
+      },
+      {
+        "name": "sizeFree",
+        "type": "Integer",
+        "description": "Amount of free space available in the pool. ",
+        "displayValue": "sizeFree"
+      },
+      {
+        "name": "sizeTotal",
+        "type": "Integer",
+        "description": "Total amount of space (used space plus free space) in the pool. ",
+        "displayValue": "sizeTotal"
+      },
+      {
+        "name": "sizeUsed",
+        "type": "Integer",
+        "description": "Amount of space used by the pool's associated storage resources. ",
+        "displayValue": "sizeUsed"
+      },
+      {
+        "name": "sizeSubscribed",
+        "type": "Integer",
+        "description": "Amount of space requested by the pool's associated storage resources. When this value is over the total size of the pool, the pool is oversubscribed. ",
+        "displayValue": "sizeSubscribed"
+      },
+      {
+        "name": "alertThreshold",
+        "type": "Integer",
+        "description": "Threshold at which the system generates notifications about the amount of space remaining in the pool, specified as a percent. <p/> This threshold is based on the percentage of allocated storage in the pool compared to the total pool size. ",
+        "displayValue": "alertThreshold"
+      },
+      {
+        "name": "poolSpaceHarvestHighThreshold",
+        "type": "Float",
+        "description": "(Applies when the automatic deletion of snapshots based on pool space usage is enabled for the system and pool.) <br/> <br/> Pool used space high threshold at which the system automatically deletes snapshots in the pool, specified as a percent with .01% granularity. <br/> <br/> This threshold is based on the percentage of used space in the pool compared to the total pool size. When the percentage of used space reaches this threshold, the system automatically deletes snapshots in the pool, until a low threshold is reached. ",
+        "displayValue": "poolSpaceHarvestHighThreshold"
+      },
+      {
+        "name": "poolSpaceHarvestLowThreshold",
+        "type": "Float",
+        "description": "(Applies when the automatic deletion of snapshots based on pool space usage is enabled for the system and pool.) <br/> <br/> Pool used space low threshold under which the system stops automatically deleting snapshots in the pool, specified as a percent with .01% granularity. <br/> <br/> This threshold is based on the percentage of used pool space compared to the total pool size. When the percentage of used space in the pool falls below this threshold, the system stops the automatic deletion of snapshots in the pool, until a high threshold is reached. ",
+        "displayValue": "poolSpaceHarvestLowThreshold"
+      },
+      {
+        "name": "snapSpaceHarvestHighThreshold",
+        "type": "Float",
+        "description": "(Applies when the automatic deletion of snapshots based on snapshot space usage is enabled for the system and pool.) <br/> <br/> Snapshot used space high threshold at which the system automatically deletes snapshots in the pool, specified as a percent with .01% granularity. <br/> <br/> This threshold is based on the percentage of space used by pool snapshots compared to the total pool size. When the percentage of space used by snapshots reaches this threshold, the system automatically deletes snapshots in the pool, until a low threshold is reached. ",
+        "displayValue": "snapSpaceHarvestHighThreshold"
+      },
+      {
+        "name": "snapSpaceHarvestLowThreshold",
+        "type": "Float",
+        "description": "(Applies when the automatic deletion of snapshots based on snapshot space usage is enabled for the system and pool.) <br/> <br/> Snapshot used space low threshold under which the system stops automatically deleting snapshots in the pool, specified as a percent with .01% granularity. <br/> <br/> This threshold is based on the percentage of space used by pool snapshots compared to the total pool size. When the percentage of space used by pool snapshots falls below this threshold, the system stops the automatic deletion of snapshots in the pool, until a high threshold is reached. ",
+        "displayValue": "snapSpaceHarvestLowThreshold"
+      },
+      {
+        "name": "isFASTCacheEnabled",
+        "type": "Boolean",
+        "description": "(Applies if FAST Cache is supported on the system and the corresponding license is installed.) Indicates whether the FAST Cache is enabled for the pool. Values are: <ul> <li>true - FAST Cache is enabled for the pool.</li> <li>false - FAST Cache is disabled for the pool.</li> </ul> ",
+        "displayValue": "isFASTCacheEnabled"
+      },
+      {
+        "name": "tiers",
+        "type": "List<poolTier>",
+        "description": "Tiers in the pool, as defined by the poolTier resource type. ",
+        "displayValue": "tiers"
+      },
+      {
+        "name": "creationTime",
+        "type": "DateTime",
+        "description": "Date and time when the pool was created. ",
+        "displayValue": "creationTime"
+      },
+      {
+        "name": "isEmpty",
+        "type": "Boolean",
+        "description": "Indicates whether the pool is unused; that is, whether it has no storage resources provisioned from it. Values are: <ul> <li>true - Pool is unused. </li> <li>false - Pool is used..</li> </ul> ",
+        "displayValue": "isEmpty"
+      },
+      {
+        "name": "poolFastVP",
+        "type": "poolFASTVP",
+        "description": "(Applies if FAST VP is supported on the system and the corresponding license is installed.) FAST VP information for the pool, as defined by the poolFastVP resource type. ",
+        "displayValue": "poolFastVP"
+      },
+      {
+        "name": "isHarvestEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the automatic deletion of snapshots through pool harvesting is enabled for the pool. Values are: <ul> <li>true - Automatic deletion of snapshots through pool harvesting is enabled for the pool.</li> <li>false - Automatic deletion of snapshots through pool harvesting is disabled for the pool.</li> </ul> ",
+        "displayValue": "isHarvestEnabled"
+      },
+      {
+        "name": "harvestState",
+        "type": "UsageHarvestStateEnum",
+        "description": "Current state of pool space harvesting. ",
+        "displayValue": "harvestState"
+      },
+      {
+        "name": "isSnapHarvestEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the automatic deletion of snapshots through snapshot harvesting is enabled for the pool. Values are: <ul> <li>true - Automatic deletion of snapshots through snapshot harvesting is enabled for the pool.</li> <li>false - Automatic deletion of snapshots through snapshot harvesting is disabled for the pool.</li> </ul> ",
+        "displayValue": "isSnapHarvestEnabled"
+      },
+      {
+        "name": "metadataSizeSubscribed",
+        "type": "Integer",
+        "description": "Quantity of pool space requested by metadata. ",
+        "displayValue": "metadataSizeSubscribed"
+      },
+      {
+        "name": "snapSizeSubscribed",
+        "type": "Integer",
+        "description": "Quantity of pool space subscribed to by snapshots. ",
+        "displayValue": "snapSizeSubscribed"
+      },
+      {
+        "name": "metadataSizeUsed",
+        "type": "Integer",
+        "description": "Quantity of pool space used by metadata. ",
+        "displayValue": "metadataSizeUsed"
+      },
+      {
+        "name": "snapSizeUsed",
+        "type": "Integer",
+        "description": "Quantity of pool space used by snapshots. ",
+        "displayValue": "snapSizeUsed"
+      },
+      {
+        "name": "rebalanceProgress",
+        "type": "Integer",
+        "description": "(Applies if FAST VP is supported on the system and the corresponding license is installed.) Percent of work completed for data rebalancing. ",
+        "displayValue": "rebalanceProgress"
+      }
+    ]
+  }
+}

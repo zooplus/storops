@@ -22,20 +22,19 @@ import os
 import six
 import xmltodict as xmltodict
 from lxml import etree
-
 from mock import patch
 
-from test.vnx import ConnectorMock, read_test_file
-from test.vnx.cli_mock import MockCli
 from storops.lib.common import cache
-from storops.vnx.resource.nas_client import VNXNasClient
+from storops.vnx.nas_client import VNXNasClient
+from test.utils import ConnectorMock, read_test_file
+from test.vnx.cli_mock import MockCli
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-@cache()
+@cache
 def t_nas():
     """ get the test NAS client
 
@@ -45,7 +44,7 @@ def t_nas():
 
 
 class MockXmlPost(ConnectorMock):
-    base_folder = 'nas_xml_output'
+    base_folder = os.path.join('vnx', 'testdata', 'nas_xml_output')
 
     @classmethod
     def get_folder(cls, body):
@@ -120,7 +119,7 @@ def patch_post(output=None, mock_map=None):
 
 
 class MockSsh(MockCli):
-    base_folder = 'ssh_output'
+    base_folder = os.path.join('vnx', 'testdata', 'ssh_output')
 
     flags_to_remove = {'NAS_DB=/nas': 1}
 

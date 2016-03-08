@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import logging
 
 from storops.vnx.resource.mover import VNXMoverRefList
-from storops.vnx.resource.resource import VNXCliResourceList, VNXResource
+from storops.vnx.resource import VNXCliResourceList, VNXResource
 
 __author__ = 'Jay Xu'
 

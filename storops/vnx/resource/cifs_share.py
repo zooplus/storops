@@ -19,9 +19,9 @@ import logging
 
 import six
 
-from storops.lib.common import Enum
+from storops.vnx.enums import VNXEnum
 from storops.vnx.resource.mover import VNXMover
-from storops.vnx.resource.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource import VNXResource, VNXCliResourceList
 from storops.vnx.resource.vdm import VNXVdm
 
 __author__ = 'Jay Xu'
@@ -29,7 +29,7 @@ __author__ = 'Jay Xu'
 log = logging.getLogger(__name__)
 
 
-class CifsAccessControl(Enum):
+class CifsAccessControl(VNXEnum):
     FULL = 'fullcontrol'
     READ = 'read'
 

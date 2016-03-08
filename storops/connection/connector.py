@@ -19,17 +19,29 @@ from __future__ import unicode_literals
 import logging
 import pipes
 
+import functools
 import paramiko
 from paramiko import ssh_exception
 import six
 from storops.connection import client
 from storops.connection.exceptions import SFtpExecutionError, \
     SSHExecutionError, HTTPClientError
+from retryz import retry
 
 LOG = logging.getLogger(__name__)
 
 
-class VNXeRESTConnector(object):
+def require_csrf_token(func):
+    @functools.wraps(func)
+    def decorator(self, url, **kwargs):
+        wrapped = retry(on_error=self._http_authentication_error,
+                        on_retry=self._update_csrf_token)(func)
+        return wrapped(self, url, **kwargs)
+
+    return decorator
+
+
+class UnityRESTConnector(object):
     HEADERS = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -39,49 +51,34 @@ class VNXeRESTConnector(object):
         'User-agent': 'EMC-OpenStack',
     }
 
-    def __init__(self, host, port=443, user='admin', password='', debug=False):
+    def __init__(self, host, port=443, user='admin', password=''):
         base_url = 'https://{host}:{port}'.format(host=host, port=port)
 
         self.http_client = client.HTTPClient(base_url=base_url,
                                              headers=self.HEADERS,
                                              auth=(user, password),
-                                             insecure=True,
-                                             http_log_debug=debug)
-        self.csrf_token = None
+                                             insecure=True)
 
     def get(self, url, **kwargs):
         return self.http_client.get(url, **kwargs)
 
-    def post(self, url, **kwargs):
-        try:
-            self.http_client.post(url, **kwargs)
-        except HTTPClientError as ex:
-            if ex.http_status == 401:
-                if self.csrf_token is None:
-                    self._update_csrf_token()
-                headers = {'emc-csrf-token': self.csrf_token}
-                self.http_client.update_headers(headers)
-                self.http_client.post(url, **kwargs)
-            else:
-                raise
+    @staticmethod
+    def _http_authentication_error(err):
+        return isinstance(err, HTTPClientError) and err.http_status == 401
 
+    @require_csrf_token
+    def post(self, url, **kwargs):
+        return self.http_client.post(url, **kwargs)
+
+    @require_csrf_token
     def delete(self, url, **kwargs):
-        try:
-            self.http_client.delete(url, **kwargs)
-        except HTTPClientError as ex:
-            if ex.http_status == 401:
-                if self.csrf_token is None:
-                    self._update_csrf_token()
-                headers = {'emc-csrf-token': self.csrf_token}
-                self.http_client.update_headers(headers)
-                self.http_client.delete(url, **kwargs)
-            else:
-                raise
+        return self.http_client.delete(url, **kwargs)
 
     def _update_csrf_token(self):
         path_user = '/api/types/user/instances'
         resp, body = self.get(path_user)
-        self.csrf_token = resp.headers['emc-csrf-token']
+        headers = {'emc-csrf-token': resp.headers['emc-csrf-token']}
+        self.http_client.update_headers(headers)
 
 
 class XMLAPIConnector(object):
@@ -89,14 +86,13 @@ class XMLAPIConnector(object):
         'Content-Type': 'application/x-www-form-urlencoded',
     }
 
-    def __init__(self, host, user='nasadim', password='', debug=False):
+    def __init__(self, host, user='nasadim', password=''):
         base_url = 'https://{}'.format(host)
 
         self.http_client = client.HTTPClient(base_url=base_url,
                                              headers=self.HEADERS,
                                              auth=(user, password),
-                                             insecure=True,
-                                             http_log_debug=debug)
+                                             insecure=True)
 
         self.host = host
         self.user = user
@@ -143,7 +139,6 @@ class SSHConnector(object):
                 raise ex
 
     def execute(self, command, timeout=None, check_exit_code=True):
-        """Executes the given command on the remote host."""
         cmd = ' '.join(pipes.quote(cmd_arg) for cmd_arg in command)
         channel = self.transport.open_session()
         channel.exec_command(cmd)
@@ -167,27 +162,35 @@ class SSHConnector(object):
 
         return stdout, stderr
 
-    def copy_file_to_remote(self, localpath, remotepath):
-        """scp the local file to remote folder."""
+    def copy_file_to_remote(self, local_path, remote_path):
+        """scp the local file to remote folder.
+
+        :param local_path: local path
+        :param remote_path: remote path
+        """
         sftp_client = self.transport.open_sftp_client()
         LOG.debug('Copy the local file to remote. '
                   'Source=%(src)s. Target=%(target)s.' %
-                  {'src': localpath, 'target': remotepath})
+                  {'src': local_path, 'target': remote_path})
         try:
-            sftp_client.put(localpath, remotepath)
+            sftp_client.put(local_path, remote_path)
         except Exception as ex:
             LOG.error('Failed to copy the local file to remote. '
                       'Reason: %s.' % six.text_type(ex))
             raise SFtpExecutionError(err=ex)
 
-    def get_remote_file(self, remotepath, localpath):
-        """Fetch remote File."""
+    def get_remote_file(self, remote_path, local_path):
+        """Fetch remote File.
+
+        :param remote_path: remote path
+        :param local_path: local path
+        """
         sftp_client = self.transport.open_sftp_client()
         LOG.debug('Get the remote file. '
                   'Source=%(src)s. Target=%(target)s.' %
-                  {'src': remotepath, 'target': localpath})
+                  {'src': remote_path, 'target': local_path})
         try:
-            sftp_client.get(remotepath, localpath)
+            sftp_client.get(remote_path, local_path)
         except Exception as ex:
             LOG.error('Failed to secure copy. Reason: %s.' %
                       six.text_type(ex))

@@ -1,0 +1,121 @@
+{
+  "content": {
+    "name": "fileInterface",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the fileInterface instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the fileInterface instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "NAS server to which the network interface belongs, as defined by the nasServer resource type. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "ipPort",
+        "type": "ipPort",
+        "description": "Physical port or link aggregation on the storage processor on which the network interface is running, as defined by the ethernetPort resource type. ",
+        "displayValue": "ipPort"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health of the network interface, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "isSystem",
+        "type": "Boolean",
+        "description": "Indicates whether the network interface is a system management interface or an interface for file-based storage. ",
+        "displayValue": "isSystem"
+      },
+      {
+        "name": "ipAddress",
+        "type": "IPAddress",
+        "description": "IP address of the network interface. ",
+        "displayValue": "ipAddress"
+      },
+      {
+        "name": "ipProtocolVersion",
+        "type": "IpProtocolVersionEnum",
+        "description": "IP protocol version of the network interface. ",
+        "displayValue": "ipProtocolVersion"
+      },
+      {
+        "name": "netmask",
+        "type": "IPAddress",
+        "description": "IPv4 netmask for the network interface, if it uses an IPv4 address. ",
+        "displayValue": "netmask"
+      },
+      {
+        "name": "v6PrefixLength",
+        "type": "Integer",
+        "description": "IPv6 prefix length for the interface, if it uses an IPv6 address. ",
+        "displayValue": "v6PrefixLength"
+      },
+      {
+        "name": "gateway",
+        "type": "IPAddress",
+        "description": "IPv4 or IPv6 gateway address for the network interface. ",
+        "displayValue": "gateway"
+      },
+      {
+        "name": "vlanId",
+        "type": "Integer",
+        "description": "Virtual Local Area Network (VLAN) identifier for the interface. The interface uses the identifier to accept packets that have matching VLAN tags. <p/> Values are 1 - 4094. ",
+        "displayValue": "vlanId"
+      },
+      {
+        "name": "macAddress",
+        "type": "String",
+        "description": "MAC address of the Ethernet port used for the network interface. ",
+        "displayValue": "macAddress"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Network interface name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "role",
+        "type": "FileInterfaceRoleEnum",
+        "description": "Role of the network interface. ",
+        "displayValue": "role"
+      },
+      {
+        "name": "isPreferred",
+        "type": "Boolean",
+        "description": "Indicates whether the network interface is a preferred interface for file-based storage. See documentation of preferredInterfaceSettings for details. ",
+        "displayValue": "isPreferred"
+      },
+      {
+        "name": "replicationPolicy",
+        "type": "ReplicationPolicyEnum",
+        "description": "Replication policy of the network interface. ",
+        "displayValue": "replicationPolicy"
+      },
+      {
+        "name": "sourceParameters",
+        "type": "fileInterfaceSourceParameters",
+        "description": "The network interface parameters of the source NAS server. ",
+        "displayValue": "sourceParameters"
+      },
+      {
+        "name": "isDisabled",
+        "type": "Boolean",
+        "description": "Indicates whether the network interface is disabled. ",
+        "displayValue": "isDisabled"
+      }
+    ]
+  }
+}

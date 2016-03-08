@@ -1,0 +1,13 @@
+{
+  "content": {
+    "id": "dns_2",
+    "instanceId": "root/emc:EMC_UEM_FileDNSServerLeaf%InstanceID=dns_2",
+    "addresses": [
+      "10.244.209.72"
+    ],
+    "domain": "win2012.dev",
+    "nasServer": {
+      "id": "nas_2"
+    }
+  }
+}

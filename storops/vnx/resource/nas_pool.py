@@ -19,7 +19,7 @@ import logging
 
 from storops.lib.common import check_int
 import storops.vnx.resource.fs
-from storops.vnx.resource.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource import VNXResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 

@@ -18,8 +18,8 @@ from __future__ import unicode_literals
 import six
 
 from storops.vnx.enums import raise_if_err
-from storops.vnx.resource.resource import VNXCliResourceList
-from storops.vnx.resource.resource import VNXCliResource
+from storops.vnx.resource import VNXCliResourceList
+from storops.vnx.resource import VNXCliResource
 from storops import exception as ex
 
 __author__ = 'Cedric Zhuang'

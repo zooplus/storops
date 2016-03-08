@@ -1,0 +1,103 @@
+{
+  "content": {
+    "name": "system",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the system instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the system instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<CRUOpStatusEnum>",
+        "description": "Operational statuses for the system. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the system, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "System name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "model",
+        "type": "String",
+        "description": "System model name. ",
+        "displayValue": "model"
+      },
+      {
+        "name": "serialNumber",
+        "type": "String",
+        "description": "System product serial number. ",
+        "displayValue": "serialNumber"
+      },
+      {
+        "name": "licenseType",
+        "type": "LicenseTypeEnum",
+        "description": "Type of the installed license file. ",
+        "displayValue": "licenseType"
+      },
+      {
+        "name": "internalModel",
+        "type": "String",
+        "description": "Internal model name for the system. ",
+        "displayValue": "internalModel"
+      },
+      {
+        "name": "platform",
+        "type": "String",
+        "description": "Hardware platform for the system. ",
+        "displayValue": "platform"
+      },
+      {
+        "name": "macAddress",
+        "type": "String",
+        "description": "MAC address of the management interface. ",
+        "displayValue": "macAddress"
+      },
+      {
+        "name": "isEULAAccepted",
+        "type": "Boolean",
+        "description": "Indicates whether the End User License Agreement (EULA) was accepted for an upgrade. Once the EULA is accepted, users can upload product licenses and configure the system, or both. Values are: <ul> <li>true - EULA was accepted on the system. Once you set this value, you cannot set it to false later on.</li> <li>false - EULA was not accepted on the system.</li> </ul> ",
+        "displayValue": "isEULAAccepted"
+      },
+      {
+        "name": "isUpgradeComplete",
+        "type": "Boolean",
+        "description": "Indicates whether an upgrade completed. Operations that change the configuration of the system are not allowed while an upgrade is in progress. <p/> Values are: <ul> <li>true - Upgrade completed.</li> <li>false - Upgrade did not complete.</li> </ul> </p> <p/> ",
+        "displayValue": "isUpgradeComplete"
+      },
+      {
+        "name": "isAutoFailbackEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the automatic failback of NAS servers is enabled for the system. Values are: <ul> <li>true - Automatic failback for NAS servers is enabled.</li> <li>false - Automatic failback for NAS servers is disabled.</li> </ul> ",
+        "displayValue": "isAutoFailbackEnabled"
+      },
+      {
+        "name": "currentPower",
+        "type": "Integer",
+        "description": "Current amount of power used by the system. ",
+        "displayValue": "currentPower"
+      },
+      {
+        "name": "avgPower",
+        "type": "Integer",
+        "description": "Average amount of power used by the system. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "avgPower"
+      }
+    ]
+  }
+}

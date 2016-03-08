@@ -1,0 +1,16 @@
+{
+  "content": {
+    "id": "rg_3",
+    "type": 1,
+    "operationalStatus": [],
+    "tierType": 30,
+    "instanceId": "root/emc:EMC_UEM_RAIDGroupLeaf%InstanceID=rg_3",
+    "name": "RAID5, #3, pool:perfpool1130",
+    "description": "",
+    "wwn": "06:00:00:00:05:00:00:00:02:00:00:00:00:00:00:64",
+    "sizeTotal": 7878056345600,
+    "pool": {
+      "id": "pool_1"
+    }
+  }
+}

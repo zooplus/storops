@@ -20,10 +20,10 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, raises, contains_string, \
     only_contains
 
-from test.vnx.nas_mock import MockXmlPost
 from storops.exception import VNXObjectNotFound, \
     VNXInvalidMoverID
-from storops.vnx.resource.nas_client import NasXmlResponse, XmlStatus
+from storops.vnx.nas_client import NasXmlResponse, XmlStatus
+from test.vnx.nas_mock import MockXmlPost
 
 __author__ = 'Cedric Zhuang'
 

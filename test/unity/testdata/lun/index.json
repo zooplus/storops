@@ -1,0 +1,24 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/lun?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/lun/sv_2?compact=True&fields=auSize,creationTime,currentNode,defaultNode,description,health,hostAccess,id,instanceId,ioLimitPolicy,isReplicationDestination,isSnapSchedulePaused,isThinEnabled,lunGroupObjectId,metadataSize,metadataSizeAllocated,modificationTime,name,objectId,operationalStatus,perTierSizeUsed,pool,sizeAllocated,sizeTotal,sizeUsed,smpBackendId,snapCount,snapSchedule,snapWwn,snapsSize,snapsSizeAllocated,storageResource,tieringPolicy,type,wwn",
+      "response": "sv_2.json"
+    },
+    {
+      "url": "/api/instances/lun/sv_3?compact=True&fields=auSize,creationTime,currentNode,defaultNode,description,health,hostAccess,id,instanceId,ioLimitPolicy,isReplicationDestination,isSnapSchedulePaused,isThinEnabled,lunGroupObjectId,metadataSize,metadataSizeAllocated,modificationTime,name,objectId,operationalStatus,perTierSizeUsed,pool,sizeAllocated,sizeTotal,sizeUsed,smpBackendId,snapCount,snapSchedule,snapWwn,snapsSize,snapsSizeAllocated,storageResource,tieringPolicy,type,wwn",
+      "response": "sv_3.json"
+    },
+    {
+      "url": "/api/instances/lun/sv_2?compact=True&fields=type,wwn",
+      "response": "for_test.json"
+    },
+    {
+      "url": "/api/types/lun/instances?compact=True&fields=auSize,creationTime,currentNode,defaultNode,description,health,hostAccess,id,instanceId,ioLimitPolicy,isReplicationDestination,isSnapSchedulePaused,isThinEnabled,lunGroupObjectId,metadataSize,metadataSizeAllocated,modificationTime,name,objectId,operationalStatus,perTierSizeUsed,pool,sizeAllocated,sizeTotal,sizeUsed,smpBackendId,snapCount,snapSchedule,snapWwn,snapsSize,snapsSizeAllocated,storageResource,tieringPolicy,type,wwn",
+      "response": "all.json"
+    }
+  ]
+}

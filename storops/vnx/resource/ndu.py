@@ -15,8 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.vnx.resource.resource import VNXCliResourceList
-from storops.vnx.resource.resource import VNXCliResource
+from storops.vnx.resource import VNXCliResourceList
+from storops.vnx.resource import VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 

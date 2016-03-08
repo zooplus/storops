@@ -1,0 +1,48 @@
+{
+  "@base": "https://10.244.223.66/api/types/system/instances?fields=avgPower,currentPower,health,id,instanceId,internalModel,isAutoFailbackEnabled,isEULAAccepted,isUpgradeComplete,licenseType,macAddress,model,name,operationalStatus,platform,serialNumber&per_page=2000&compact=true",
+  "updated": "2016-03-16T09:43:12.216Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "operationalStatus": [
+          1
+        ],
+        "licenseType": 1,
+        "instanceId": "root/emc:EMC_UEM_StorageSystemLeaf%Tag=00:00:00:00",
+        "id": "0",
+        "health": {
+          "value": 20,
+          "descriptionIds": [
+            "ALRT_SYSTEM_MAJOR_FAILURE"
+          ],
+          "descriptions": [
+            "The system has experienced one or more major failures, which have significant impact on the system. You need to take immediate action. Check related alerts and fix the underlying problems."
+          ],
+          "resolutionIds": [
+            "fix_problems"
+          ],
+          "resolutions": [
+            "/help/webhelp/en_US/index.htm?#vxeuni_t_fix_underlying_problems.html"
+          ]
+        },
+        "name": "FNM00151200215",
+        "model": "Unity 500",
+        "serialNumber": "FNM00151200215",
+        "internalModel": "OBERON 25 DRIVE CHASSIS",
+        "platform": "Oberon_DualSP",
+        "macAddress": "08:00:1B:FF:EA:CD",
+        "isEULAAccepted": true,
+        "isUpgradeComplete": true,
+        "isAutoFailbackEnabled": true,
+        "currentPower": 494,
+        "avgPower": 473
+      }
+    }
+  ]
+}

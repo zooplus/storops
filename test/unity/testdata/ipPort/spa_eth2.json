@@ -1,0 +1,14 @@
+{
+  "content": {
+    "id": "spa_eth2",
+    "instanceId": "root/emc:EMC_UEM_EthernetPortLeaf%Tag=03:00:00:00",
+    "name": "SP A Ethernet Port 2",
+    "shortName": "Ethernet Port 2",
+    "linuxDeviceName": "eth2",
+    "macAddress": "00:60:16:5C:08:E1",
+    "isLinkUp": true,
+    "storageProcessor": {
+      "id": "spa"
+    }
+  }
+}

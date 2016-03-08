@@ -48,37 +48,33 @@ class VNXLunTest(TestCase):
         lun = self.get_lun()
         assert_that(lun.lun_id, equal_to(2))
 
+    @patch_cli()
     def test_lun_provision_default(self):
-        lun = VNXLun()
-        self.assertEqual(VNXProvisionEnum.THICK, lun.provision)
+        lun = VNXLun(lun_id=3, cli=t_cli())
+        self.assertEqual(VNXProvisionEnum.THIN, lun.provision)
 
+    @patch_cli()
     def test_lun_provision_thin(self):
-        lun = VNXLun()
-        lun.is_thin_lun = True
-        lun.is_compressed = False
-        lun.dedup_state = False
+        lun = VNXLun(lun_id=3, cli=t_cli())
         assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
 
+    @patch_cli()
     def test_lun_provision_compressed(self):
-        lun = VNXLun()
-        lun.is_thin_lun = True
-        lun.is_compressed = True
-        lun.dedup_state = False
+        lun = VNXLun(lun_id=1, cli=t_cli())
         assert_that(lun.provision, equal_to(VNXProvisionEnum.COMPRESSED))
 
+    @patch_cli()
     def test_lun_provision_dedup(self):
-        lun = VNXLun()
-        lun.is_thin_lun = True
-        lun.is_compressed = False
-        lun.dedup_state = True
+        lun = VNXLun(lun_id=4, cli=t_cli())
         assert_that(lun.provision, equal_to(VNXProvisionEnum.DEDUPED))
 
     def test_lun_provision_str_not_valid(self):
         lun = VNXLun()
         self.assertRaises(AttributeError, setattr, lun, 'provision', 'invalid')
 
+    @patch_cli()
     def test_lun_tier_default(self):
-        lun = VNXLun()
+        lun = VNXLun(lun_id=5, cli=t_cli())
         self.assertEqual(VNXTieringEnum.HIGH_AUTO, lun.tier)
 
     def test_lun_tier_invalid_str(self):
@@ -131,7 +127,9 @@ class VNXLunTest(TestCase):
     @patch_cli()
     def test_repr(self):
         lun = self.get_lun()
-        assert_that(repr(lun), contains_string('"VNXLun": {'))
+        assert_that(str(lun), contains_string('"VNXLun": {'))
+        assert_that(str(lun), contains_string(
+            '{"VNXSPEnum": {"value": "SP A"}}'))
 
     @patch_cli()
     def test_get_snap(self):

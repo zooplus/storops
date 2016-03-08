@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import logging
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXPortType
-from storops.vnx.resource.resource import VNXCliResourceList, VNXResource
+from storops.vnx.resource import VNXCliResourceList, VNXResource
 
 __author__ = 'Jay Xu'
 

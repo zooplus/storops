@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from storops.vnx.enums import raise_if_err
 from storops.vnx.resource.disk import VNXDiskList
-from storops.vnx.resource.resource import VNXCliResource, VNXCliResourceList
+from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops import exception as ex
 
 __author__ = 'Cedric Zhuang'

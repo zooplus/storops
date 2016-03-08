@@ -1,0 +1,24 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/cifsShare?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/cifsShare/SMBShare_1?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
+      "response": "SMBShare_1.json"
+    },
+    {
+      "url": "/api/instances/cifsShare/SMBShare_7?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
+      "response": "SMBShare_7.json"
+    },
+    {
+      "url": "/api/types/cifsShare/instances?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/cifsShare/instances?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask&filter=name eq \"cs1\"",
+      "response": "name_cs1.json"
+    }
+  ]
+}

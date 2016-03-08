@@ -20,7 +20,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to
 
-from test.vnx import read_test_file
+from test.utils import read_test_file
 from test.vnx.nas_mock import MockXmlPost
 
 __author__ = 'Cedric Zhuang'
@@ -28,14 +28,17 @@ __author__ = 'Cedric Zhuang'
 
 class NasMockTest(TestCase):
     def test_get_name(self):
-        post_body = read_test_file('nas_xml_output', 'fs_single_post.xml')
+        post_body = read_test_file(self.get_folder(), 'fs_single_post.xml')
         filename = MockXmlPost.get_filename(post_body)
         assert_that(filename,
                     equal_to('get_fs_abc.xml'))
 
+    def get_folder(self):
+        return os.path.join('vnx', 'testdata', 'nas_xml_output')
+
     def test_get_folder(self):
-        post_body = read_test_file('nas_xml_output', 'fs_single_post.xml')
+        post_body = read_test_file(self.get_folder(), 'fs_single_post.xml')
         folder = MockXmlPost.get_folder(post_body)
-        expected = os.path.join('nas_xml_output', 'Query',
+        expected = os.path.join(self.get_folder(), 'Query',
                                 'FileSystemQueryParams')
         assert_that(folder, equal_to(expected))

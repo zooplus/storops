@@ -17,7 +17,8 @@
 # please do not add unicode literal here.
 # it does not work with `__all__`.
 from storops.vnx.resource.system import VNXSystem
+from storops.unity.resource.system import UnitySystem
 
 __author__ = 'Cedric Zhuang'
 
-__all__ = ['VNXSystem', ]
+__all__ = ['VNXSystem', 'UnitySystem']

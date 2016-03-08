@@ -22,8 +22,28 @@ __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
+__rest_exception_clz_list__ = []
 
-class VNXException(Exception):
+
+def rest_exception(clz):
+    if not hasattr(clz, 'error_code'):
+        raise AttributeError('error_code property is missing.')
+    if clz not in __rest_exception_clz_list__:
+        __rest_exception_clz_list__.append(clz)
+    return clz
+
+
+def get_rest_exception(error_code):
+    ret = UnityException
+    if error_code is not None:
+        for clz in __rest_exception_clz_list__:
+            if clz.error_code == error_code:
+                ret = clz
+                break
+    return ret
+
+
+class StoropsException(Exception):
     """Base EMC Exception
 
     To correctly use this class, inherit from it and define
@@ -42,7 +62,7 @@ class VNXException(Exception):
         self.kwargs = self._insert_default_code(kwargs)
         self.message = self._update_message(message, kwargs)
 
-        super(VNXException, self).__init__(self.message)
+        super(StoropsException, self).__init__(self.message)
 
     @staticmethod
     def _update_message(message, kwargs):
@@ -74,6 +94,86 @@ class VNXException(Exception):
             if isinstance(v, Exception):
                 kwargs[k] = six.text_type(v)
         return kwargs
+
+
+class EnumValueNotFoundError(StoropsException):
+    pass
+
+
+class MockFileNotFoundError(StoropsException):
+    pass
+
+
+class NoIndexException(StoropsException):
+    pass
+
+
+class UnityException(StoropsException):
+    error_code = None
+
+    def __init__(self, error):
+        self.error = error
+
+    def __str__(self):
+        if hasattr(self.error, 'get_messages'):
+            ret = '.  '.join(self.error.get_messages())
+        else:
+            ret = self.error
+        return ret
+
+
+@rest_exception
+class UnityResourceNotFoundError(UnityException):
+    error_code = 131149829
+
+
+@rest_exception
+class UnityNasServerNameUsedError(UnityException):
+    error_code = 108011556
+
+
+@rest_exception
+class UnityIpAddressUsedError(UnityException):
+    error_code = 108011747
+
+
+@rest_exception
+class UnityOneDnsPerNasServerError(UnityException):
+    error_code = 108012064
+
+
+@rest_exception
+class UnitySmbShareNameExistedError(UnityException):
+    error_code = 151036420
+
+
+@rest_exception
+class UnityNfsShareNameExistedError(UnityException):
+    error_code = 151036164
+
+
+@rest_exception
+class UnityOneSmbServerPerNasServerError(UnityException):
+    error_code = 108011888
+
+
+@rest_exception
+class UnityNetBiosNameExistedError(UnityException):
+    error_code = 108011876
+
+
+@rest_exception
+class UnityNfsAlreadyEnabledError(UnityException):
+    error_code = 108012128
+
+
+@rest_exception
+class UnityFileSystemNameAlreadyExisted(UnityException):
+    error_code = 108008464
+
+
+class VNXException(StoropsException):
+    pass
 
 
 class NaviseccliNotAvailableError(VNXException):
@@ -122,10 +222,6 @@ class VNXSPError(VNXException):
 
 
 class VNXSPDownError(VNXSPError):
-    pass
-
-
-class VNXNoIndexException(VNXException):
     pass
 
 

@@ -22,7 +22,7 @@ from storops.vnx.enums import VNXSPEnum, VNXPortType, has_error, VNXError, \
     raise_if_err
 import storops.vnx.resource.lun
 from storops.vnx.resource.port import VNXHbaPort
-from storops.vnx.resource.resource import VNXCliResource, VNXCliResourceList
+from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -230,7 +230,7 @@ class VNXStorageGroupList(VNXCliResourceList):
 class VNXStorageGroupHBA(VNXCliResource):
     @property
     def sp(self):
-        return VNXSPEnum.from_str(self.hba[1])
+        return VNXSPEnum.parse(self.hba[1])
 
     @property
     def port_id(self):

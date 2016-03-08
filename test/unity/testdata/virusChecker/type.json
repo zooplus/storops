@@ -1,0 +1,31 @@
+{
+  "content": {
+    "name": "virusChecker",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the virusChecker instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique instance id. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "NAS server that is configured with these anti-virus settings. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "isEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the anti-virus service is enabled on this NAS server. Value are: <ul> <li>true - Anti-virus service is enabled. Each file created or modified by an SMB client is scanned by the third-party anti-virus servers. If a virus is detected, the access to the file system is denied. If third-party anti-virus servers are not available, according the policy, the access to the file systems is denied to prevent potential viruses propagation.</li> <li>false - Anti-virus service is disabled. File systems of the NAS servers are available for access without virus checking</li> </ul> ",
+        "displayValue": "isEnabled"
+      }
+    ]
+  }
+}

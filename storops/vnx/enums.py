@@ -20,7 +20,7 @@ import re
 
 import six
 
-from storops.lib.common import Enum
+from storops.lib.common import Enum, cache, JsonPrinter
 
 log = logging.getLogger(__name__)
 
@@ -32,23 +32,39 @@ def to_hex(number):
     return h
 
 
-class VNXSPEnum(Enum):
+class VNXEnum(JsonPrinter, Enum):
+    def _get_properties(self, dec=0):
+        return {'value': self.value}
+
+    def __str__(self):
+        return self.value
+
+    def __repr__(self):
+        return self.value
+
+
+class VNXSPEnum(VNXEnum):
     SP_A = 'SP A'
     SP_B = 'SP B'
     CONTROL_STATION = 'Celerra'
 
-    _int_index = (None, SP_A, SP_B, CONTROL_STATION)
+    @classmethod
+    def get_int_index(cls):
+        return None, cls.SP_A, cls.SP_B, cls.CONTROL_STATION
 
-    to_remove = re.compile('[_. ]')
+    @classmethod
+    @cache
+    def get_to_remove(cls):
+        return re.compile('[_. ]')
 
     @classmethod
     def is_sp(cls, name):
-        name = cls.from_str(name)
+        name = cls.parse(name)
         return name in (cls.SP_A, cls.SP_B)
 
     @classmethod
     def _normalize(cls, value):
-        ret = re.sub(cls.to_remove, '', value)
+        ret = re.sub(cls.get_to_remove(), '', value)
         if ret is None:
             pass
         elif ret.endswith('a') and not ret.endswith('rra'):
@@ -65,7 +81,7 @@ class VNXSPEnum(Enum):
         value = cls._normalize(value)
         ret = None
         for item in cls.get_all():
-            if cls._normalize(item.lower()) in value:
+            if cls._normalize(item.value.lower()) in value:
                 ret = item
                 break
         else:
@@ -74,54 +90,56 @@ class VNXSPEnum(Enum):
 
     @classmethod
     def get_sp_index(cls, value):
-        value = cls.from_str(value)
+        value = cls.parse(value)
         if value is None:
             raise ValueError('"{}" is not a valid sp name.'.format(value))
-        return value.lower()[-1]
+        return value.value.lower()[-1]
 
 
-class VNXProvisionEnum(Enum):
+class VNXProvisionEnum(VNXEnum):
     # value of spec "provisioning:type"
     THIN = 'thin'
     THICK = 'thick'
     COMPRESSED = 'compressed'
     DEDUPED = 'deduplicated'
 
-    _option_map = {
-        THIN: ['-type', 'Thin'],
-        THICK: ['-type', 'NonThin'],
-        COMPRESSED: ['-type', 'Thin'],
-        DEDUPED: ['-type', 'Thin', '-deduplication', 'on']}
+    @classmethod
+    def get_option_map(cls):
+        return {
+            cls.THIN: ['-type', 'Thin'],
+            cls.THICK: ['-type', 'NonThin'],
+            cls.COMPRESSED: ['-type', 'Thin'],
+            cls.DEDUPED: ['-type', 'Thin', '-deduplication', 'on']}
 
 
-class VNXCompressionRate(Enum):
+class VNXCompressionRate(VNXEnum):
     LOW = 'low'
     MEDIUM = 'medium'
     HIGH = 'high'
 
 
-class VNXTieringPreference(Enum):
+class VNXTieringPreference(VNXEnum):
     INVALID = 0
     NONE = 1
     LOWEST_AVAILABLE = 2
     HIGHEST_AVAILABLE = 3
 
 
-class VNXRelocationPolicy(Enum):
+class VNXRelocationPolicy(VNXEnum):
     INVALID = 0
     NONE = 1
     TIER_PREFERENCE = 2
     OPTIMAL = 3
 
 
-class VNXMigrationRate(Enum):
+class VNXMigrationRate(VNXEnum):
     LOW = 'low'
     MEDIUM = 'medium'
     HIGH = 'high'
     ASAP = 'asap'
 
 
-class VNXTieringEnum(Enum):
+class VNXTieringEnum(VNXEnum):
     NONE = 'none'
     HIGH_AUTO = 'starthighthenauto'
     AUTO = 'auto'
@@ -129,29 +147,31 @@ class VNXTieringEnum(Enum):
     LOW = 'lowestavailable'
     NO_MOVE = 'nomovement'
 
-    _option_map = {
-        NONE: [],
-        HIGH_AUTO: [
-            '-initialTier', 'highestAvailable',
-            '-tieringPolicy', 'autoTier'],
-        AUTO: [
-            '-initialTier', 'optimizePool',
-            '-tieringPolicy', 'autoTier'],
-        HIGH: [
-            '-initialTier', 'highestAvailable',
-            '-tieringPolicy', 'highestAvailable'],
-        LOW: [
-            '-initialTier', 'lowestAvailable',
-            '-tieringPolicy', 'lowestAvailable'],
-        NO_MOVE: [
-            '-initialTier', 'optimizePool',
-            '-tieringPolicy', 'noMovement']
-    }
+    @classmethod
+    def get_option_map(cls):
+        return {
+            cls.NONE: [],
+            cls.HIGH_AUTO: [
+                '-initialTier', 'highestAvailable',
+                '-tieringPolicy', 'autoTier'],
+            cls.AUTO: [
+                '-initialTier', 'optimizePool',
+                '-tieringPolicy', 'autoTier'],
+            cls.HIGH: [
+                '-initialTier', 'highestAvailable',
+                '-tieringPolicy', 'highestAvailable'],
+            cls.LOW: [
+                '-initialTier', 'lowestAvailable',
+                '-tieringPolicy', 'lowestAvailable'],
+            cls.NO_MOVE: [
+                '-initialTier', 'optimizePool',
+                '-tieringPolicy', 'noMovement']
+        }
 
     @classmethod
     def get_tier(cls, initial, policy):
         ret = None
-        for k, v in cls._option_map.items():
+        for k, v in cls.get_option_map().items():
             if len(v) >= 4:
                 v_initial, v_policy = v[1], v[3]
                 if (cls.match_option(initial, v_initial) and
@@ -172,7 +192,7 @@ class VNXTieringEnum(Enum):
         return output.replace(' ', '').lower() == option.lower()
 
 
-class VNXError(Enum):
+class VNXError(VNXEnum):
     GENERAL_NOT_FOUND = ('cannot find|'
                          'may not exist|'
                          'does not exist|'
@@ -237,11 +257,11 @@ class VNXError(Enum):
     JOIN_DOMAIN = 13157007726
     UNJOIN_DOMAIN = 13157007723
 
-    @staticmethod
-    def _match(output, error_code):
+    @classmethod
+    def _match(cls, output, error_code):
         is_match = False
-        if VNXError._is_enum(error_code):
-            error_code = getattr(VNXError, error_code)
+        if isinstance(error_code, cls):
+            error_code = error_code.value
 
         if isinstance(error_code, six.integer_types):
             error_code = to_hex(error_code)
@@ -310,7 +330,7 @@ def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
             on_error()
 
 
-class VNXPortType(Enum):
+class VNXPortType(VNXEnum):
     FC = 'FC'
     ISCSI = 'iSCSI'
     FCOE = 'FCoE'
@@ -318,31 +338,35 @@ class VNXPortType(Enum):
     ETHERNET = 'ethernet'
     OTHER = 'other'
 
-    _int_index = (None, FC, ISCSI, FCOE, SAS)
+    @classmethod
+    def get_int_index(cls):
+        return None, cls.FC, cls.ISCSI, cls.FCOE, cls.SAS
 
 
-class VNXSnapType(Enum):
+class VNXSnapType(VNXEnum):
     LUN = 1
     CG = 2
 
 
-class VNXMirrorViewRecoveryPolicy(Enum):
+class VNXMirrorViewRecoveryPolicy(VNXEnum):
     MANUAL = 'manual'
     AUTO = 'automatic'
 
-    _option_map = {
-        MANUAL: ['-recoverypolicy', 'manual'],
-        AUTO: ['-recoverypolicy', 'auto']
-    }
+    @classmethod
+    def get_option_map(cls):
+        return {
+            cls.MANUAL: ['-recoverypolicy', 'manual'],
+            cls.AUTO: ['-recoverypolicy', 'auto']
+        }
 
 
-class VNXMirrorViewSyncRate(Enum):
+class VNXMirrorViewSyncRate(VNXEnum):
     HIGH = 'high'
     MEDIUM = 'medium'
     LOW = 'low'
 
 
-class VNXLunType(Enum):
+class VNXLunType(VNXEnum):
     THIN = 'Thin'
     NON_THIN = 'NonThin'
     SNAP = 'Snap'
@@ -353,7 +377,7 @@ class VNXLunType(Enum):
     NON_DEDUPED = 'NonDeduped'
 
 
-class VNXRaidType(Enum):
+class VNXRaidType(VNXEnum):
     RAID0 = 'r0'
     RAID1 = 'r1'
     RAID2 = 'r2'
@@ -364,19 +388,19 @@ class VNXRaidType(Enum):
     RAID10 = 'r1_0'
 
 
-class VNXPoolRaidType(Enum):
+class VNXPoolRaidType(VNXEnum):
     RAID5 = 'r_5'
     RAID6 = 'r_6'
     RAID10 = 'r_10'
 
 
-class VNXAccessLevel(Enum):
+class VNXAccessLevel(VNXEnum):
     RW = 'rw'
     RO = 'ro'
     ACCESS = 'access'
     ROOT = 'root'
 
 
-class VNXShareType(Enum):
+class VNXShareType(VNXEnum):
     NFS = 'nfs'
     CIFS = 'cifs'

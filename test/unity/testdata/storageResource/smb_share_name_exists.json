@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 151036420,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "An SMB share with the specified name already exists. (Error Code:0x900a204)"
+      }
+    ],
+    "created": "2016-03-17T11:33:15.554Z"
+  }
+}

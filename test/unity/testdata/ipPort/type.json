@@ -1,0 +1,61 @@
+{
+  "content": {
+    "name": "ipPort",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal instance identifier. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the ipPort instance. The identifier is a combination of the ipPort identifier and the SP that contains the linked ports. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "User friendly ipPort name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "shortName",
+        "type": "String",
+        "description": "Short name of the ipPort, without the parent prefix. ",
+        "displayValue": "shortName"
+      },
+      {
+        "name": "cascadeNames",
+        "type": "List<String>",
+        "description": "",
+        "displayValue": "cascadeNames"
+      },
+      {
+        "name": "linuxDeviceName",
+        "type": "String",
+        "description": "Name of the linux port device. ",
+        "displayValue": "linuxDeviceName"
+      },
+      {
+        "name": "macAddress",
+        "type": "String",
+        "description": "MAC address of the ipPort. ",
+        "displayValue": "macAddress"
+      },
+      {
+        "name": "isLinkUp",
+        "type": "Boolean",
+        "description": "Indicates whether the ipPort has link. ",
+        "displayValue": "isLinkUp"
+      },
+      {
+        "name": "storageProcessor",
+        "type": "storageProcessor",
+        "description": "Parent Storage Processor of the ipPort. ",
+        "displayValue": "storageProcessor"
+      }
+    ]
+  }
+}

@@ -15,8 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.lib.common import daemon, cache
-from storops.vnx.cli import CliClient
+from storops.lib.common import daemon, instance_cache
+from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.disk import VNXDisk
@@ -26,7 +26,7 @@ from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.migration import VNXMigrationSession
 from storops.vnx.resource.ndu import VNXNdu, VNXNduList
 from storops.vnx.resource.port import VNXConnectionPort, VNXSPPort
-from storops.vnx.resource.resource import VNXCliResource
+from storops.vnx.resource import VNXCliResource
 from storops.vnx.resource.rg import VNXRaidGroup
 from storops.vnx.resource.sg import VNXStorageGroup
 from storops.vnx.resource.snap import VNXSnap
@@ -74,7 +74,7 @@ class VNXSystem(VNXCliResource):
         self._ndu_list = VNXNduList(self._cli)
         self._ndu_list.with_no_poll()
         if heartbeat_interval:
-            daemon(self._update_nodes_ip)
+            daemon(self.update_nodes_ip)
 
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
@@ -84,31 +84,35 @@ class VNXSystem(VNXCliResource):
                              sec_file=None):
         self._cli.set_credential(username, password, scope, sec_file)
 
-    def _update_nodes_ip(self):
-        self._cli.set_ip(self.spa_ip, self.spb_ip, self.control_station_ip)
+    def update_nodes_ip(self):
+        # do not use the `control_station_ip` property to avoid self loop.
+        self._cli.set_ip(self.spa_ip, self.spb_ip, self._get_cs_ip())
 
     def update(self, data=None):
         super(VNXSystem, self).update(data)
         self._ndu_list.update()
-        self._update_nodes_ip()
+        self.update_nodes_ip()
 
     @property
     def heartbeat(self):
         return self._cli.heartbeat
 
     @property
-    @cache()
+    @instance_cache
     def spa_ip(self):
         return VNXNetworkAdmin.get_spa_ip(self._cli)
 
     @property
-    @cache()
+    @instance_cache
     def spb_ip(self):
         return VNXNetworkAdmin.get_spb_ip(self._cli)
 
     @property
-    @cache()
+    @instance_cache
     def control_station_ip(self):
+        return self._get_cs_ip()
+
+    def _get_cs_ip(self):
         return VNXDomainNodeList.get_cs_ip(self.serial, self._cli)
 
     @property

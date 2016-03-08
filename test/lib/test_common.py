@@ -15,15 +15,16 @@
 #    under the License.
 from __future__ import unicode_literals
 
-
 from multiprocessing.pool import ThreadPool
 from time import sleep
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, close_to, only_contains
+from hamcrest import assert_that, equal_to, close_to, only_contains, raises
 
+from storops.exception import EnumValueNotFoundError
 from storops.lib.common import Dict, Enum, WeightedAverage, \
-    synchronized, cache, text_var, int_var, enum_var, yes_no_var
+    synchronized, cache, text_var, int_var, enum_var, \
+    yes_no_var, instance_cache, Cache
 from storops.vnx.enums import VNXRaidType
 
 
@@ -40,19 +41,26 @@ class DictTest(TestCase):
 
 
 class SampleEnum(Enum):
-    def __init__(self):
-        pass
-
     TYPE_A = 'type a'
     TYPE_B = 'type b'
 
-    _option_map = {
-        None: [],
-        TYPE_A: '-a',
-        TYPE_B: '-b'
-    }
+    @classmethod
+    def get_option_map(cls):
+        return {
+            None: [],
+            cls.TYPE_A: '-a',
+            cls.TYPE_B: '-b'
+        }
 
-    _int_index = (None, TYPE_A, TYPE_B)
+    @classmethod
+    def get_int_index(cls):
+        return None, cls.TYPE_A, cls.TYPE_B
+
+
+class SampleIntEnum(Enum):
+    OK = 0
+    NOT_FOUND = 1
+    ERROR = 2
 
 
 class EnumTest(TestCase):
@@ -65,19 +73,43 @@ class EnumTest(TestCase):
     def test_from_int(self):
         self.assertEqual(SampleEnum.TYPE_B, SampleEnum.from_int(2))
 
+    def test_from_int_not_found_in_index(self):
+        def f():
+            SampleEnum.from_int(10)
+
+        assert_that(f, raises(EnumValueNotFoundError, 'for SampleEnum'))
+
+    def test_from_int_enum(self):
+        assert_that(SampleIntEnum.from_int(1),
+                    equal_to(SampleIntEnum.NOT_FOUND))
+
+    def test_from_int_not_found(self):
+        def f():
+            SampleIntEnum.from_int(10)
+
+        assert_that(f, raises(EnumValueNotFoundError, 'for SampleIntEnum'))
+
+    def test_parse_string(self):
+        ret = SampleEnum.parse('type a')
+        assert_that(ret, equal_to(SampleEnum.TYPE_A))
+
 
 class CacheA(object):
     def __init__(self):
         self.base = 0
         pass
 
-    @cache(0.02)
+    @cache
     def do(self, a, b):
         return a + b * 2 + self.base
 
-    @cache()
+    @cache
     def a(self):
         return self.base
+
+    @cache
+    def add_base(self, a):
+        return a + self.base
 
 
 class CacheB(object):
@@ -85,17 +117,27 @@ class CacheB(object):
         self.base = 0
         pass
 
-    @cache()
+    @cache
     def do(self, a, b):
         return a + b
 
-    @cache()
+    @cache
     def b(self):
         return CacheA().a()
 
 
+class SelfCacheA(object):
+    def __init__(self):
+        self.base = 0
+
+    @instance_cache
+    def add_base(self, a):
+        return a + self.base
+
+
 class CacheTest(TestCase):
     def setUp(self):
+        Cache.clear_cache()
         self.a = CacheA()
         self.b = CacheB()
 
@@ -108,16 +150,39 @@ class CacheTest(TestCase):
         self.b.base = 1
         self.assertEqual(6, self.b.do(2, 4))
 
-    def test_cache_expired(self):
-        self.assertEqual(10, self.a.do(2, 4))
-        self.a.base = 1
-        self.assertEqual(10, self.a.do(2, 4))
-        self.assertEqual(12, self.a.do(3, 4))
-        sleep(0.04)
-        self.assertEqual(11, self.a.do(2, 4))
-
     def test_cache_lock(self):
         assert_that(CacheB().b(), equal_to(0))
+
+    def test_instance_cache_hit(self):
+        sa1 = SelfCacheA()
+        assert_that(sa1.add_base(1), equal_to(1))
+        sa1.base = 3
+        assert_that(sa1.add_base(1), equal_to(1))
+        assert_that(sa1.add_base(0), equal_to(3))
+
+    def test_instance_cache_on_instance(self):
+        sa1 = SelfCacheA()
+        sa1.base = 5
+        assert_that(sa1.add_base(1), equal_to(6))
+        sa2 = SelfCacheA()
+        assert_that(sa2.add_base(1), equal_to(1))
+
+    def test_global_cache_cleared(self):
+        self.a.base = 1
+        assert_that(self.a.add_base(2), equal_to(3))
+        self.a.base = 3
+        assert_that(self.a.add_base(2), equal_to(3))
+        Cache.clear_cache()
+        assert_that(self.a.add_base(2), equal_to(5))
+
+    def test_instance_cache_not_cleared(self):
+        sa = SelfCacheA()
+        sa.base = 1
+        assert_that(sa.add_base(2), equal_to(3))
+        sa.base = 3
+        assert_that(sa.add_base(2), equal_to(3))
+        Cache.clear_cache()
+        assert_that(sa.add_base(2), equal_to(3))
 
 
 class WeightedAverageTest(TestCase):

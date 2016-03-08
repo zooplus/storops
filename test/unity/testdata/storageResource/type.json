@@ -1,0 +1,193 @@
+{
+  "content": {
+    "name": "storageResource",
+    "attributes": [
+      {
+        "name": "luns",
+        "type": "List<lun>",
+        "description": "The luns associated with the current storageResource",
+        "displayValue": "luns"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the storageResource instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the storage resource, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Unique name of the storage resource. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Storage resource description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "type",
+        "type": "StorageResourceTypeEnum",
+        "description": "Storage resource type. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "isReplicationDestination",
+        "type": "Boolean",
+        "description": "Indicates whether the storage resource is a replication destination. Valid values are: <ul> <li>true - Storage resource is a replication destination.</li> <li>false - Storage resource is not a replication destination.</li> </ul> ",
+        "displayValue": "isReplicationDestination"
+      },
+      {
+        "name": "replicationType",
+        "type": "ReplicationTypeEnum",
+        "description": "Replication type. ",
+        "displayValue": "replicationType"
+      },
+      {
+        "name": "sizeTotal",
+        "type": "Integer",
+        "description": "Storage resource size that the system presents to the host or end user. ",
+        "displayValue": "sizeTotal"
+      },
+      {
+        "name": "sizeUsed",
+        "type": "Integer",
+        "description": "Quantity of pool space used by the storage resource. For a file system, this can be less than or equal to the value of the sizeAllocated attribute. ",
+        "displayValue": "sizeUsed"
+      },
+      {
+        "name": "sizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of pool space reserved for the storage resource: <ul> <li>For all thin-provisioned resources, this can be less than the value of the sizeTotal attribute. For a thin-provisioned file system, this can be greater than or equal to the value of the sizeUsed attribute </li> <li>For thick-provisioned resources,, this is equal to the value of the sizeUsed attribute.</li> </ul> ",
+        "displayValue": "sizeAllocated"
+      },
+      {
+        "name": "thinStatus",
+        "type": "ThinStatusEnum",
+        "description": "Indicates whether the storage resource is thin-provisioned, thick-provisioned, or mixed. ",
+        "displayValue": "thinStatus"
+      },
+      {
+        "name": "dedupStatus",
+        "type": "DedupStatusEnum",
+        "description": "Deduplication status for the storage resource. ",
+        "displayValue": "dedupStatus"
+      },
+      {
+        "name": "esxFilesystemMajorVersion",
+        "type": "ESXFilesystemMajorVersionEnum",
+        "description": "(Applies to VMware storage resources only.) VMFS major version. ",
+        "displayValue": "esxFilesystemMajorVersion"
+      },
+      {
+        "name": "esxFilesystemBlockSize",
+        "type": "ESXFilesystemBlockSizeEnum",
+        "description": "(Applies to VMware storage resources only.) VMFS block size. ",
+        "displayValue": "esxFilesystemBlockSize"
+      },
+      {
+        "name": "snapSchedule",
+        "type": "snapSchedule",
+        "description": "Snapshot schedule for the storage resource, as defined by the snapSchedule resource type. This value is blank if the storage resource is not associated with a snapshot schedule. ",
+        "displayValue": "snapSchedule"
+      },
+      {
+        "name": "isSnapSchedulePaused",
+        "type": "Boolean",
+        "description": "(Applies if the storage resource has an associated snap schedule.) Indicates whether the snapshot schedule for the storage resource is paused. Valid values are: <ul> <li>true - Snapshot schedule for the storage resource is paused.</li> <li>false - Snapshot schedule for the storage resource is active.</li> </ul> ",
+        "displayValue": "isSnapSchedulePaused"
+      },
+      {
+        "name": "relocationPolicy",
+        "type": "TieringPolicyEnum",
+        "description": "(Applies if FAST VP is supported on the system and the corresponding license is installed.) FAST VP tiering policy for the storage resource. ",
+        "displayValue": "relocationPolicy"
+      },
+      {
+        "name": "perTierSizeUsed",
+        "type": "List<Integer>",
+        "description": "Tier sizes for the storage pool used by the storage resource. ",
+        "displayValue": "perTierSizeUsed"
+      },
+      {
+        "name": "blockHostAccess",
+        "type": "List<blockHostAccess>",
+        "description": "Host access permissions for a block storage resource, as defined by the blockHostAccess resource type. ",
+        "displayValue": "blockHostAccess"
+      },
+      {
+        "name": "metadataSize",
+        "type": "Integer",
+        "description": "Quantity of pool space used by the storage resource metadata. ",
+        "displayValue": "metadataSize"
+      },
+      {
+        "name": "metadataSizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of pool space reserved for the storage resource metadata. ",
+        "displayValue": "metadataSizeAllocated"
+      },
+      {
+        "name": "snapsSizeTotal",
+        "type": "Integer",
+        "description": "Quantity of pool space used by storage resource snapshots. ",
+        "displayValue": "snapsSizeTotal"
+      },
+      {
+        "name": "snapsSizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of pool space reserved for storage resource snapshots. ",
+        "displayValue": "snapsSizeAllocated"
+      },
+      {
+        "name": "snapCount",
+        "type": "Integer",
+        "description": "Number of available storage resource snapshots. ",
+        "displayValue": "snapCount"
+      },
+      {
+        "name": "vmwareUUID",
+        "type": "String",
+        "description": "VMware UUID of the VVol Datastore (Applies to VMware VVol Datastore resources only.). ",
+        "displayValue": "vmwareUUID"
+      },
+      {
+        "name": "pools",
+        "type": "List<pool>",
+        "description": "List of pools associated with this storage resource. ",
+        "displayValue": "pools"
+      },
+      {
+        "name": "datastores",
+        "type": "List<datastore>",
+        "description": "The datastores associated with the current storageResource",
+        "displayValue": "datastores"
+      },
+      {
+        "name": "filesystem",
+        "type": "filesystem",
+        "description": "The filesystem associated with the current storageResource",
+        "displayValue": "filesystem"
+      },
+      {
+        "name": "hostVVolDatastore",
+        "type": "List<hostVVolDatastore>",
+        "description": "The hostVVolDatastores associated with the current storageResource",
+        "displayValue": "hostVVolDatastore"
+      },
+      {
+        "name": "virtualVolumes",
+        "type": "List<virtualVolume>",
+        "description": "The virtualVolumes associated with the current storageResource",
+        "displayValue": "virtualVolumes"
+      }
+    ]
+  }
+}

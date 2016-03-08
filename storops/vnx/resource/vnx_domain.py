@@ -22,7 +22,7 @@ from past.builtins import filter
 
 from storops.exception import VNXObjectNotFound
 from storops.vnx.enums import VNXSPEnum
-from storops.vnx.resource.resource import VNXCliResourceList, VNXCliResource
+from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
@@ -81,7 +81,7 @@ class VNXDomainNode(VNXCliResource):
 class VNXDomainMemberList(VNXCliResourceList):
     def _get_member(self, index):
         def filter_by_sp_name(member):
-            sp = VNXSPEnum.from_str(member.name)
+            sp = VNXSPEnum.parse(member.name)
             return sp == index
 
         result = filter(filter_by_sp_name, self.list)
@@ -130,14 +130,14 @@ class VNXNetworkAdmin(VNXCliResource):
     def __init__(self, sp_index, cli):
         super(VNXNetworkAdmin, self).__init__()
         self._cli = cli
-        self._sp = VNXSPEnum.from_str(sp_index)
+        self._sp = VNXSPEnum.parse(sp_index)
 
     def _get_raw_resource(self):
         return self._cli.sp_network_status(self._sp, poll=self.poll)
 
     @staticmethod
     def _get_sp_ip(sp, cli):
-        sp = VNXNetworkAdmin(VNXSPEnum.from_str(sp), cli)
+        sp = VNXNetworkAdmin(VNXSPEnum.parse(sp), cli)
         sp.with_no_poll()
         return sp.ip
 

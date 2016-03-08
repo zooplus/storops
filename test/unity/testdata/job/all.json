@@ -1,0 +1,261 @@
+{
+  "@base": "https://10.244.223.66/api/types/job/instances?fields=clientData,description,elapsedTime,endTime,estRemainTime,id,instanceId,isJobCancelable,isJobCancelled,messageOut,methodName,owner,parametersOut,progressPct,requestId,startTime,state,stateChangeTime,statusCodeOut,submitTime,tasks&per_page=2000&compact=true",
+  "updated": "2016-03-22T11:23:52.993Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "B-1",
+        "state": 4,
+        "instanceId": "",
+        "description": "  \"Create replication interfaces\"",
+        "stateChangeTime": "2016-02-29T07:29:23.509Z",
+        "submitTime": "2016-02-29T07:29:18.461Z",
+        "startTime": "2016-02-29T07:29:18.503Z",
+        "endTime": "2016-02-29T07:29:23.509Z",
+        "elapsedTime": "00:00:05.000",
+        "progressPct": 100,
+        "tasks": [
+          {
+            "state": 2,
+            "name": "CreateRI0",
+            "description": "  \"Create replication interface 10.244.220.100\"",
+            "descriptionArg": "10.244.220.100",
+            "object": "replicationInterface",
+            "action": "create",
+            "messages": [
+              {
+                "errorCode": 0,
+                "messages": [
+                  {
+                    "locale": "en_US",
+                    "message": "Success"
+                  }
+                ]
+              }
+            ],
+            "submitTime": "2016-02-29T07:29:18.461Z",
+            "startTime": "2016-02-29T07:29:18.529Z",
+            "parametersIn": {
+              "sp": {
+                "id": "spa"
+              },
+              "ipPort": {
+                "id": "spa_eth2"
+              },
+              "ipAddress": "10.244.220.100",
+              "gateway": "10.244.220.1",
+              "v6PrefixLength": "24"
+            },
+            "parametersOut": {
+              "id": "if_4"
+            }
+          },
+          {
+            "state": 2,
+            "name": "CreateRI1",
+            "description": "  \"Create replication interface 10.244.220.101\"",
+            "descriptionArg": "10.244.220.101",
+            "object": "replicationInterface",
+            "action": "create",
+            "messages": [
+              {
+                "errorCode": 0,
+                "messages": [
+                  {
+                    "locale": "en_US",
+                    "message": "Success"
+                  }
+                ]
+              }
+            ],
+            "submitTime": "2016-02-29T07:29:18.461Z",
+            "startTime": "2016-02-29T07:29:18.529Z",
+            "parametersIn": {
+              "sp": {
+                "id": "spb"
+              },
+              "ipPort": {
+                "id": "spb_eth2"
+              },
+              "ipAddress": "10.244.220.101",
+              "gateway": "10.244.220.1",
+              "v6PrefixLength": "24"
+            },
+            "parametersOut": {
+              "id": "if_3"
+            }
+          }
+        ],
+        "methodName": "job.create",
+        "statusCodeOut": 0,
+        "messageOut": {
+          "errorCode": 0,
+          "messages": [
+            {
+              "locale": "en_US",
+              "message": "Success"
+            }
+          ]
+        },
+        "isJobCancelable": false,
+        "isJobCancelled": false,
+        "clientData": "",
+        "parametersOut": {
+          "id": "B-1"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "B-2",
+        "state": 4,
+        "instanceId": "",
+        "description": " \"Delete replication connection(s)\"",
+        "stateChangeTime": "2016-02-29T07:31:12.767Z",
+        "submitTime": "2016-02-29T07:30:57.758Z",
+        "startTime": "2016-02-29T07:30:57.763Z",
+        "endTime": "2016-02-29T07:31:12.767Z",
+        "elapsedTime": "00:00:15.000",
+        "progressPct": 100,
+        "tasks": [
+          {
+            "state": 2,
+            "name": "Delete0",
+            "description": "  \"Delete replication connection FNM00150600267\"",
+            "descriptionArg": "FNM00150600267",
+            "object": "remoteSystem",
+            "action": "delete",
+            "messages": [
+              {
+                "errorCode": 0,
+                "messages": [
+                  {
+                    "locale": "en_US",
+                    "message": "Success"
+                  }
+                ]
+              }
+            ],
+            "submitTime": "2016-02-29T07:30:57.758Z",
+            "startTime": "2016-02-29T07:30:57.767Z",
+            "parametersIn": {
+              "deleteRemotePeer": true,
+              "id": "RS_1"
+            }
+          }
+        ],
+        "methodName": "job.create",
+        "statusCodeOut": 0,
+        "messageOut": {
+          "errorCode": 0,
+          "messages": [
+            {
+              "locale": "en_US",
+              "message": "Success"
+            }
+          ]
+        },
+        "isJobCancelable": false,
+        "isJobCancelled": false,
+        "clientData": "",
+        "parametersOut": {
+          "id": "B-2"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "B-3",
+        "state": 4,
+        "instanceId": "",
+        "description": "Create storage pool",
+        "stateChangeTime": "2016-02-29T07:35:22.231Z",
+        "submitTime": "2016-02-29T07:34:22.220Z",
+        "startTime": "2016-02-29T07:34:22.227Z",
+        "endTime": "2016-02-29T07:35:22.231Z",
+        "elapsedTime": "00:01:00.000",
+        "progressPct": 100,
+        "tasks": [
+          {
+            "state": 2,
+            "name": "CreatePoolTask",
+            "description": "Create storage pool perfpool1130",
+            "descriptionArg": "perfpool1130",
+            "object": "pool",
+            "action": "create",
+            "messages": [
+              {
+                "errorCode": 0,
+                "messages": [
+                  {
+                    "locale": "en_US",
+                    "message": "Success"
+                  }
+                ]
+              }
+            ],
+            "submitTime": "2016-02-29T07:34:22.022Z",
+            "startTime": "2016-02-29T07:34:22.231Z",
+            "parametersIn": {
+              "name": "perfpool1130",
+              "description": "",
+              "addRaidGroupParameters": [
+                {
+                  "numDisks": 2,
+                  "raidType": 7,
+                  "stripeWidth": 2,
+                  "dskGroup": {
+                    "id": "dg_2"
+                  }
+                },
+                {
+                  "numDisks": 5,
+                  "raidType": 1,
+                  "stripeWidth": 5,
+                  "dskGroup": {
+                    "id": "dg_13"
+                  }
+                },
+                {
+                  "numDisks": 5,
+                  "raidType": 1,
+                  "stripeWidth": 5,
+                  "dskGroup": {
+                    "id": "dg_8"
+                  }
+                }
+              ],
+              "isFASTCacheEnabled": false
+            },
+            "parametersOut": {
+              "id": "pool_1"
+            }
+          }
+        ],
+        "methodName": "job.create",
+        "statusCodeOut": 0,
+        "messageOut": {
+          "errorCode": 0,
+          "messages": [
+            {
+              "locale": "en_US",
+              "message": "Success"
+            }
+          ]
+        },
+        "isJobCancelable": false,
+        "isJobCancelled": false,
+        "clientData": "",
+        "parametersOut": {
+          "id": "B-3"
+        }
+      }
+    }
+  ]
+}

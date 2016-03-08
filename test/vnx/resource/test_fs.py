@@ -56,6 +56,16 @@ class FileSystemTest(unittest.TestCase):
         assert_that(fs.volume, equal_to(150))
 
     @patch_post()
+    def test_clz_get_fs(self):
+        fs = VNXFileSystem.get(name='fs_src0', cli=t_nas())
+        self.verify_fs_src0(fs)
+
+    @patch_post()
+    def test_clz_get_all(self):
+        fs_list = VNXFileSystem.get(cli=t_nas())
+        assert_that(len(fs_list), equal_to(25))
+
+    @patch_post()
     def test_get(self):
         fs = VNXFileSystem('fs_src0', cli=t_nas())
         self.verify_fs_src0(fs)

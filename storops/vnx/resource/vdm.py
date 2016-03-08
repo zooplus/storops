@@ -22,7 +22,7 @@ from storops.exception import VNXMoverInterfaceNotFound, \
     VNXMoverInterfaceNotAttached
 from storops.vnx.enums import raise_if_err, VNXError, VNXShareType
 from storops.vnx.resource.mover import VNXMover
-from storops.vnx.resource.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource import VNXResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 
@@ -34,7 +34,7 @@ class VNXVdmInterface(object):
         self.name = name
         if 'vdm' in share_type:
             share_type = 'nfs'
-        self.share_type = VNXShareType.from_str(share_type)
+        self.share_type = VNXShareType.parse(share_type)
 
 
 class VNXVdmList(VNXCliResourceList):

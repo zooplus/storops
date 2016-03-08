@@ -1,0 +1,133 @@
+{
+  "@base": "https://10.244.223.66/api/types/nasServer/instances?fields=allowUnmappedUser,credentialsCacheTTL,currentUnixDirectoryService,defaultUnixUser,defaultWindowsUser,health,id,instanceId,isExtendedUnixCredentialEnabled,isMultiProtocolEnabled,isReplicationDestination,isReplicationEnabled,isSystem,isWindowsToUnixUsernameMappingEnabled,name,objectId,replicationType,sizeAllocated,type,preferredInterfaceSettings.id,cifsServer.id,currentSP.id,pool.id,fileDNSServer.id,virusChecker.id,fileInterface.id,homeSP.id&per_page=2000&compact=true",
+  "updated": "2016-03-16T03:29:55.146Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "nas_1",
+        "replicationType": 0,
+        "type": 64,
+        "currentUnixDirectoryService": 0,
+        "instanceId": "root/emc:EMC_UEM_FileServerContainerLeaf%InstanceID=nas_1",
+        "objectId": 103079215107,
+        "name": "esa_nasserver",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "sizeAllocated": 2952790016,
+        "isSystem": false,
+        "isReplicationEnabled": false,
+        "isReplicationDestination": false,
+        "isMultiProtocolEnabled": false,
+        "credentialsCacheTTL": "00:15:00.000",
+        "isExtendedUnixCredentialEnabled": false,
+        "homeSP": {
+          "id": "spa"
+        },
+        "currentSP": {
+          "id": "spa"
+        },
+        "pool": {
+          "id": "pool_1"
+        },
+        "cifsServer": [
+          {
+            "id": "cifs_1"
+          }
+        ],
+        "fileDNSServer": {
+          "id": "dns_1"
+        },
+        "fileInterface": [
+          {
+            "id": "if_5"
+          }
+        ],
+        "preferredInterfaceSettings": {
+          "id": "preferred_if_1"
+        },
+        "virusChecker": {
+          "id": "cava_1"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "system_nas_0",
+        "replicationType": 0,
+        "type": 64,
+        "currentUnixDirectoryService": 0,
+        "instanceId": "root/emc:EMC_UEM_FileServerContainerLeaf%InstanceID=system_nas_0",
+        "objectId": 103079215105,
+        "name": "SVDM_A",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "sizeAllocated": 2684354560,
+        "isSystem": true,
+        "isReplicationEnabled": false,
+        "isReplicationDestination": false,
+        "isMultiProtocolEnabled": false,
+        "credentialsCacheTTL": "00:20:00.000",
+        "isExtendedUnixCredentialEnabled": false,
+        "homeSP": {
+          "id": "spa"
+        },
+        "currentSP": {
+          "id": "spa"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "system_nas_1",
+        "replicationType": 0,
+        "type": 64,
+        "currentUnixDirectoryService": 0,
+        "instanceId": "root/emc:EMC_UEM_FileServerContainerLeaf%InstanceID=system_nas_1",
+        "objectId": 103079215106,
+        "name": "SVDM_B",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "sizeAllocated": 2684354560,
+        "isSystem": true,
+        "isReplicationEnabled": false,
+        "isReplicationDestination": false,
+        "isMultiProtocolEnabled": false,
+        "credentialsCacheTTL": "00:20:00.000",
+        "isExtendedUnixCredentialEnabled": false,
+        "homeSP": {
+          "id": "spb"
+        },
+        "currentSP": {
+          "id": "spb"
+        }
+      }
+    }
+  ]
+}

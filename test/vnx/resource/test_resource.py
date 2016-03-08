@@ -19,7 +19,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, raises
 
-from storops.vnx.resource.resource import VNXCliResource
+from storops.vnx.resource import VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 

@@ -1,0 +1,30 @@
+{
+  "content": {
+    "id": "if_20",
+    "ipProtocolVersion": 4,
+    "role": 0,
+    "instanceId": "root/emc:EMC_UEM_FileInterfaceLeaf%InstanceID=if_20",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "isSystem": false,
+    "ipAddress": "1.1.1.1",
+    "netmask": "255.255.255.0",
+    "macAddress": "00:60:16:5C:08:E1",
+    "name": "9_FNM00151200215",
+    "isPreferred": false,
+    "isDisabled": false,
+    "nasServer": {
+      "id": "nas_2"
+    },
+    "ipPort": {
+      "id": "spa_eth2"
+    }
+  }
+}

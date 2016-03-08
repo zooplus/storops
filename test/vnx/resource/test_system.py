@@ -60,11 +60,6 @@ class VNXSystemTest(TestCase):
         assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
         assert_that(vnx.control_station_ip, equal_to('192.168.1.93'))
 
-    @patch_cli(mock_map={'-np_domain': 'domain_-list_no_cs.txt'})
-    def test_member_ip_no_cs(self):
-        vnx = VNXSystem('1.1.1.1', heartbeat_interval=0)
-        assert_that(vnx.control_station_ip, none())
-
     @patch_cli()
     def test_get_snap(self):
         snaps = self.vnx.get_snap()
@@ -125,3 +120,8 @@ class VNXSystemTest(TestCase):
         for disk in disks:
             assert_that(disk, instance_of(VNXDisk))
             assert_that(disk.existed, equal_to(True))
+
+    @patch_cli(mock_map={'-np_domain': 'domain_-list_no_cs.txt'})
+    def test_member_ip_no_cs(self):
+        vnx = VNXSystem('1.1.1.1', heartbeat_interval=0)
+        assert_that(vnx.control_station_ip, none())

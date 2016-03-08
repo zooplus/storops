@@ -41,7 +41,7 @@ class NodeInfo(object):
         :param working: indicate whether this node is executing command.
         :return:
         """
-        self.name = VNXSPEnum.from_str(name)
+        self.name = VNXSPEnum.parse(name)
         self.ip = ip
         if available is None:
             available = True
@@ -89,7 +89,7 @@ class _NodeInfoMap(object):
 
     def is_available(self, name):
         ret = False
-        name = VNXSPEnum.from_str(name)
+        name = VNXSPEnum.parse(name)
         if name in self._map:
             ret = self._map[name].available
         return ret

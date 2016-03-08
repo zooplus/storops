@@ -1,0 +1,8 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/metric?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    }
+  ]
+}

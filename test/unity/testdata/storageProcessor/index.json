@@ -1,0 +1,24 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/storageProcessor?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/storageProcessor/spa?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "spa.json"
+    },
+    {
+      "url": "/api/instances/storageProcessor/spb?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "spb.json"
+    },
+    {
+      "url": "/api/types/storageProcessor/instances?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/storageProcessor/instances?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber&filter=name eq \"SP A\"",
+      "response": "spa.json"
+    }
+  ]
+}

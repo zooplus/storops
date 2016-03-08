@@ -19,7 +19,7 @@ from past.builtins import filter
 
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXSPEnum, VNXPortType
-from storops.vnx.resource.resource import VNXCliResourceList, VNXCliResource
+from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
@@ -68,7 +68,7 @@ class VNXHbaPort(VNXCliResource):
 
     def __init__(self, sp, port_id, vport_id=0):
         super(VNXHbaPort, self).__init__()
-        self._sp = VNXSPEnum.from_str(sp)
+        self._sp = VNXSPEnum.parse(sp)
         self._port_id = check_int(port_id)
         self._vport_id = check_int(vport_id)
         self._type = VNXPortType.FC
@@ -118,7 +118,7 @@ class VNXHbaPort(VNXCliResource):
         return port
 
     def as_tuple(self):
-        return self.sp, self.port_id
+        return str(self.sp), self.port_id
 
     def __repr__(self):
         return ('<VNXPort {{'

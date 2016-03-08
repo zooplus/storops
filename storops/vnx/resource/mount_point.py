@@ -19,7 +19,7 @@ import logging
 
 from storops.vnx.resource.fs import VNXFileSystem
 from storops.vnx.resource.mover import VNXMover
-from storops.vnx.resource.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource import VNXResource, VNXCliResourceList
 
 __author__ = 'Jay Xu'
 

@@ -20,7 +20,7 @@ from storops.lib.common import check_text
 from storops.vnx.enums import VNXMirrorViewRecoveryPolicy
 from storops.vnx.enums import VNXMirrorViewSyncRate
 from storops.vnx.resource.lun import VNXLun
-from storops.vnx.resource.resource import VNXCliResource, VNXCliResourceList
+from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 

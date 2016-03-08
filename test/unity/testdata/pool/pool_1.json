@@ -1,0 +1,117 @@
+{
+  "content": {
+    "id": "pool_1",
+    "operationalStatus": [
+      2
+    ],
+    "raidType": 12,
+    "harvestState": 0,
+    "instanceId": "root/emc:EMC_UEM_MappedStoragePoolLeaf%InstanceID=pool_1",
+    "objectId": 12884901890,
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "name": "perfpool1130",
+    "description": "pp",
+    "sizeFree": 9160359936000,
+    "sizeTotal": 9251627991040,
+    "sizeUsed": 91268055040,
+    "sizeSubscribed": 1392106274816,
+    "alertThreshold": 70,
+    "poolSpaceHarvestHighThreshold": 95.0,
+    "poolSpaceHarvestLowThreshold": 85.0,
+    "snapSpaceHarvestHighThreshold": 25.0,
+    "snapSpaceHarvestLowThreshold": 20.0,
+    "isFASTCacheEnabled": false,
+    "tiers": [
+      {
+        "tierType": 10,
+        "stripeWidth": 2,
+        "raidType": 7,
+        "instanceId": "root/emc:EMC_UEM_StoragePoolTierLeaf%InstanceID=1",
+        "sizeTotal": 195957882880,
+        "sizeUsed": 47513075712,
+        "sizeFree": 148444807168,
+        "sizeMovingDown": 0,
+        "sizeMovingUp": 0,
+        "sizeMovingWithin": 0,
+        "name": "Extreme Performance",
+        "poolUnitCount": 1,
+        "diskCount": 2,
+        "poolUnits": [
+          {
+            "id": "rg_1"
+          }
+        ]
+      },
+      {
+        "tierType": 20,
+        "stripeWidth": 5,
+        "raidType": 1,
+        "instanceId": "root/emc:EMC_UEM_StoragePoolTierLeaf%InstanceID=2",
+        "sizeTotal": 1180847570944,
+        "sizeUsed": 3489660928,
+        "sizeFree": 1177357910016,
+        "sizeMovingDown": 0,
+        "sizeMovingUp": 0,
+        "sizeMovingWithin": 0,
+        "name": "Performance",
+        "poolUnitCount": 1,
+        "diskCount": 5,
+        "poolUnits": [
+          {
+            "id": "rg_2"
+          }
+        ]
+      },
+      {
+        "tierType": 30,
+        "stripeWidth": 5,
+        "raidType": 1,
+        "instanceId": "root/emc:EMC_UEM_StoragePoolTierLeaf%InstanceID=3",
+        "sizeTotal": 7874822537216,
+        "sizeUsed": 40265318400,
+        "sizeFree": 7834557218816,
+        "sizeMovingDown": 0,
+        "sizeMovingUp": 0,
+        "sizeMovingWithin": 0,
+        "name": "Capacity",
+        "poolUnitCount": 1,
+        "diskCount": 5,
+        "poolUnits": [
+          {
+            "id": "rg_3"
+          }
+        ]
+      }
+    ],
+    "creationTime": "2016-02-29T07:34:23.000Z",
+    "isEmpty": false,
+    "poolFastVP": {
+      "status": 3,
+      "relocationRate": 2,
+      "type": 2,
+      "isScheduleEnabled": true,
+      "relocationDurationEstimate": "00:00:00.000",
+      "sizeMovingDown": 0,
+      "sizeMovingUp": 0,
+      "sizeMovingWithin": 0,
+      "percentComplete": 0,
+      "dataRelocated": 0,
+      "lastStartTime": "2016-03-13T22:00:00.000Z",
+      "lastEndTime": "2016-03-14T06:00:00.000Z"
+    },
+    "isHarvestEnabled": true,
+    "isSnapHarvestEnabled": false,
+    "metadataSizeSubscribed": 59324235776,
+    "snapSizeSubscribed": 873220538368,
+    "metadataSizeUsed": 36775657472,
+    "snapSizeUsed": 24452407296
+  }
+}

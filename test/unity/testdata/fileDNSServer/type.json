@@ -1,0 +1,49 @@
+{
+  "content": {
+    "name": "fileDNSServer",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of DNS server instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the DNS object. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "Associated NAS server instance that uses this DNS object. Only one DNS object per NAS server is supported. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "addresses",
+        "type": "List<IPAddress>",
+        "description": "Prioritized list of one to three IPv4 and/or IPv6 addresses of DNS server(s) for the domain. ",
+        "displayValue": "addresses"
+      },
+      {
+        "name": "domain",
+        "type": "String",
+        "description": "Mandatory name of the DNS domain, where NAS Server does host names lookup when FQDN is not specified in the request. ",
+        "displayValue": "domain"
+      },
+      {
+        "name": "replicationPolicy",
+        "type": "ReplicationPolicyEnum",
+        "description": "Replication policy of the DNS object. ",
+        "displayValue": "replicationPolicy"
+      },
+      {
+        "name": "sourceParameters",
+        "type": "fileDNSServerSourceParameters",
+        "description": "The DNS parameters of the source NAS server. ",
+        "displayValue": "sourceParameters"
+      }
+    ]
+  }
+}

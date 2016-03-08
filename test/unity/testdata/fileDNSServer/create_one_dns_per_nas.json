@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 108012064,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "Only one DNS client can be created per NAS server. (Error Code:0x6702220)"
+      }
+    ],
+    "created": "2016-03-17T08:35:42.955Z"
+  }
+}

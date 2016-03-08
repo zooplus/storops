@@ -1,0 +1,127 @@
+{
+  "content": {
+    "name": "storageProcessor",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the storageProcessor instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the storageProcessor instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "parent",
+        "type": "resourceRef",
+        "description": "Resource type and unique identifier for the SP's parent enclosure. ",
+        "displayValue": "parent"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the SP, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<StorageProcessorStatusEnum>",
+        "description": "Operational statuses for the SP. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "needsReplacement",
+        "type": "Boolean",
+        "description": "Indicates whether the SP needs replacement. Values are: <ul> <li>true - SP needs replacement.</li> <li>false - SP does not need replacement.</li> </ul> ",
+        "displayValue": "needsReplacement"
+      },
+      {
+        "name": "isRescueMode",
+        "type": "Boolean",
+        "description": "Indicates whether the SP is in Service Mode. Values are: <ul> <li>true - SP is in Service Mode.</li> <li>false - SP is not in Service Mode.</li> </ul> ",
+        "displayValue": "isRescueMode"
+      },
+      {
+        "name": "model",
+        "type": "String",
+        "description": "Manufacturer's model number for the SP. ",
+        "displayValue": "model"
+      },
+      {
+        "name": "slotNumber",
+        "type": "Integer",
+        "description": "Slot where the SP is located in the parent enclosure. ",
+        "displayValue": "slotNumber"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "SP name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "emcPartNumber",
+        "type": "String",
+        "description": "EMC part number for the SP. ",
+        "displayValue": "emcPartNumber"
+      },
+      {
+        "name": "emcSerialNumber",
+        "type": "String",
+        "description": "EMC serial number for the SP. ",
+        "displayValue": "emcSerialNumber"
+      },
+      {
+        "name": "manufacturer",
+        "type": "String",
+        "description": "Manufacturer of the SP. ",
+        "displayValue": "manufacturer"
+      },
+      {
+        "name": "vendorPartNumber",
+        "type": "String",
+        "description": "Vendor part number for the SP. ",
+        "displayValue": "vendorPartNumber"
+      },
+      {
+        "name": "vendorSerialNumber",
+        "type": "String",
+        "description": "Vendor serial number for the SP. ",
+        "displayValue": "vendorSerialNumber"
+      },
+      {
+        "name": "sasExpanderVersion",
+        "type": "String",
+        "description": "Version number of the SAS Expander associated with the SP. ",
+        "displayValue": "sasExpanderVersion"
+      },
+      {
+        "name": "biosFirmwareRevision",
+        "type": "String",
+        "description": "Version number of the SP BIOS. ",
+        "displayValue": "biosFirmwareRevision"
+      },
+      {
+        "name": "postFirmwareRevision",
+        "type": "String",
+        "description": "Version number of the SP Power-On Self-Test software. ",
+        "displayValue": "postFirmwareRevision"
+      },
+      {
+        "name": "memorySize",
+        "type": "Integer",
+        "description": "SP RAM size. ",
+        "displayValue": "memorySize"
+      },
+      {
+        "name": "parentDpe",
+        "type": "dpe",
+        "description": "Parent Disk Processor Enclosure (DPE) of the storage processor. ",
+        "displayValue": "parentDpe"
+      }
+    ]
+  }
+}

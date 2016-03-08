@@ -19,7 +19,7 @@ from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, raise_if_err, VNXError
-from storops.vnx.resource.resource import VNXCliResourceList, VNXCliResource
+from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 import storops.vnx.resource.block_pool
 from storops.vnx.resource.migration import VNXMigrationSession
 import storops.vnx.resource.sg
@@ -32,7 +32,7 @@ __author__ = 'Cedric Zhuang'
 class VNXLunList(VNXCliResourceList):
     def __init__(self, cli=None, lun_type=None):
         super(VNXLunList, self).__init__(cli)
-        self._lun_type = VNXLunType.from_str(lun_type)
+        self._lun_type = VNXLunType.parse(lun_type)
 
     @classmethod
     def get_resource_class(cls):
@@ -53,6 +53,8 @@ class VNXLun(VNXCliResource):
         self._name = name
 
     def _get_raw_resource(self):
+        if self._cli is None:
+            raise ValueError('client is not available for this resource.')
         return self._cli.get_lun(name=self._name, lun_id=self._lun_id,
                                  poll=self.poll)
 
@@ -112,7 +114,7 @@ class VNXLun(VNXCliResource):
                 ret = VNXProvisionEnum.THIN
             if self.is_compressed:
                 ret = VNXProvisionEnum.COMPRESSED
-            elif self.dedup_state:
+            elif self.is_dedup:
                 ret = VNXProvisionEnum.DEDUPED
         except AttributeError:
             pass
@@ -256,19 +258,18 @@ class VNXLun(VNXCliResource):
             self._name = new_name
 
     def __setattr__(self, key, value):
-        if self._is_client_available():
-            if key == 'name':
-                self.rename(value)
-                return
-            elif key == 'is_compressed':
-                if value:
-                    self.enable_compression()
-                else:
-                    self.disable_compression()
-                return
-            elif key == 'is_dedup':
-                self._update_dedup_state(value)
-                return
+        if key == 'name':
+            self.rename(value)
+            return
+        elif key == 'is_compressed':
+            if value:
+                self.enable_compression()
+            else:
+                self.disable_compression()
+            return
+        elif key == 'is_dedup':
+            self._update_dedup_state(value)
+            return
         super(VNXLun, self).__setattr__(key, value)
 
     def enable_compression(self, rate=None, ignore_thresholds=None):

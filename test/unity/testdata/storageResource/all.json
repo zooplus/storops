@@ -1,0 +1,589 @@
+{
+  "@base": "https://10.244.223.66/api/types/storageResource/instances?fields=blockHostAccess,creationTime,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,health,id,instanceId,isReplicationDestination,isSnapSchedulePaused,logicalSizeUsed,metadataSize,metadataSizeAllocated,modificationTime,name,objectId,operationalStatus,perTierSizeUsed,relocationPolicy,replicationType,sharableSnapCount,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,vmwareUUID,pools.id,virtualVolumes.id,snapSchedule.id,datastores.id,filesystem.id,hostVVolDatastore.id,luns.id&per_page=2000&compact=true",
+  "updated": "2016-03-20T13:04:10.741Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "res_2",
+        "operationalStatus": [
+          2
+        ],
+        "type": 4,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "dedupStatus": 0,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_2",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "datastore_0",
+        "description": "",
+        "creationTime": "2016-03-01T04:28:52.560Z",
+        "modificationTime": "2016-03-01T04:28:52.560Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 214748364800,
+        "sizeAllocated": 0,
+        "perTierSizeUsed": [
+          2952790016,
+          0,
+          0
+        ],
+        "objectId": 81604378627,
+        "metadataSize": 7247757312,
+        "metadataSizeAllocated": 2684354560,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "luns": [
+          {
+            "id": "sv_3"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "res_9",
+        "operationalStatus": [
+          2
+        ],
+        "type": 2,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "dedupStatus": 0,
+        "relocationPolicy": 1,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_9",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "CG_Rep_Local_Src",
+        "description": "",
+        "creationTime": "2016-03-08T07:11:55.224Z",
+        "modificationTime": "2016-03-08T07:11:55.224Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 4294967296,
+        "sizeAllocated": 0,
+        "perTierSizeUsed": [
+          2684354560,
+          0,
+          268435456
+        ],
+        "objectId": 81604378629,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 2684354560,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "luns": [
+          {
+            "id": "sv_5"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "res_11",
+        "operationalStatus": [],
+        "type": 10,
+        "thinStatus": 1,
+        "instanceId": "res_11",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "sc_block_1",
+        "description": "",
+        "creationTime": "2016-03-10T08:56:30.000Z",
+        "modificationTime": "2016-03-10T08:56:30.000Z",
+        "sizeTotal": 9163849596928,
+        "sizeUsed": 33708523520,
+        "sizeAllocated": 40802189312,
+        "metadataSize": 12079595520,
+        "metadataSizeAllocated": 12079595520,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "vmwareUUID": "rfc4122.719af123-bbb3-4e45-acfe-1b6d99755ba8",
+        "logicalSizeUsed": 1723356676096,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "datastores": [
+          {
+            "id": "rfc4122.03000200-0400-0500-0006-000700080009_ds:///vmfs/volumes/vvol:719af123bbb34e45-acfe1b6d99755ba8/"
+          }
+        ],
+        "hostVVolDatastore": [
+          {
+            "id": "aha_10"
+          }
+        ],
+        "virtualVolumes": [
+          {
+            "id": "naa.6006016001303c008d8f0bf900a223f9"
+          },
+          {
+            "id": "naa.6006016001303c009871ed77e94b3e96"
+          },
+          {
+            "id": "naa.6006016001303c00bc931323093c815b"
+          },
+          {
+            "id": "naa.6006016001303c0090808d3c78f70c9f"
+          },
+          {
+            "id": "naa.6006016001303c00b63af7fe3254d485"
+          },
+          {
+            "id": "naa.6006016001303c009705a8f2ca8703b2"
+          },
+          {
+            "id": "naa.6006016001303c00920a9cfa63038cdf"
+          },
+          {
+            "id": "naa.6006016001303c0097e056b2436809d3"
+          },
+          {
+            "id": "naa.6006016001303c00a0d0c1e9f887b684"
+          },
+          {
+            "id": "naa.6006016001303c00b92d0776845ce11a"
+          },
+          {
+            "id": "naa.6006016001303c00a935579fb0b88242"
+          },
+          {
+            "id": "naa.6006016001303c00a91a986a5d811383"
+          },
+          {
+            "id": "naa.6006016001303c009f0dff8ada97b369"
+          },
+          {
+            "id": "naa.6006016001303c00a6c39c63db51021e"
+          },
+          {
+            "id": "naa.6006016001303c00ae27269337475bc9"
+          },
+          {
+            "id": "naa.6006016001303c00af6f18fcbc12801a"
+          },
+          {
+            "id": "naa.6006016001303c0099c323adeb60492b"
+          },
+          {
+            "id": "naa.6006016001303c00850c28a3004e783d"
+          },
+          {
+            "id": "naa.6006016001303c00921ea14d04c99f2e"
+          },
+          {
+            "id": "naa.6006016001303c00a1945b1cc5f152d9"
+          },
+          {
+            "id": "naa.6006016001303c009aa717cbc0c38380"
+          },
+          {
+            "id": "naa.6006016001303c00aab250215b4b7765"
+          },
+          {
+            "id": "naa.6006016001303c0081e84054e3e701ba"
+          },
+          {
+            "id": "naa.6006016001303c00b532bd8cdc2d9b53"
+          },
+          {
+            "id": "naa.6006016001303c00a206a89a671316d6"
+          },
+          {
+            "id": "naa.6006016001303c00b7312ea682498ec4"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "res_22",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_22",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "Share95832F05",
+        "description": "",
+        "creationTime": "2016-03-16T05:32:09.713Z",
+        "modificationTime": "2016-03-16T05:32:09.713Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 5368709120,
+        "sizeUsed": 1626718208,
+        "sizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "objectId": 8589934634,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 3221225472,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "filesystem": {
+          "id": "fs_7"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "res_23",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_23",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "fs1",
+        "description": "",
+        "creationTime": "2016-03-17T09:59:03.206Z",
+        "modificationTime": "2016-03-17T09:59:03.206Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 5368709120,
+        "sizeUsed": 1622458368,
+        "sizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          0,
+          6442450944,
+          0
+        ],
+        "objectId": 8589934637,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 3221225472,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_2"
+          }
+        ],
+        "filesystem": {
+          "id": "fs_8"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "res_25",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_25",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "esa_nfs1",
+        "description": "",
+        "creationTime": "2016-03-18T02:19:01.238Z",
+        "modificationTime": "2016-03-18T02:19:01.238Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 5368709120,
+        "sizeUsed": 2440314880,
+        "sizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "objectId": 8589934639,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 3221225472,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "filesystem": {
+          "id": "fs_10"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "res_26",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_ApplicationLeaf%InstanceID=res_26",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "name": "esa_cifs1",
+        "description": "",
+        "creationTime": "2016-03-18T02:21:55.528Z",
+        "modificationTime": "2016-03-18T02:21:55.528Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 5368709120,
+        "sizeUsed": 1638653952,
+        "sizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "objectId": 8589934640,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 3221225472,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "filesystem": {
+          "id": "fs_11"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "sv_2",
+        "operationalStatus": [
+          2
+        ],
+        "type": 8,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "dedupStatus": 0,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_StorageVolumeLeaf%InstanceID=sv_2",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_VOL_OK"
+          ],
+          "descriptions": [
+            "The LUN is operating normally. No action is required."
+          ]
+        },
+        "name": "openstack_lun",
+        "description": "",
+        "creationTime": "2016-03-01T03:21:38.000Z",
+        "modificationTime": "2016-03-01T03:21:42.748Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 107374182400,
+        "sizeAllocated": 0,
+        "perTierSizeUsed": [
+          2952790016,
+          0,
+          0
+        ],
+        "objectId": 42949672969,
+        "metadataSize": 5100273664,
+        "metadataSizeAllocated": 2684354560,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "luns": [
+          {
+            "id": "sv_2"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "sv_6",
+        "operationalStatus": [
+          2
+        ],
+        "type": 8,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "dedupStatus": 0,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_StorageVolumeLeaf%InstanceID=sv_6",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_VOL_OK"
+          ],
+          "descriptions": [
+            "The LUN is operating normally. No action is required."
+          ]
+        },
+        "name": "LUN_Rep_Local_Src",
+        "description": "",
+        "creationTime": "2016-03-08T07:12:53.000Z",
+        "modificationTime": "2016-03-08T07:12:57.697Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 4294967296,
+        "sizeAllocated": 0,
+        "perTierSizeUsed": [
+          2952790016,
+          0,
+          0
+        ],
+        "objectId": 42949672987,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 2684354560,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 1,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "luns": [
+          {
+            "id": "sv_6"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "sv_7",
+        "operationalStatus": [
+          2
+        ],
+        "type": 8,
+        "replicationType": 0,
+        "thinStatus": 1,
+        "dedupStatus": 0,
+        "relocationPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_StorageVolumeLeaf%InstanceID=sv_7",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_VOL_OK"
+          ],
+          "descriptions": [
+            "The LUN is operating normally. No action is required."
+          ]
+        },
+        "name": "LUN_Rep_Local_Dst",
+        "description": "",
+        "creationTime": "2016-03-08T07:14:20.000Z",
+        "modificationTime": "2016-03-08T07:14:24.744Z",
+        "isReplicationDestination": false,
+        "sizeTotal": 4294967296,
+        "sizeAllocated": 0,
+        "perTierSizeUsed": [
+          2952790016,
+          0,
+          0
+        ],
+        "objectId": 42949672989,
+        "metadataSize": 3489660928,
+        "metadataSizeAllocated": 2684354560,
+        "snapsSizeTotal": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "pools": [
+          {
+            "id": "pool_1"
+          }
+        ],
+        "luns": [
+          {
+            "id": "sv_7"
+          }
+        ]
+      }
+    }
+  ]
+}

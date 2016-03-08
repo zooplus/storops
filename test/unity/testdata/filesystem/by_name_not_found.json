@@ -1,0 +1,11 @@
+{
+  "@base": "https://10.244.223.66/api/types/filesystem/instances?filter=name eq \"not_found\"&fields=accessPolicy,backendId,cifsNotifyOnChangeDirDepth,cifsNumUsedFiles,creationTime,dedupExcludeExtensions,dedupExcludePaths,dedupLastScan,dedupNumFileRecalled,dedupNumFilesDeduped,dedupNumFilesScanned,dedupNumFilesTotal,dedupOriginalSizeUsed,dedupPercentSaved,dedupProgress,dedupSizeSaved,dedupSizeUsed,dedupState,description,format,health,hostIOSize,id,instanceId,isCIFSNotifyOnAccessEnabled,isCIFSNotifyOnWriteEnabled,isCIFSOpLocksEnabled,isCIFSSyncWritesEnabled,isDedupRunning,isReadOnly,isSMBCA,isThinEnabled,lockingPolicy,metadataSize,metadataSizeAllocated,modificationTime,name,oid,operationalStatus,perTierSizeUsed,poolFullPolicy,renamePolicy,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapsSize,snapsSizeAllocated,supportedProtocols,tieringPolicy,tieringPolicy,type,nasServer.id,nfsShare.id,storageResource.id,pool.id,cifsShare.id&per_page=2000&compact=true",
+  "updated": "2016-03-23T04:14:07.515Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": []
+}

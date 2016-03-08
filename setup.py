@@ -21,7 +21,7 @@ import os
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.0.17'
+__version__ = '0.1.0'
 
 
 def version():

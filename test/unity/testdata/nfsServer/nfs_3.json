@@ -1,0 +1,13 @@
+{
+  "content": {
+    "id": "nfs_3",
+    "instanceId": "root/emc:EMC_UEM_NFSServerLeaf%InstanceID=nfs_3",
+    "nfsv4Enabled": true,
+    "isSecureEnabled": false,
+    "isExtendedCredentialsEnabled": false,
+    "credentialsCacheTTL": "00:15:00.000",
+    "nasServer": {
+      "id": "nas_5"
+    }
+  }
+}

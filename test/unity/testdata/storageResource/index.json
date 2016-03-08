@@ -1,0 +1,209 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/storageResource?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/storageResource/instances?compact=True&fields=blockHostAccess,datastores,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,filesystem,health,hostVVolDatastore,id,isReplicationDestination,isSnapSchedulePaused,luns,metadataSize,metadataSizeAllocated,name,perTierSizeUsed,pools,relocationPolicy,replicationType,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapSchedule,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,virtualVolumes,vmwareUUID",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/instances/storageResource/sv_2?compact=True&fields=blockHostAccess,datastores,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,filesystem,health,hostVVolDatastore,id,isReplicationDestination,isSnapSchedulePaused,luns,metadataSize,metadataSizeAllocated,name,perTierSizeUsed,pools,relocationPolicy,replicationType,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapSchedule,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,virtualVolumes,vmwareUUID",
+      "response": "sv_2.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_3?compact=True&fields=blockHostAccess,datastores,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,filesystem,health,hostVVolDatastore,id,isReplicationDestination,isSnapSchedulePaused,luns,metadataSize,metadataSizeAllocated,name,perTierSizeUsed,pools,relocationPolicy,replicationType,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapSchedule,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,virtualVolumes,vmwareUUID",
+      "response": "res_3.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_4?compact=True&fields=blockHostAccess,datastores,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,filesystem,health,hostVVolDatastore,id,isReplicationDestination,isSnapSchedulePaused,luns,metadataSize,metadataSizeAllocated,name,perTierSizeUsed,pools,relocationPolicy,replicationType,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapSchedule,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,virtualVolumes,vmwareUUID",
+      "response": "res_4.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_27?compact=True&fields=blockHostAccess,datastores,dedupStatus,description,esxFilesystemBlockSize,esxFilesystemMajorVersion,filesystem,health,hostVVolDatastore,id,isReplicationDestination,isSnapSchedulePaused,luns,metadataSize,metadataSizeAllocated,name,perTierSizeUsed,pools,relocationPolicy,replicationType,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapSchedule,snapsSizeAllocated,snapsSizeTotal,thinStatus,type,virtualVolumes,vmwareUUID",
+      "response": "res_27.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareCreate": [
+          {
+            "path": "/cs1",
+            "cifsServer": {
+              "id": "cifs_2"
+            },
+            "name": "cs1"
+          }
+        ]
+      },
+      "response": "path_not_found.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareCreate": [
+          {
+            "path": "/",
+            "cifsServer": {
+              "id": "cifs_2"
+            },
+            "name": "cs1"
+          }
+        ]
+      },
+      "response": "create_cs1_success.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareCreate": [
+          {
+            "path": "/",
+            "cifsServer": {
+              "id": "cifs_2"
+            },
+            "name": "cs2"
+          }
+        ]
+      },
+      "response": "smb_share_name_exists.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareDelete": [
+          {
+            "cifsShare": {
+              "id": "SMBShare_7"
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "nfsShareCreate": [
+          {
+            "path": "/",
+            "name": "ns1"
+          }
+        ]
+      },
+      "response": "filesystem_not_support_nfs.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_24/action/modifyFilesystem?compact=True",
+      "body": {
+        "nfsShareCreate": [
+          {
+            "path": "/",
+            "name": "ns1",
+            "nfsShareParameters": {
+              "defaultAccess": 2
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_24/action/modifyFilesystem?compact=True",
+      "body": {
+        "nfsShareCreate": [
+          {
+            "path": "/",
+            "name": "ns1",
+            "nfsShareParameters": {
+              "defaultAccess": 3
+            }
+          }
+        ]
+      },
+      "response": "nfs_share_name_exists.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_24/action/modifyFilesystem?compact=True",
+      "body": {
+        "nfsShareDelete": [
+          {
+            "nfsShare": {
+              "id": "NFSShare_4"
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_24?compact=True",
+      "body": {
+        "forceSnapDeletion": true,
+        "forceVvolDeletion": true
+      },
+      "response": "remove_res_24.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "fsParameters": {
+          "size": 5368709120
+        }
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_23/action/modifyFilesystem?compact=True",
+      "body": {
+        "fsParameters": {
+          "size": 2147483648
+        }
+      },
+      "response": "size_too_small.json"
+    },
+    {
+      "url": "/api/types/storageResource/action/createFilesystem?compact=True",
+      "body": {
+        "fsParameters": {
+          "nasServer": {
+            "id": "nas_2"
+          },
+          "size": 3221225472,
+          "fastVPParameters": {
+            "tieringPolicy": 0
+          },
+          "pool": {
+            "id": "pool_1"
+          },
+          "supportedProtocols": 1
+        },
+        "name": "fs3"
+      },
+      "response": "create_res_27.json"
+    },
+    {
+      "url": "/api/types/storageResource/action/createFilesystem?compact=True",
+      "body": {
+        "fsParameters": {
+          "nasServer": {
+            "id": "nas_2"
+          },
+          "size": 3221225472,
+          "pool": {
+            "id": "pool_1"
+          },
+          "supportedProtocols": 0
+        },
+        "name": "fs3"
+      },
+      "response": "filesystem_existed.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_30?compact=True&timeout=0",
+      "body":{"forceSnapDeletion": false, "forceVvolDeletion": false},
+      "response": "remove_res_30_async.json"
+    }
+  ]
+}

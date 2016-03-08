@@ -21,7 +21,7 @@ from storops.exception import VNXFsSnapExistedError
 from storops.vnx.enums import raise_if_err, VNXError
 import storops.vnx.resource.fs
 import storops.vnx.resource.nas_pool
-from storops.vnx.resource.resource import VNXCliResourceList, VNXResource
+from storops.vnx.resource import VNXCliResourceList, VNXResource
 
 __author__ = 'Jay Xu'
 

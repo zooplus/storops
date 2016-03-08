@@ -17,60 +17,70 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-import six
 from hamcrest import equal_to, assert_that, not_none
 
+from storops.vnx.enums import VNXSPEnum
+from storops.vnx.parsers import VNXCliParser, VNXPropDescriptor, \
+    VNXParserConfigFactory
+from storops.vnx.resource import get_vnx_parser
 from test.vnx.cli_mock import MockCli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
-from storops.vnx.enums import VNXSPEnum
-from storops.vnx.parsers import \
-    VNXCliParser, PropDescriptor, get_parser_config, PropMapper, \
-    is_vnx_resource
-from storops.vnx.resource.sg import VNXStorageGroup
+
+A = VNXPropDescriptor('-a', 'Prop A (name):', 'prop_a')
+B = VNXPropDescriptor('-b', 'Prop B:')
+C = VNXPropDescriptor('-c', 'Prop C:')
+ID = VNXPropDescriptor(None, 'ID:', is_index=True)
 
 
 class DemoParser(VNXCliParser):
-    A = PropDescriptor('-a', 'Prop A (name):', 'prop_a')
-    B = PropDescriptor('-b', 'Prop B:')
-    C = PropDescriptor('-c', 'Prop C:')
-    ID = PropDescriptor(None, 'ID:', is_index=True)
+    def __init__(self):
+        super(DemoParser, self).__init__()
+        self.add_property(A, B, C, ID)
 
 
 class DemoParserNonIndex(VNXCliParser):
-    B = PropDescriptor('-b', 'Prop B:')
+    def __init__(self):
+        super(DemoParserNonIndex, self).__init__()
+        self.add_property(VNXPropDescriptor('-b', 'Prop B:'))
 
 
 class DemoParserRegexIndex(VNXCliParser):
-    A = PropDescriptor(None,
-                       r'\s*\w+:(\d+)',
-                       'id',
-                       is_index=True,
-                       is_regex=True,
-                       converter=int)
-    B = PropDescriptor(None,
-                       r'\s*value:\s*(\w+)',
-                       'value',
-                       is_regex=True)
+    def __init__(self):
+        super(DemoParserRegexIndex, self).__init__()
+        self.add_property(
+            VNXPropDescriptor(None,
+                              r'\s*\w+:(\d+)',
+                              'id',
+                              is_index=True,
+                              is_regex=True,
+                              converter=int),
+            VNXPropDescriptor(None,
+                              r'\s*value:\s*(\w+)',
+                              'value',
+                              is_regex=True))
 
 
 class DemoParserMultiIndices(VNXCliParser):
-    A = PropDescriptor(None, 'A:', is_index=True)
-    B = PropDescriptor(None, 'B:', is_index=True)
-    C = PropDescriptor(None, 'C:')
-    D = PropDescriptor(None, 'D:')
+    def __init__(self):
+        super(DemoParserMultiIndices, self).__init__()
+        self.add_property(
+            VNXPropDescriptor(None, 'A:', is_index=True),
+            VNXPropDescriptor(None, 'B:', is_index=True),
+            VNXPropDescriptor(None, 'C:'),
+            VNXPropDescriptor(None, 'D:'))
 
 
 class VNXCliParserTest(TestCase):
     def test_get_property_options(self):
-        options = DemoParser.get_property_options()
+        options = DemoParser().property_options
         self.assertEqual('-a -b -c', ' '.join(options))
 
     def test_get_index_descriptor(self):
         self.assertEqual('ID:',
-                         DemoParser.get_index_descriptor().label)
+                         DemoParser().index_property.label)
 
     def test_get_index_descriptor_none(self):
-        self.assertIsNone(DemoParserNonIndex.get_index_descriptor())
+        self.assertIsNone(DemoParserNonIndex().index_property)
 
     def test_parse(self):
         output = """
@@ -78,9 +88,8 @@ class VNXCliParserTest(TestCase):
                 Prop A (Name): ab (c)
                 Prop B: d ef
                 """
-        parsed = DemoParser.parse(
-            output,
-            [DemoParser.A, DemoParser.ID, DemoParser.C])
+        parser = DemoParser()
+        parsed = parser.parse(output, [A, ID, C])
 
         self.assertEqual('ab (c)', parsed.prop_a)
         self.assertIsNone(parsed.prop_c)
@@ -94,9 +103,8 @@ class VNXCliParserTest(TestCase):
                 Prop B:
                 Prop C: abc
                 """
-        parsed = DemoParser.parse(
-            output,
-            [DemoParser.A, DemoParser.ID, DemoParser.B, DemoParser.C])
+        parser = DemoParser()
+        parsed = parser.parse(output, [A, ID, B, C])
 
         assert_that(parsed.id, equal_to('test'))
         assert_that(parsed.prop_a, equal_to('ab (c)'))
@@ -109,7 +117,7 @@ class VNXCliParserTest(TestCase):
                 id:456
                 value:ghijk
                 """
-        parsed = DemoParserRegexIndex.parse_all(output)
+        parsed = DemoParserRegexIndex().parse_all(output)
         self.assertEqual(2, len(parsed))
         for i in parsed:
             if i.id == 123:
@@ -120,7 +128,7 @@ class VNXCliParserTest(TestCase):
                 self.fail('id not recognized.')
 
     def test_all_options(self):
-        options = DemoParser.all_options()
+        options = DemoParser().all_options
         assert_that(options, equal_to(['-a', '-b', '-c']))
 
     def test_parse_multi_index(self):
@@ -137,41 +145,33 @@ class VNXCliParserTest(TestCase):
         B: b1
         C: c1
         """
-        parsed = DemoParserMultiIndices.parse_all(output)
+        parsed = DemoParserMultiIndices().parse_all(output)
         assert_that(len(parsed), equal_to(2))
-        a0b0 = six.next((i for i in parsed if i.b == 'b0'), None)
+        a0b0 = next(i for i in parsed if i.b == 'b0')
         assert_that(a0b0, not_none())
         assert_that(a0b0.a, equal_to('a0'))
         assert_that(a0b0.b, equal_to('b0'))
         assert_that(a0b0.c, equal_to('c0'))
         assert_that(a0b0.d, equal_to('d0'))
 
-        a0b1 = six.next((i for i in parsed if i.b == 'b1'), None)
+        a0b1 = next(i for i in parsed if i.b == 'b1')
         assert_that(a0b1, not_none())
         assert_that(a0b1.a, equal_to('a0'))
         assert_that(a0b1.b, equal_to('b1'))
         assert_that(a0b1.c, equal_to('c1'))
 
-    def test_is_vnx_resource_clz_name(self):
-        assert_that(is_vnx_resource('VNXStorageGroup'), equal_to(True))
-        assert_that(is_vnx_resource('VNXArray'), equal_to(False))
-
-    def test_is_vnx_resource_clz(self):
-        assert_that(is_vnx_resource(VNXStorageGroup), equal_to(True))
-        assert_that(is_vnx_resource(PropDescriptor), equal_to(False))
-
 
 class VNXStorageGroupHBAParserTest(TestCase):
     def test_parse(self):
-        data = get_parser_config("VNXStorageGroupHBA").parse(STORAGE_GROUP_HBA)
+        data = get_vnx_parser("VNXStorageGroupHBA").parse(STORAGE_GROUP_HBA)
         self.assertEqual('abc.def.dev', data.host_name)
         self.assertEqual('A-3v1', data.sp_port)
         self.assertEqual('10.244.209.72', data.initiator_ip)
         self.assertEqual('1', data.tpgt)
         self.assertEqual('10000000000', data.isid)
         self.assertEqual(
-            ('iqn.1991-05.com.microsoft:abc.def.dev', VNXSPEnum.SP_A, '3'),
-            data.hba)
+            ('iqn.1991-05.com.microsoft:abc.def.dev',
+             str(VNXSPEnum.SP_A), '3'), data.hba)
 
     def test_parse_no_header(self):
         output = """
@@ -182,20 +182,20 @@ class VNXStorageGroupHBAParserTest(TestCase):
                 TPGT:                  1
                 ISID:                  10000000000
                 """
-        data = get_parser_config("VNXStorageGroupHBA").parse(output)
+        data = get_vnx_parser("VNXStorageGroupHBA").parse(output)
         self.assertEqual('abc.def.dev', data.host_name)
         self.assertEqual('A-1v0', data.sp_port)
         self.assertEqual('10.244.209.72', data.initiator_ip)
         self.assertEqual('1', data.tpgt)
         self.assertEqual('10000000000', data.isid)
         self.assertEqual(
-            ('iqn.1991-05.com.microsoft:abc.def.dev', VNXSPEnum.SP_A, '1'),
-            data.hba)
+            ('iqn.1991-05.com.microsoft:abc.def.dev', str(VNXSPEnum.SP_A),
+             '1'), data.hba)
 
 
 class VNXStorageGroupParserTest(TestCase):
     def test_parse(self):
-        parser = get_parser_config('VNXStorageGroup')
+        parser = get_vnx_parser('VNXStorageGroup')
         output = MockCli.read_file('storagegroup_-list_-host_-iscsiAttributes_'
                                    '-gname_microsoft.txt')
         sg = parser.parse(output)
@@ -216,14 +216,14 @@ class VNXStorageGroupParserTest(TestCase):
 class VNXConsistencyGroupParserTest(TestCase):
     def test_parse(self):
         output = MockCli.read_file('snap_-group_-list_-detail.txt')
-        parser = get_parser_config('VNXConsistencyGroup')
+        parser = get_vnx_parser('VNXConsistencyGroup')
         cgs = parser.parse_all(output)
-        cg = six.next((c for c in cgs if c.name == 'test cg name'), None)
+        cg = next(c for c in cgs if c.name == 'test cg name')
         assert_that(cg, not_none())
         self.assertEqual([1, 3], cg.lun_list)
         self.assertEqual('Ready', cg.state)
 
-        cg = six.next((c for c in cgs if c.name == 'another cg'), None)
+        cg = next(c for c in cgs if c.name == 'another cg')
         assert_that(cg, not_none())
         self.assertEqual([23, 24], cg.lun_list)
         self.assertEqual('Offline', cg.state)
@@ -232,7 +232,7 @@ class VNXConsistencyGroupParserTest(TestCase):
 class VNXPoolPropertiesTest(TestCase):
     def test_parse(self):
         output = MockCli.read_file('storagepool_-list_-all_-id_1.txt')
-        parser = get_parser_config('VNXPool')
+        parser = get_vnx_parser('VNXPool')
         pool = parser.parse(output)
         self.assertEqual('Ready', pool.state)
         self.assertEqual(1, pool.pool_id)
@@ -269,7 +269,7 @@ class VNXPoolFeatureParserTest(TestCase):
     """
 
     def test_parse(self):
-        parser = get_parser_config('VNXPoolFeature')
+        parser = get_vnx_parser('VNXPoolFeature')
         parsed = parser.parse(self.output)
         assert_that(parsed.max_pool_luns, equal_to(4000))
         assert_that(parsed.total_pool_luns, equal_to(4))
@@ -278,7 +278,7 @@ class VNXPoolFeatureParserTest(TestCase):
 class VNXLunPropertiesTest(TestCase):
     def test_parse(self):
         output = MockCli.read_file('lun_-list_-all_-l_19.txt')
-        parser = get_parser_config('VNXLun')
+        parser = get_vnx_parser('VNXLun')
         parsed = parser.parse(output)
         wwn = '60:06:01:60:1A:50:35:00:CC:22:61:D6:76:B1:E4:11'
         self.assertEqual(wwn, parsed.wwn)
@@ -293,52 +293,22 @@ class VNXLunPropertiesTest(TestCase):
         self.assertEqual('Ready', parsed.state)
         self.assertEqual('OK(0x0)', parsed.status)
         self.assertEqual('None', parsed.operation)
-        self.assertEqual('SP A', parsed.current_owner)
+        self.assertEqual(VNXSPEnum.SP_A, parsed.current_owner)
         self.assertEqual('N/A', parsed.attached_snapshot)
 
 
-class EmcVNXParserTest(TestCase):
+class VNXParserConfigFactoryTest(TestCase):
     def test_read_properties(self):
         name = 'VNXConsistencyGroup'
-        prop = get_parser_config(name)
-        assert_that(prop.__name__, equal_to(name))
+        prop = get_vnx_parser(name)
+        assert_that(prop.resource_name, equal_to(name))
         assert_that(prop.data_src, equal_to('cli'))
 
     def test_properties_sequence_should_align_with_file(self):
-        props = get_parser_config('VNXSystem')
+        props = get_vnx_parser('VNXSystem')
         assert_that(props.MODEL.sequence, equal_to(0))
         assert_that(props.NAME.sequence, equal_to(5))
 
-
-class PropMapperTest(TestCase):
-    def test_camel_case_to_under_score(self):
-        test_data = {
-            'AbcDef': 'ABC_DEF',
-            'abc def': 'ABC_DEF',
-            'abc:': 'ABC',
-            'SPAWrites': 'SPA_WRITES',
-            'Is Thin LUN': 'IS_THIN_LUN',
-            'TestCIMElement': 'TEST_CIM_ELEMENT'
-        }
-
-        for (k, v) in six.iteritems(test_data):
-            assert_that(PropMapper.camel_case_to_under_score(k).upper(),
-                        equal_to(v))
-
-    def test_camel_case_to_under_score_with_delimiter(self):
-        test_data = {
-            'AbcDef': 'ABC.DEF',
-            'abc def': 'ABC.DEF',
-            'Is Thin LUN': 'IS.THIN.LUN',
-            'abc:': 'ABC',
-            'SPAWrites': 'SPA.WRITES',
-            'TestCIMElement': 'TEST.CIM.ELEMENT',
-            'VALUE_ARRAY': 'VALUE.ARRAY',
-            'LUNs': 'LUNS',
-            'Source LUN(s)': 'SOURCE.LUNS',
-            'Capacity (GBs)': 'CAPACITY.GBS'
-        }
-
-        for (k, v) in six.iteritems(test_data):
-            assert_that(PropMapper.camel_case_to_under_score(k, '.').upper(),
-                        equal_to(v))
+    def test_get_rsc_pkg_name(self):
+        name = VNXParserConfigFactory.get_rsc_pkg_name()
+        assert_that(name, equal_to('storops.vnx.resource'))

@@ -1,0 +1,59 @@
+{
+  "content": {
+    "name": "metric",
+    "attributes": [
+      {
+        "name": "id",
+        "type": "Integer"
+      },
+      {
+        "name": "name",
+        "type": "String"
+      },
+      {
+        "name": "path",
+        "type": "String"
+      },
+      {
+        "name": "product",
+        "type": "Integer"
+      },
+      {
+        "name": "type",
+        "type": "Integer"
+      },
+      {
+        "name": "objectType",
+        "type": "Integer"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "isHistoricalAvailable",
+        "type": "Boolean"
+      },
+      {
+        "name": "isRealtimeAvailable",
+        "type": "Boolean"
+      },
+      {
+        "name": "unit",
+        "type": "MetricUnitEnum"
+      },
+      {
+        "name": "unitDisplayString",
+        "type": "String"
+      },
+      {
+        "name": "metricGroupName",
+        "type": "String"
+      },
+      {
+        "name": "visibility",
+        "type": "VisibilityEnum"
+      }
+    ]
+  }
+}

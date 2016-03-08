@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import re
 
 from storops.lib.common import check_text
-from storops.vnx.resource.resource import VNXCliResource, VNXCliResourceList
+from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
 

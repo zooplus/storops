@@ -1,0 +1,157 @@
+{
+  "content": {
+    "id": "N-345",
+    "state": 4,
+    "instanceId": "root/emc:EMC_UEM_TransactionJobLeaf%InstanceID=N-345",
+    "description": "Delete storage resource",
+    "stateChangeTime": "2016-03-22T10:39:53.561Z",
+    "submitTime": "2016-03-22T10:39:20.033Z",
+    "startTime": "2016-03-22T10:39:20.184Z",
+    "endTime": "2016-03-22T10:39:53.561Z",
+    "elapsedTime": "00:00:33.377",
+    "progressPct": 100,
+    "tasks": [
+      {
+        "state": 2,
+        "name": "job.applicationprovisioningservice.task.DeleteApplicationPrecondition613",
+        "description": "Check storage resource state before deletion",
+        "messages": [
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          }
+        ],
+        "parametersIn": {
+          "deleteRemotePeer": true,
+          "id": "RS_1"
+        },
+        "parametersOut": {
+          "id": "B-2"
+        }
+      },
+      {
+        "state": 2,
+        "name": "job.fileservice.task.DeleteFileSystemPrecondition614",
+        "description": "Check file system state before deletion",
+        "messages": [
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "state": 2,
+        "name": "job.fileservice.task.DeleteFileSystem615",
+        "description": "Delete file system",
+        "messages": [
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "state": 2,
+        "name": "job.applicationprovisioningservice.task.DeleteApplication616",
+        "description": "Delete storage resource",
+        "messages": [
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          },
+          {
+            "errorCode": 0,
+            "messages": [
+              {
+                "locale": "en_US",
+                "message": "Success"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "owner": "System",
+    "requestId": "",
+    "methodName": "storageResource.delete",
+    "statusCodeOut": 0,
+    "messageOut": {
+      "errorCode": 0,
+      "messages": [
+        {
+          "locale": "en_US",
+          "message": "Success"
+        }
+      ]
+    },
+    "isJobCancelable": false,
+    "isJobCancelled": false,
+    "clientData": ""
+  }
+}

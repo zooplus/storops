@@ -1,0 +1,157 @@
+{
+  "content": {
+    "name": "snap",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal instance identifier. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the snap instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Snapshot name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Snapshot description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "storageResource",
+        "type": "storageResource",
+        "description": "Storage resource for which the snapshot was taken as defined by the storageResource resource type. ",
+        "displayValue": "storageResource"
+      },
+      {
+        "name": "lun",
+        "type": "lun",
+        "description": "For a snapshot of a LUN in a Consistency group, the unique identifier of the source LUN as defined by the lun resource type. ",
+        "displayValue": "lun"
+      },
+      {
+        "name": "snapGroup",
+        "type": "snap",
+        "description": "For a snapshot of a LUN in a Consistency group, the unique identifier of the snapshot group to which the snapshot belongs, as defined by the snap resource type. ",
+        "displayValue": "snapGroup"
+      },
+      {
+        "name": "parentSnap",
+        "type": "snap",
+        "description": "For a snapshot of another snapshot, the unique identifier of the parent snapshot, as defined by the snap resource type. ",
+        "displayValue": "parentSnap"
+      },
+      {
+        "name": "creationTime",
+        "type": "DateTime",
+        "description": "Date and time on which the snapshot was taken. ",
+        "displayValue": "creationTime"
+      },
+      {
+        "name": "expirationTime",
+        "type": "DateTime",
+        "description": "Date and time after which the snapshot will expire. ",
+        "displayValue": "expirationTime"
+      },
+      {
+        "name": "creatorType",
+        "type": "SnapCreatorTypeEnum",
+        "description": "Type of creator that created this snapshot. ",
+        "displayValue": "creatorType"
+      },
+      {
+        "name": "creatorUser",
+        "type": "user",
+        "description": "For a user-created snapshot, information about the user that created the snapshot, as defined by the user resource type. ",
+        "displayValue": "creatorUser"
+      },
+      {
+        "name": "creatorSchedule",
+        "type": "snapSchedule",
+        "description": "For a schedule-created snapshot, information about the snapshot schedule that created the snapshot, as defined by the snapSchedule resource type. ",
+        "displayValue": "creatorSchedule"
+      },
+      {
+        "name": "isSystemSnap",
+        "type": "Boolean",
+        "description": "Indicates whether the snapshot is an internal snapshot. Internal snapshots are created by the Replication feature. End user operations are not permitted on internal snapshots. Values are: <ul> <li>true - Snapshot is internal.</li> <li>false - Snapshot is external.</li> </ul> ",
+        "displayValue": "isSystemSnap"
+      },
+      {
+        "name": "isModifiable",
+        "type": "Boolean",
+        "description": "Indicates whether the snapshot is attached or shared in a manner making it writable by clients. Values are: <ul> <li>true - Snapshot can be modified.</li> <li>false - Snapshot cannot be modified.</li> </ul> Snapshots of file systems and VMware NFS datastores are modifiable when they have shares. Snapshots of LUNs and VMware VMFS datastores are modifiable when they are attached. ",
+        "displayValue": "isModifiable"
+      },
+      {
+        "name": "attachedWWN",
+        "type": "String",
+        "description": "For an attached snapshot, the World Wide Name (WWN) of the attached LUN. ",
+        "displayValue": "attachedWWN"
+      },
+      {
+        "name": "accessType",
+        "type": "FilesystemSnapAccessTypeEnum",
+        "description": "For a file system or VMware NFS datastore snapshot, indicates whether the snapshot has checkpoint or protocol type access. ",
+        "displayValue": "accessType"
+      },
+      {
+        "name": "isReadOnly",
+        "type": "Boolean",
+        "description": "Indicates whether the snapshot was created with read-only (checkpoint) access (file system or VMware NFS datastore snapshots only). Values are: <ul> <li>true - Snapshot was created with read-only (checkpoint) access and cannot be modified.</li> <li>false - Snapshot was created with read-write (protocol) access and can be modified.</li> </ul> ",
+        "displayValue": "isReadOnly"
+      },
+      {
+        "name": "lastWritableTime",
+        "type": "DateTime",
+        "description": "If not attached or shared, and was attached or shared in the past, time of last unattach or share deletion. ",
+        "displayValue": "lastWritableTime"
+      },
+      {
+        "name": "isModified",
+        "type": "Boolean",
+        "description": "Indicates if the snapshot may have changed since it was created. Values are: <ul> <li>true - Snapshot is or was attached or shared with read/write access.</li> <li>false - Snapshot was never attached or shared.</li> </ul> ",
+        "displayValue": "isModified"
+      },
+      {
+        "name": "isAutoDelete",
+        "type": "Boolean",
+        "description": "Indicates if this snapshot can be automatically deleted by the system per threshold settings. Values are: <ul> <li>true - Snapshot can be automatically deleted by the system per threshold settings.</li> <li>false - Snapshot cannot be deleted automatically.</li> </ul> ",
+        "displayValue": "isAutoDelete"
+      },
+      {
+        "name": "state",
+        "type": "SnapStateEnum",
+        "description": "The snapshot state in Snapshot state enum. ",
+        "displayValue": "state"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<SnapOpStatusEnum>",
+        "description": "Operational status of the snapshot. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "size",
+        "type": "Integer",
+        "description": "Size of the storage resource when the snapshot was created (LUN snapshots only). ",
+        "displayValue": "size"
+      },
+      {
+        "name": "ioLimitPolicy",
+        "type": "ioLimitPolicy",
+        "description": "IO limit policy that applies to the snapshot, as defined by the ioLimitPolicy resource type. ",
+        "displayValue": "ioLimitPolicy"
+      }
+    ]
+  }
+}

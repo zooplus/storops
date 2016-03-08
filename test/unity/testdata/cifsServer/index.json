@@ -1,0 +1,89 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/cifsServer?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/cifsServer/cifs_2?compact=True&fields=description,domain,fileInterfaces,health,id,instanceId,isStandalone,lastUsedOrganizationalUnit,name,nasServer,netbiosName,smbMultiChannelSupported,smbProtocolVersions,smbcaSupported,workgroup",
+      "response": "cifs_2.json"
+    },
+    {
+      "url": "/api/instances/cifsServer/cifs_3?compact=True&fields=description,domain,fileInterfaces,health,id,instanceId,isStandalone,lastUsedOrganizationalUnit,name,nasServer,netbiosName,smbMultiChannelSupported,smbProtocolVersions,smbcaSupported,workgroup",
+      "response": "cifs_3.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True&fields=description,domain,fileInterfaces,health,id,instanceId,isStandalone,lastUsedOrganizationalUnit,name,nasServer,netbiosName,smbMultiChannelSupported,smbProtocolVersions,smbcaSupported,workgroup",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "name": "c_server1"
+      },
+      "response": "domain_not_specified.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "workgroup": "CEDRIC",
+        "name": "c_server1",
+        "localAdminPassword": "password"
+      },
+      "response": "password_criteria.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "workgroup": "CEDRIC",
+        "name": "c_server1",
+        "localAdminPassword": "Password123!"
+      },
+      "response": "one_smb_server_only.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_5"
+        },
+        "workgroup": "CEDRIC",
+        "name": "c_server1",
+        "localAdminPassword": "Password123!"
+      },
+      "response": "create_cifs_3.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_5"
+        },
+        "workgroup": "CEDRIC",
+        "name": "NAS1130",
+        "localAdminPassword": "Password123!"
+      },
+      "response": "name_existed.json"
+    },
+    {
+      "url": "/api/instances/cifsServer/cifs_3?compact=True",
+      "body": {
+        "skipUnjoin": true
+      },
+      "response": "remove_cifs_3.json"
+    },
+    {
+      "url": "/api/instances/cifsServer/cifs_10?compact=True",
+      "response": "not_found.json"
+    }
+  ]
+}

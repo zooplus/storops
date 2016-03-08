@@ -1,0 +1,73 @@
+{
+  "content": {
+    "name": "nfsServer",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the nfsServer instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the nfsServer instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "hostName",
+        "type": "String",
+        "description": "Host name of the NFS server. An administrator should ensure that NFS clients can resolve NAS Server IP addresses using this name. You can configure this hostname and its production IP address(es) inside hosts file on the Unix client machine; or (recommended) add those records into your DNS. NOTE: normally when the NFS hostname matches with an AD-joined SMB/CIFS Server Computer Name all production interfaces and the hostname are already registered within Microsoft DNS service. ",
+        "displayValue": "hostName"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "NAS server associated with the NFS server. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "fileInterfaces",
+        "type": "List<fileInterface>",
+        "description": "Interfaces that use the NFS protocol to serve the NAS server's file systems. ",
+        "displayValue": "fileInterfaces"
+      },
+      {
+        "name": "nfsv4Enabled",
+        "type": "Boolean",
+        "description": "Indicates whether NFSv4 is enabled on the NAS server specified in the nasServer attribute. When enabled - NFS shares can be accessed either with NFSv3 protocol or NFSv4 protocol. When disabled - NFS shares can only be accessed with NFSv3 protocol. Values are: <ul> <li> true - NFSv4 is enabled on the specified NAS server.</li> <li> false - NFSv4 is disabled on the specified NAS server.</li> </ul> ",
+        "displayValue": "nfsv4Enabled"
+      },
+      {
+        "name": "isSecureEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether secure NFS is enabled on the NFS server. Values are: <ul> <li> true - Secure NFS is enabled.</li> <li> false - Secure NFS is disabled.</li> </ul> ",
+        "displayValue": "isSecureEnabled"
+      },
+      {
+        "name": "kdcType",
+        "type": "KdcTypeEnum",
+        "description": "Type of Kerberos Domain Controller used for secure NFS service. ",
+        "displayValue": "kdcType"
+      },
+      {
+        "name": "servicePrincipalName",
+        "type": "String",
+        "description": "The Service Principal Name (SPN) for the NFS Server. This name is updated automatically when the NFS server configuration changes. ",
+        "displayValue": "servicePrincipalName"
+      },
+      {
+        "name": "isExtendedCredentialsEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the NFS server supports more than 16 Unix groups in a Unix credential. Values are: <ul> <li>true - NFS server supports more than 16 Unix groups in a Unix credential. The NFS Server will send additional request to Unix Directory service to identify Unix groups.</li> <li>false - NFS server does not support more than 16 Unix groups in a Unix credential.</li> </ul> <b>Note:</b> The NFS server builds its own Unix credential when it supports more than 16 groups. This process can slow performance. ",
+        "displayValue": "isExtendedCredentialsEnabled"
+      },
+      {
+        "name": "credentialsCacheTTL",
+        "type": "DateTime",
+        "description": "Sets the Time-To-Live expiration stamp for a Windows entry in the credentials cache. When failed mapping entries expire, the system retries mapping the UID to the SID. ",
+        "displayValue": "credentialsCacheTTL"
+      }
+    ]
+  }
+}

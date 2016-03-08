@@ -21,11 +21,12 @@ import six
 from hamcrest import assert_that, raises
 from hamcrest import equal_to
 
-from test.vnx.nas_mock import MockXmlPost
-from storops.exception import VNXException
+from storops.exception import StoropsException
 from storops.vnx.enums import VNXError, VNXProvisionEnum, \
-    VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType, raise_if_err
-from storops.vnx.resource.nas_client import NasXmlResponse
+    VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType, raise_if_err, \
+    VNXMigrationRate
+from storops.vnx.nas_client import NasXmlResponse
+from test.vnx.nas_mock import MockXmlPost
 
 
 class VNXErrorTest(TestCase):
@@ -119,18 +120,18 @@ class VNXErrorTest(TestCase):
 
     def test_raise_if_err_vnx_error(self):
         def f():
-            raise_if_err('specified lun may not exist', VNXException,
+            raise_if_err('specified lun may not exist', StoropsException,
                          expected_error=VNXError.GENERAL_NOT_FOUND)
 
-        assert_that(f, raises(VNXException, 'specified lun may not exist'))
+        assert_that(f, raises(StoropsException, 'specified lun may not exist'))
 
     def test_raise_if_err_nas_response_input(self):
         def f():
             resp = NasXmlResponse(MockXmlPost.read_file('fs_not_found.xml'))
-            raise_if_err(resp, VNXException,
+            raise_if_err(resp, StoropsException,
                          expected_error=VNXError.FS_NOT_FOUND)
 
-        assert_that(f, raises(VNXException, 'not found'))
+        assert_that(f, raises(StoropsException, 'not found'))
 
 
 class VNXProvisionEnumTest(TestCase):
@@ -184,7 +185,7 @@ class VNXSPEnumTest(TestCase):
         }
 
         for k, v in six.iteritems(data):
-            assert_that(VNXSPEnum.from_str(k), equal_to(v),
+            assert_that(VNXSPEnum.parse(k), equal_to(v),
                         'input: {}'.format(k))
 
     def test_get_sp_index_err(self):
@@ -200,3 +201,8 @@ class VNXSPEnumTest(TestCase):
 class VNXRaidTypeTest(TestCase):
     def test_from_str(self):
         assert_that(VNXRaidType.from_str('r5'), equal_to(VNXRaidType.RAID5))
+
+
+class VNXMigrationRateTest(TestCase):
+    def test_text_type(self):
+        assert_that(six.text_type(VNXMigrationRate.HIGH), equal_to('high'))

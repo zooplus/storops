@@ -17,11 +17,11 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, has_item, raises
+from hamcrest import assert_that, equal_to, has_item, raises, only_contains
 
+from storops.vnx.parsers import get_vnx_parser
 from test.vnx.cli_mock import patch_cli, t_cli
 from storops.exception import VNXConsistencyGroupError
-from storops.vnx.parsers import get_parser_config
 from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.cg import VNXConsistencyGroupList
 from storops.vnx.resource.lun import VNXLun
@@ -38,7 +38,9 @@ class VNXConsistencyGroupListTest(TestCase):
 class VNXConsistencyGroupTest(TestCase):
     @patch_cli()
     def test_list_consistency_group(self):
-        assert_that(len(VNXConsistencyGroup.get(t_cli())), equal_to(2))
+        cg_list = VNXConsistencyGroup.get(t_cli())
+        assert_that(len(cg_list), equal_to(2))
+        assert_that(cg_list.name, only_contains('another cg', 'test cg name'))
 
     @patch_cli()
     def test_properties(self):
@@ -49,7 +51,7 @@ class VNXConsistencyGroupTest(TestCase):
         assert_that(cg.existed, equal_to(True))
 
     def test_update(self):
-        parser = get_parser_config('VNXConsistencyGroup')
+        parser = get_vnx_parser('VNXConsistencyGroup')
         data = {
             parser.NAME.key: 'test cg name',
             parser.LUN_LIST.key: [1, 5, 7],

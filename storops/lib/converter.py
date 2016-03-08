@@ -17,10 +17,11 @@ from __future__ import unicode_literals
 
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import partial
 from operator import is_not
 
+import dateutil.parser
 from past.builtins import filter
 import six
 
@@ -177,9 +178,18 @@ def vnx_time_to_date(value):
     return datetime.utcfromtimestamp(value - 2177452800)
 
 
+def to_datetime(value):
+    return dateutil.parser.parse(value)
+
+
+def to_time_delta(value):
+    hours, minutes, seconds = map(float, value.split(':'))
+    return timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+
 def _to_enum(enum_class):
     def _enum_converter(value):
-        return enum_class.from_str(value)
+        return enum_class.parse(value)
 
     return _enum_converter
 
@@ -190,6 +200,7 @@ to_mirror_view_sync_rate = _to_enum(enums.VNXMirrorViewSyncRate)
 to_raid_type = _to_enum(enums.VNXRaidType)
 to_port_type = _to_enum(enums.VNXPortType)
 to_hex = enums.to_hex
+to_migration_rate_enum = _to_enum(enums.VNXMigrationRate)
 
 
 def boolean_to_str(value, true_str='true', false_str='false'):

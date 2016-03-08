@@ -1,0 +1,39 @@
+{
+  "@base": "https://10.244.223.66/api/types/cifsShare/instances?filter=name eq \"cs1\"&fields=creationTime,description,exportPaths,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,type,umask,filesystem.id,snap.id&per_page=2000&compact=true",
+  "updated": "2016-03-17T11:21:38.117Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "SMBShare_7",
+        "type": 1,
+        "offlineAvailability": 3,
+        "instanceId": "root/emc:EMC_UEM_CIFSShareLeaf%InstanceID=SMBShare_7",
+        "name": "cs1",
+        "path": "/",
+        "exportPaths": [
+          "\\\\nas1130.win2012.dev\\cs1",
+          "\\\\10.244.220.120\\cs1"
+        ],
+        "description": "",
+        "creationTime": "2016-03-17T10:20:21.899Z",
+        "modifiedTime": "2016-03-17T10:20:21.899Z",
+        "isContinuousAvailabilityEnabled": false,
+        "isEncryptionEnabled": false,
+        "isACEEnabled": false,
+        "isABEEnabled": false,
+        "isBranchCacheEnabled": false,
+        "isDFSEnabled": false,
+        "umask": "022",
+        "filesystem": {
+          "id": "fs_8"
+        }
+      }
+    }
+  ]
+}

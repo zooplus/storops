@@ -18,14 +18,15 @@ from __future__ import unicode_literals
 import logging
 
 import functools
+import os
 
 import re
 import six
 from mock import patch
 
-from test.vnx import ConnectorMock
+from test.utils import ConnectorMock
 from storops.lib.common import cache
-from storops.vnx.cli import CliClient
+from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.system import VNXSystem
 
 __author__ = 'Cedric Zhuang'
@@ -33,7 +34,7 @@ __author__ = 'Cedric Zhuang'
 log = logging.getLogger(__name__)
 
 
-@cache()
+@cache
 def t_cli():
     """ get the test cli client
 
@@ -42,7 +43,7 @@ def t_cli():
     return CliClient("10.110.26.101", heartbeat_interval=0)
 
 
-@cache()
+@cache
 def t_vnx():
     """ get the test vnx instance
 
@@ -52,7 +53,7 @@ def t_vnx():
 
 
 class MockCli(ConnectorMock):
-    base_folder = 'block_output'
+    base_folder = os.path.join('vnx', 'testdata', 'block_output')
 
     def get_folder(self, inputs):
         return self.base_folder
@@ -122,8 +123,8 @@ def extract_command(func):
         return ' '.join(map(six.text_type, commands))
 
     @functools.wraps(func)
-    @patch(target='storops.vnx.cli.CliClient.execute', new=mock)
-    @patch(target='storops.vnx.cli.CliClient.execute_dual', new=mock)
+    @patch(target='storops.vnx.block_cli.CliClient.execute', new=mock)
+    @patch(target='storops.vnx.block_cli.CliClient.execute_dual', new=mock)
     def func_wrapper(self):
         return func(self)
 

@@ -16,7 +16,7 @@
 from __future__ import unicode_literals
 
 from storops.vnx.enums import raise_if_err
-from storops.vnx.resource.resource import VNXCliResource, VNXCliResourceList
+from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.disk import VNXDiskList
 from storops import exception as ex
@@ -69,10 +69,9 @@ class VNXPool(VNXCliResource):
         return ret
 
     def __setattr__(self, key, value):
-        if self._is_client_available():
-            if key == 'name':
-                self.rename(value)
-                return
+        if key == 'name':
+            self.rename(value)
+            return
         super(VNXPool, self).__setattr__(key, value)
 
     def rename(self, new_name):

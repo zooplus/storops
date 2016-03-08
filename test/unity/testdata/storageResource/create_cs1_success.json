@@ -1,0 +1,11 @@
+{
+  "cifsShareCreate": [
+    {
+      "path": "/",
+      "cifsServer": {
+        "id": "cifs_2"
+      },
+      "name": "cs1"
+    }
+  ]
+}

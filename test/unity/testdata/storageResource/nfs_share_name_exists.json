@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 151036164,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "An NFS share with the specified name already exists. (Error Code:0x900a104)"
+      }
+    ],
+    "created": "2016-03-17T15:43:19.357Z"
+  }
+}

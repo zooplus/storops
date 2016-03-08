@@ -59,7 +59,7 @@ class VNXPoolTest(TestCase):
     @patch_cli()
     def test_get_pool_from_list(self):
         pools = VNXPool.get(t_cli())
-        pool = pools[0]
+        pool = next(p for p in pools if p.pool_id == 4)
         # no error should be thrown here
         pool.update()
 

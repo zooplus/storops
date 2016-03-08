@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/job?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/job/instances?compact=True&fields=clientData,description,elapsedTime,endTime,estRemainTime,id,instanceId,isJobCancelable,isJobCancelled,messageOut,methodName,owner,parametersOut,progressPct,requestId,startTime,state,stateChangeTime,statusCodeOut,submitTime,tasks",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/instances/job/N-345?compact=True&fields=clientData,description,elapsedTime,endTime,estRemainTime,id,instanceId,isJobCancelable,isJobCancelled,messageOut,methodName,owner,parametersOut,progressPct,requestId,startTime,state,stateChangeTime,statusCodeOut,submitTime,tasks",
+      "response": "N-345.json"
+    }
+  ]
+}

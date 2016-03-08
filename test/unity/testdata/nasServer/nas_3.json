@@ -1,0 +1,42 @@
+{
+  "content": {
+    "id": "nas_3",
+    "replicationType": 0,
+    "type": 64,
+    "currentUnixDirectoryService": 0,
+    "instanceId": "root/emc:EMC_UEM_FileServerContainerLeaf%InstanceID=nas_3",
+    "objectId": 103079215109,
+    "name": "nas3",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "sizeAllocated": 2952790016,
+    "isSystem": false,
+    "isReplicationEnabled": false,
+    "isReplicationDestination": false,
+    "isMultiProtocolEnabled": false,
+    "credentialsCacheTTL": "00:15:00.000",
+    "isExtendedUnixCredentialEnabled": false,
+    "homeSP": {
+      "id": "spa"
+    },
+    "currentSP": {
+      "id": "spa"
+    },
+    "pool": {
+      "id": "pool_1"
+    },
+    "preferredInterfaceSettings": {
+      "id": "preferred_if_3"
+    },
+    "virusChecker": {
+      "id": "cava_3"
+    }
+  }
+}

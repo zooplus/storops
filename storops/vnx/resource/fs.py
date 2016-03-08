@@ -26,7 +26,7 @@ from storops.lib.common import check_int
 from storops.vnx.enums import raise_if_err, VNXError
 import storops.vnx.resource.mover
 import storops.vnx.resource.nas_pool
-from storops.vnx.resource.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource import VNXResource, VNXCliResourceList
 
 __author__ = 'Jay Xu'
 
@@ -48,6 +48,15 @@ class VNXFileSystem(VNXResource):
         self._name = name
         self._fs_id = fs_id
         self._cli = cli
+
+    @classmethod
+    def get(cls, cli, name=None, fs_id=None):
+
+        if name is not None or fs_id is not None:
+            ret = VNXFileSystem(name=name, fs_id=fs_id, cli=cli)
+        else:
+            ret = VNXFileSystemList(cli=cli)
+        return ret
 
     def get_name(self):
         return self._get_name()

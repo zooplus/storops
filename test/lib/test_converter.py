@@ -15,10 +15,10 @@
 #    under the License.
 from __future__ import unicode_literals
 
-
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, none, has_items
+from datetime import datetime
+from hamcrest import assert_that, equal_to, none, has_items, instance_of
 
 from storops.lib import converter
 
@@ -145,3 +145,16 @@ class ConverterTest(TestCase):
     def test_to_hex(self):
         ret = converter.to_hex(13691781134)
         assert_that(ret, equal_to('0x33018000e'))
+
+    def test_to_datetime(self):
+        ret = converter.to_datetime('2016-03-02T02:43:34.014Z')
+        assert_that(ret, instance_of(datetime))
+        assert_that(str(ret), equal_to('2016-03-02 02:43:34.014000+00:00'))
+
+    def test_to_time_delta_more_than_1_day(self):
+        ret = converter.to_time_delta("31:02:34.567")
+        assert_that(str(ret), equal_to('1 day, 7:02:34.567000'))
+
+    def test_to_time_delta_zero(self):
+        ret = converter.to_time_delta("00:00:00.000")
+        assert_that(str(ret), equal_to('0:00:00'))
