@@ -20,10 +20,10 @@ from multiprocessing.pool import ThreadPool
 from time import sleep
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, close_to
+from hamcrest import assert_that, equal_to, close_to, only_contains
 
 from storops.lib.common import Dict, Enum, WeightedAverage, \
-    synchronized, cache, text_var, int_var, enum_var
+    synchronized, cache, text_var, int_var, enum_var, yes_no_var
 from storops.vnx.enums import VNXRaidType
 
 
@@ -210,16 +210,22 @@ class SynchronizedTest(TestCase):
 
 class VarTest(TestCase):
     def test_text_var(self):
-        assert_that(text_var('-a', 'a'), equal_to(['-a', 'a']))
-        assert_that(text_var(None, 'a'), equal_to(['a']))
+        assert_that(text_var('-a', 'a'), only_contains('-a', 'a'))
+        assert_that(text_var(None, 'a'), only_contains('a'))
         assert_that(text_var('-a', None), equal_to([]))
 
     def test_int_var(self):
-        assert_that(int_var('-a', '1'), equal_to(['-a', 1]))
-        assert_that(int_var(None, '1'), equal_to([1]))
+        assert_that(int_var('-a', '1'), only_contains('-a', 1))
+        assert_that(int_var(None, '1'), only_contains(1))
         assert_that(int_var('-a', None), equal_to([]))
 
     def test_enum_var(self):
-        assert_that(enum_var('-a', 'r5', VNXRaidType), equal_to(['-a', 'r5']))
-        assert_that(enum_var(None, 'r5', VNXRaidType), equal_to(['r5']))
+        assert_that(enum_var('-a', 'r5', VNXRaidType),
+                    only_contains('-a', 'r5'))
+        assert_that(enum_var(None, 'r5', VNXRaidType), only_contains('r5'))
         assert_that(enum_var('-a', None, VNXRaidType), equal_to([]))
+
+    def test_yes_no_var(self):
+        assert_that(yes_no_var('-a', True), only_contains('-a', 'yes'))
+        assert_that(yes_no_var('-a', False), only_contains('-a', 'no'))
+        assert_that(yes_no_var('-a', None), equal_to([]))

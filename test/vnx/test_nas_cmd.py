@@ -34,7 +34,7 @@ class NasCommandTest(TestCase):
         assert_that(cmd, equal_to('/nas/bin/nas_cel -interconnect -l'))
 
     def test_get_dm_interfaces_all_mover(self):
-        cmd = ' '.join(self.cmd.get_dm_interfaces())
+        cmd = ' '.join(self.cmd.get_dm_interfaces(is_vdm=False))
         assert_that(cmd, equal_to('/nas/bin/nas_server -i -all'))
 
     def test_get_dm_interfaces_all_vdm(self):
@@ -42,11 +42,12 @@ class NasCommandTest(TestCase):
         assert_that(cmd, equal_to('/nas/bin/nas_server -i -vdm -all'))
 
     def test_get_dm_interfaces_mover_name(self):
-        cmd = ' '.join(self.cmd.get_dm_interfaces(mover_name='server_2'))
+        cmd = ' '.join(
+            self.cmd.get_dm_interfaces(name='server_2', is_vdm=False))
         assert_that(cmd, equal_to('/nas/bin/nas_server -i server_2'))
 
     def test_get_dm_interfaces_vdm_name(self):
-        cmd = ' '.join(self.cmd.get_dm_interfaces(vdm_name='VDM_ESA'))
+        cmd = ' '.join(self.cmd.get_dm_interfaces(name='VDM_ESA', is_vdm=True))
         assert_that(cmd, equal_to('/nas/bin/nas_server -i -vdm VDM_ESA'))
 
     def test_attach_nfs_interface(self):

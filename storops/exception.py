@@ -173,6 +173,10 @@ class VNXModifyLunError(VNXLunError):
     pass
 
 
+class VNXLunNotFoundError(VNXLunError):
+    pass
+
+
 class VNXRemoveLunError(VNXLunError):
     pass
 

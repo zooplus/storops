@@ -288,8 +288,8 @@ class VNXNasClient(VNXNasConnections):
         return NasXmlBuilder().remove_vdm(vdm_id)
 
     @nas_command
-    def get_dm_interfaces(self, vdm_name=None, mover_name=None, is_vdm=False):
-        return NasCommand.get_dm_interfaces(vdm_name, mover_name, is_vdm)
+    def get_dm_interfaces(self, name=None, is_vdm=True):
+        return NasCommand.get_dm_interfaces(name, is_vdm)
 
     @nas_command
     def attach_nfs_interface(self, if_name, vdm_name=None):

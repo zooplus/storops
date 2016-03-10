@@ -1,4 +1,4 @@
-# VNX CLI Python API
+# Storops library
 
 Python API to manage VNX resources.
-It uses naviseccli to communicate with the array.
+

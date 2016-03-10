@@ -92,7 +92,7 @@ class VNXVdm(VNXResource):
         re_pattern = ('Interfaces to services mapping:'
                       '\s*(?P<interfaces>(\s*interface=.*)*)')
 
-        out = self._cli.get_dm_interfaces(vdm_name=self._get_name(),
+        out = self._cli.get_dm_interfaces(name=self._get_name(),
                                           is_vdm=True)
 
         m = re.search(re_pattern, out)

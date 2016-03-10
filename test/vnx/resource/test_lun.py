@@ -23,7 +23,7 @@ from hamcrest import assert_that, equal_to, contains_string, has_item, \
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
-    VNXDedupError, VNXRemoveLunError, VNXCreateSnapError
+    VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -318,12 +318,12 @@ class VNXLunTest(TestCase):
         assert_that(set_property, raises(VNXDedupError, 'disabled or'))
 
     @patch_cli()
-    def test_remove_lun_error(self):
+    def test_remove_lun_not_exists(self):
         def f():
-            l1 = VNXLun(name='l1', cli=t_cli())
+            l1 = VNXLun(name='not_exists', cli=t_cli())
             l1.remove()
 
-        assert_that(f, raises(VNXRemoveLunError, 'failed to remove'))
+        assert_that(f, raises(VNXLunNotFoundError, 'not exist'))
 
     @patch_cli()
     def test_create_snap(self):

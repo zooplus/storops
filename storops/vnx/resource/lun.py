@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
-    VNXMigrationRate, raise_if_err
+    VNXMigrationRate, raise_if_err, VNXError
 from storops.vnx.resource.resource import VNXCliResourceList, VNXCliResource
 import storops.vnx.resource.block_pool
 from storops.vnx.resource.migration import VNXMigrationSession
@@ -235,6 +235,8 @@ class VNXLun(VNXCliResource):
                                         force_detach=force_detach,
                                         poll=self.poll)
 
+        raise_if_err(out, ex.VNXLunNotFoundError,
+                     expected_error=VNXError.GENERAL_NOT_FOUND)
         raise_if_err(out, ex.VNXRemoveLunError, 'failed to remove lun.')
 
     def rename(self, new_name):

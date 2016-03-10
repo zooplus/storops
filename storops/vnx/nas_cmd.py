@@ -83,14 +83,13 @@ class NasCommand(object):
         return '/nas/bin/nas_cel -interconnect -l'.split()
 
     @staticmethod
-    def get_dm_interfaces(vdm_name=None, mover_name=None, is_vdm=False):
+    def get_dm_interfaces(name=None, is_vdm=True):
         cmd = ['/nas/bin/nas_server', '-i']
-        if vdm_name is not None:
-            cmd += text_var('-vdm', vdm_name)
-        elif mover_name is not None:
-            cmd.append(mover_name)
-        elif is_vdm:
-            cmd += ['-vdm', '-all']
+        if is_vdm:
+            cmd.append('-vdm')
+
+        if name is not None:
+            cmd.append(name)
         else:
             cmd.append('-all')
         return cmd
