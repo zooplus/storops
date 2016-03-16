@@ -67,10 +67,10 @@ class VNXSnap(VNXCliResource):
         return VNXSnap(name=new_name, cli=self._cli)
 
     def modify(self, new_name=None, desc=None,
-               auto_delete=None, rw=None):
+               auto_delete=None, allow_rw=None):
         name = self._get_name()
-        out = self._cli.modify_snap(name, new_name, desc, auto_delete, rw,
-                                    poll=self.poll)
+        out = self._cli.modify_snap(name, new_name, desc, auto_delete,
+                                    allow_rw, poll=self.poll)
         raise_if_err(out, ex.VNXSnapError,
                      'failed to modify snap {}.'.format(name))
         if new_name is not None:

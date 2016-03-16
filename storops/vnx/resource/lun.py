@@ -169,7 +169,9 @@ class VNXLun(VNXCliResource):
         out = self._cli.expand_pool_lun(new_size, self.get_id(self),
                                         ignore_thresholds=ignore_thresholds,
                                         poll=self.poll)
-        raise_if_err(out, ex.VNXModifyLunError,
+        raise_if_err(out, ex.VNXLunExpandSizeError, 'target size too small.',
+                     VNXError.LUN_EXPAND_ERROR_SIZE)
+        raise_if_err(out, ex.VNXLunExtendError,
                      'failed to expand lun.')
 
     def cancel_migrate(self):

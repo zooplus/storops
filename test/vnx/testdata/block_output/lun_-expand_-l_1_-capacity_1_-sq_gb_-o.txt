@@ -1,0 +1,1 @@
+SP A: Expansion LUN size must be greater than current LUN size. (0x712d8e04)

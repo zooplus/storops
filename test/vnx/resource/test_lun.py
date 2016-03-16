@@ -23,7 +23,8 @@ from hamcrest import assert_that, equal_to, contains_string, has_item, \
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
-    VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError
+    VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError, \
+    VNXLunExtendError, VNXLunExpandSizeError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -243,13 +244,31 @@ class VNXLunTest(TestCase):
         assert_that(f, raises(VNXModifyLunError, 'may not exist'))
 
     @patch_cli()
-    def test_expand(self):
+    def test_expand_too_large(self):
         def f():
             l = VNXLun(lun_id=0, cli=t_cli())
             l.expand(999999)
 
-        assert_that(f, raises(VNXModifyLunError,
+        assert_that(f, raises(VNXLunExtendError,
                               'capacity specified is not supported'))
+
+    @patch_cli()
+    def test_expand_file_lun(self):
+        def f():
+            l = VNXLun(lun_id=1, cli=t_cli())
+            l.expand(500)
+
+        assert_that(f, raises(VNXLunExtendError,
+                              'affect a File System Storage'))
+
+    @patch_cli()
+    def test_expand_too_small(self):
+        def f():
+            l = VNXLun(lun_id=1, cli=t_cli())
+            l.expand(1)
+
+        assert_that(f, raises(VNXLunExpandSizeError,
+                              'greater than current LUN size'))
 
     def test_get_id(self):
         l1 = VNXLun(lun_id=11)

@@ -73,7 +73,7 @@ class VNXSnapTest(TestCase):
     @patch_cli()
     def test_modify_snap(self):
         snap = VNXSnap(cli=t_cli(), name='s1')
-        snap.modify(new_name='s2', rw=True)
+        snap.modify(new_name='s2', allow_rw=True)
         assert_that(snap._name, equal_to('s2'))
 
     @patch_cli()

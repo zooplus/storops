@@ -196,6 +196,7 @@ class VNXError(Enum):
                         'LUN mapping still exists')
 
     LUN_ALREADY_EXPANDED = 0x712d8e04
+    LUN_EXPAND_ERROR_SIZE = 0x712d8e04
     LUN_EXISTED = 0x712d8d04
     LUN_IS_PREPARING = 0x712d8e0e
     LUN_IN_SG = 'contained in a Storage Group|LUN mapping still exists'

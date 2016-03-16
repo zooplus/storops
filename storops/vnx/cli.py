@@ -507,13 +507,13 @@ class CliClient(object):
 
     @command
     def modify_snap(self, name, new_name=None, desc=None,
-                    auto_delete=None, rw=None):
+                    auto_delete=None, allow_rw=None):
         opt = []
         if new_name is not None and name != new_name:
             opt += text_var('-name', new_name)
         opt += text_var('-descr', desc)
         opt += yes_no_var('-allowAutoDelete', auto_delete)
-        opt += yes_no_var('-allowReadWrite', rw)
+        opt += yes_no_var('-allowReadWrite', allow_rw)
         if len(opt) > 0:
             cmd = ['snap', '-modify', '-id', name] + opt
         else:
