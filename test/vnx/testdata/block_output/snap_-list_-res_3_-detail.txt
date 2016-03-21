@@ -1,0 +1,33 @@
+
+Name:  s1
+Description:
+Creation time:  03/21/16 19:56:55
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  3
+Source CG:  N/A
+Primary LUN(s):  3
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+
+Name:  s2
+Description:
+Creation time:  03/21/16 19:57:06
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  3
+Source CG:  N/A
+Primary LUN(s):  3
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never
+

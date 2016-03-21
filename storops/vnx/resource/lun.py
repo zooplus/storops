@@ -24,7 +24,7 @@ import storops.vnx.resource.block_pool
 from storops.vnx.resource.migration import VNXMigrationSession
 import storops.vnx.resource.sg
 import storops.vnx.resource.cg
-from storops.vnx.resource.snap import VNXSnap
+from storops.vnx.resource.snap import VNXSnap, VNXSnapList
 
 __author__ = 'Cedric Zhuang'
 
@@ -131,6 +131,8 @@ class VNXLun(VNXCliResource):
         out = self._cli.create_snap(self.get_id(self), name, allow_rw,
                                     auto_delete,
                                     poll=self.poll)
+        raise_if_err(out, ex.VNXSnapNameExistedError, 'snap name used.',
+                     VNXError.SNAP_NAME_EXISTED)
         raise_if_err(out, ex.VNXCreateSnapError,
                      'failed to create snap "{}"'.format(name))
         return VNXSnap(name, self._cli)
@@ -151,8 +153,7 @@ class VNXLun(VNXCliResource):
         if name is not None:
             ret = VNXSnap.get(self._cli, name)
         else:
-            snaps = VNXSnap.get(self._cli)
-            ret = [s for s in snaps if self.lun_id in s.source_luns]
+            ret = VNXSnapList(self._cli, res=self.get_id(self))
         return ret
 
     def remove_snap(self, name):
@@ -171,6 +172,9 @@ class VNXLun(VNXCliResource):
                                         poll=self.poll)
         raise_if_err(out, ex.VNXLunExpandSizeError, 'target size too small.',
                      VNXError.LUN_EXPAND_ERROR_SIZE)
+        raise_if_err(out, ex.VNXLunPreparingError,
+                     'LUN is in preparing state.',
+                     VNXError.LUN_IS_PREPARING)
         raise_if_err(out, ex.VNXLunExtendError,
                      'failed to expand lun.')
 
@@ -269,10 +273,13 @@ class VNXLun(VNXCliResource):
 
     def enable_compression(self, rate=None, ignore_thresholds=None):
         lun_id = self.get_id(self)
-        out = self._cli.enable_compression(lun_id, rate, ignore_thresholds,
-                                           poll=self.poll)
-        raise_if_err(out, ex.VNXCompressionError,
-                     'failed to enable compression on {}.'.format(lun_id))
+        out = self._cli.enable_compression(
+            lun_id=lun_id, rate=rate, ignore_thresholds=ignore_thresholds,
+            poll=self.poll)
+        msg = 'failed to enable compression on {}.'.format(lun_id)
+        raise_if_err(out, ex.VNXCompressionAlreadyEnabledError, msg,
+                     VNXError.COMPRESSION_ALREADY_ENABLED)
+        raise_if_err(out, ex.VNXCompressionError, msg)
 
     def disable_compression(self, ignore_thresholds=None):
         lun_id = self.get_id(self)

@@ -26,12 +26,16 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXSnapList(VNXCliResourceList):
+    def __init__(self, cli=None, res=None):
+        super(VNXSnapList, self).__init__(cli=cli)
+        self._res = res
+
     @classmethod
     def get_resource_class(cls):
         return VNXSnap
 
     def _get_raw_resource(self):
-        return self._cli.get_snap()
+        return self._cli.get_snap(res=self._res)
 
 
 class VNXSnap(VNXCliResource):
@@ -52,7 +56,10 @@ class VNXSnap(VNXCliResource):
         return ret
 
     def remove(self):
-        out = self._cli.remove_snap(self._get_name(), poll=self.poll)
+        name = self._get_name()
+        out = self._cli.remove_snap(name, poll=self.poll)
+        raise_if_err(out, ex.VNXSnapNotExistsError,
+                     'failed to remove snap {}.'.format(name))
         raise_if_err(out, ex.VNXRemoveSnapError)
 
     def copy(self, new_name,

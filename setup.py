@@ -1,5 +1,4 @@
 # coding=utf-8
-# coding=utf-8
 # Copyright (c) 2015 EMC Corporation.
 # All Rights Reserved.
 #
@@ -22,7 +21,7 @@ import os
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.0.16'
+__version__ = '0.0.17'
 
 
 def version():

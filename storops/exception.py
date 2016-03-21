@@ -157,7 +157,15 @@ class VNXDetachSnapError(VNXSnapError):
     pass
 
 
+class VNXSnapNameExistedError(VNXSnapError):
+    pass
+
+
 class VNXRemoveSnapError(VNXSnapError):
+    pass
+
+
+class VNXSnapNotExistsError(VNXSnapError):
     pass
 
 
@@ -181,6 +189,10 @@ class VNXLunExpandSizeError(VNXLunExtendError):
     pass
 
 
+class VNXLunPreparingError(VNXLunError):
+    pass
+
+
 class VNXLunNotFoundError(VNXLunError):
     pass
 
@@ -190,6 +202,10 @@ class VNXRemoveLunError(VNXLunError):
 
 
 class VNXCompressionError(VNXLunError):
+    pass
+
+
+class VNXCompressionAlreadyEnabledError(VNXCompressionError):
     pass
 
 

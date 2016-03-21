@@ -470,9 +470,10 @@ class CliClient(object):
         return cmd
 
     @command
-    def get_snap(self, name=None):
+    def get_snap(self, name=None, res=None):
         cmd = ['snap', '-list']
         cmd += text_var('-id', name)
+        cmd += int_var('-res', res)
         cmd.append('-detail')
         return cmd
 

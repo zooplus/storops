@@ -24,7 +24,8 @@ from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError, \
-    VNXLunExtendError, VNXLunExpandSizeError
+    VNXLunExtendError, VNXLunExpandSizeError, VNXLunPreparingError, \
+    VNXSnapNameExistedError, VNXCompressionAlreadyEnabledError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -134,13 +135,11 @@ class VNXLunTest(TestCase):
 
     @patch_cli()
     def test_get_snap(self):
-        lun = VNXLun(lun_id=196, cli=t_cli())
-        assert_that(lun.name, equal_to('Exch-BronzePlan-AppSync-2.2'))
-        assert_that(lun.lun_id, equal_to(196))
+        lun = VNXLun(lun_id=3, cli=t_cli())
         snaps = lun.get_snap()
-        assert_that(len(snaps), equal_to(13))
+        assert_that(len(snaps), equal_to(2))
         for snap in snaps:
-            assert_that(snap.source_luns, has_item(lun.lun_id))
+            assert_that(snap.source_luns, has_item(lun.get_id(lun)))
 
     @patch_cli()
     def test_get_lun_by_id(self):
@@ -270,6 +269,15 @@ class VNXLunTest(TestCase):
         assert_that(f, raises(VNXLunExpandSizeError,
                               'greater than current LUN size'))
 
+    @patch_cli()
+    def test_expand_preparing(self):
+        def f():
+            l = VNXLun(lun_id=1, cli=t_cli())
+            l.expand(12)
+
+        assert_that(f, raises(VNXLunPreparingError,
+                              "is 'Preparing"))
+
     def test_get_id(self):
         l1 = VNXLun(lun_id=11)
         assert_that(VNXLun.get_id(l1), equal_to(11))
@@ -285,7 +293,7 @@ class VNXLunTest(TestCase):
         assert_that(VNXLun.get_id_list(l22, l23), only_contains(22, 23))
 
     @patch_cli()
-    def test_enable_compression(self):
+    def test_enable_compression_failed(self):
         def method():
             l1 = VNXLun(lun_id=19, cli=t_cli())
             l1.enable_compression(VNXCompressionRate.HIGH)
@@ -294,8 +302,18 @@ class VNXLunTest(TestCase):
             l1 = VNXLun(lun_id=19, cli=t_cli())
             l1.is_compressed = True
 
-        assert_that(method, raises(VNXCompressionError, 'already turned on'))
+        assert_that(method, raises(VNXCompressionAlreadyEnabledError,
+                                   'already turned on'))
         assert_that(prop, raises(VNXCompressionError, 'not installed'))
+
+    @patch_cli()
+    def test_enable_compression_ignore_threshold(self):
+        def f():
+            l1 = VNXLun(lun_id=3, cli=t_cli())
+            l1.enable_compression(VNXCompressionRate.LOW, True)
+
+        assert_that(f, raises(VNXCompressionAlreadyEnabledError,
+                              'already turned on'))
 
     @patch_cli()
     def test_disable_compression(self):
@@ -352,6 +370,15 @@ class VNXLunTest(TestCase):
 
         assert_that(f, raises(VNXCreateSnapError,
                               'Cannot create the snapshot'))
+
+    @patch_cli()
+    def test_create_snap_existed(self):
+        def f():
+            l1 = VNXLun(lun_id=3, cli=t_cli())
+            l1.create_snap('s1')
+
+        assert_that(f, raises(VNXSnapNameExistedError,
+                              'already in use'))
 
 
 class VNXLunListTest(TestCase):

@@ -20,8 +20,8 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, raises
 
 from test.vnx.cli_mock import patch_cli, t_cli
-from storops.exception import VNXSnapError, VNXRemoveSnapError
-from storops.vnx.resource.snap import VNXSnap
+from storops.exception import VNXSnapError, VNXSnapNotExistsError
+from storops.vnx.resource.snap import VNXSnap, VNXSnapList
 
 __author__ = 'Cedric Zhuang'
 
@@ -91,5 +91,10 @@ class VNXSnapTest(TestCase):
             snap = VNXSnap(cli=t_cli(), name='s3')
             snap.remove()
 
-        assert_that(f, raises(VNXRemoveSnapError,
+        assert_that(f, raises(VNXSnapNotExistsError,
                               'Cannot destroy the snapshot'))
+
+    @patch_cli()
+    def test_get_by_res(self):
+        snaps = VNXSnapList(cli=t_cli(), res=3)
+        assert_that(len(snaps), equal_to(2))

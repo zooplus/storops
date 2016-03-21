@@ -205,6 +205,8 @@ class VNXError(Enum):
     LUN_IS_NOT_SMP = 'it is not a snapshot mount point'
     LUN_IN_CG = 0x716d8025
 
+    COMPRESSION_ALREADY_ENABLED = 'already turned on'
+
     CG_IS_DELETING = 0x712d8801
     CG_EXISTED = 0x716d8021
     CG_SNAP_NAME_EXISTED = 0x716d8005
