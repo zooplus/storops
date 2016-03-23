@@ -132,8 +132,14 @@ class UnityClient(object):
     def action(self, type_name, obj_id, action, **kwargs):
         base_url = '/api/instances/{}/{}/action/{}'
         url = base_url.format(type_name, obj_id, action)
+        url_params = {}
+        if 'async' in kwargs:
+            async = kwargs['async']
+            del kwargs['async']
+            if async:
+                url_params['timeout'] = 0
         body = self.make_body(kwargs)
-        return self.rest_post(url, body)
+        return self.rest_post(url, body, **url_params)
 
     def type_action(self, type_name, action, **kwargs):
         url = '/api/types/{}/action/{}'.format(type_name, action)

@@ -85,3 +85,11 @@ class UnityNfsShareTest(TestCase):
         share = UnityNfsShare(_id='NFSShare_4', cli=t_rest())
         resp = share.remove()
         assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_remove_nfs_share_async(self):
+        share = UnityNfsShare(_id='NFSShare_6', cli=t_rest())
+        resp = share.remove(async=True)
+        job = resp.job
+        assert_that(job.existed, equal_to(True))
+        assert_that(str(job.est_remain_time), equal_to('0:00:01'))

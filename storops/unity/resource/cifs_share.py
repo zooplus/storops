@@ -50,11 +50,11 @@ class UnityCifsShare(UnityResource):
         resp.raise_if_err()
         return UnityCifsShareList(cli=cli, name=name).first_item
 
-    def remove(self):
+    def remove(self, async=False):
         fs = self.filesystem.verify()
         sr = fs.storage_resource
         param = self._cli.make_body(cifsShare=self)
-        resp = sr.modify_fs(cifsShareDelete=[param])
+        resp = sr.modify_fs(async=async, cifsShareDelete=[param])
         resp.raise_if_err()
         return resp
 

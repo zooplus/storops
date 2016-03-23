@@ -44,11 +44,11 @@ class UnityNfsShare(UnityResource):
         resp.raise_if_err()
         return UnityNfsShareList(cli=cli, name=name).first_item
 
-    def remove(self):
+    def remove(self, async=False):
         fs = self.filesystem.verify()
         sr = fs.storage_resource
         param = self._cli.make_body(nfsShare=self)
-        resp = sr.modify_fs(nfsShareDelete=[param])
+        resp = sr.modify_fs(async=async, nfsShareDelete=[param])
         resp.raise_if_err()
         return resp
 

@@ -202,8 +202,24 @@
     },
     {
       "url": "/api/instances/storageResource/res_30?compact=True&timeout=0",
-      "body":{"forceSnapDeletion": false, "forceVvolDeletion": false},
+      "body": {
+        "forceSnapDeletion": false,
+        "forceVvolDeletion": false
+      },
       "response": "remove_res_30_async.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_32/action/modifyFilesystem?compact=True&timeout=0",
+      "body": {
+        "nfsShareDelete": [
+          {
+            "nfsShare": {
+              "id": "NFSShare_6"
+            }
+          }
+        ]
+      },
+      "response": "remove_nfs_share_6_async.json"
     }
   ]
 }
