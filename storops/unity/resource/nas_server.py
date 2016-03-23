@@ -93,7 +93,7 @@ class UnityNasServer(UnityResource):
                           kdc_username=kdc_username,
                           kdc_password=kdc_password)
 
-    def create_dns_server(self, domain, ip_list):
+    def create_dns_server(self, domain, *ip_list):
         clz = storops.unity.resource.dns_server.UnityFileDnsServer
         return clz.create(self._cli, self, domain=domain, ip_list=ip_list)
 

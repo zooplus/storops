@@ -126,5 +126,12 @@ class UnityNasServerTest(TestCase):
     @patch_rest()
     def test_create_dns_server_success(self):
         server = UnityNasServer.get(t_rest(), 'nas_4')
-        dns = server.create_dns_server('emc.dev', ['2.2.2.2', '3.3.3.3'])
+        dns = server.create_dns_server('emc.dev', '2.2.2.2', '3.3.3.3')
         assert_that(dns.addresses, only_contains('2.2.2.2', '3.3.3.3'))
+
+    @patch_rest()
+    def test_create_dns_single_address(self):
+        server = UnityNasServer.get(t_rest(), 'nas_6')
+        dns = server.create_dns_server('emc.dev', '4.4.4.4')
+        assert_that(dns.existed, equal_to(True))
+        assert_that(dns.addresses, only_contains('4.4.4.4'))

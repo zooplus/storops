@@ -13,6 +13,10 @@
       "response": "dns_3.json"
     },
     {
+      "url": "/api/instances/fileDNSServer/dns_4?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
+      "response": "dns_4.json"
+    },
+    {
       "url": "/api/types/fileDNSServer/instances?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
       "response": "all.json"
     },
@@ -47,6 +51,19 @@
     {
       "url": "/api/instances/fileDNSServer/dns_30?compact=True",
       "response": "remove_not_found.json"
+    },
+    {
+      "url": "/api/types/fileDNSServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_6"
+        },
+        "domain": "emc.dev",
+        "addresses": [
+          "4.4.4.4"
+        ]
+      },
+      "response": "create_dns_4.json"
     }
   ]
 }
