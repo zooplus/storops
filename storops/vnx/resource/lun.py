@@ -15,7 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.lib.common import check_int
+from storops.lib.common import check_int, is_valid, instance_cache, \
+    clear_instance_cache
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, raise_if_err, VNXError
@@ -60,6 +61,7 @@ class VNXLun(VNXCliResource):
         self._lun_id = lun_id
         self._name = name
 
+    @clear_instance_cache
     def _get_raw_resource(self):
         if self._cli is None:
             raise ValueError('client is not available for this resource.')
@@ -68,7 +70,7 @@ class VNXLun(VNXCliResource):
 
     @property
     def is_snap_mount_point(self):
-        return self.primary_lun != 'N/A'
+        return is_valid(self.primary_lun_name)
 
     @staticmethod
     def create(cli,
@@ -129,9 +131,10 @@ class VNXLun(VNXCliResource):
         return ret
 
     @staticmethod
-    def get(cli, lun_id=None, name=None, lun_type=None, poll=True):
+    def get(cli, lun_id=None, name=None, lun_type=None, lun_ids=None,
+            poll=True):
         if lun_id is None and name is None:
-            ret = VNXLunList(cli, lun_type)
+            ret = VNXLunList(cli=cli, lun_type=lun_type, lun_ids=lun_ids)
         else:
             ret = VNXLun(lun_id, name, cli)
         ret.poll = poll
@@ -312,6 +315,27 @@ class VNXLun(VNXCliResource):
         self._update_dedup_state(False)
 
     @property
+    @instance_cache
     def snapshot_mount_points(self):
         smp_ids = self.snapshot_mount_point_ids
-        return VNXLunList(cli=self._cli, lun_ids=smp_ids)
+        return self.get(cli=self._cli, lun_ids=smp_ids)
+
+    @property
+    @instance_cache
+    def attached_snapshot(self):
+        name = self.attached_snapshot_name
+        if is_valid(name):
+            ret = VNXSnap.get(name=name, cli=self._cli)
+        else:
+            ret = None
+        return ret
+
+    @property
+    @instance_cache
+    def primary_lun(self):
+        name = self.primary_lun_name
+        if is_valid(name):
+            ret = self.get(name=name, cli=self._cli)
+        else:
+            ret = None
+        return ret

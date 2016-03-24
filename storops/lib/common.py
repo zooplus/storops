@@ -300,18 +300,35 @@ class Cache(object):
         return func_wrapper
 
     @staticmethod
-    def get_self_cache(the_self, key):
+    def get_self_root_cache(the_self):
         prop_name = '_self_cache_'
         if not hasattr(the_self, prop_name):
             setattr(the_self, prop_name, _cache_holder())
-        return getattr(the_self, prop_name)[key]
+        return getattr(the_self, prop_name)
+
+    @classmethod
+    def get_self_cache(cls, the_self, key):
+        self_root_cache = cls.get_self_root_cache(the_self)
+        return self_root_cache[key]
 
     @staticmethod
-    def get_self_cache_lock(the_self, key):
+    def get_self_cache_lock_map(the_self):
         prop_name = '_self_cache_lock_'
         if not hasattr(the_self, prop_name):
             setattr(the_self, prop_name, _cache_lock_holder())
-        return getattr(the_self, prop_name)[key]
+        return getattr(the_self, prop_name)
+
+    @classmethod
+    def get_self_cache_lock(cls, the_self, key):
+        lock_map = cls.get_self_cache_lock_map(the_self)
+        return lock_map[key]
+
+    @classmethod
+    def clear_self_cache(cls, the_self):
+        lock_map = cls.get_self_cache_lock_map(the_self)
+        lock_map.clear()
+        self_root_cache = cls.get_self_root_cache(the_self)
+        self_root_cache.clear()
 
     @classmethod
     def instance_cache(cls, func):
@@ -339,9 +356,31 @@ class Cache(object):
 
         return func_wrapper
 
+    @classmethod
+    def clear_instance_cache(cls, func):
+        """ clear the instance cache
+
+        Decorate a method of a class, the first parameter is
+        supposed to be `self`.
+        It clear all items cached by the `instance_cache` decorator.
+        """
+
+        @functools.wraps(func)
+        def func_wrapper(*args, **kwargs):
+            if not args:
+                raise ValueError('`self` is not available.')
+            else:
+                the_self = args[0]
+
+            cls.clear_self_cache(the_self)
+            return func(*args, **kwargs)
+
+        return func_wrapper
+
 
 cache = Cache.cache
 instance_cache = Cache.instance_cache
+clear_instance_cache = Cache.clear_instance_cache
 
 
 def check_int(value):
@@ -535,3 +574,7 @@ def get_clz_from_module(module_name, clz_name):
     if hasattr(module, clz_name):
         ret = getattr(module, clz_name)
     return ret
+
+
+def is_valid(value):
+    return value is not None and value != 'N/A'

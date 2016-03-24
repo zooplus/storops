@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, contains_string, has_item, \
-    only_contains, raises, instance_of
+    only_contains, raises, instance_of, none
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
@@ -188,19 +188,34 @@ class VNXLunTest(TestCase):
         assert_that(ms.existed, equal_to(True))
 
     @patch_cli()
+    def test_primary_lun_none(self):
+        lun = self.get_lun()
+        assert_that(lun.primary_lun, none())
+
+    @patch_cli()
+    def test_attached_snapshot_none(self):
+        lun = self.get_lun()
+        assert_that(lun.attached_snapshot, none())
+
+    @patch_cli()
     def test_create_mount_point(self):
         lun = VNXLun(name='l1', cli=t_cli())
         m1 = lun.create_mount_point(mount_point_name='m1')
         assert_that(m1.name, equal_to('m1'))
         assert_that(m1.lun_id, equal_to(4057))
-        assert_that(m1.attached_snapshot, equal_to('s1'))
+        assert_that(m1.attached_snapshot_name, equal_to('s1'))
+        s1 = m1.attached_snapshot
+        assert_that(s1, instance_of(VNXSnap))
+        assert_that(s1._get_name(), equal_to('s1'))
         m2 = lun.create_mount_point(mount_point_name='m2')
         assert_that(lun.snapshot_mount_point_ids, only_contains(4056, 4057))
         assert_that(lun.snapshot_mount_points, instance_of(VNXLunList))
         for smp in lun.snapshot_mount_points:
             assert_that(smp, instance_of(VNXLun))
-            assert_that(smp.primary_lun, equal_to('l1'))
-        assert_that(m2.attached_snapshot, equal_to('N/A'))
+            assert_that(smp.primary_lun_name, equal_to('l1'))
+            assert_that(smp.primary_lun, instance_of(VNXLun))
+            assert_that(smp.primary_lun._get_name(), equal_to('l1'))
+        assert_that(m2.attached_snapshot, none())
 
     @patch_cli()
     def test_attach_snap(self):
@@ -208,7 +223,7 @@ class VNXLunTest(TestCase):
         s1 = VNXSnap(name='s1', cli=t_cli())
         m1.attach_snap(s1)
         m1.update()
-        assert_that(m1.attached_snapshot, equal_to('s1'))
+        assert_that(m1.attached_snapshot._get_name(), equal_to('s1'))
 
     @patch_cli()
     def test_change_name(self):

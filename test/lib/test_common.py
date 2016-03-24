@@ -24,7 +24,7 @@ from hamcrest import assert_that, equal_to, close_to, only_contains, raises
 from storops.exception import EnumValueNotFoundError
 from storops.lib.common import Dict, Enum, WeightedAverage, \
     synchronized, cache, text_var, int_var, enum_var, \
-    yes_no_var, instance_cache, Cache, JsonPrinter
+    yes_no_var, instance_cache, Cache, JsonPrinter, clear_instance_cache
 from storops.vnx.enums import VNXRaidType
 
 
@@ -134,6 +134,10 @@ class SelfCacheA(object):
     def add_base(self, a):
         return a + self.base
 
+    @clear_instance_cache
+    def clear_cache(self):
+        pass
+
 
 class CacheTest(TestCase):
     def setUp(self):
@@ -142,13 +146,13 @@ class CacheTest(TestCase):
         self.b = CacheB()
 
     def test_cache(self):
-        self.assertEqual(10, self.a.do(2, 4))
+        assert_that(self.a.do(2, 4), equal_to(10))
         self.a.base = 1
-        self.assertEqual(10, self.a.do(2, 4))
+        assert_that(self.a.do(2, 4), equal_to(10))
 
-        self.assertEqual(6, self.b.do(2, 4))
+        assert_that(self.b.do(2, 4), equal_to(6))
         self.b.base = 1
-        self.assertEqual(6, self.b.do(2, 4))
+        assert_that(self.b.do(2, 4), equal_to(6))
 
     def test_cache_lock(self):
         assert_that(CacheB().b(), equal_to(0))
@@ -183,6 +187,22 @@ class CacheTest(TestCase):
         assert_that(sa.add_base(2), equal_to(3))
         Cache.clear_cache()
         assert_that(sa.add_base(2), equal_to(3))
+
+    def test_clear_instance_cache_scope(self):
+        sa = SelfCacheA()
+        sa.base = 1
+        assert_that(sa.add_base(2), equal_to(3))
+        sb = SelfCacheA()
+        sb.base = 2
+        assert_that(sb.add_base(2), equal_to(4))
+        sa.base = 5
+        sb.base = 6
+        # cache hit
+        assert_that(sa.add_base(2), equal_to(3))
+        assert_that(sb.add_base(2), equal_to(4))
+        sa.clear_cache()
+        assert_that(sa.add_base(2), equal_to(7))
+        assert_that(sb.add_base(2), equal_to(4))
 
 
 class WeightedAverageTest(TestCase):

@@ -45,7 +45,7 @@ VNXNdu:
       converter: to_bool
 
 
-VNXSP:
+VNXStorageProcessor:
   data_src: cli
   properties:
     - label: "SP ([AB])"
@@ -256,7 +256,9 @@ VNXLun:
       key: snapshot_mount_point_ids
       converter: to_int_arr
     - label: "Attached Snapshot:"
+      key: attached_snapshot_name
     - label: "Primary LUN:"
+      key: primary_lun_name
 
 
 VNXSPPort:

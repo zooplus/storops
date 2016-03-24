@@ -42,7 +42,7 @@ def verify_lun_0(lun):
     assert_that(lun.user_capacity_gbs, equal_to(500.0))
     assert_that(lun.consumed_capacity_gbs, equal_to(512.249))
     assert_that(lun.existed, equal_to(True))
-    assert_that(lun.primary_lun, equal_to('N/A'))
+    assert_that(lun.primary_lun_name, equal_to('N/A'))
     assert_that(lun.is_snap_mount_point, equal_to(False))
 
 
