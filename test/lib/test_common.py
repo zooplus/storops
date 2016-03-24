@@ -24,7 +24,7 @@ from hamcrest import assert_that, equal_to, close_to, only_contains, raises
 from storops.exception import EnumValueNotFoundError
 from storops.lib.common import Dict, Enum, WeightedAverage, \
     synchronized, cache, text_var, int_var, enum_var, \
-    yes_no_var, instance_cache, Cache
+    yes_no_var, instance_cache, Cache, JsonPrinter
 from storops.vnx.enums import VNXRaidType
 
 
@@ -294,3 +294,18 @@ class VarTest(TestCase):
         assert_that(yes_no_var('-a', True), only_contains('-a', 'yes'))
         assert_that(yes_no_var('-a', False), only_contains('-a', 'no'))
         assert_that(yes_no_var('-a', None), equal_to([]))
+
+
+class JsonPrinterDemo(JsonPrinter):
+    def __init__(self):
+        self.a = 1
+        self.b = None
+
+    def _get_properties(self, dec=0):
+        return {'a': self.a, 'b': self.b}
+
+
+class JsonPrinterTest(TestCase):
+    def test_str_remove_null(self):
+        j = JsonPrinterDemo()
+        assert_that(str(j), equal_to('{"JsonPrinterDemo": {"a": 1}}'))

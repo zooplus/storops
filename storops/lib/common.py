@@ -41,6 +41,7 @@ class JsonPrinter(object):
 
     def get_dict_repr(self, dec=0):
         props = self._get_properties(dec)
+        props = dict((k, v) for k, v in props.items() if v is not None)
         return {self.__class__.__name__: props}
 
     def json(self, indent=None):

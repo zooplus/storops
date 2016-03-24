@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, contains_string, has_item, \
-    only_contains, raises
+    only_contains, raises, instance_of
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
@@ -35,7 +35,8 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXLunTest(TestCase):
-    def get_lun(self):
+    @staticmethod
+    def get_lun():
         return VNXLun(lun_id=2, cli=t_cli())
 
     @patch_cli()
@@ -152,10 +153,6 @@ class VNXLunTest(TestCase):
         verify_lun_0(lun)
 
     @patch_cli()
-    def test_get_lun_list(self):
-        assert_that(len(VNXLun.get(t_cli())), equal_to(180))
-
-    @patch_cli()
     def test_create(self):
         lun = VNXLun.create(t_cli(),
                             pool_id=0,
@@ -198,7 +195,11 @@ class VNXLunTest(TestCase):
         assert_that(m1.lun_id, equal_to(4057))
         assert_that(m1.attached_snapshot, equal_to('s1'))
         m2 = lun.create_mount_point(mount_point_name='m2')
-        assert_that(lun.snapshot_mount_points, only_contains(4056, 4057))
+        assert_that(lun.snapshot_mount_point_ids, only_contains(4056, 4057))
+        assert_that(lun.snapshot_mount_points, instance_of(VNXLunList))
+        for smp in lun.snapshot_mount_points:
+            assert_that(smp, instance_of(VNXLun))
+            assert_that(smp.primary_lun, equal_to('l1'))
         assert_that(m2.attached_snapshot, equal_to('N/A'))
 
     @patch_cli()
@@ -382,4 +383,6 @@ class VNXLunTest(TestCase):
 class VNXLunListTest(TestCase):
     @patch_cli()
     def test_get_lun_list(self):
-        assert_that(len(VNXLunList(t_cli())), equal_to(180))
+        lun_list = VNXLunList(t_cli())
+        assert_that(lun_list, instance_of(VNXLunList))
+        assert_that(len(lun_list), equal_to(182))

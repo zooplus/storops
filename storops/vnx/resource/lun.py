@@ -30,9 +30,17 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXLunList(VNXCliResourceList):
-    def __init__(self, cli=None, lun_type=None):
+    def __init__(self, cli=None, lun_type=None, lun_ids=None):
         super(VNXLunList, self).__init__(cli)
         self._lun_type = VNXLunType.parse(lun_type)
+        self._lun_ids = lun_ids
+
+    def filter(self, lun):
+        if self._lun_ids:
+            ret = VNXLun.get_id(lun) in self._lun_ids
+        else:
+            ret = True
+        return ret
 
     @classmethod
     def get_resource_class(cls):
@@ -302,3 +310,8 @@ class VNXLun(VNXCliResource):
 
     def disable_dedup(self):
         self._update_dedup_state(False)
+
+    @property
+    def snapshot_mount_points(self):
+        smp_ids = self.snapshot_mount_point_ids
+        return VNXLunList(cli=self._cli, lun_ids=smp_ids)

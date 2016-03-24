@@ -253,6 +253,7 @@ VNXLun:
     - label: "Consumed Capacity (GBs):"
       converter: to_float
     - label: "Snapshot Mount Points:"
+      key: snapshot_mount_point_ids
       converter: to_int_arr
     - label: "Attached Snapshot:"
     - label: "Primary LUN:"

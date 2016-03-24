@@ -29,7 +29,8 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityJobTest(TestCase):
-    def test_job(self):
+    @staticmethod
+    def test_job():
         return UnityJob(_id='N-345', cli=t_rest())
 
     @patch_rest()
