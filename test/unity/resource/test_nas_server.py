@@ -116,12 +116,26 @@ class UnityNasServerTest(TestCase):
         assert_that(cifs_server.workgroup, equal_to('CEDRIC'))
 
     @patch_rest()
+    def test_enable_cifs_service_success(self):
+        server = UnityNasServer(_id='nas_5', cli=t_rest())
+        server.create_cifs_server(name='c_server1',
+                                  workgroup='CEDRIC',
+                                  local_password='Password123!')
+        # no exception
+
+    @patch_rest()
     def test_create_nfs_server_success(self):
         server = UnityNasServer(_id='nas_5', cli=t_rest())
         nfs_server = server.create_nfs_server(nfs_v4_enabled=True)
         assert_that(nfs_server.id, equal_to('nfs_3'))
         assert_that(nfs_server.nfs_v4_enabled, equal_to(True))
         assert_that(nfs_server.host_name, none())
+
+    @patch_rest()
+    def test_enable_nfs_service_success(self):
+        server = UnityNasServer(_id='nas_5', cli=t_rest())
+        server.create_nfs_server(nfs_v4_enabled=True)
+        # no exception
 
     @patch_rest()
     def test_create_dns_server_success(self):

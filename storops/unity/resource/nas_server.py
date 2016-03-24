@@ -27,7 +27,7 @@ from storops.unity.resource.sp import UnityStorageProcessor
 
 __author__ = 'Jay Xu'
 
-LOH = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class UnityNasServer(UnityResource):
@@ -83,6 +83,21 @@ class UnityNasServer(UnityResource):
                           workgroup=workgroup,
                           local_password=local_password)
 
+    def enable_cifs_service(self, interfaces=None,
+                            netbios_name=None, name=None,
+                            domain=None, domain_username=None,
+                            domain_password=None,
+                            workgroup=None, local_password=None
+                            ):
+        self.create_cifs_server(interfaces=interfaces,
+                                netbios_name=netbios_name,
+                                name=name,
+                                domain=domain,
+                                domain_username=domain_username,
+                                domain_password=domain_password,
+                                workgroup=workgroup,
+                                local_password=local_password)
+
     def create_nfs_server(self, host_name=None, nfs_v4_enabled=True,
                           kdc_type=None, kdc_username=None, kdc_password=None):
         clz = storops.unity.resource.nfs_server.UnityNfsServer
@@ -92,6 +107,15 @@ class UnityNasServer(UnityResource):
                           kdc_type=kdc_type,
                           kdc_username=kdc_username,
                           kdc_password=kdc_password)
+
+    def enable_nfs_service(self, host_name=None, nfs_v4_enabled=True,
+                           kdc_type=None, kdc_username=None,
+                           kdc_password=None):
+        self.create_nfs_server(host_name=host_name,
+                               nfs_v4_enabled=nfs_v4_enabled,
+                               kdc_type=kdc_type,
+                               kdc_username=kdc_username,
+                               kdc_password=kdc_password)
 
     def create_dns_server(self, domain, *ip_list):
         clz = storops.unity.resource.dns_server.UnityFileDnsServer
