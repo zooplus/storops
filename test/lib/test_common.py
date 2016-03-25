@@ -93,6 +93,15 @@ class EnumTest(TestCase):
         ret = SampleEnum.parse('type a')
         assert_that(ret, equal_to(SampleEnum.TYPE_A))
 
+    def test_invalid_value(self):
+        def f():
+            SampleEnum('type c')
+
+        assert_that(f, raises(ValueError, 'not a valid SampleEnum'))
+
+    def test_values(self):
+        assert_that(SampleEnum.values(), only_contains('type a', 'type b'))
+
 
 class CacheA(object):
     def __init__(self):

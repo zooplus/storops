@@ -169,6 +169,16 @@ class VNXTieringEnumTest(TestCase):
     def test_get_opt_not_available(self):
         self.assertRaises(ValueError, VNXTieringEnum.get_opt, 'na')
 
+    def test_invalid_tier_enum(self):
+        def f():
+            VNXTieringEnum('abc')
+
+        assert_that(f, raises(ValueError, 'not a valid VNXTieringEnum'))
+
+    def test_valid_tier_enum(self):
+        auto = VNXTieringEnum('auto')
+        assert_that(auto, equal_to(VNXTieringEnum.AUTO))
+
 
 class VNXSPEnumTest(TestCase):
     def test_from_str(self):

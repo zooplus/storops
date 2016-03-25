@@ -186,6 +186,10 @@ class Enum(_Enum):
     def get_int_index(cls):
         return None
 
+    @classmethod
+    def values(cls):
+        return [m.value for m in cls.__members__.values()]
+
 
 class Dict(dict):
     def __getattr__(self, item):
