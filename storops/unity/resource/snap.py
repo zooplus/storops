@@ -15,13 +15,45 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.unity.enums import FilesystemSnapAccessTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList
+from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Cedric Zhuang'
 
 
 class UnitySnap(UnityResource):
-    pass
+    @classmethod
+    def create(cls, cli, storage_resource, name=None,
+               description=None, is_auto_delete=None,
+               retention_duration=None, is_read_only=None,
+               fs_access_type=None):
+        FilesystemSnapAccessTypeEnum.verify(fs_access_type)
+        sr = UnityStorageResource.get(cli, storage_resource)
+
+        resp = cli.post(cls().resource_class,
+                        storageResource=sr,
+                        name=name,
+                        description=description,
+                        isAutoDelete=is_auto_delete,
+                        retentionDuration=retention_duration,
+                        isReadOnly=is_read_only,
+                        filesystemAccessType=fs_access_type)
+        resp.raise_if_err()
+        return cls(_id=resp.resource_id, cli=cli)
+
+    def create_snap(self, name=None,
+                    description=None, is_auto_delete=None,
+                    retention_duration=None, is_read_only=None,
+                    fs_access_type=None):
+        return self.create(cli=self._cli,
+                           storage_resource=self.storage_resource,
+                           name=name,
+                           description=description,
+                           is_auto_delete=is_auto_delete,
+                           retention_duration=retention_duration,
+                           is_read_only=is_read_only,
+                           fs_access_type=fs_access_type)
 
 
 class UnitySnapList(UnityResourceList):

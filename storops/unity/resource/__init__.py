@@ -113,6 +113,16 @@ class UnityResource(Resource):
                 ret = ret[0]
         return ret
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            ret = (self.get_id() == other.get_id())
+        else:
+            ret = False
+        return ret
+
+    def __hash__(self):
+        return super(UnityResource, self).__hash__()
+
 
 class UnitySingletonResource(UnityResource):
     def __init__(self, cli=None):

@@ -9,8 +9,49 @@
       "response": "171798691852.json"
     },
     {
+      "url": "/api/instances/snap/171798691884?compact=True&fields=accessType,attachedWWN,creationTime,creatorSchedule,creatorType,creatorUser,description,expirationTime,id,instanceId,ioLimitPolicy,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,lun,name,operationalStatus,parentSnap,size,snapGroup,state,storageResource",
+      "response": "171798691884.json"
+    },
+    {
+      "url": "/api/instances/snap/171798691885?compact=True&fields=accessType,attachedWWN,creationTime,creatorSchedule,creatorType,creatorUser,description,expirationTime,id,instanceId,ioLimitPolicy,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,lun,name,operationalStatus,parentSnap,size,snapGroup,state,storageResource",
+      "response": "snap_over_snap.json"
+    },
+    {
       "url": "/api/types/snap/instances?compact=True&fields=accessType,attachedWWN,creationTime,creatorSchedule,creatorType,creatorUser,description,expirationTime,id,instanceId,ioLimitPolicy,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,lun,name,operationalStatus,parentSnap,size,snapGroup,state,storageResource",
       "response": "all.json"
+    },
+    {
+      "url": "/api/types/snap/instances?compact=True",
+      "body": {
+        "storageResource": {
+          "id": "res_23"
+        }
+      },
+      "response": "create_171798691884.json"
+    },
+    {
+      "url": "/api/types/snap/instances?compact=True",
+      "body": {
+        "storageResource": {
+          "id": "res_23"
+        },
+        "name": "2016-03-15_10:56:08"
+      },
+      "response": "name_existed.json"
+    },
+    {
+      "url": "/api/types/snap/instances?compact=True",
+      "body": {
+        "storageResource": {
+          "id": "res_23"
+        },
+        "name": "snap_over_snap"
+      },
+      "response": "create_snap_over_snap.json"
+    },
+    {
+      "url": "/api/instances/snap/171798691885?compact=True",
+      "response": "success.json"
     }
   ]
 }

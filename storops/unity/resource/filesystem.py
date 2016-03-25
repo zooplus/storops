@@ -24,6 +24,7 @@ import storops.unity.resource.pool
 import storops.unity.resource.nfs_share
 import storops.unity.resource.cifs_share
 from storops.unity.resource import UnityResource, UnityResourceList
+from storops.unity.resource.snap import UnitySnap
 from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Jay Xu'
@@ -106,6 +107,19 @@ class UnityFileSystem(UnityResource):
         clz = storops.unity.resource.cifs_share.UnityCifsShare
         return clz.create(self._cli, name=name, fs=self,
                           path=path, cifs_server=cifs_server)
+
+    def create_snap(self, name=None,
+                    description=None, is_auto_delete=None,
+                    retention_duration=None, is_read_only=None,
+                    fs_access_type=None):
+        return UnitySnap.create(cli=self._cli,
+                                storage_resource=self.storage_resource,
+                                name=name,
+                                description=description,
+                                is_auto_delete=is_auto_delete,
+                                retention_duration=retention_duration,
+                                is_read_only=is_read_only,
+                                fs_access_type=fs_access_type)
 
 
 class UnityFileSystemList(UnityResourceList):

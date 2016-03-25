@@ -172,6 +172,11 @@ class UnityFileSystemNameAlreadyExisted(UnityException):
     error_code = 108008464
 
 
+@rest_exception
+class UnitySnapNameInUseError(UnityException):
+    error_code = 1903001605
+
+
 class VNXException(StoropsException):
     pass
 

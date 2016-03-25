@@ -21,7 +21,7 @@ from unittest import TestCase
 from hamcrest import equal_to, assert_that, instance_of, none, raises
 
 from storops.exception import UnityResourceNotFoundError, UnityException, \
-    UnityFileSystemNameAlreadyExisted
+    UnityFileSystemNameAlreadyExisted, UnitySnapNameInUseError
 from storops.unity.enums import FilesystemTypeEnum, TieringPolicyEnum, \
     FSSupportedProtocolEnum, AccessPolicyEnum, FSFormatEnum, \
     ResourcePoolFullPolicyEnum, HostIOSizeEnum, NFSShareDefaultAccessEnum, \
@@ -163,3 +163,18 @@ class UnityFileSystemTest(TestCase):
         share = fs.create_cifs_share('cs1')
         assert_that(share.name, equal_to('cs1'))
         assert_that(share.existed, equal_to(True))
+
+    @patch_rest()
+    def test_create_snap_success(self):
+        fs = UnityFileSystem(_id='fs_8', cli=t_rest())
+        snap = fs.create_snap()
+        assert_that(snap.existed, equal_to(True))
+        assert_that(snap.storage_resource, equal_to(fs.storage_resource))
+
+    @patch_rest()
+    def test_create_snap_name_existed(self):
+        def f():
+            fs = UnityFileSystem(_id='fs_8', cli=t_rest())
+            fs.create_snap(name='2016-03-15_10:56:08')
+
+        assert_that(f, raises(UnitySnapNameInUseError, 'in use'))
