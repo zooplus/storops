@@ -122,6 +122,10 @@ class UnityException(StoropsException):
         return ret
 
 
+class UnityNameNotUniqueError(UnityException):
+    pass
+
+
 @rest_exception
 class UnityResourceNotFoundError(UnityException):
     error_code = 131149829

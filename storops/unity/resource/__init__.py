@@ -15,7 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.exception import NoIndexException
+from storops.exception import NoIndexException, UnityResourceNotFoundError, \
+    UnityNameNotUniqueError
 from storops.lib.resource import Resource, ResourceList
 from storops.unity import parser
 
@@ -105,9 +106,10 @@ class UnityResource(Resource):
             name = filters['name']
             clz_name = clz.get_resource_class().__name__
             if len(ret) == 0:
-                raise ValueError('{}:{} not found.'.format(clz_name, name))
+                raise UnityResourceNotFoundError(
+                    '{}:{} not found.'.format(clz_name, name))
             elif len(ret) > 1:
-                raise ValueError(
+                raise UnityNameNotUniqueError(
                     'multiple {} with name {} found.'.format(clz_name, name))
             else:
                 ret = ret[0]

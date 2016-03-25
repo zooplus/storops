@@ -19,6 +19,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, instance_of, only_contains, raises
 
+from storops.exception import UnityResourceNotFoundError
 from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
 from storops.unity.resource.cifs_share import UnityCifsShareList, \
@@ -195,7 +196,8 @@ class UnitySystemTest(TestCase):
             unity = t_unity()
             unity.get_filesystem(name='not_found')
 
-        assert_that(f, raises(ValueError, 'UnityFileSystem:not_found'))
+        assert_that(f, raises(UnityResourceNotFoundError,
+                              'UnityFileSystem:not_found'))
 
 
 class UnityDpeTest(TestCase):
