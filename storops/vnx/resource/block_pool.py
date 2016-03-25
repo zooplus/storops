@@ -83,9 +83,9 @@ class VNXPool(VNXCliResource):
         ex.raise_if_err(ret, default=ex.VNXCreatePoolError)
         return VNXPool(name=name, cli=cli)
 
-    def remove(self):
-        ret = self._cli.remove_pool(poll=self.poll, **self._get_name_or_id())
-        ex.raise_if_err(ret, default=ex.VNXRemovePoolError)
+    def delete(self):
+        ret = self._cli.delete_pool(poll=self.poll, **self._get_name_or_id())
+        ex.raise_if_err(ret, default=ex.VNXDeletePoolError)
 
     @classmethod
     def get(cls, cli, pool_id=None, name=None):
@@ -122,8 +122,8 @@ class VNXPool(VNXCliResource):
         return lun_clz(lun_id, lun_name, self._cli)
 
     @staticmethod
-    def remove_lun(lun, remove_snapshots=False, force_detach=False):
-        lun.remove(remove_snapshots, force_detach)
+    def delete_lun(lun, delete_snapshots=False, force_detach=False):
+        lun.delete(delete_snapshots, force_detach)
 
     def _get_raw_resource(self):
         return self._cli.get_pool(poll=self.poll, **self._get_name_or_id())

@@ -72,7 +72,7 @@ class NasCommand(object):
         return cmd
 
     @staticmethod
-    def remove_ckpt(ckpt_name):
+    def delete_ckpt(ckpt_name):
         cmd = ['/nas/bin/nas_fs']
         cmd += text_var('-delete', ckpt_name)
         cmd.append('-Force')

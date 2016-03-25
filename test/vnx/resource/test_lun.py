@@ -419,26 +419,26 @@ class VNXLunTest(TestCase):
         assert_that(set_property, raises(VNXDedupError, 'disabled or'))
 
     @patch_cli()
-    def test_remove_lun_not_exists(self):
+    def test_delete_lun_not_exists(self):
         def f():
             l1 = VNXLun(name='not_exists', cli=t_cli())
-            l1.remove()
+            l1.delete()
 
         assert_that(f, raises(VNXLunNotFoundError, 'not exist'))
 
     @patch_cli()
-    def test_remove_lun_in_storage_group(self):
+    def test_delete_lun_in_storage_group(self):
         def f():
             l2 = VNXLun(name='in_sg', cli=t_cli())
-            l2.remove()
+            l2.delete()
 
         assert_that(f, raises(VNXLunInStorageGroupError, 'in a Storage Group'))
 
     @patch_cli()
-    def test_remove_lun_in_cg(self):
+    def test_delete_lun_in_cg(self):
         def f():
             l2 = VNXLun(name='l2', cli=t_cli())
-            l2.remove()
+            l2.delete()
 
         assert_that(f, raises(VNXLunInConsistencyGroupError,
                               'member of a consistency group'))

@@ -80,8 +80,8 @@ class VNXVdm(VNXResource):
         resp.raise_if_err()
         return VNXVdm(name=name, cli=cli)
 
-    def remove(self):
-        resp = self._cli.remove_vdm(self.get_vdm_id())
+    def delete(self):
+        resp = self._cli.delete_vdm(self.get_vdm_id())
         resp.raise_if_err()
         return resp
 
@@ -113,8 +113,8 @@ class VNXVdm(VNXResource):
     def create_interface(self, device, ip, net_mask, vlan_id=0, name=None):
         return self.mover.create_interface(device, ip, net_mask, vlan_id, name)
 
-    def remove_interface(self, ip):
-        return self.mover.remove_interface(ip)
+    def delete_interface(self, ip):
+        return self.mover.delete_interface(ip)
 
     @property
     def physical_devices(self):

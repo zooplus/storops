@@ -97,16 +97,16 @@ class VNXCifsShareTest(unittest.TestCase):
         assert_that(share.path, equal_to('\zzz'))
 
     @patch_nas()
-    def test_remove_success(self):
+    def test_delete_success(self):
         share = VNXCifsShare(name='zzz', mover=self.get_mover_1(), cli=t_nas())
-        resp = share.remove()
+        resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_nas()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             share = VNXCifsShare(name='yyy', mover=self.get_mover_1(),
                                  cli=t_nas())
-            share.remove('CIFS')
+            share.delete('CIFS')
 
         assert_that(f, raises(VNXGeneralNasError, 'No such file'))

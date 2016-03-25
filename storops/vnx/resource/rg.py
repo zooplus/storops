@@ -43,9 +43,9 @@ class VNXRaidGroup(VNXCliResource):
         ex.raise_if_err(ret, default=ex.VNXCreateRaidGroupError)
         return VNXRaidGroup(raid_group_id, cli)
 
-    def remove(self):
-        ret = self._cli.remove_rg(self._get_raid_group_id(), poll=self.poll)
-        ex.raise_if_err(ret, default=ex.VNXRemoveRaidGroupError)
+    def delete(self):
+        ret = self._cli.delete_rg(self._get_raid_group_id(), poll=self.poll)
+        ex.raise_if_err(ret, default=ex.VNXDeleteRaidGroupError)
 
     @classmethod
     def get(cls, cli, raid_group_id=None):

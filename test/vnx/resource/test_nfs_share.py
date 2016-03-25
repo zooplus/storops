@@ -123,18 +123,18 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(share.access_hosts, has_item('6.6.6.6'))
 
     @patch_nas()
-    def test_remove_success(self):
+    def test_delete_success(self):
         mover = self.get_mover_1()
         share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
-        resp = share.remove()
+        resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_nas()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             mover = self.get_mover_1()
             share = VNXNfsShare(cli=t_nas(), mover=mover, path='/not_found')
-            share.remove()
+            share.delete()
 
         assert_that(f, raises(VNXBackendError, 'Invalid argument'))
 

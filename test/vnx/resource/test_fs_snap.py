@@ -79,7 +79,7 @@ class VXNFsSnapTest(unittest.TestCase):
         assert_that(f, raises(VNXFsSnapNameInUseError, 'already in use'))
 
     @patch_post()
-    def test_remove(self):
+    def test_delete(self):
         snap = VNXFsSnap(name='test', cli=t_nas())
-        resp = snap.remove()
+        resp = snap.delete()
         assert_that(resp.is_ok(), equal_to(True))

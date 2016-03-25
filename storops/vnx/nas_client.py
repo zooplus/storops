@@ -176,8 +176,8 @@ class VNXNasClient(VNXNasConnections):
             name, size, pool_id, mover_id, is_vdm)
 
     @xml_set_request
-    def remove_filesystem(self, fs_id):
-        return NasXmlBuilder().remove_filesystem(fs_id)
+    def delete_filesystem(self, fs_id):
+        return NasXmlBuilder().delete_filesystem(fs_id)
 
     @xml_set_request
     def extend_fs(self, fs_id, delta_size, pool_id):
@@ -198,8 +198,8 @@ class VNXNasClient(VNXNasConnections):
             mover_id, domain_name, servers, protocol)
 
     @xml_set_request
-    def remove_dns_domain(self, mover_id, domain_name):
-        return NasXmlBuilder().remove_dns_domain(mover_id, domain_name)
+    def delete_dns_domain(self, mover_id, domain_name):
+        return NasXmlBuilder().delete_dns_domain(mover_id, domain_name)
 
     @xml_get_request
     def get_fs_snap(self, name=None, snap_id=None):
@@ -210,8 +210,8 @@ class VNXNasClient(VNXNasConnections):
         return NasXmlBuilder().create_snap(name, fs_id, pool_id, size)
 
     @xml_set_request
-    def remove_snap(self, snap_id, force=False):
-        return NasXmlBuilder().remove_snap(snap_id, force)
+    def delete_snap(self, snap_id, force=False):
+        return NasXmlBuilder().delete_snap(snap_id, force)
 
     @xml_get_request
     def get_cifs_server(self, name=None, mover_id=None, is_vdm=False):
@@ -238,8 +238,8 @@ class VNXNasClient(VNXNasConnections):
             name, mover_id, is_vdm, join_domain, username, password)
 
     @xml_set_request
-    def remove_cifs_server(self, name, mover_id=None, is_vdm=False):
-        return NasXmlBuilder().remove_cifs_server(name, mover_id, is_vdm)
+    def delete_cifs_server(self, name, mover_id=None, is_vdm=False):
+        return NasXmlBuilder().delete_cifs_server(name, mover_id, is_vdm)
 
     @xml_get_request
     def get_fs_mp(self, path=None, mover_id=None, is_vdm=False):
@@ -250,8 +250,8 @@ class VNXNasClient(VNXNasConnections):
         return NasXmlBuilder().create_fs_mp(path, fs_id, mover_id, is_vdm)
 
     @xml_set_request
-    def remove_fs_mp(self, path, mover_id, is_vdm=False):
-        return NasXmlBuilder().remove_fs_mp(path, mover_id, is_vdm)
+    def delete_fs_mp(self, path, mover_id, is_vdm=False):
+        return NasXmlBuilder().delete_fs_mp(path, mover_id, is_vdm)
 
     @xml_get_request
     def get_mover_host(self, mover_host_id=None):
@@ -264,8 +264,8 @@ class VNXNasClient(VNXNasConnections):
             mover_id, device, ip, net_mask, vlan_id, name)
 
     @xml_set_request
-    def remove_mover_interface(self, mover_id, ip):
-        return NasXmlBuilder().remove_mover_interface(mover_id, ip)
+    def delete_mover_interface(self, mover_id, ip):
+        return NasXmlBuilder().delete_mover_interface(mover_id, ip)
 
     @nas_command
     def get_mover_interconnect_id_list(self):
@@ -280,8 +280,8 @@ class VNXNasClient(VNXNasConnections):
         return NasXmlBuilder().create_vdm(mover_id, name, pool_id)
 
     @xml_set_request
-    def remove_vdm(self, vdm_id):
-        return NasXmlBuilder().remove_vdm(vdm_id)
+    def delete_vdm(self, vdm_id):
+        return NasXmlBuilder().delete_vdm(vdm_id)
 
     @nas_command
     def get_dm_interfaces(self, name=None, is_vdm=True):
@@ -307,8 +307,8 @@ class VNXNasClient(VNXNasConnections):
                                                  host_config)
 
     @xml_set_request
-    def remove_nfs_export(self, mover_id, path):
-        return NasXmlBuilder().remove_nfs_export(mover_id, path)
+    def delete_nfs_export(self, mover_id, path):
+        return NasXmlBuilder().delete_nfs_export(mover_id, path)
 
     @xml_set_request
     def modify_nfs_export(self, mover_id, path, ro=None, host_config=None):
@@ -328,8 +328,8 @@ class VNXNasClient(VNXNasConnections):
                                                  is_vdm, path)
 
     @xml_set_request
-    def remove_cifs_share(self, name, mover_id, server_names, is_vdm=False):
-        return NasXmlBuilder().remove_cifs_share(
+    def delete_cifs_share(self, name, mover_id, server_names, is_vdm=False):
+        return NasXmlBuilder().delete_cifs_share(
             name=name, mover_id=mover_id, server_names=server_names,
             is_vdm=is_vdm)
 

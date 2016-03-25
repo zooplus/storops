@@ -139,8 +139,8 @@ class VNXSPPort(VNXPort):
         return ret
 
     @classmethod
-    def remove_hba(cls, cli, hba_uid):
-        out = cli.remove_hba(hba_uid)
+    def delete_hba(cls, cli, hba_uid):
+        out = cli.delete_hba(hba_uid)
         raise_if_err(out)
 
 

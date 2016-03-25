@@ -60,9 +60,9 @@ class VNXDiskTest(TestCase):
         verify_disk_4_0_e8(disk)
 
     @patch_cli()
-    def test_remove_disk(self):
+    def test_delete_disk(self):
         disk = VNXDisk('0_0_1', t_cli())
-        ret = disk.remove()
+        ret = disk.delete()
         assert_that(ret, has_items(''))
 
     @patch_cli()

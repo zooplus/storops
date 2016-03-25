@@ -179,21 +179,21 @@ class VNXSystem(VNXCliResource):
                                      vport_id=vport_id,
                                      port_type=VNXPortType.FCOE)
 
-    def remove_snap(self, name):
-        self._remove_resource(VNXSnap(name, self._cli))
+    def delete_snap(self, name):
+        self._delete_resource(VNXSnap(name, self._cli))
 
     def create_sg(self, name):
         return VNXStorageGroup.create(name, self._cli)
 
-    def remove_sg(self, name):
-        self._remove_resource(VNXStorageGroup(name, self._cli))
+    def delete_sg(self, name):
+        self._delete_resource(VNXStorageGroup(name, self._cli))
 
     def create_cg(self, name, members=None):
         return VNXConsistencyGroup.create(self._cli, name=name,
                                           members=members)
 
-    def remove_cg(self, name):
-        self._remove_resource(VNXConsistencyGroup(name, self._cli))
+    def delete_cg(self, name):
+        self._delete_resource(VNXConsistencyGroup(name, self._cli))
 
     def get_disk(self, disk_index=None):
         return VNXDisk.get(self._cli, disk_index)
@@ -205,8 +205,8 @@ class VNXSystem(VNXCliResource):
         disks.poll = self.poll
         return disks
 
-    def remove_disk(self, disk_index):
-        self._remove_resource(VNXDisk(disk_index, self._cli))
+    def delete_disk(self, disk_index):
+        self._delete_resource(VNXDisk(disk_index, self._cli))
 
     def install_disk(self, disk_index):
         disk = VNXDisk(disk_index, self._cli)
@@ -218,18 +218,18 @@ class VNXSystem(VNXCliResource):
     def create_rg(self, rg_id, disks, raid_type=None):
         return VNXRaidGroup.create(self._cli, rg_id, disks, raid_type)
 
-    def remove_rg(self, rg_id):
-        self._remove_resource(VNXRaidGroup(rg_id, self._cli))
+    def delete_rg(self, rg_id):
+        self._delete_resource(VNXRaidGroup(rg_id, self._cli))
 
     def create_pool(self, name, disks, raid_type=None):
         return VNXPool.create(self._cli, name, disks, raid_type)
 
-    def _remove_resource(self, resource):
+    def _delete_resource(self, resource):
         resource.poll = self.poll
-        resource.remove()
+        resource.delete()
 
-    def remove_pool(self, name=None, pool_id=None):
-        self._remove_resource(VNXPool(pool_id, name, self._cli))
+    def delete_pool(self, name=None, pool_id=None):
+        self._delete_resource(VNXPool(pool_id, name, self._cli))
 
     def stop_heart_beat(self):
         self._cli.heartbeat.stop()
@@ -264,8 +264,8 @@ class VNXSystem(VNXCliResource):
     def is_fast_cache_enabled(self):
         return self._ndu_list.is_fast_cache_enabled()
 
-    def remove_hba(self, hba_uid):
-        return VNXSPPort.remove_hba(self._cli, hba_uid)
+    def delete_hba(self, hba_uid):
+        return VNXSPPort.delete_hba(self._cli, hba_uid)
 
     def get_block_user(self, name=None):
         return VNXBlockUser.get(cli=self._cli, name=name)

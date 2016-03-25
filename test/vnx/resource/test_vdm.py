@@ -83,16 +83,16 @@ class VNXVdmTest(unittest.TestCase):
         assert_that(dm.root_fs_id, equal_to(245))
 
     @patch_nas()
-    def test_remove_vdm(self):
+    def test_delete_vdm(self):
         dm = VNXVdm(vdm_id=3, cli=t_nas())
-        resp = dm.remove()
+        resp = dm.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_nas()
-    def test_remove_vdm_not_found(self):
+    def test_delete_vdm_not_found(self):
         def f():
             dm = VNXVdm(vdm_id=5, cli=t_nas())
-            dm.remove()
+            dm.delete()
 
         assert_that(f, raises(VNXBackendError, 'not found'))
 

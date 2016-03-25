@@ -350,15 +350,15 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_pool_lun(self,
+    def delete_pool_lun(self,
                         lun_id=None,
                         lun_name=None,
-                        remove_snapshots=False,
+                        delete_snapshots=False,
                         force_detach=False):
         cmd = 'lun -destroy'.split()
         cmd += self._get_lun_opt(lun_id, lun_name)
 
-        if remove_snapshots:
+        if delete_snapshots:
             cmd.append('-destroySnapshots')
 
         if force_detach:
@@ -420,7 +420,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def sg_remove_hlu(self, sg_name, hlu_id):
+    def sg_delete_hlu(self, sg_name, hlu_id):
         cmd = ['storagegroup', '-removehlu']
         cmd += int_var('-hlu', hlu_id)
         cmd += text_var('-gname', sg_name)
@@ -459,11 +459,11 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_hba(self, hba_uid):
+    def delete_hba(self, hba_uid):
         return ['port', '-removeHBA', '-hbauid', hba_uid, '-o']
 
     @command
-    def remove_sg(self, sg_name):
+    def delete_sg(self, sg_name):
         cmd = ['storagegroup', '-destroy']
         cmd += text_var('-gname', sg_name)
         cmd.append('-o')
@@ -522,7 +522,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_snap(self, snap_name):
+    def delete_snap(self, snap_name):
         cmd = ['snap', '-destroy']
         cmd += text_var('-id', snap_name)
         cmd.append('-o')
@@ -562,7 +562,7 @@ class CliClient(object):
         return self._cg_member_op(name, '-addmember', members)
 
     @command
-    def remove_cg_member(self, name, *members):
+    def delete_cg_member(self, name, *members):
         return self._cg_member_op(name, '-rmmember', members)
 
     @command
@@ -570,7 +570,7 @@ class CliClient(object):
         return self._cg_member_op(name, '-replmember', members)
 
     @command
-    def remove_cg(self, name):
+    def delete_cg(self, name):
         cmd = 'snap -group -destroy'.split()
         cmd += text_var('-id', name)
         return cmd
@@ -591,7 +591,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_mirror_view(self, name):
+    def delete_mirror_view(self, name):
         cmd = 'mirror -sync -destroy'.split()
         cmd += text_var('-name', name)
         cmd.append('-o')
@@ -618,7 +618,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_mirror_view_image(self, name, image_id):
+    def delete_mirror_view_image(self, name, image_id):
         return self._mirror_view_image_op(
             '-removeimage', name, image_id)
 
@@ -678,7 +678,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_rg(self, rg_id):
+    def delete_rg(self, rg_id):
         cmd = ['removerg']
         cmd += int_var(None, rg_id)
         return cmd
@@ -693,7 +693,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_pool(self, name=None, pool_id=None):
+    def delete_pool(self, name=None, pool_id=None):
         cmd = ['storagepool', '-destroy']
         cmd += self._get_id_name_opt(pool_id, name)
         cmd.append('-o')
@@ -714,7 +714,7 @@ class CliClient(object):
         return 'networkadmin -get -sp {} -all'.format(sp).split()
 
     @duel_command
-    def remove_disk(self, disk_index):
+    def delete_disk(self, disk_index):
         return 'cru_on_off -messner {} 0'.format(disk_index).split()
 
     @duel_command
@@ -761,7 +761,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_user(self, name, scope=None):
+    def delete_user(self, name, scope=None):
         if scope is None:
             scope = VNXUserScopeEnum.GLOBAL
 

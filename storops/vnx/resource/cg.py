@@ -34,9 +34,9 @@ class VNXConsistencyGroupList(VNXCliResourceList):
     def _get_raw_resource(self):
         return self._cli.get_cg(poll=self.poll)
 
-    def remove_member(self, *lun_list):
+    def delete_member(self, *lun_list):
         for cg in self:
-            cg.remove_member(*lun_list)
+            cg.delete_member(*lun_list)
 
 
 class VNXConsistencyGroup(VNXCliResource):
@@ -63,9 +63,9 @@ class VNXConsistencyGroup(VNXCliResource):
                         default=VNXCreateConsistencyGroupError)
         return VNXConsistencyGroup(name=name, cli=cli)
 
-    def remove(self):
+    def delete(self):
         name = self._get_name()
-        out = self._cli.remove_cg(name, poll=self.poll)
+        out = self._cli.delete_cg(name, poll=self.poll)
         ex.raise_if_err(out, 'error remove cg "{}".'.format(name),
                         default=ex.VNXConsistencyGroupError)
 
@@ -80,9 +80,9 @@ class VNXConsistencyGroup(VNXCliResource):
     def add_member(self, *lun_list):
         self._cg_member_op(self._cli.add_cg_member, lun_list)
 
-    def remove_member(self, *lun_list):
+    def delete_member(self, *lun_list):
         lun_list = list(filter(self.has_member, lun_list))
-        self._cg_member_op(self._cli.remove_cg_member, lun_list)
+        self._cg_member_op(self._cli.delete_cg_member, lun_list)
 
     def replace_member(self, *lun_list):
         self._cg_member_op(self._cli.replace_cg_member, lun_list)

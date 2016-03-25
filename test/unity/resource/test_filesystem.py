@@ -86,17 +86,17 @@ class UnityFileSystemTest(TestCase):
         assert_that(len(fs_list), equal_to(3))
 
     @patch_rest()
-    def test_remove_fs_9(self):
+    def test_delete_fs_9(self):
         fs = UnityFileSystem(_id='fs_9', cli=t_rest())
-        resp = fs.remove(force_snap_delete=True, force_vvol_delete=True)
+        resp = fs.delete(force_snap_delete=True, force_vvol_delete=True)
         assert_that(resp.is_ok(), equal_to(True))
         assert_that(resp.job.existed, equal_to(False))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             fs = UnityFileSystem(_id='fs_99', cli=t_rest())
-            fs.remove(force_snap_delete=True, force_vvol_delete=True)
+            fs.delete(force_snap_delete=True, force_vvol_delete=True)
 
         assert_that(f, raises(UnityResourceNotFoundError))
 
@@ -123,9 +123,9 @@ class UnityFileSystemTest(TestCase):
         assert_that(fs.get_id(), equal_to('fs_12'))
 
     @patch_rest()
-    def test_remove_filesystem_async(self):
+    def test_delete_filesystem_async(self):
         fs = UnityFileSystem(_id='fs_14', cli=t_rest())
-        resp = fs.remove(async=True)
+        resp = fs.delete(async=True)
         assert_that(resp.is_ok(), equal_to(True))
         job = resp.job
         assert_that(job.id, equal_to('N-345'))

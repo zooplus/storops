@@ -22,7 +22,7 @@ from hamcrest import assert_that, raises, equal_to, has_items, \
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_pool_0
-from storops.exception import VNXRemovePoolError, VNXCreatePoolError, \
+from storops.exception import VNXDeletePoolError, VNXCreatePoolError, \
     VNXCreateLunError
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolList, \
     VNXPoolFeature
@@ -112,11 +112,11 @@ class VNXPoolTest(TestCase):
         assert_that(f, raises(VNXCreatePoolError, 'multiple of 5'))
 
     @patch_cli()
-    def test_remove_pool(self):
+    def test_delete_pool(self):
         def f():
-            VNXPool(0, cli=t_cli()).remove()
+            VNXPool(0, cli=t_cli()).delete()
 
-        assert_that(f, raises(VNXRemovePoolError, 'may not exist'))
+        assert_that(f, raises(VNXDeletePoolError, 'may not exist'))
 
     @patch_cli()
     def test_update_with_one_key_only(self):

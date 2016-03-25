@@ -101,10 +101,10 @@ class VNXCifsShare(VNXResource):
             ret = VNXMover(mover_id=self.mover_id, cli=self._cli)
         return ret
 
-    def remove(self, *server_names):
+    def delete(self, *server_names):
         if not server_names:
             server_names = self.cifs_server_names
-        resp = self._cli.remove_cifs_share(
+        resp = self._cli.delete_cifs_share(
             self._get_name(), self.mover.get_mover_id(), server_names,
             self.mover.is_vdm)
         resp.raise_if_err()

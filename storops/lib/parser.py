@@ -54,14 +54,14 @@ class PropMapper(object):
             self._key = self.camel_case_to_under_score(self.label).lower()
         return self._key
 
-    to_remove = re.compile('[\(\)]')
+    to_delete = re.compile('[\(\)]')
     p0 = re.compile(r"[A-Za-z0-9']+")
     p1 = re.compile(r"([^_])([A-Z]s[a-z]+|[A-Z][a-z]{2})")
     p2 = re.compile(r'([a-z0-9])([A-Z])')
 
     @classmethod
     def camel_case_to_under_score(cls, value, delimiter='_'):
-        value = re.sub(cls.to_remove, '', value)
+        value = re.sub(cls.to_delete, '', value)
         value = '_'.join(re.findall(cls.p0, value))
         s1 = re.sub(cls.p1, r'\1_\2', value)
         ret = re.sub(cls.p2, r'\1_\2', s1).lower()

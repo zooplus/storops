@@ -102,17 +102,17 @@ class UnityNasServerTest(TestCase):
         assert_that(f, raises(UnityNasServerNameUsedError, 'in use'))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             server = UnityNasServer(_id='not_found', cli=t_rest())
-            server.remove()
+            server.delete()
 
         assert_that(f, raises(UnityResourceNotFoundError, 'not exist'))
 
     @patch_rest()
-    def test_remove_success(self):
+    def test_delete_success(self):
         server = UnityNasServer(_id='nas_3', cli=t_rest())
-        resp = server.remove()
+        resp = server.delete()
         assert_that(resp.body, equal_to({}))
 
     @patch_rest()

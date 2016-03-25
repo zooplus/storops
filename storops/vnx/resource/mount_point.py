@@ -78,8 +78,8 @@ class VNXFsMountPoint(VNXResource):
         resp.raise_if_err()
         return VNXFsMountPoint(mover, path, cli)
 
-    def remove(self):
-        resp = self._cli.remove_fs_mp(self.get_path(),
+    def delete(self):
+        resp = self._cli.delete_fs_mp(self.get_path(),
                                       self.mover.get_mover_id(),
                                       self.mover.is_vdm)
         resp.raise_if_err()

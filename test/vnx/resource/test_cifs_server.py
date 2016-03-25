@@ -110,16 +110,16 @@ class VNXCifsServerTest(unittest.TestCase):
         assert_that(cifs.domain_joined, equal_to(False))
 
     @patch_post()
-    def test_remove_cifs_server(self):
+    def test_delete_cifs_server(self):
         cifs = VNXCifsServer('test', t_nas())
-        resp = cifs.remove()
+        resp = cifs.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_post()
-    def test_remove_cifs_server_not_found(self):
+    def test_delete_cifs_server_not_found(self):
         def f():
             cifs = VNXCifsServer('test1', t_nas())
-            cifs.remove(1)
+            cifs.delete(1)
 
         assert_that(f, raises(VNXBackendError, 'does not exist'))
 

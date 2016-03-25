@@ -374,6 +374,6 @@ class JsonPrinterDemo(JsonPrinter):
 
 
 class JsonPrinterTest(TestCase):
-    def test_str_remove_null(self):
+    def test_str_delete_null(self):
         j = JsonPrinterDemo()
         assert_that(str(j), equal_to('{"JsonPrinterDemo": {"a": 1}}'))

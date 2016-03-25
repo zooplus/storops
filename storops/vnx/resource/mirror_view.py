@@ -135,12 +135,12 @@ class VNXMirrorView(VNXCliResource):
                 'no secondary image exists for this mirror view.')
         return image.uid
 
-    def remove_image(self, image_id=None):
+    def delete_image(self, image_id=None):
         if image_id is None:
             image_id = self.secondary_image_id
 
         image_id = self._get_image_id(image_id)
-        out = self._cli.remove_mirror_view_image(self._get_name(), image_id,
+        out = self._cli.delete_mirror_view_image(self._get_name(), image_id,
                                                  poll=self.poll)
         raise_if_err(out, default=VNXMirrorException)
 
@@ -171,12 +171,12 @@ class VNXMirrorView(VNXCliResource):
                                                   poll=self.poll)
         raise_if_err(out, default=VNXMirrorException)
 
-    def remove(self, force=False):
+    def delete(self, force=False):
         if force:
             if self.secondary_image:
-                self.remove_image()
+                self.delete_image()
 
-        out = self._cli.remove_mirror_view(self._get_name())
+        out = self._cli.delete_mirror_view(self._get_name())
         raise_if_err(out, default=VNXMirrorException)
 
 

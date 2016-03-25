@@ -82,8 +82,8 @@ class VNXDisk(VNXCliResource):
             ret = VNXDisk(index, cli)
         return ret
 
-    def remove(self):
-        return self._cli.remove_disk(self._index, poll=self.poll)
+    def delete(self):
+        return self._cli.delete_disk(self._index, poll=self.poll)
 
     def install(self):
         return self._cli.install_disk(self._index, poll=self.poll)

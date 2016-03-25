@@ -87,8 +87,8 @@ class VNXMoverRef(VNXResource):
         resp.raise_if_err()
         return resp
 
-    def remove_dns(self, domain_name):
-        resp = self._cli.remove_dns_domain(self.get_mover_id(), domain_name)
+    def delete_dns(self, domain_name):
+        resp = self._cli.delete_dns_domain(self.get_mover_id(), domain_name)
         resp.raise_if_err()
         return resp
 
@@ -161,9 +161,9 @@ class VNXMover(VNXMoverRef):
         resp.raise_if_err()
         return VNXMoverInterface(mover=self, cli=self._cli, ip=ip)
 
-    def remove_interface(self, ip):
+    def delete_interface(self, ip):
         interface = next(i for i in self.interfaces if i.ip_addr == ip)
-        return interface.remove()
+        return interface.delete()
 
 
 class VNXMoverInterfaceList(VNXCliResourceList):
@@ -192,9 +192,9 @@ class VNXMoverInterface(VNXResource):
             ret = self.ip_addr
         return ret
 
-    def remove(self):
+    def delete(self):
         mover_id = self._mover.get_mover_id()
-        resp = self._cli.remove_mover_interface(mover_id, self.get_ip())
+        resp = self._cli.delete_mover_interface(mover_id, self.get_ip())
         resp.raise_if_err()
         return resp
 

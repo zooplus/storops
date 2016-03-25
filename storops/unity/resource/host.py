@@ -81,10 +81,10 @@ class UnityHost(UnityResource):
                                       v6_prefix_length=v6_prefix_length,
                                       is_ignored=is_ignored)
 
-    def remove_ip_port(self, address):
+    def delete_ip_port(self, address):
         for ip_port in self.host_ip_ports:
             if ip_port.address == address:
-                resp = ip_port.remove()
+                resp = ip_port.delete()
                 break
         else:
             resp = None

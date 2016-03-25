@@ -60,7 +60,7 @@ class NfsHostConfig(object):
         return list(set(left + list(right)))
 
     @staticmethod
-    def _remove(left, right):
+    def _delete(left, right):
         if left is None:
             ret = None
         else:
@@ -79,11 +79,11 @@ class NfsHostConfig(object):
         self.rw_hosts = self._add(self.rw_hosts, hosts)
         self.add_access_and_root_hosts(*hosts)
 
-    def remove_hosts(self, *hosts):
-        self.rw_hosts = self._remove(self.rw_hosts, hosts)
-        self.ro_hosts = self._remove(self.ro_hosts, hosts)
-        self.access_hosts = self._remove(self.access_hosts, hosts)
-        self.root_hosts = self._remove(self.root_hosts, hosts)
+    def delete_hosts(self, *hosts):
+        self.rw_hosts = self._delete(self.rw_hosts, hosts)
+        self.ro_hosts = self._delete(self.ro_hosts, hosts)
+        self.access_hosts = self._delete(self.access_hosts, hosts)
+        self.root_hosts = self._delete(self.root_hosts, hosts)
 
 
 class VNXNfsShareList(VNXCliResourceList):
@@ -150,9 +150,9 @@ class VNXNfsShare(VNXResource):
             ret = self.path
         return ret
 
-    def remove(self):
+    def delete(self):
         mover_id = self.get_mover_id()
-        resp = self._cli.remove_nfs_export(mover_id, self.get_path())
+        resp = self._cli.delete_nfs_export(mover_id, self.get_path())
         resp.raise_if_err()
         return resp
 
@@ -186,7 +186,7 @@ class VNXNfsShare(VNXResource):
 
     def deny_access(self, *hosts):
         host_config = self.host_config
-        host_config.remove_hosts(*hosts)
+        host_config.delete_hosts(*hosts)
         resp = self.modify(host_config=host_config)
         resp.raise_if_err()
         return resp

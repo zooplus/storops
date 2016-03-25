@@ -275,7 +275,7 @@ class UnityAddCifsAceError(UnityCimException):
     message = 'failed to add ace for cifs share.'
 
 
-class UnityRemoveCifsAceError(UnityCimException):
+class UnityDeleteCifsAceError(UnityCimException):
     message = 'failed to remove ace for cifs share.'
 
 
@@ -510,7 +510,7 @@ class VNXModifySnapError(VNXSnapError):
 
 
 @cli_exception
-class VNXRemoveAttachedSnapError(VNXSnapError):
+class VNXDeleteAttachedSnapError(VNXSnapError):
     error_code = 0x716d8003
 
 
@@ -556,7 +556,7 @@ class VNXCreateSnapResourceNotFoundError(VNXSnapError):
     error_message = 'The specified resource does not exist.'
 
 
-class VNXRemoveSnapError(VNXSnapError):
+class VNXDeleteSnapError(VNXSnapError):
     pass
 
 
@@ -601,18 +601,18 @@ class VNXLunNotFoundError(VNXLunError):
     error_message = 'Could not retrieve the specified (pool lun).'
 
 
-class VNXRemoveLunError(VNXLunError):
+class VNXDeleteLunError(VNXLunError):
     pass
 
 
 @cli_exception
-class VNXLunInStorageGroupError(VNXRemoveLunError):
+class VNXLunInStorageGroupError(VNXDeleteLunError):
     error_message = ('contained in a Storage Group',
                      'LUN mapping still exists')
 
 
 @cli_exception
-class VNXLunInConsistencyGroupError(VNXRemoveLunError):
+class VNXLunInConsistencyGroupError(VNXDeleteLunError):
     error_code = 0x716d8025
 
 
@@ -652,12 +652,12 @@ class VNXConsistencyGroupIsDeletingError(VNXConsistencyGroupError):
     error_code = 0x712d8801
 
 
-class VNXRemoveHbaError(VNXException):
+class VNXDeleteHbaError(VNXException):
     pass
 
 
 @cli_exception
-class VNXRemoveHbaNotFoundError(VNXException):
+class VNXDeleteHbaNotFoundError(VNXException):
     error_message = 'The HBA UID specified is not known by the array'
 
 
@@ -697,7 +697,7 @@ class VNXCreateRaidGroupError(VNXRaidGroupError):
     pass
 
 
-class VNXRemoveRaidGroupError(VNXRaidGroupError):
+class VNXDeleteRaidGroupError(VNXRaidGroupError):
     pass
 
 
@@ -713,7 +713,7 @@ class VNXModifyPoolError(VNXPoolError):
     pass
 
 
-class VNXRemovePoolError(VNXPoolError):
+class VNXDeletePoolError(VNXPoolError):
     pass
 
 
@@ -773,7 +773,7 @@ class VNXMirrorNotFoundError(VNXMirrorException):
 
 
 @cli_exception
-class VNXRemoveMirrorWithSecondaryError(VNXMirrorException):
+class VNXDeleteMirrorWithSecondaryError(VNXMirrorException):
     error_code = 0x71058243
 
 

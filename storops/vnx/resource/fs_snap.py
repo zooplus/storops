@@ -71,5 +71,5 @@ class VNXFsSnap(VNXResource):
         resp.raise_if_err()
         return VNXFsSnap(name=name, cli=cli)
 
-    def remove(self):
-        return self._cli.remove_snap(self.get_snap_id())
+    def delete(self):
+        return self._cli.delete_snap(self.get_snap_id())

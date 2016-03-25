@@ -98,8 +98,8 @@ class VNXFileSystem(VNXResource):
         resp.raise_if_err()
         return VNXFileSystem(name, cli=cli)
 
-    def remove(self):
-        resp = self._cli.remove_filesystem(self.get_fs_id())
+    def delete(self):
+        resp = self._cli.delete_filesystem(self.get_fs_id())
         resp.raise_if_err()
         return resp
 

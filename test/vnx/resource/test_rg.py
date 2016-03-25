@@ -22,7 +22,7 @@ from hamcrest import assert_that, equal_to, raises, instance_of
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.verifiers import verify_raid0
 from storops.exception import VNXCreateRaidGroupError, \
-    VNXRemoveRaidGroupError
+    VNXDeleteRaidGroupError
 from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.rg import VNXRaidGroup
 
@@ -61,11 +61,11 @@ class VNXRaidGroupTest(TestCase):
         assert_that(f, raises(ValueError, 'valid value'))
 
     @patch_cli()
-    def test_remove_rg(self):
+    def test_delete_rg(self):
         def f():
-            VNXRaidGroup(11, t_cli()).remove()
+            VNXRaidGroup(11, t_cli()).delete()
 
-        assert_that(f, raises(VNXRemoveRaidGroupError, 'Not Found'))
+        assert_that(f, raises(VNXDeleteRaidGroupError, 'Not Found'))
 
     @patch_cli()
     def test_disks(self):

@@ -79,7 +79,7 @@ class UnityFileSystem(UnityResource):
                 log.info(e.message)
         return ret
 
-    def remove(self, force_snap_delete=False, force_vvol_delete=False,
+    def delete(self, force_snap_delete=False, force_vvol_delete=False,
                async=False):
         sr = self.storage_resource
         if not self.existed or sr is None:

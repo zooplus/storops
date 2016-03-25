@@ -92,17 +92,17 @@ class FileSystemTest(unittest.TestCase):
         self.verify_fs_src0(fs_src0)
 
     @patch_post()
-    def test_remove_fs_not_exists(self):
+    def test_delete_fs_not_exists(self):
         def f():
             fs = VNXFileSystem(fs_id=99, cli=t_nas())
-            fs.remove()
+            fs.delete()
 
         assert_that(f, raises(VNXBackendError, 'not found'))
 
     @patch_post()
-    def test_remove_fs_success(self):
+    def test_delete_fs_success(self):
         fs = VNXFileSystem(fs_id=98, cli=t_nas())
-        resp = fs.remove()
+        resp = fs.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_post()

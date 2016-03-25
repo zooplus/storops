@@ -98,16 +98,16 @@ class VNXMoverRefTest(unittest.TestCase):
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_post()
-    def test_remove_dns(self):
+    def test_delete_dns(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
-        resp = dm.remove_dns('tt')
+        resp = dm.delete_dns('tt')
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_post()
-    def test_remove_dns_not_exist(self):
+    def test_delete_dns_not_exist(self):
         def f():
             dm = VNXMoverRef(mover_id=1, cli=t_nas())
-            dm.remove_dns('bb')
+            dm.delete_dns('bb')
 
         assert_that(f, raises(VNXGeneralNasError, 'server_2'))
 
@@ -134,9 +134,9 @@ class VNXMoverRefTest(unittest.TestCase):
         assert_that(interface.broadcast_addr, equal_to('1.1.1.255'))
 
     @patch_post()
-    def test_remove_interface(self):
+    def test_delete_interface(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
-        resp = dm.remove_interface('1.1.1.1')
+        resp = dm.delete_interface('1.1.1.1')
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_nas()

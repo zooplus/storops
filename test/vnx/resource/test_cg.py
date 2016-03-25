@@ -121,10 +121,10 @@ class VNXConsistencyGroupTest(TestCase):
                               'already in use'))
 
     @patch_cli()
-    def test_remove_cg_not_exists(self):
+    def test_delete_cg_not_exists(self):
         def f():
             cg = VNXConsistencyGroup(cli=t_cli(), name='cg0')
-            cg.remove()
+            cg.delete()
 
         assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
 

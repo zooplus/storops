@@ -25,7 +25,7 @@ import storops.unity.resource.filesystem
 import storops.unity.resource.snap
 from storops.exception import UnityCreateCifsUserError, \
     UnityImportCifsUserError, UnityAddCifsAceError, \
-    UnityRemoveCifsAceError, UnityAceNotFoundError, \
+    UnityDeleteCifsAceError, UnityAceNotFoundError, \
     UnityCimResourceNotFoundError
 from storops.lib.common import instance_cache
 from storops.unity.enums import CIFSTypeEnum, ACEAccessTypeEnum, \
@@ -87,9 +87,9 @@ class UnityCifsShare(UnityResource):
             ret = None
         return ret
 
-    def remove(self, async=False):
+    def delete(self, async=False):
         if self.type == CIFSTypeEnum.CIFS_SNAPSHOT:
-            resp = super(UnityCifsShare, self).remove(async=async)
+            resp = super(UnityCifsShare, self).delete(async=async)
         else:
             fs = self.filesystem.verify()
             sr = fs.storage_resource
@@ -150,7 +150,7 @@ class UnityCifsShare(UnityResource):
             raise ValueError('username not specified.')
         return r'{}\{}'.format(domain, user)
 
-    def remove_ace(self, domain=None, user=None):
+    def delete_ace(self, domain=None, user=None):
         name = self._get_domain_user_name(domain, user)
         sid = self.get_user_sids(self._cli, name)
         obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
@@ -158,7 +158,7 @@ class UnityCifsShare(UnityResource):
             try:
                 if sid == obj['subject']['instanceId']:
                     ret = self._cli.di(obj.path)
-                    ret.raise_if_err(default=UnityRemoveCifsAceError)
+                    ret.raise_if_err(default=UnityDeleteCifsAceError)
                     break
             except (ValueError, AttributeError, IndexError):
                 pass

@@ -170,8 +170,8 @@ class VNXLun(VNXCliResource):
             ret = VNXSnapList(self._cli, res=self.get_id(self))
         return ret
 
-    def remove_snap(self, name):
-        VNXSnap(name, self._cli).remove()
+    def delete_snap(self, name):
+        VNXSnap(name, self._cli).delete()
 
     def migrate(self, tgt, rate=VNXMigrationRate.HIGH):
         tgt_id = self.get_id(tgt)
@@ -226,12 +226,12 @@ class VNXLun(VNXCliResource):
             obj = clz(cli=self._cli)
         else:
             obj = cg
-        obj.remove_member(self)
+        obj.delete_member(self)
 
-    def remove(self, remove_snapshots=False, force_detach=False,
+    def delete(self, delete_snapshots=False, force_detach=False,
                detach_from_sg=False, detach_from_cg=False, force=False):
         if force:
-            remove_snapshots = True
+            delete_snapshots = True
             force_detach = True
             detach_from_sg = True
             detach_from_cg = True
@@ -243,14 +243,14 @@ class VNXLun(VNXCliResource):
             self.detach_from_cg()
 
         name = self._get_name()
-        out = self._cli.remove_pool_lun(self._lun_id,
+        out = self._cli.delete_pool_lun(self._lun_id,
                                         name,
-                                        remove_snapshots=remove_snapshots,
+                                        delete_snapshots=delete_snapshots,
                                         force_detach=force_detach,
                                         poll=self.poll)
 
         ex.raise_if_err(out, 'failed to remove lun {}'.format(name),
-                        default=ex.VNXRemoveLunError)
+                        default=ex.VNXDeleteLunError)
 
     def rename(self, new_name):
         if new_name is not None and self._name != new_name:

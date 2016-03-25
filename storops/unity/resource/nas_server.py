@@ -48,7 +48,7 @@ class UnityNasServer(UnityResource):
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
 
-    def remove(self, skip_domain_unjoin=None, username=None,
+    def delete(self, skip_domain_unjoin=None, username=None,
                password=None, async=False):
         resp = self._cli.delete(self.resource_class,
                                 self.get_id(),

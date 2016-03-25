@@ -52,7 +52,7 @@ class VNXSPEnum(VNXEnum):
 
     @classmethod
     @cache
-    def get_to_remove(cls):
+    def get_to_delete(cls):
         return re.compile('[_. ]')
 
     @classmethod
@@ -62,7 +62,7 @@ class VNXSPEnum(VNXEnum):
 
     @classmethod
     def _normalize(cls, value):
-        ret = re.sub(cls.get_to_remove(), '', value)
+        ret = re.sub(cls.get_to_delete(), '', value)
         if ret is None:
             pass
         elif ret.endswith('a') and not ret.endswith('rra'):

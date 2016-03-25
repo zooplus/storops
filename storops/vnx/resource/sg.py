@@ -60,8 +60,8 @@ class VNXStorageGroup(VNXCliResource):
         ex.raise_if_err(out, msg, default=ex.VNXCreateStorageGroupError)
         return VNXStorageGroup(name, cli)
 
-    def remove(self):
-        self._cli.remove_sg(self._get_name(), poll=self.poll)
+    def delete(self):
+        self._cli.delete_sg(self._get_name(), poll=self.poll)
 
     def has_hlu(self, hlu):
         return hlu in self.used_hlu_numbers
@@ -218,7 +218,7 @@ class VNXStorageGroup(VNXCliResource):
             self.get_alu_hlu_map()[alu] = ret
         return ret
 
-    def _remove_alu(self, alu):
+    def _delete_alu(self, alu):
         ret = None
         with self._hlu_lock:
             if self.has_alu(alu):
@@ -248,10 +248,10 @@ class VNXStorageGroup(VNXCliResource):
         if hlu is None:
             raise ex.VNXDetachAluNotFoundError(
                 'specified lun {} is not attached.'.format(alu))
-        out = self._cli.sg_remove_hlu(self._get_name(), hlu, poll=self.poll)
+        out = self._cli.sg_delete_hlu(self._get_name(), hlu, poll=self.poll)
         msg = 'failed to detach hlu {}/alu {}.'.format(hlu, alu)
         ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError, )
-        self._remove_alu(alu)
+        self._delete_alu(alu)
 
     def connect_host(self, host):
         out = self._cli.sg_connect_host(self._get_name(), host, poll=self.poll)

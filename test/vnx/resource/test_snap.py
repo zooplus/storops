@@ -21,7 +21,7 @@ from hamcrest import assert_that, equal_to, raises
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from storops.exception import VNXSnapError, VNXSnapNotExistsError, \
-    VNXRemoveAttachedSnapError
+    VNXDeleteAttachedSnapError
 from storops.vnx.resource.snap import VNXSnap, VNXSnapList
 
 __author__ = 'Cedric Zhuang'
@@ -87,21 +87,21 @@ class VNXSnapTest(TestCase):
             assert_that(snap._name, equal_to('s2'))
 
     @patch_cli()
-    def test_remove_snap(self):
+    def test_delete_snap(self):
         def f():
             snap = VNXSnap(cli=t_cli(), name='s3')
-            snap.remove()
+            snap.delete()
 
         assert_that(f, raises(VNXSnapNotExistsError,
                               'Cannot destroy the snapshot'))
 
     @patch_cli()
-    def test_remove_snap_attached(self):
+    def test_delete_snap_attached(self):
         def f():
             snap = VNXSnap(cli=t_cli(), name='s4')
-            snap.remove()
+            snap.delete()
 
-        assert_that(f, raises(VNXRemoveAttachedSnapError, 'is attached'))
+        assert_that(f, raises(VNXDeleteAttachedSnapError, 'is attached'))
 
     @patch_cli()
     def test_get_by_res(self):

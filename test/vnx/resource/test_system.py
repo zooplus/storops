@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, none, instance_of, raises
 from storops.vnx.resource.mirror_view import VNXMirrorViewList
 
-from storops.exception import VNXRemoveHbaNotFoundError, VNXUserNameInUseError
+from storops.exception import VNXDeleteHbaNotFoundError, VNXUserNameInUseError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 
 from test.vnx.cli_mock import patch_cli, t_vnx
@@ -236,12 +236,12 @@ class VNXSystemTest(TestCase):
         assert_that(len(ports), equal_to(2))
 
     @patch_cli()
-    def test_remove_hba_already_removed(self):
+    def test_delete_hba_already_removed(self):
         def f():
             uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:01'
-            self.vnx.remove_hba(uid)
+            self.vnx.delete_hba(uid)
 
-        assert_that(f, raises(VNXRemoveHbaNotFoundError))
+        assert_that(f, raises(VNXDeleteHbaNotFoundError))
 
     @patch_cli()
     def test_get_block_users(self):

@@ -69,9 +69,9 @@ class UnityHotTest(TestCase):
         assert_that(host.os_type, equal_to('customized os'))
 
     @patch_rest()
-    def test_remove_host_success(self):
+    def test_delete_host_success(self):
         host = UnityHost(cli=t_rest(), _id='Host_11')
-        resp = host.remove()
+        resp = host.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -82,18 +82,18 @@ class UnityHotTest(TestCase):
         assert_that(port.address, equal_to('1.1.1.1'))
 
     @patch_rest()
-    def test_remove_ip_port(self):
+    def test_delete_ip_port(self):
         host = UnityHost(cli=t_rest(), _id='Host_9')
-        resp = host.remove_ip_port('1.1.1.1')
+        resp = host.delete_ip_port('1.1.1.1')
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_host_and_ip_port(self):
+    def test_delete_host_and_ip_port(self):
         host = UnityHost(cli=t_rest(), _id='Host_1')
         ip_port = host.host_ip_ports[0]
-        resp = host.remove()
+        resp = host.delete()
         assert_that(resp.is_ok(), equal_to(True))
-        assert_that(ip_port.remove, raises(UnityResourceNotFoundError))
+        assert_that(ip_port.delete, raises(UnityResourceNotFoundError))
 
 
 class UnityHostIpPortTest(TestCase):
@@ -124,9 +124,9 @@ class UnityHostIpPortTest(TestCase):
         assert_that(f, raises(UnityHostIpInUseError, 'already exists'))
 
     @patch_rest()
-    def test_remove_success(self):
+    def test_delete_success(self):
         ip_port = UnityHostIpPort(cli=t_rest(), _id='HostNetworkAddress_10')
-        resp = ip_port.remove()
+        resp = ip_port.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()

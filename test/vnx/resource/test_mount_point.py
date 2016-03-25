@@ -98,10 +98,10 @@ class VNXFsMountPointTest(unittest.TestCase):
         VNXFsMountPoint.create(cli, '/fs_100g', 244, mover)
 
     @patch_post()
-    def test_remove_fs_mp(self):
+    def test_delete_fs_mp(self):
         cli = t_nas()
         mover = VNXMover(mover_id=2, cli=cli)
-        resp = VNXFsMountPoint(mover, '/testfs', cli).remove()
+        resp = VNXFsMountPoint(mover, '/testfs', cli).delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_post()

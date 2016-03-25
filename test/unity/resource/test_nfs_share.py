@@ -97,23 +97,23 @@ class UnityNfsShareTest(TestCase):
         assert_that(f, raises(UnityNfsShareNameExistedError, 'already exists'))
 
     @patch_rest()
-    def test_remove_nfs_share_success(self):
+    def test_delete_nfs_share_success(self):
         share = UnityNfsShare(_id='NFSShare_4', cli=t_rest())
-        resp = share.remove()
+        resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_nfs_share_async(self):
+    def test_delete_nfs_share_async(self):
         share = UnityNfsShare(_id='NFSShare_6', cli=t_rest())
-        resp = share.remove(async=True)
+        resp = share.delete(async=True)
         job = resp.job
         assert_that(job.existed, equal_to(True))
         assert_that(str(job.est_remain_time), equal_to('0:00:01'))
 
     @patch_rest()
-    def test_remove_snap_based_share(self):
+    def test_delete_snap_based_share(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_11')
-        resp = share.remove()
+        resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -150,23 +150,23 @@ class UnityNfsShareTest(TestCase):
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_access_success(self):
+    def test_delete_access_success(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
-        resp = share.remove_access(['Host_1', 'Host_14', 'Host_15'])
+        resp = share.delete_access(['Host_1', 'Host_14', 'Host_15'])
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_access_ip_not_found(self):
+    def test_delete_access_ip_not_found(self):
         def f():
             share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
-            share.remove_access(['9.9.9.9'])
+            share.delete_access(['9.9.9.9'])
 
         assert_that(f, raises(UnityHostNotFoundException, 'not found'))
 
     @patch_rest()
-    def test_remove_access_host_not_found(self):
+    def test_delete_access_host_not_found(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_4')
-        resp = share.remove_access(['Host_99'])
+        resp = share.delete_access(['Host_99'])
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -188,9 +188,9 @@ class UnityNfsShareTest(TestCase):
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_access_snap_share(self):
+    def test_delete_access_snap_share(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_31')
-        resp = share.remove_access(['1.1.1.1', '1.1.1.3'])
+        resp = share.delete_access(['1.1.1.1', '1.1.1.3'])
         assert_that(resp.is_ok(), equal_to(True))
 
 

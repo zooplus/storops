@@ -62,15 +62,15 @@ class VNXSecurityTest(TestCase):
         assert_that(f, raises(VNXUserNameInUseError, 'failed'))
 
     @patch_cli()
-    def test_remove_user_success(self):
+    def test_delete_user_success(self):
         user = VNXBlockUser.get(name='b', cli=t_cli())
         # no exception
-        user.remove()
+        user.delete()
 
     @patch_cli()
-    def test_remove_user_not_found(self):
+    def test_delete_user_not_found(self):
         def f():
             user = VNXBlockUser('c', cli=t_cli())
-            user.remove()
+            user.delete()
 
         assert_that(f, raises(VNXUserNotFoundError, 'not exist'))

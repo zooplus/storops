@@ -78,11 +78,11 @@ class VNXCifsServer(VNXResource):
         resp.raise_if_err()
         return VNXCifsServer(name=name, cli=cli)
 
-    def remove(self, mover_id=None, is_vdm=False):
+    def delete(self, mover_id=None, is_vdm=False):
         if mover_id is None:
             mover_id = self.mover_id
             is_vdm = self.is_vdm
-        resp = self._cli.remove_cifs_server(self._get_name(), mover_id, is_vdm)
+        resp = self._cli.delete_cifs_server(self._get_name(), mover_id, is_vdm)
         resp.raise_if_err()
         return resp
 
