@@ -93,6 +93,19 @@ class EnumTest(TestCase):
         ret = SampleEnum.parse('type a')
         assert_that(ret, equal_to(SampleEnum.TYPE_A))
 
+    def test_parse_invalid_str_enum(self):
+        def f():
+            SampleEnum.parse('n/a')
+
+        assert_that(f, raises(EnumValueNotFoundError))
+
+    def test_parse_invalid_int_enum(self):
+        def f():
+            SampleEnum.parse(999)
+
+        assert_that(f, raises(EnumValueNotFoundError))
+        assert_that(f, raises(ValueError))
+
     def test_invalid_value(self):
         def f():
             SampleEnum('type c')

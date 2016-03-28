@@ -161,8 +161,7 @@ class Enum(_Enum):
             except StopIteration:
                 pass
         if ret is None:
-            raise EnumValueNotFoundError('{} is not a valid value for {}.'
-                                         .format(value, cls.__name__))
+            cls._raise_invalid_value(value)
         return ret
 
     @classmethod
@@ -174,9 +173,14 @@ class Enum(_Enum):
                     ret = item
                     break
             else:
-                log.warn('cannot parse "{}" to a {}.'
-                         .format(value, cls.__name__))
+                cls._raise_invalid_value(value)
         return ret
+
+    @classmethod
+    def _raise_invalid_value(cls, value):
+        msg = '{} is not a valid value for {}.'.format(value, cls.__name__)
+        log.warn(msg)
+        raise EnumValueNotFoundError(msg)
 
     @classmethod
     def get_option_map(cls):
@@ -367,6 +371,7 @@ class Cache(object):
         Decorate a method of a class, the first parameter is
         supposed to be `self`.
         It clear all items cached by the `instance_cache` decorator.
+        :param func: function to decorate
         """
 
         @functools.wraps(func)

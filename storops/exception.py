@@ -96,7 +96,7 @@ class StoropsException(Exception):
         return kwargs
 
 
-class EnumValueNotFoundError(StoropsException):
+class EnumValueNotFoundError(StoropsException, ValueError):
     pass
 
 
