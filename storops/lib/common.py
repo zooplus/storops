@@ -586,4 +586,4 @@ def get_clz_from_module(module_name, clz_name):
 
 
 def is_valid(value):
-    return value is not None and value != 'N/A'
+    return value is not None and value != 'N/A' and len(value) > 0

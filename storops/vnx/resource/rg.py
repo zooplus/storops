@@ -16,7 +16,6 @@
 from __future__ import unicode_literals
 
 from storops.vnx.enums import raise_if_err
-from storops.vnx.resource.disk import VNXDiskList
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops import exception as ex
 
@@ -56,10 +55,6 @@ class VNXRaidGroup(VNXCliResource):
         else:
             ret = VNXRaidGroup(raid_group_id, cli)
         return ret
-
-    @property
-    def disks(self):
-        return VNXDiskList(self._cli, self.list_of_disks)
 
 
 class VNXRaidGroupList(VNXCliResourceList):

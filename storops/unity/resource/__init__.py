@@ -156,10 +156,10 @@ class UnityAttributeResource(UnityResource):
 
 
 class UnityResourceList(UnityResource, ResourceList):
-    def __init__(self, cli=None, **_filter):
+    def __init__(self, cli=None, **the_filter):
         UnityResource.__init__(self, cli=cli)
         ResourceList.__init__(self)
-        self._filter = _filter
+        self._rsc_filter = the_filter
 
     @classmethod
     def get_resource_class(cls):
@@ -177,11 +177,11 @@ class UnityResourceList(UnityResource, ResourceList):
         return ret
 
     def _get_raw_resource(self):
-        _filter = {}
+        the_filter = {}
         _parser = self._get_parser()
-        for k, v in self._filter.items():
-            _filter[_parser.get_property_label(k)] = v
-        return self._cli.get_all(self.resource_class, _filter=_filter)
+        for k, v in self._rsc_filter.items():
+            the_filter[_parser.get_property_label(k)] = v
+        return self._cli.get_all(self.resource_class, the_filter=the_filter)
 
     def set_cli(self, cli):
         super(UnityResourceList, self).set_cli(cli)

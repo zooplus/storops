@@ -15,9 +15,11 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import logging
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, not_none
+from hamcrest import equal_to, assert_that, not_none, none, raises, \
+    only_contains
 
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.parsers import VNXCliParser, VNXPropDescriptor, \
@@ -25,6 +27,8 @@ from storops.vnx.parsers import VNXCliParser, VNXPropDescriptor, \
 from storops.vnx.resource import get_vnx_parser
 from test.vnx.cli_mock import MockCli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
+
+log = logging.getLogger(__name__)
 
 A = VNXPropDescriptor('-a', 'Prop A (name):', 'prop_a')
 B = VNXPropDescriptor('-b', 'Prop B:')
@@ -73,14 +77,13 @@ class DemoParserMultiIndices(VNXCliParser):
 class VNXCliParserTest(TestCase):
     def test_get_property_options(self):
         options = DemoParser().property_options
-        self.assertEqual('-a -b -c', ' '.join(options))
+        assert_that(' '.join(options), equal_to('-a -b -c'))
 
     def test_get_index_descriptor(self):
-        self.assertEqual('ID:',
-                         DemoParser().index_property.label)
+        assert_that(DemoParser().index_property.label, equal_to('ID:'))
 
     def test_get_index_descriptor_none(self):
-        self.assertIsNone(DemoParserNonIndex().index_property)
+        assert_that(DemoParserNonIndex().index_property, none())
 
     def test_parse(self):
         output = """
@@ -91,10 +94,14 @@ class VNXCliParserTest(TestCase):
         parser = DemoParser()
         parsed = parser.parse(output, [A, ID, C])
 
-        self.assertEqual('ab (c)', parsed.prop_a)
-        self.assertIsNone(parsed.prop_c)
-        self.assertEqual('test', parsed.id)
-        self.assertRaises(AttributeError, getattr, parsed, 'prop_b')
+        assert_that(parsed.prop_a, equal_to('ab (c)'))
+        assert_that(parsed.prop_c, none())
+        assert_that(parsed.id, equal_to('test'))
+
+        def f():
+            log.debug(parsed.prop_b)
+
+        assert_that(f, raises(AttributeError))
 
     def test_parse_empty_prop(self):
         output = """
@@ -118,7 +125,7 @@ class VNXCliParserTest(TestCase):
                 value:ghijk
                 """
         parsed = DemoParserRegexIndex().parse_all(output)
-        self.assertEqual(2, len(parsed))
+        assert_that(len(parsed), equal_to(2))
         for i in parsed:
             if i.id == 123:
                 assert_that(i.value, equal_to('abcde'))
@@ -164,14 +171,15 @@ class VNXCliParserTest(TestCase):
 class VNXStorageGroupHBAParserTest(TestCase):
     def test_parse(self):
         data = get_vnx_parser("VNXStorageGroupHBA").parse(STORAGE_GROUP_HBA)
-        self.assertEqual('abc.def.dev', data.host_name)
-        self.assertEqual('A-3v1', data.sp_port)
-        self.assertEqual('10.244.209.72', data.initiator_ip)
-        self.assertEqual('1', data.tpgt)
-        self.assertEqual('10000000000', data.isid)
-        self.assertEqual(
-            ('iqn.1991-05.com.microsoft:abc.def.dev',
-             str(VNXSPEnum.SP_A), '3'), data.hba)
+        assert_that(data.host_name, equal_to('abc.def.dev'))
+        assert_that(data.sp_port, equal_to('A-3v1'))
+        assert_that(data.initiator_ip, equal_to('10.244.209.72'))
+        assert_that(data.tpgt, equal_to('1'))
+        assert_that(data.isid, equal_to('10000000000'))
+        assert_that(
+            data.hba,
+            equal_to(('iqn.1991-05.com.microsoft:abc.def.dev',
+                      str(VNXSPEnum.SP_A), '3')))
 
     def test_parse_no_header(self):
         output = """
@@ -183,14 +191,15 @@ class VNXStorageGroupHBAParserTest(TestCase):
                 ISID:                  10000000000
                 """
         data = get_vnx_parser("VNXStorageGroupHBA").parse(output)
-        self.assertEqual('abc.def.dev', data.host_name)
-        self.assertEqual('A-1v0', data.sp_port)
-        self.assertEqual('10.244.209.72', data.initiator_ip)
-        self.assertEqual('1', data.tpgt)
-        self.assertEqual('10000000000', data.isid)
-        self.assertEqual(
-            ('iqn.1991-05.com.microsoft:abc.def.dev', str(VNXSPEnum.SP_A),
-             '1'), data.hba)
+        assert_that(data.host_name, equal_to('abc.def.dev'))
+        assert_that(data.sp_port, equal_to('A-1v0'))
+        assert_that(data.initiator_ip, equal_to('10.244.209.72'))
+        assert_that(data.tpgt, equal_to('1'))
+        assert_that(data.isid, equal_to('10000000000'))
+        assert_that(data.hba,
+                    equal_to(('iqn.1991-05.com.microsoft:abc.def.dev',
+                              str(VNXSPEnum.SP_A),
+                              '1')))
 
 
 class VNXStorageGroupParserTest(TestCase):
@@ -199,18 +208,19 @@ class VNXStorageGroupParserTest(TestCase):
         output = MockCli.read_file('storagegroup_-list_-host_-iscsiAttributes_'
                                    '-gname_microsoft.txt')
         sg = parser.parse(output)
-        self.assertEqual(True, sg.shareable)
-        self.assertEqual('microsoft', sg.name)
-        self.assertEqual('12:34:56:78:9A:BC:DE:F1:23:45:67:89:AB:CD:EF:01',
-                         sg.wwn)
-        self.assertEqual(0, sg.alu_hlu_map[4])
-        self.assertEqual(123, sg.alu_hlu_map[456])
-        self.assertEqual(None, sg.alu_hlu_map.get(3, None))
+        assert_that(sg.shareable, equal_to(True))
+        assert_that(sg.name, equal_to('microsoft'))
+        assert_that(
+            sg.wwn,
+            equal_to('12:34:56:78:9A:BC:DE:F1:23:45:67:89:AB:CD:EF:01'))
+        assert_that(sg.alu_hlu_map[4], equal_to(0))
+        assert_that(sg.alu_hlu_map[456], equal_to(123))
+        assert_that(sg.alu_hlu_map.get(3, None), none())
 
         # assert for hba members
-        self.assertEqual(3, len(sg.hba_sp_pairs))
+        assert_that(len(sg.hba_sp_pairs), equal_to(3))
         hba = sg.hba_sp_pairs[0]
-        self.assertEqual('abc.def.dev', hba.host_name)
+        assert_that(hba.host_name, equal_to('abc.def.dev'))
 
 
 class VNXConsistencyGroupParserTest(TestCase):
@@ -220,13 +230,13 @@ class VNXConsistencyGroupParserTest(TestCase):
         cgs = parser.parse_all(output)
         cg = next(c for c in cgs if c.name == 'test cg name')
         assert_that(cg, not_none())
-        self.assertEqual([1, 3], cg.lun_list)
-        self.assertEqual('Ready', cg.state)
+        assert_that(cg.lun_list, only_contains(1, 3))
+        assert_that(cg.state, equal_to('Ready'))
 
         cg = next(c for c in cgs if c.name == 'another cg')
         assert_that(cg, not_none())
-        self.assertEqual([23, 24], cg.lun_list)
-        self.assertEqual('Offline', cg.state)
+        assert_that(cg.lun_list, only_contains(23, 24))
+        assert_that(cg.state, equal_to('Offline'))
 
 
 class VNXPoolPropertiesTest(TestCase):
@@ -234,14 +244,14 @@ class VNXPoolPropertiesTest(TestCase):
         output = MockCli.read_file('storagepool_-list_-all_-id_1.txt')
         parser = get_vnx_parser('VNXPool')
         pool = parser.parse(output)
-        self.assertEqual('Ready', pool.state)
-        self.assertEqual(1, pool.pool_id)
-        self.assertEqual(2329.792, pool.user_capacity_gbs)
-        self.assertEqual(1473.623, pool.available_capacity_gbs)
-        self.assertEqual(None, pool.fast_cache)
-        self.assertEqual('Pool_daq', pool.name)
-        self.assertEqual(2701.767, pool.total_subscribed_capacity_gbs)
-        self.assertEqual(70, pool.percent_full_threshold)
+        assert_that(pool.state, equal_to('Ready'))
+        assert_that(pool.pool_id, equal_to(1))
+        assert_that(pool.user_capacity_gbs, equal_to(2329.792))
+        assert_that(pool.available_capacity_gbs, equal_to(1473.623))
+        assert_that(pool.fast_cache, none())
+        assert_that(pool.name, equal_to('Pool_daq'))
+        assert_that(pool.total_subscribed_capacity_gbs, equal_to(2701.767))
+        assert_that(pool.percent_full_threshold, equal_to(70))
 
 
 class VNXPoolFeatureParserTest(TestCase):
@@ -281,20 +291,20 @@ class VNXLunPropertiesTest(TestCase):
         parser = get_vnx_parser('VNXLun')
         parsed = parser.parse(output)
         wwn = '60:06:01:60:1A:50:35:00:CC:22:61:D6:76:B1:E4:11'
-        self.assertEqual(wwn, parsed.wwn)
-        self.assertEqual('test_lun', parsed.name)
-        self.assertEqual(19, parsed.lun_id)
-        self.assertEqual(1.0, parsed.total_capacity_gb)
-        self.assertEqual(True, parsed.is_thin_lun)
-        self.assertEqual(False, parsed.is_compressed)
-        self.assertEqual(False, parsed.is_dedup)
-        self.assertEqual('No Movement', parsed.tiering_policy)
-        self.assertEqual('Optimize Pool', parsed.initial_tier)
-        self.assertEqual('Ready', parsed.state)
-        self.assertEqual('OK(0x0)', parsed.status)
-        self.assertEqual('None', parsed.operation)
-        self.assertEqual(VNXSPEnum.SP_A, parsed.current_owner)
-        self.assertEqual('N/A', parsed.attached_snapshot)
+        assert_that(parsed.wwn, equal_to(wwn))
+        assert_that(parsed.name, equal_to('test_lun'))
+        assert_that(parsed.lun_id, equal_to(19))
+        assert_that(parsed.total_capacity_gb, equal_to(1.0))
+        assert_that(parsed.is_thin_lun, equal_to(True))
+        assert_that(parsed.is_compressed, equal_to(False))
+        assert_that(parsed.is_dedup, equal_to(False))
+        assert_that(parsed.tiering_policy, equal_to('No Movement'))
+        assert_that(parsed.initial_tier, equal_to('Optimize Pool'))
+        assert_that(parsed.state, equal_to('Ready'))
+        assert_that(parsed.status, equal_to('OK(0x0)'))
+        assert_that(parsed.operation, equal_to('None'))
+        assert_that(parsed.current_owner, equal_to(VNXSPEnum.SP_A))
+        assert_that(parsed.attached_snapshot, none())
 
 
 class VNXParserConfigFactoryTest(TestCase):

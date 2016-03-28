@@ -62,9 +62,9 @@ class VNXConsistencyGroupTest(TestCase):
         cg = VNXConsistencyGroup()
         cg.update(data)
 
-        self.assertEqual('test cg name', cg.name)
-        self.assertEqual([1, 5, 7], cg.lun_list)
-        self.assertEqual('Offline', cg.state)
+        assert_that(cg.name, equal_to('test cg name'))
+        assert_that(cg.lun_list, only_contains(1, 5, 7))
+        assert_that(cg.state, equal_to('Offline'))
 
     def test_parse(self):
         output = """
@@ -72,7 +72,7 @@ class VNXConsistencyGroupTest(TestCase):
                 Name:  another cg
                 """
         cgs = VNXConsistencyGroup.parse_all(output)
-        self.assertEqual(2, len(cgs))
+        assert_that(len(cgs), equal_to(2))
         names = [cg.name for cg in cgs]
         assert_that(names, has_item('test cg name'))
         assert_that(names, has_item('another cg'))

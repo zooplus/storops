@@ -42,7 +42,7 @@ def verify_lun_0(lun):
     assert_that(lun.user_capacity_gbs, equal_to(500.0))
     assert_that(lun.consumed_capacity_gbs, equal_to(512.249))
     assert_that(lun.existed, equal_to(True))
-    assert_that(lun.primary_lun_name, equal_to('N/A'))
+    assert_that(lun.primary_lun, none())
     assert_that(lun.is_snap_mount_point, equal_to(False))
 
 
@@ -50,9 +50,8 @@ def verify_raid0(rg):
     assert_that(rg.raid_group_id, equal_to(0))
     assert_that(rg.raid_group_type, equal_to(VNXRaidType.RAID5))
     assert_that(rg.state, equal_to('Valid_luns'))
-    assert_that(rg.list_of_disks,
-                has_items('1_1_23', '1_1_22', '1_1_21', '1_1_20',
-                          '1_1_10'))
+    assert_that(rg.disks.index,
+                has_items('0_0_A0', '0_0_A1', '0_0_A2', '0_0_A3', '0_0_A4'))
     assert_that(rg.list_of_luns, has_item(63868))
     assert_that(len(rg.list_of_luns), equal_to(16))
     assert_that(rg.max_number_of_disks, equal_to(16))

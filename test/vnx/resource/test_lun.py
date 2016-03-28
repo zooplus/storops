@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, contains_string, has_item, \
-    only_contains, raises, instance_of, none
+    only_contains, raises, instance_of, none, is_not, not_none
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
@@ -53,7 +53,7 @@ class VNXLunTest(TestCase):
     @patch_cli()
     def test_lun_provision_default(self):
         lun = VNXLun(lun_id=3, cli=t_cli())
-        self.assertEqual(VNXProvisionEnum.THIN, lun.provision)
+        assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
 
     @patch_cli()
     def test_lun_provision_thin(self):
@@ -71,17 +71,24 @@ class VNXLunTest(TestCase):
         assert_that(lun.provision, equal_to(VNXProvisionEnum.DEDUPED))
 
     def test_lun_provision_str_not_valid(self):
-        lun = VNXLun()
-        self.assertRaises(AttributeError, setattr, lun, 'provision', 'invalid')
+        def f():
+            lun = VNXLun()
+            # noinspection PyPropertyAccess
+            lun.provision = 'invalid'
+
+        assert_that(f, raises(AttributeError))
 
     @patch_cli()
     def test_lun_tier_default(self):
         lun = VNXLun(lun_id=5, cli=t_cli())
-        self.assertEqual(VNXTieringEnum.HIGH_AUTO, lun.tier)
+        assert_that(lun.tier, equal_to(VNXTieringEnum.HIGH_AUTO))
 
     def test_lun_tier_invalid_str(self):
-        lun = VNXLun()
-        self.assertRaises(AttributeError, setattr, lun, 'tier', 'invalid')
+        def f():
+            lun = VNXLun()
+            lun.tier = 'invalid'
+
+        assert_that(f, raises(AttributeError))
 
     def test_lun_tier_highest_available(self):
         lun = VNXLun()
@@ -122,9 +129,9 @@ class VNXLunTest(TestCase):
     @patch_cli()
     def test_update(self):
         lun = self.get_lun()
-        self.assertEqual(2.0, lun.total_capacity_gb)
-        self.assertEqual(VNXProvisionEnum.THIN, lun.provision)
-        self.assertEqual(VNXTieringEnum.HIGH_AUTO, lun.tier)
+        assert_that(lun.total_capacity_gb, equal_to(2.0))
+        assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
+        assert_that(lun.tier, equal_to(VNXTieringEnum.HIGH_AUTO))
 
     @patch_cli()
     def test_repr(self):
@@ -208,22 +215,24 @@ class VNXLunTest(TestCase):
     @patch_cli()
     def test_create_mount_point(self):
         lun = VNXLun(name='l1', cli=t_cli())
-        m1 = lun.create_mount_point(mount_point_name='m1')
-        assert_that(m1.name, equal_to('m1'))
-        assert_that(m1.lun_id, equal_to(4057))
-        assert_that(m1.attached_snapshot_name, equal_to('s1'))
-        s1 = m1.attached_snapshot
-        assert_that(s1, instance_of(VNXSnap))
-        assert_that(s1._get_name(), equal_to('s1'))
         m2 = lun.create_mount_point(mount_point_name='m2')
-        assert_that(lun.snapshot_mount_point_ids, only_contains(4056, 4057))
         assert_that(lun.snapshot_mount_points, instance_of(VNXLunList))
         for smp in lun.snapshot_mount_points:
             assert_that(smp, instance_of(VNXLun))
-            assert_that(smp.primary_lun_name, equal_to('l1'))
             assert_that(smp.primary_lun, instance_of(VNXLun))
             assert_that(smp.primary_lun._get_name(), equal_to('l1'))
         assert_that(m2.attached_snapshot, none())
+
+    @patch_cli()
+    def test_mount_point_properties(self):
+        lun = VNXLun(name='l1', cli=t_cli())
+        m1 = lun.create_mount_point(mount_point_name='m1')
+        assert_that(m1.name, equal_to('m1'))
+        assert_that(m1.lun_id, equal_to(4057))
+        s1 = m1.attached_snapshot
+        assert_that(s1, instance_of(VNXSnap))
+        assert_that(s1._cli, equal_to(t_cli()))
+        assert_that(s1._get_name(), equal_to('s1'))
 
     @patch_cli()
     def test_attach_snap(self):
@@ -232,6 +241,17 @@ class VNXLunTest(TestCase):
         m1.attach_snap(s1)
         m1.update()
         assert_that(m1.attached_snapshot._get_name(), equal_to('s1'))
+
+    @patch_cli()
+    def test_property_instance_cache(self):
+        m1 = VNXLun(name='m1', cli=t_cli())
+        s1 = m1.attached_snapshot
+        s2 = m1.attached_snapshot
+        assert_that(hash(s1), equal_to(hash(s2)))
+        m1.update()
+        s3 = m1.attached_snapshot
+        assert_that(hash(s3), is_not(equal_to(hash(s1))))
+        assert_that(s1._cli, not_none())
 
     @patch_cli()
     def test_change_name(self):

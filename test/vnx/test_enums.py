@@ -32,55 +32,55 @@ from test.vnx.nas_mock import MockXmlPost
 class VNXErrorTest(TestCase):
     def test_has_error(self):
         output = "The specified snapshot name is already in use. (0x716d8005)"
-        self.assertTrue(has_error(output))
+        assert_that(has_error(output), equal_to(True))
 
     def test_has_error_with_specific_error(self):
         output = "The specified snapshot name is already in use. (0x716d8005)"
         err = has_error(output, VNXError.SNAP_NAME_EXISTED)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
         err = has_error(output, VNXError.LUN_ALREADY_EXPANDED)
-        self.assertFalse(err)
+        assert_that(err, equal_to(False))
 
     def test_has_error_not_found(self):
         output = "Cannot find the consistency group."
         err = has_error(output)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
         err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
     def test_has_error_not_exist(self):
         output = "The specified snapshot does not exist."
         err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
         output = "The (pool lun) may not exist."
         err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
     def test_has_error_multi_line(self):
         output = """Could not retrieve the specified (pool lun).
                     The (pool lun) may not exist."""
         err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
     def test_has_error_regular_string_false(self):
         output = "Cannot unbind LUN because it's contained in a Storage Group."
         err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        self.assertFalse(err)
+        assert_that(err, equal_to(False))
 
     def test_has_error_multi_errors(self):
         output = "Cannot unbind LUN because it's contained in a Storage Group."
         err = has_error(output,
                         VNXError.LUN_IN_SG,
                         VNXError.GENERAL_NOT_FOUND)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
         output = "Cannot unbind LUN because it's contained in a Storage Group."
         err = has_error(output,
                         VNXError.LUN_ALREADY_EXPANDED,
                         VNXError.LUN_NOT_MIGRATING)
-        self.assertFalse(err)
+        assert_that(err, equal_to(False))
 
     def test_has_error_ev_error(self):
         class ForTest(object):
@@ -93,7 +93,7 @@ class VNXErrorTest(TestCase):
 
         err = has_error(error,
                         VNXError.SG_LUN_ALREADY_EXISTS)
-        self.assertTrue(err)
+        assert_that(err, equal_to(True))
 
     def test_sp_error_not_supported(self):
         out = ('Error returned from the target: 10.244.211.32\n'
@@ -137,37 +137,39 @@ class VNXErrorTest(TestCase):
 class VNXProvisionEnumTest(TestCase):
     def test_get_opt_dedup(self):
         opt = VNXProvisionEnum.get_opt(VNXProvisionEnum.DEDUPED)
-        self.assertEqual('-type Thin -deduplication on',
-                         ' '.join(opt))
+        assert_that(' '.join(opt), equal_to('-type Thin -deduplication on'))
 
     def test_get_opt_thin(self):
         opt = VNXProvisionEnum.get_opt(VNXProvisionEnum.THIN)
-        self.assertEqual('-type Thin',
-                         ' '.join(opt))
+        assert_that(' '.join(opt), equal_to('-type Thin'))
 
     def test_get_opt_thick(self):
         opt = VNXProvisionEnum.get_opt(VNXProvisionEnum.THICK)
-        self.assertEqual('-type NonThin',
-                         ' '.join(opt))
+        assert_that(' '.join(opt), equal_to('-type NonThin'))
 
     def test_get_opt_compressed(self):
         opt = VNXProvisionEnum.get_opt(VNXProvisionEnum.COMPRESSED)
-        self.assertEqual('-type Thin',
-                         ' '.join(opt))
+        assert_that(' '.join(opt), equal_to('-type Thin'))
 
     def test_get_opt_not_available(self):
-        self.assertRaises(ValueError, VNXProvisionEnum.get_opt, 'na')
+        def f():
+            VNXProvisionEnum.get_opt('na')
+
+        assert_that(f, raises(ValueError))
 
 
 class VNXTieringEnumTest(TestCase):
     def test_get_opt(self):
         opt = VNXTieringEnum.get_opt(VNXTieringEnum.HIGH_AUTO)
-        self.assertEqual(
-            '-initialTier highestAvailable -tieringPolicy autoTier',
-            ' '.join(opt))
+        assert_that(
+            ' '.join(opt),
+            equal_to('-initialTier highestAvailable -tieringPolicy autoTier'))
 
     def test_get_opt_not_available(self):
-        self.assertRaises(ValueError, VNXTieringEnum.get_opt, 'na')
+        def f():
+            VNXTieringEnum.get_opt('na')
+
+        assert_that(f, raises(ValueError))
 
     def test_invalid_tier_enum(self):
         def f():

@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 import storops.vnx.resource.lun
+from storops.lib.common import instance_cache
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
@@ -47,3 +48,18 @@ class VNXMigrationSession(VNXCliResource):
         else:
             ret = VNXMigrationSession(source, cli)
         return ret
+
+    @property
+    @instance_cache
+    def source_lun(self):
+        return storops.vnx.resource.lun.VNXLun.get(
+            cli=self._cli, lun_id=self.source_lu_id, name=self.source_lu_name)
+
+    @property
+    @instance_cache
+    def destination_lun(self):
+        return storops.vnx.resource.lun.VNXLun.get(
+            cli=self._cli, lun_id=self.dest_lu_id, name=self.dest_lu_name)
+
+    def cancel(self):
+        self.source_lun.cancel_migrate()

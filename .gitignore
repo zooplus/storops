@@ -15,6 +15,7 @@ docs/_build/doctrees/
 # tests
 junit-result.xml
 coverage.xml
+clover.xml
 htmlcov/
 .coverage
 .coverage.*

@@ -17,7 +17,8 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, raises, equal_to, has_item, none
+from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
+    only_contains
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
@@ -85,52 +86,53 @@ class VNXHbaPortTest(TestCase):
             VNXHbaPort.create(VNXSPEnum.SP_B, 1),
             VNXHbaPort.create(VNXSPEnum.SP_A, 1)
         }
-        self.assertEqual(2, len(ports))
+        assert_that(len(ports), equal_to(2))
 
     def test_set_sp(self):
         port = VNXHbaPort.create('A', 3)
-        self.assertEqual(VNXSPEnum.SP_A, port.sp)
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
 
     def test_set_sp_error(self):
         port = VNXHbaPort.create('Z', 3)
-        self.assertEqual(False, port.is_valid())
-        self.assertIsNone(port.sp)
+        assert_that(port.is_valid(), equal_to(False))
+        assert_that(port.sp, none())
 
     def test_set_number_error(self):
         def f():
             port = VNXHbaPort.create('A', 'a1')
-            self.assertEqual(False, port.is_valid())
-            self.assertIsNone(port.port_id)
+            assert_that(port.is_valid(), equal_to(False))
+            assert_that(port.port_id, none())
 
         assert_that(f, raises(ValueError, 'must be an integer.'))
 
     def test_create_tuple_input(self):
         inputs = ('a', 5)
         port = VNXHbaPort.create(*inputs)
-        self.assertEqual(VNXSPEnum.SP_A, port.sp)
-        self.assertEqual(5, port.port_id)
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.port_id, equal_to(5))
 
     def test_get_sp_index(self):
         port = VNXHbaPort.create('spb', '5')
-        self.assertEqual('b', port.get_sp_index())
-        self.assertEqual(5, port.port_id)
+        assert_that(port.get_sp_index(), equal_to('b'))
+        assert_that(port.port_id, equal_to(5))
 
     def test_equal(self):
         spa_1 = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
         spa_1_dup = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
         spa_2 = VNXHbaPort.create(VNXSPEnum.SP_A, 2)
-        self.assertEqual(spa_1, spa_1_dup)
-        self.assertEqual(False, spa_1 == spa_2)
+        assert_that(spa_1_dup, equal_to(spa_1))
+        assert_that(spa_1, is_not(equal_to(spa_2)))
 
     def test_as_tuple(self):
         port = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
-        self.assertEqual(('SP A', 1), port.as_tuple())
+        assert_that(port.as_tuple(), only_contains('SP A', 1))
 
     def test_repr(self):
         port = VNXHbaPort.create(VNXSPEnum.SP_B, 3)
-        self.assertEqual(port.__repr__(),
-                         '<VNXPort {sp: SP B, port_id: 3, '
-                         'vport_id: 0, host_initiator_list: ()}>')
+        assert_that(port.__repr__(),
+                    equal_to(
+                        '<VNXPort {sp: SP B, port_id: 3, '
+                        'vport_id: 0, host_initiator_list: ()}>'))
 
 
 class VNXConnectionPortTest(TestCase):

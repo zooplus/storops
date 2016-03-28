@@ -138,8 +138,7 @@ VNXPool:
     - label: "FAST Cache:"
       converter: to_bool
     - label: "Disks:"
-      key: disk_indices
-      converter: to_disk_indices
+      converter: indices_to_disk_list
       end_pattern: "LUNs:"
 
 
@@ -191,8 +190,7 @@ VNXPoolFeature:
     - label: "Number of Disks used in Pools:"
       converter: to_int
     - label: "Available Disks:"
-      converter: to_disk_indices
-      key: available_disk_indices
+      converter: indices_to_disk_list
       end_pattern: "Background Operation State:"
     - label: "Background Operation State:"
     - label: "Background Rate:"
@@ -224,6 +222,7 @@ VNXLun:
       converter: to_sp_enum
     - label: "Attached Snapshot:"
       option: -attachedSnapshot
+      converter: name_to_snap
     - label: "Name:"
     - label: LOGICAL UNIT NUMBER
       key: lun_id
@@ -253,12 +252,9 @@ VNXLun:
     - label: "Consumed Capacity (GBs):"
       converter: to_float
     - label: "Snapshot Mount Points:"
-      key: snapshot_mount_point_ids
-      converter: to_int_arr
-    - label: "Attached Snapshot:"
-      key: attached_snapshot_name
+      converter: ids_to_lun_list
     - label: "Primary LUN:"
-      key: primary_lun_name
+      converter: name_to_lun
 
 
 VNXSPPort:
@@ -581,7 +577,8 @@ VNXRaidGroup:
     - label: "RaidGroup State:"
       key: state
     - label: "List of disks:"
-      converter: to_disk_indices
+      key: disks
+      converter: indices_to_disk_list
       end_pattern: "List of luns:"
     - label: "List of luns:"
       converter: to_int_arr

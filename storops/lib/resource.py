@@ -160,7 +160,7 @@ class Resource(JsonPrinter):
     def __getattr__(self, item):
         if item in self._property_cache:
             ret = self._property_cache[item]
-        elif item[0] != '_':
+        elif not item.startswith('_'):
             ret = self._get_property_from_raw(item)
         else:
             raise AttributeError(item)
@@ -190,7 +190,7 @@ class Resource(JsonPrinter):
 class ResourceList(Resource):
     def __init__(self):
         super(ResourceList, self).__init__()
-        self._list = []
+        self._list = None
         self._iter = None
 
     def update(self, data=None):
@@ -206,11 +206,11 @@ class ResourceList(Resource):
         for i in parsed_list:
             item = self.get_resource_class()()
             item.update(i)
-            if self.filter(item):
+            if self._filter(item):
                 self._list.append(item)
         return self
 
-    def filter(self, _):
+    def _filter(self, _):
         return True
 
     def _parse_raw(self, data):
@@ -222,7 +222,7 @@ class ResourceList(Resource):
 
     @property
     def list(self):
-        if not self._list:
+        if self._list is None:
             self.update()
         return self._list
 
@@ -251,10 +251,23 @@ class ResourceList(Resource):
     def __getitem__(self, item):
         return self.list[item]
 
-    def __getattr__(self, item):
+    def __getattr__(self, v):
         clz = self.get_resource_class()
-        if hasattr(clz, 'property_names') and item in clz.property_names():
-            ret = [getattr(i, item) for i in self]
-        else:
-            raise AttributeError(item)
+        s = clz()
+        ret = None
+        if not v.startswith('_'):
+            if v in dir(s):
+                ret = self.get_member_attr_list(v)
+            elif hasattr(s, 'property_names') and v in s.property_names():
+                ret = self.get_member_attr_list(v)
+
+        if ret is None:
+            raise AttributeError(
+                '{} do not has attribute {}.'.format(clz.__name__, v))
         return ret
+
+    def get_member_attr_list(self, v):
+        return [getattr(i, v) for i in self]
+
+    def _is_updated(self):
+        return self._list is not None

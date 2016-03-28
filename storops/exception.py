@@ -22,24 +22,24 @@ __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
-__rest_exception_clz_list__ = []
+__rest_exception_map__ = {}
 
 
 def rest_exception(clz):
     if not hasattr(clz, 'error_code'):
-        raise AttributeError('error_code property is missing.')
-    if clz not in __rest_exception_clz_list__:
-        __rest_exception_clz_list__.append(clz)
+        raise AttributeError(
+            '"error_code" property is required on class {}.'.format(
+                clz.__name__))
+    if clz not in __rest_exception_map__:
+        __rest_exception_map__[clz.error_code] = clz
     return clz
 
 
 def get_rest_exception(error_code):
-    ret = UnityException
-    if error_code is not None:
-        for clz in __rest_exception_clz_list__:
-            if clz.error_code == error_code:
-                ret = clz
-                break
+    if error_code is not None and error_code in __rest_exception_map__:
+        ret = __rest_exception_map__[error_code]
+    else:
+        ret = UnityException
     return ret
 
 
@@ -109,9 +109,7 @@ class NoIndexException(StoropsException):
 
 
 class UnityException(StoropsException):
-    error_code = None
-
-    def __init__(self, error):
+    def __init__(self, error=None):
         self.error = error
 
     def __str__(self):
@@ -119,6 +117,14 @@ class UnityException(StoropsException):
             ret = '.  '.join(self.error.get_messages())
         else:
             ret = self.error
+        return ret
+
+    @property
+    def error_code(self):
+        if self.error is not None:
+            ret = self.error.error_code
+        else:
+            ret = None
         return ret
 
 
@@ -243,6 +249,10 @@ class VNXNoHluAvailableError(VNXStorageGroupError):
 
 
 class VNXMigrationError(VNXException):
+    pass
+
+
+class VNXLunNotMigratingError(VNXMigrationError):
     pass
 
 

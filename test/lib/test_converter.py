@@ -18,7 +18,8 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from datetime import datetime
-from hamcrest import assert_that, equal_to, none, has_items, instance_of
+from hamcrest import assert_that, equal_to, none, has_items, instance_of, \
+    only_contains
 
 from storops.lib import converter
 
@@ -77,19 +78,19 @@ class ConverterTest(TestCase):
 
     def test_str_to_int_invalid_input(self):
         ret = converter.to_int_arr('12, abc, 12c')
-        self.assertEqual([12], ret)
+        assert_that(ret, only_contains(12))
 
     def test_arr_to_str(self):
         ret = converter.arr_to_str([5, -12, 7.21])
-        self.assertEqual('5,-12,7.21', ret)
+        assert_that(ret, equal_to('5,-12,7.21'))
 
     def test_arr_to_str_with_sep(self):
         ret = converter.arr_to_str(['a bc', 112], '|')
-        self.assertEqual('a bc|112', ret)
+        assert_that(ret, equal_to('a bc|112'))
 
     def test_to_str_arr(self):
         ret = converter.to_str_arr([5, -12, 7.21])
-        self.assertEqual(['5', '-12', '7.21'], ret)
+        assert_that(ret, only_contains('5', '-12', '7.21'))
 
     def test_to_hlu_alu_map(self):
         output = """
@@ -101,8 +102,8 @@ class ConverterTest(TestCase):
                     12              A1
                  """
         alu2hlu = converter.to_alu_hlu_map(output)
-        self.assertEqual(0, alu2hlu[4])
-        self.assertEqual(None, alu2hlu.get('A1', None))
+        assert_that(alu2hlu[4], equal_to(0))
+        assert_that(alu2hlu.get('A1', None), none())
 
     def test_to_disk_indices(self):
         output = """

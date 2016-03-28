@@ -98,7 +98,7 @@ class VNXDiskList(VNXCliResourceList):
         else:
             self._disk_indices = None
 
-    def filter(self, disk):
+    def _filter(self, disk):
         if self._disk_indices:
             index = disk.index
             ret = index and index.lower() in self._disk_indices

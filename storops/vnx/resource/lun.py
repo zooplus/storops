@@ -15,8 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.lib.common import check_int, is_valid, instance_cache, \
-    clear_instance_cache
+from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, raise_if_err, VNXError
@@ -31,14 +30,21 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXLunList(VNXCliResourceList):
-    def __init__(self, cli=None, lun_type=None, lun_ids=None):
+    def __init__(self, cli=None, lun_type=None, lun_ids=None, pool=None):
         super(VNXLunList, self).__init__(cli)
         self._lun_type = VNXLunType.parse(lun_type)
         self._lun_ids = lun_ids
 
-    def filter(self, lun):
+        if isinstance(pool, VNXCliResource):
+            self._pool_name = pool._get_name()
+        else:
+            self._pool_name = pool
+
+    def _filter(self, lun):
         if self._lun_ids:
             ret = VNXLun.get_id(lun) in self._lun_ids
+        elif self._pool_name:
+            ret = lun.pool_name == self._pool_name
         else:
             ret = True
         return ret
@@ -61,7 +67,6 @@ class VNXLun(VNXCliResource):
         self._lun_id = lun_id
         self._name = name
 
-    @clear_instance_cache
     def _get_raw_resource(self):
         if self._cli is None:
             raise ValueError('client is not available for this resource.')
@@ -70,7 +75,7 @@ class VNXLun(VNXCliResource):
 
     @property
     def is_snap_mount_point(self):
-        return is_valid(self.primary_lun_name)
+        return self.primary_lun is not None
 
     @staticmethod
     def create(cli,
@@ -196,8 +201,9 @@ class VNXLun(VNXCliResource):
     def cancel_migrate(self):
         src_id = self.get_id(self)
         out = self._cli.cancel_migrate_lun(src_id, poll=self.poll)
-        if len(out) > 0:
-            raise ex.VNXMigrationError(out)
+        raise_if_err(out, ex.VNXLunNotMigratingError,
+                     expected_error=VNXError.LUN_NOT_MIGRATING)
+        raise_if_err(out, ex.VNXMigrationError, 'migrate lun error.')
 
     def get_migration_session(self):
         return VNXMigrationSession.get(self._cli, self)
@@ -315,29 +321,3 @@ class VNXLun(VNXCliResource):
 
     def disable_dedup(self):
         self._update_dedup_state(False)
-
-    @property
-    @instance_cache
-    def snapshot_mount_points(self):
-        smp_ids = self.snapshot_mount_point_ids
-        return self.get(cli=self._cli, lun_ids=smp_ids)
-
-    @property
-    @instance_cache
-    def attached_snapshot(self):
-        name = self.attached_snapshot_name
-        if is_valid(name):
-            ret = VNXSnap.get(name=name, cli=self._cli)
-        else:
-            ret = None
-        return ret
-
-    @property
-    @instance_cache
-    def primary_lun(self):
-        name = self.primary_lun_name
-        if is_valid(name):
-            ret = self.get(name=name, cli=self._cli)
-        else:
-            ret = None
-        return ret

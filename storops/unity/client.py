@@ -36,26 +36,26 @@ class UnityClient(object):
         self._rest = UnityRESTConnector(ip, port=port, user=username,
                                         password=password)
 
-    def get_all(self, type_name, fields=None, _filter=None):
+    def get_all(self, type_name, fields=None, the_filter=None):
         """Get the resource by resource id.
 
-        :param _filter: dictionary of filter like `{'name': 'abc'}`
+        :param the_filter: dictionary of filter like `{'name': 'abc'}`
         :param type_name: Resource type. For example, pool, lun, nasServer.
         :param fields: Resource fields to return
         :return: List of resource class objects
         """
         fields = self.get_fields(type_name, fields)
-        _filter = self.dict_to_filter_string(_filter)
+        the_filter = self.dict_to_filter_string(the_filter)
 
         url = '/api/types/{}/instances'.format(type_name)
 
-        return self.rest_get(url, fields=fields, filter=_filter)
+        return self.rest_get(url, fields=fields, filter=the_filter)
 
     @classmethod
-    def dict_to_filter_string(cls, _filter):
-        if _filter:
+    def dict_to_filter_string(cls, the_filter):
+        if the_filter:
             items = []
-            for k, v in _filter.items():
+            for k, v in the_filter.items():
                 if v is None:
                     continue
                 if isinstance(v, six.string_types):

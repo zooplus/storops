@@ -19,9 +19,9 @@ import json
 import os
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, only_contains, raises
+from hamcrest import assert_that, equal_to, only_contains, raises, none
 
-from storops.exception import UnityNasServerNameUsedError
+from storops.exception import UnityNasServerNameUsedError, UnityException
 from storops.unity.resp import RestResponse
 from test.utils import read_test_file
 
@@ -60,3 +60,13 @@ class UnityErrorTest(TestCase):
         body = read_error_json('200.json')
         resp = RestResponse(body)
         resp.raise_if_err()
+
+
+class UnityExceptionTest(TestCase):
+    def test_unity_exception_error_code(self):
+        resp = RestResponse(read_error_json('409.json'))
+        ex = UnityException(resp.error)
+        assert_that(ex.error_code, equal_to(108011556))
+
+    def test_unity_exception_default_error_code(self):
+        assert_that(UnityException().error_code, none())

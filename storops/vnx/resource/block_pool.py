@@ -15,10 +15,10 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.lib.common import instance_cache
 from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
-from storops.vnx.resource.lun import VNXLun
-from storops.vnx.resource.disk import VNXDiskList
+from storops.vnx.resource.lun import VNXLun, VNXLunList
 from storops import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -31,10 +31,6 @@ class VNXPoolFeature(VNXCliResource):
 
     def _get_raw_resource(self):
         return self._cli.get_pool_feature(poll=self.poll)
-
-    @property
-    def available_disks(self):
-        return VNXDiskList(self._cli, self.available_disk_indices)
 
 
 class VNXPoolList(VNXCliResourceList):
@@ -130,13 +126,13 @@ class VNXPool(VNXCliResource):
     def remove_lun(lun, remove_snapshots=False, force_detach=False):
         lun.remove(remove_snapshots, force_detach)
 
-    @property
-    def disks(self):
-        return VNXDiskList(self._cli, self.disk_indices)
-
     def _get_raw_resource(self):
         return self._cli.get_pool(poll=self.poll, **self._get_name_or_id())
 
+    @instance_cache
     def get_lun(self):
-        lun_list = VNXLun.get(self._cli, poll=self.poll)
-        return [l for l in lun_list if l.pool_name == self.name]
+        return VNXLunList(self._cli, pool=self)
+
+    @property
+    def lun_list(self):
+        return self.get_lun()

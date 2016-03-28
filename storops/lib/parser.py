@@ -22,7 +22,6 @@ import os
 import re
 
 import six
-import sys
 
 import yaml
 
@@ -296,6 +295,10 @@ class ParserConfigFactory(object):
         raise NotImplementedError('get_base_clz not implemented.')
 
     @classmethod
+    def get_converter(cls, _):
+        return None
+
+    @classmethod
     def get_folder(cls):
         return os.path.dirname(inspect.getfile(cls))
 
@@ -373,7 +376,7 @@ class ParserConfigFactory(object):
             ret.append(full_pkg_name)
         return ret
 
-    def get_converter(self, converter_str):
+    def _get_converter(self, converter_str):
         """find converter function reference by name
 
         find converter by name, converter name follows this convention:
@@ -397,8 +400,12 @@ class ParserConfigFactory(object):
             converter_desc_list = converter_str.split('.')
             if len(converter_desc_list) == 1:
                 converter = converter_desc_list[0]
-                # default to module `converter`
+                # default to `converter`
                 ret = getattr(cvt, converter, None)
+
+                if ret is None:
+                    # try module converter
+                    ret = self.get_converter(converter)
 
                 if ret is None:
                     ret = self.get_resource_clz_by_name(converter)
@@ -409,18 +416,15 @@ class ParserConfigFactory(object):
                 if ret is None:
                     # try parser config
                     ret = self.get(converter)
-            elif len(converter_desc_list) == 2:
-                classname, func_name = converter_desc_list
-                cls = getattr(sys.modules[__name__], classname)
-                ret = getattr(cls, func_name)
-            else:
+
+            if ret is None and converter_str is not None:
                 raise ValueError(
                     'Specified converter not supported: {}'.format(
                         converter_str))
         return ret
 
     def init_descriptor(self, prop):
-        converter = self.get_converter(prop.get('converter', None))
+        converter = self._get_converter(prop.get('converter', None))
         return PropDescriptor(option=prop.get('option', None),
                               label=prop.get('label', None),
                               key=prop.get('key', None),

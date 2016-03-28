@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import logging
 from multiprocessing.pool import ThreadPool
 from time import sleep
 from unittest import TestCase
@@ -27,17 +28,22 @@ from storops.lib.common import Dict, Enum, WeightedAverage, \
     yes_no_var, instance_cache, Cache, JsonPrinter, clear_instance_cache
 from storops.vnx.enums import VNXRaidType
 
+log = logging.getLogger(__name__)
+
 
 class DictTest(TestCase):
     def test_get_attr(self):
         result = Dict()
         result['a'] = 'A'
-        self.assertEqual('A', result.a)
-        self.assertEqual('A', result['a'])
+        assert_that(result.a, equal_to('A'))
+        assert_that(result['a'], equal_to('A'))
 
     def test_get_attr_not_exists(self):
-        result = Dict()
-        self.assertRaises(AttributeError, getattr, result, 'a')
+        def f():
+            result = Dict()
+            log.debug(result.a)
+
+        assert_that(f, raises(AttributeError))
 
 
 class SampleEnum(Enum):
@@ -65,13 +71,13 @@ class SampleIntEnum(Enum):
 
 class EnumTest(TestCase):
     def test_get_all(self):
-        self.assertEqual(2, len(SampleEnum.get_all()))
+        assert_that(len(SampleEnum.get_all()), equal_to(2))
 
     def test_get_opt(self):
-        self.assertEqual('-a', SampleEnum.get_opt(SampleEnum.TYPE_A))
+        assert_that(SampleEnum.get_opt(SampleEnum.TYPE_A), equal_to('-a'))
 
     def test_from_int(self):
-        self.assertEqual(SampleEnum.TYPE_B, SampleEnum.from_int(2))
+        assert_that(SampleEnum.from_int(2), equal_to(SampleEnum.TYPE_B))
 
     def test_from_int_not_found_in_index(self):
         def f():

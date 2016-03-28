@@ -17,7 +17,8 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, raises, equal_to, is_in, has_items
+from hamcrest import assert_that, raises, equal_to, has_items, \
+    only_contains
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_pool_0
@@ -81,18 +82,19 @@ class VNXPoolTest(TestCase):
     @patch_cli()
     def test_get_lun(self):
         pool = VNXPool(pool_id=1, cli=t_cli())
+        assert_that(pool.name, equal_to('Pool_daq'))
         lun_list = pool.get_lun()
         assert_that(len(lun_list), equal_to(50))
-        for lun in lun_list:
-            assert_that(lun.pool_name, equal_to(pool.name))
+        assert_that(pool.lun_list, equal_to(lun_list))
+        assert_that(len(set(lun_list.pool_name)), equal_to(1))
 
     @patch_cli()
     def test_get_disk(self):
         pool = VNXPool(pool_id=1, cli=t_cli())
         disks = pool.disks
         assert_that(len(disks), equal_to(3))
-        assert_that(disks[0].serial_number,
-                    is_in(('6XS2EAKG', 'S0PFNECC304969', '6XS2QCG1')))
+        assert_that(disks.serial_number,
+                    only_contains('6XS2EAKG', 'S0PFNECC304969', '6XS2QCG1'))
 
     @patch_cli()
     def test_create_pool(self):
@@ -175,7 +177,8 @@ class VNXPoolFeatureTest(TestCase):
         assert_that(f.total_thin_luns, equal_to(2))
         assert_that(f.total_non_thin_luns, equal_to(1))
         assert_that(f.number_of_disks_used_in_pools, equal_to(15))
-        assert_that(f.available_disk_indices, has_items('0_0_B8', '0_0_B9'))
+        assert_that(f.available_disks.index,
+                    has_items('0_0_B8', '0_0_B9'))
         assert_that(f.background_operation_state, equal_to('None'))
         assert_that(f.background_rate, equal_to('Medium'))
 

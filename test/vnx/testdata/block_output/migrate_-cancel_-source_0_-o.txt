@@ -1,0 +1,2 @@
+Error: migrate -cancel command failed.
+The specified source LUN is not currently migrating.

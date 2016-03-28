@@ -17,8 +17,10 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, instance_of, raises
 
+from storops.exception import VNXLunNotMigratingError
+from storops.vnx.resource.lun import VNXLun
 from test.vnx.cli_mock import t_cli, patch_cli
 from storops.vnx.enums import VNXMigrationRate
 from storops.vnx.resource.migration import VNXMigrationSession
@@ -41,6 +43,20 @@ class VNXMigrationSessionTest(TestCase):
         assert_that(ms.existed, equal_to(True))
 
     @patch_cli()
+    def test_source_lun(self):
+        ms = VNXMigrationSession(0, t_cli())
+        lun = ms.source_lun
+        assert_that(lun, instance_of(VNXLun))
+        assert_that(lun.get_id(lun), equal_to(ms.source_lu_id))
+
+    @patch_cli()
+    def test_destination_lun(self):
+        ms = VNXMigrationSession(0, t_cli())
+        lun = ms.destination_lun
+        assert_that(lun, instance_of(VNXLun))
+        assert_that(lun.get_id(lun), equal_to(ms.dest_lu_id))
+
+    @patch_cli()
     def test_get_all(self):
         ms_list = VNXMigrationSession.get(t_cli())
         assert_that(len(ms_list), equal_to(2))
@@ -59,3 +75,12 @@ class VNXMigrationSessionTest(TestCase):
     def test_get_lun_not_exists(self):
         ms = VNXMigrationSession(1234, t_cli())
         assert_that(ms.existed, equal_to(False))
+
+    @patch_cli()
+    def test_cancel_migrate(self):
+        def f():
+            ms = VNXMigrationSession(0, t_cli())
+            ms.cancel()
+
+        assert_that(f, raises(VNXLunNotMigratingError,
+                              'not currently migrating'))

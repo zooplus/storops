@@ -42,6 +42,15 @@ class VNXParserConfigFactory(ParserConfigFactory):
             raise ValueError('data_src {} not supported.'.format(data_src))
         return ret
 
+    @classmethod
+    def get_converter(cls, value):
+        from storops.vnx import converter
+        if hasattr(converter, value):
+            ret = getattr(converter, value)
+        else:
+            ret = None
+        return ret
+
 
 _factory_singleton = VNXParserConfigFactory()
 

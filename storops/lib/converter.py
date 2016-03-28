@@ -53,10 +53,14 @@ def to_wwn(str_input):
 
 
 def to_int_arr(inputs):
-    if isinstance(inputs, six.string_types):
-        inputs = re.split(',| ', inputs)
-    ints = map(to_int, inputs)
-    return list(filter(partial(is_not, None), ints))
+    if inputs is not None:
+        if isinstance(inputs, six.string_types):
+            inputs = re.split(',| ', inputs)
+        ints = map(to_int, inputs)
+        ret = list(filter(partial(is_not, None), ints))
+    else:
+        ret = []
+    return ret
 
 
 def to_int_str_map(str_input):

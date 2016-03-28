@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.lib.common import instance_cache, clear_instance_cache
 from storops.lib.resource import Resource, ResourceList
 from storops.vnx.parsers import get_vnx_parser
 
@@ -45,6 +46,7 @@ class VNXCliResource(VNXResource):
     def __init__(self):
         super(VNXCliResource, self).__init__()
         self.poll = True
+        self._cli = None
 
     def with_poll(self):
         ret = _WithPoll(self)
@@ -55,6 +57,25 @@ class VNXCliResource(VNXResource):
         ret = _WithPoll(self)
         self.poll = False
         return ret
+
+    def _get_property_from_raw(self, item):
+        value = super(VNXCliResource, self)._get_property_from_raw(item)
+        if isinstance(value, VNXCliResource):
+            value = self._get_resource_property(value)
+        return value
+
+    @instance_cache
+    def _get_resource_property(self, value):
+        value.set_cli(self._cli)
+        return value
+
+    def set_cli(self, cli):
+        if cli is not None:
+            self._cli = cli
+
+    @clear_instance_cache
+    def update(self, data=None):
+        return super(VNXCliResource, self).update(data)
 
 
 class VNXCliResourceList(VNXCliResource, ResourceList):
@@ -76,3 +97,9 @@ class VNXCliResourceList(VNXCliResource, ResourceList):
         for item in self._list:
             item._cli = self._cli
         return ret
+
+    def set_cli(self, cli):
+        super(VNXCliResourceList, self).set_cli(cli)
+        for item in self:
+            if isinstance(item, VNXCliResource):
+                item.set_cli(cli)
