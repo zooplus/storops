@@ -246,6 +246,10 @@ class VNXMigrationError(VNXException):
     pass
 
 
+class VNXTargetNotReadyError(VNXMigrationError):
+    pass
+
+
 class VNXSnapError(VNXException):
     pass
 
@@ -279,6 +283,10 @@ class VNXLunError(VNXException):
 
 
 class VNXCreateLunError(VNXLunError):
+    pass
+
+
+class VNXLunNameInUseError(VNXCreateLunError):
     pass
 
 
@@ -323,6 +331,14 @@ class VNXConsistencyGroupError(VNXException):
 
 
 class VNXCreateConsistencyGroupError(VNXConsistencyGroupError):
+    pass
+
+
+class VNXConsistencyGroupNameInUseError(VNXCreateConsistencyGroupError):
+    pass
+
+
+class VNXConsistencyGroupNotFoundError(VNXConsistencyGroupError):
     pass
 
 

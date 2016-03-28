@@ -16,7 +16,7 @@
 from __future__ import unicode_literals
 
 import storops.vnx.resource.lun
-from storops.vnx.enums import raise_if_err
+from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops import exception as ex
 
@@ -56,6 +56,8 @@ class VNXConsistencyGroup(VNXCliResource):
     @classmethod
     def create(cls, cli, name, members=None, auto_delete=None):
         out = cli.create_cg(name, members, auto_delete)
+        raise_if_err(out, ex.VNXConsistencyGroupNameInUseError,
+                     expected_error=VNXError.CG_EXISTED)
         raise_if_err(out, ex.VNXCreateConsistencyGroupError,
                      'error creating cg {}.'.format(name))
         return VNXConsistencyGroup(name=name, cli=cli)
@@ -63,6 +65,8 @@ class VNXConsistencyGroup(VNXCliResource):
     def remove(self):
         name = self._get_name()
         out = self._cli.remove_cg(name, poll=self.poll)
+        raise_if_err(out, ex.VNXConsistencyGroupNotFoundError,
+                     expected_error=VNXError.CG_NOT_FOUND)
         raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error remove cg "{}".'.format(name))
 
@@ -71,6 +75,8 @@ class VNXConsistencyGroup(VNXCliResource):
         id_list = clz.get_id_list(*lun_list)
         name = self._get_name()
         out = op(name, *id_list, poll=self.poll)
+        raise_if_err(out, ex.VNXConsistencyGroupNotFoundError,
+                     expected_error=VNXError.CG_NOT_FOUND)
         raise_if_err(out, ex.VNXConsistencyGroupError,
                      'error change member of "{}".'.format(name))
 

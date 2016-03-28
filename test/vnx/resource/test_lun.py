@@ -25,7 +25,8 @@ from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError, \
     VNXLunExtendError, VNXLunExpandSizeError, VNXLunPreparingError, \
-    VNXSnapNameExistedError, VNXCompressionAlreadyEnabledError
+    VNXSnapNameExistedError, VNXCompressionAlreadyEnabledError, \
+    VNXLunNameInUseError, VNXTargetNotReadyError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -153,12 +154,19 @@ class VNXLunTest(TestCase):
         verify_lun_0(lun)
 
     @patch_cli()
-    def test_create(self):
+    def test_create_success(self):
         lun = VNXLun.create(t_cli(),
                             pool_id=0,
                             lun_id=2,
                             size_gb=2)
         assert_that(lun.user_capacity_gbs, equal_to(2.0))
+
+    @patch_cli()
+    def test_create_name_in_use(self):
+        def f():
+            VNXLun.create(t_cli(), pool_id=0, lun_id=3)
+
+        assert_that(f, raises(VNXLunNameInUseError, 'already in use'))
 
     def test_get_lun_id_str(self):
         assert_that(VNXLun.get_id('123'), equal_to(123))
@@ -393,6 +401,16 @@ class VNXLunTest(TestCase):
 
         assert_that(f, raises(VNXSnapNameExistedError,
                               'already in use'))
+
+    @patch_cli()
+    def test_migration_dst_lun_not_available(self):
+        def f():
+            l1 = VNXLun(lun_id=1, cli=t_cli())
+            l2 = VNXLun(lun_id=2, cli=t_cli())
+            l1.migrate(l2)
+
+        assert_that(f, raises(VNXTargetNotReadyError,
+                              'not available for migration'))
 
 
 class VNXLunListTest(TestCase):

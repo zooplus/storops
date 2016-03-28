@@ -15,7 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.vnx.enums import raise_if_err
+from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.disk import VNXDiskList
@@ -121,6 +121,8 @@ class VNXPool(VNXCliResource):
             ignore_thresholds=ignore_thresholds,
             poll=self.poll,
             **pool)
+        raise_if_err(ret, ex.VNXLunNameInUseError,
+                     expected_error=VNXError.LUN_NAME_IN_USE)
         raise_if_err(ret, ex.VNXCreateLunError, 'error creating lun.')
         return VNXLun(lun_id, lun_name, self._cli)
 

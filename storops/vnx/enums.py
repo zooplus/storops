@@ -217,7 +217,7 @@ class VNXError(VNXEnum):
 
     LUN_ALREADY_EXPANDED = 0x712d8e04
     LUN_EXPAND_ERROR_SIZE = 0x712d8e04
-    LUN_EXISTED = 0x712d8d04
+    LUN_NAME_IN_USE = 0x712d8d04
     LUN_IS_PREPARING = 0x712d8e0e
     LUN_IN_SG = 'contained in a Storage Group|LUN mapping still exists'
     LUN_NOT_MIGRATING = ('The specified source LUN is '
@@ -230,12 +230,15 @@ class VNXError(VNXEnum):
     CG_IS_DELETING = 0x712d8801
     CG_EXISTED = 0x716d8021
     CG_SNAP_NAME_EXISTED = 0x716d8005
+    CG_NOT_FOUND = "Cannot find the consistency group"
 
     SNAP_NAME_EXISTED = 0x716d8005
     SNAP_NAME_IN_USE = 0x716d8003
     SNAP_ALREADY_MOUNTED = 0x716d8055
     SNAP_NOT_ATTACHED = ('The specified Snapshot mount point '
                          'is not currently attached.')
+
+    MIGRATION_TGT_NOT_READY = 'not available for migration'
 
     NAS_GENERAL_ERROR = 13690601492
 

@@ -21,7 +21,8 @@ from hamcrest import assert_that, equal_to, has_item, raises, only_contains
 
 from storops.vnx.parsers import get_vnx_parser
 from test.vnx.cli_mock import patch_cli, t_cli
-from storops.exception import VNXConsistencyGroupError
+from storops.exception import VNXConsistencyGroupError, \
+    VNXConsistencyGroupNameInUseError, VNXConsistencyGroupNotFoundError
 from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.cg import VNXConsistencyGroupList
 from storops.vnx.resource.lun import VNXLun
@@ -101,3 +102,27 @@ class VNXConsistencyGroupTest(TestCase):
                 cg.add_member(1, 2, 3)
 
         assert_that(f, raises(VNXConsistencyGroupError, 'does not exist'))
+
+    @patch_cli()
+    def test_cg_not_found(self):
+        def f():
+            cg = VNXConsistencyGroup(name="cg1", cli=t_cli())
+            cg.add_member(1)
+
+        assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
+
+    @patch_cli()
+    def test_create_cg_name_in_use(self):
+        def f():
+            VNXConsistencyGroup.create(cli=t_cli(), name='cg0')
+
+        assert_that(f, raises(VNXConsistencyGroupNameInUseError,
+                              'already in use'))
+
+    @patch_cli()
+    def test_remove_cg_not_exists(self):
+        def f():
+            cg = VNXConsistencyGroup(cli=t_cli(), name='cg0')
+            cg.remove()
+
+        assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))

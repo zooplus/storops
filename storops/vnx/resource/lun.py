@@ -176,6 +176,8 @@ class VNXLun(VNXCliResource):
         tgt_id = self.get_id(tgt)
         src_id = self.get_id(self)
         out = self._cli.migrate_lun(src_id, tgt_id, rate, poll=self.poll)
+        raise_if_err(out, ex.VNXTargetNotReadyError,
+                     expected_error=VNXError.MIGRATION_TGT_NOT_READY)
         if len(out) > 0:
             raise ex.VNXMigrationError(out)
 
