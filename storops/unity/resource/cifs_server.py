@@ -53,6 +53,17 @@ class UnityCifsServer(resource.UnityResource):
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
 
+    @classmethod
+    def get(cls, cli, _id=None):
+        nas_server_clz = storops.unity.resource.nas_server.UnityNasServer
+        if isinstance(_id, nas_server_clz):
+            ret = _id.get_cifs_server()
+        elif not isinstance(_id, cls):
+            ret = cls(_id=_id, cli=cli)
+        else:
+            ret = _id
+        return ret
+
     def create_cifs_share(self, name, fs, path=None):
         clz = storops.unity.resource.cifs_share.UnityCifsShare
         return clz.create(self._cli, name=name, fs=fs,

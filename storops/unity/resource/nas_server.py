@@ -22,6 +22,7 @@ import storops.unity.resource.cifs_server
 import storops.unity.resource.nfs_server
 import storops.unity.resource.dns_server
 import storops.unity.resource.pool
+from storops.exception import UnityCifsServiceNotEnabledError
 from storops.unity.resource import UnityResource, UnityResourceList
 from storops.unity.resource.sp import UnityStorageProcessor
 
@@ -89,6 +90,10 @@ class UnityNasServer(UnityResource):
                             domain_password=None,
                             workgroup=None, local_password=None
                             ):
+        if domain_username is not None and domain is None:
+            dns_server = self.file_dns_server
+            if dns_server is not None:
+                domain = dns_server.domain
         self.create_cifs_server(interfaces=interfaces,
                                 netbios_name=netbios_name,
                                 name=name,
@@ -120,6 +125,15 @@ class UnityNasServer(UnityResource):
     def create_dns_server(self, domain, *ip_list):
         clz = storops.unity.resource.dns_server.UnityFileDnsServer
         return clz.create(self._cli, self, domain=domain, ip_list=ip_list)
+
+    def get_cifs_server(self):
+        cifs_server_list = self.cifs_server
+        if cifs_server_list:
+            ret = cifs_server_list[0]
+        else:
+            raise UnityCifsServiceNotEnabledError(
+                'CIFS is not enabled on {}.'.format(self.name))
+        return ret
 
 
 class UnityNasServerList(UnityResourceList):

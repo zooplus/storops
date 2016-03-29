@@ -119,7 +119,26 @@ class UnityCifsServerTest(TestCase):
 
     @patch_rest()
     def test_create_cifs_share_success(self):
-        server = UnityCifsServer(_id='cifs_2', cli=t_rest())
+        server = UnityCifsServer.get(_id='cifs_2', cli=t_rest())
         share = server.create_cifs_share('cs1', 'fs_8')
         assert_that(share.name, equal_to('cs1'))
         assert_that(share.existed, equal_to(True))
+
+    @patch_rest()
+    def test_get_cifs_server_from_nas_server(self):
+        server = UnityNasServer(_id='nas_2', cli=t_rest())
+        server = UnityCifsServer.get(t_rest(), server)
+        assert_that(server, instance_of(UnityCifsServer))
+        assert_that(server.domain, equal_to('win2012.dev'))
+
+    @patch_rest()
+    def test_get_from_id(self):
+        server = UnityCifsServer.get(cli=t_rest(), _id='cifs_2')
+        assert_that(server, instance_of(UnityCifsServer))
+        assert_that(server.domain, equal_to('win2012.dev'))
+
+    @patch_rest()
+    def test_get_from_cifs_server(self):
+        cifs_2 = UnityCifsServer(_id='cifs_2', cli=t_rest())
+        server = UnityCifsServer.get(cli=t_rest(), _id=cifs_2)
+        assert_that(server.domain, equal_to('win2012.dev'))

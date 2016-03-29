@@ -16,7 +16,8 @@
 from __future__ import unicode_literals
 
 import logging
-from storops.exception import UnityResourceNotFoundError
+from storops.exception import UnityResourceNotFoundError, \
+    UnityCifsServiceNotEnabledError
 from storops.unity.enums import FSSupportedProtocolEnum, TieringPolicyEnum
 
 import storops.unity.resource.nas_server
@@ -29,7 +30,7 @@ from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Jay Xu'
 
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class UnityFileSystem(UnityResource):
@@ -72,9 +73,10 @@ class UnityFileSystem(UnityResource):
     def first_available_cifs_server(self):
         ret = None
         if self.nas_server is not None:
-            cifs_servers = self.nas_server.cifs_server
-            if cifs_servers:
-                ret = cifs_servers[0]
+            try:
+                ret = self.nas_server.get_cifs_server()
+            except UnityCifsServiceNotEnabledError as e:
+                log.info(e.message)
         return ret
 
     def remove(self, force_snap_delete=False, force_vvol_delete=False,

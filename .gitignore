@@ -8,6 +8,7 @@ dist/
 .eggs/
 docs/_build/doctrees/
 .cache
+storops-*/
 
 # IDE related
 .idea/

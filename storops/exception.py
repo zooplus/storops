@@ -132,6 +132,10 @@ class UnityNameNotUniqueError(UnityException):
     pass
 
 
+class UnityCifsServiceNotEnabledError(UnityException):
+    pass
+
+
 @rest_exception
 class UnityResourceNotFoundError(UnityException):
     error_code = 131149829
@@ -140,6 +144,11 @@ class UnityResourceNotFoundError(UnityException):
 @rest_exception
 class UnityNasServerNameUsedError(UnityException):
     error_code = 108011556
+
+
+@rest_exception
+class UnityXmbNameInUseError(UnityException):
+    error_code = 108011873
 
 
 @rest_exception

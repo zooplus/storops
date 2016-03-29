@@ -66,10 +66,35 @@
       "url": "/api/types/cifsServer/instances?compact=True",
       "body": {
         "nasServer": {
+          "id": "nas_2"
+        },
+        "domain": "win2012.dev",
+        "name": "c_server2",
+        "domainUsername": "admin@vpshere.dev",
+        "domainPassword": "Password123!"
+      },
+      "response": "create_cifs_3.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
           "id": "nas_5"
         },
         "workgroup": "CEDRIC",
         "name": "NAS1130",
+        "localAdminPassword": "Password123!"
+      },
+      "response": "netbios_name_existed.json"
+    },
+    {
+      "url": "/api/types/cifsServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_5"
+        },
+        "workgroup": "CEDRIC",
+        "name": "c_server2",
         "localAdminPassword": "Password123!"
       },
       "response": "name_existed.json"

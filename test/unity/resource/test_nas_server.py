@@ -20,7 +20,8 @@ from hamcrest import assert_that, equal_to, instance_of, none, raises, \
     only_contains
 
 from storops.exception import UnityNasServerNameUsedError, \
-    UnityResourceNotFoundError
+    UnityResourceNotFoundError, UnityXmbNameInUseError, \
+    UnityCifsServiceNotEnabledError
 from storops.unity.enums import ReplicationTypeEnum, \
     NasServerUnixDirectoryServiceEnum, FileInterfaceRoleEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
@@ -72,6 +73,20 @@ class UnityNasServerTest(TestCase):
     def test_get_all(self):
         nas_servers = UnityNasServerList(cli=t_rest())
         assert_that(len(nas_servers), equal_to(3))
+
+    @patch_rest()
+    def test_get_cifs_server_available(self):
+        server = UnityNasServer(_id='nas_2', cli=t_rest())
+        cifs_server = server.get_cifs_server()
+        assert_that(cifs_server.domain, equal_to('win2012.dev'))
+
+    @patch_rest()
+    def test_get_cifs_server_not_found(self):
+        def f():
+            server = UnityNasServer(_id='nas_3', cli=t_rest())
+            server.get_cifs_server()
+
+        assert_that(f, raises(UnityCifsServiceNotEnabledError, 'not enabled'))
 
     @patch_rest()
     def test_create_nas3_success(self):
@@ -149,3 +164,20 @@ class UnityNasServerTest(TestCase):
         dns = server.create_dns_server('emc.dev', '4.4.4.4')
         assert_that(dns.existed, equal_to(True))
         assert_that(dns.addresses, only_contains('4.4.4.4'))
+
+    @patch_rest()
+    def test_enable_cifs_service_default_domain_name(self):
+        server = UnityNasServer(_id='nas_2', cli=t_rest())
+        server.enable_cifs_service(name='c_server2',
+                                   domain_username='admin@vpshere.dev',
+                                   domain_password='Password123!')
+
+    @patch_rest()
+    def test_enable_cifs_service_name_in_use(self):
+        def f():
+            server = UnityNasServer(_id='nas_5', cli=t_rest())
+            server.enable_cifs_service(name='c_server2',
+                                       workgroup='CEDRIC',
+                                       local_password='Password123!')
+
+        assert_that(f, raises(UnityXmbNameInUseError, 'name already exists'))
