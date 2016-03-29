@@ -25,7 +25,7 @@ from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError, \
     VNXLunExtendError, VNXLunExpandSizeError, VNXLunPreparingError, \
-    VNXSnapNameExistedError, VNXCompressionAlreadyEnabledError, \
+    VNXSnapNameInUseError, VNXCompressionAlreadyEnabledError, \
     VNXLunNameInUseError, VNXTargetNotReadyError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
@@ -419,7 +419,7 @@ class VNXLunTest(TestCase):
             l1 = VNXLun(lun_id=3, cli=t_cli())
             l1.create_snap('s1')
 
-        assert_that(f, raises(VNXSnapNameExistedError,
+        assert_that(f, raises(VNXSnapNameInUseError,
                               'already in use'))
 
     @patch_cli()

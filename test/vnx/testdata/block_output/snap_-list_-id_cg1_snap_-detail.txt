@@ -1,0 +1,16 @@
+
+Name:  cg1_snap
+Description:
+Creation time:  03/29/16 20:33:28
+Last modify time:  Never
+Last modified by:  N/A
+Source LUN(s):  1
+Source CG:  cg1
+Primary LUN(s):  1
+State:  Ready
+Status:  OK(0x0)
+Allow Read/Write:  No
+Modified:  No
+Attached LUN(s):
+Allow auto delete:  Yes
+Expiration date:  Never

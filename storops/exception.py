@@ -276,7 +276,7 @@ class VNXDetachSnapError(VNXSnapError):
     pass
 
 
-class VNXSnapNameExistedError(VNXSnapError):
+class VNXSnapNameInUseError(VNXSnapError):
     pass
 
 

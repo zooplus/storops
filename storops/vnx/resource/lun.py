@@ -146,14 +146,8 @@ class VNXLun(VNXCliResource):
         return ret
 
     def create_snap(self, name, allow_rw=None, auto_delete=None):
-        out = self._cli.create_snap(self.get_id(self), name, allow_rw,
-                                    auto_delete,
-                                    poll=self.poll)
-        raise_if_err(out, ex.VNXSnapNameExistedError, 'snap name used.',
-                     VNXError.SNAP_NAME_EXISTED)
-        raise_if_err(out, ex.VNXCreateSnapError,
-                     'failed to create snap "{}"'.format(name))
-        return VNXSnap(name, self._cli)
+        return VNXSnap.create(self._cli, self.get_id(self), name, allow_rw,
+                              auto_delete)
 
     def attach_snap(self, snap):
         snap_name = VNXSnap.get_name(snap)

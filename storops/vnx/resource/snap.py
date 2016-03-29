@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 import six
 
-from storops.vnx.enums import raise_if_err
+from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResourceList
 from storops.vnx.resource import VNXCliResource
 from storops import exception as ex
@@ -43,6 +43,15 @@ class VNXSnap(VNXCliResource):
         super(VNXSnap, self).__init__()
         self._cli = cli
         self._name = name
+
+    @classmethod
+    def create(cls, cli, res, name, allow_rw=None, auto_delete=None):
+        out = cli.create_snap(res, name, allow_rw, auto_delete)
+        raise_if_err(out, ex.VNXSnapNameInUseError, 'snap name used.',
+                     VNXError.SNAP_NAME_EXISTED)
+        raise_if_err(out, ex.VNXCreateSnapError,
+                     'failed to create snap "{}" for {}'.format(name, res))
+        return VNXSnap(name, cli=cli)
 
     def _get_raw_resource(self):
         return self._cli.get_snap(name=self._name, poll=self.poll)

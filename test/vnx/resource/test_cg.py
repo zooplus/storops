@@ -22,7 +22,8 @@ from hamcrest import assert_that, equal_to, has_item, raises, only_contains
 from storops.vnx.parsers import get_vnx_parser
 from test.vnx.cli_mock import patch_cli, t_cli
 from storops.exception import VNXConsistencyGroupError, \
-    VNXConsistencyGroupNameInUseError, VNXConsistencyGroupNotFoundError
+    VNXConsistencyGroupNameInUseError, VNXConsistencyGroupNotFoundError, \
+    VNXSnapNameInUseError
 from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.cg import VNXConsistencyGroupList
 from storops.vnx.resource.lun import VNXLun
@@ -126,3 +127,19 @@ class VNXConsistencyGroupTest(TestCase):
             cg.remove()
 
         assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
+
+    @patch_cli()
+    def test_create_cg_snap_success(self):
+        cg = VNXConsistencyGroup(name="cg1", cli=t_cli())
+        snap = cg.create_snap('cg1_snap')
+        assert_that(snap._name, equal_to('cg1_snap'))
+        assert_that(snap.source_luns, only_contains(1))
+        assert_that(snap.source_cg, equal_to('cg1'))
+
+    @patch_cli()
+    def test_create_cg_snap_name_existed(self):
+        def f():
+            cg = VNXConsistencyGroup(name="cg2", cli=t_cli())
+            cg.create_snap('cg1_snap')
+
+        assert_that(f, raises(VNXSnapNameInUseError, 'already in use'))
