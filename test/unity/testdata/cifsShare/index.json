@@ -13,12 +13,32 @@
       "response": "SMBShare_7.json"
     },
     {
+      "url": "/api/instances/cifsShare/SMBShare_15?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
+      "response": "SMBShare_15.json"
+    },
+    {
       "url": "/api/types/cifsShare/instances?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
       "response": "all.json"
     },
     {
       "url": "/api/types/cifsShare/instances?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask&filter=name eq \"cs1\"",
       "response": "name_cs1.json"
+    },
+    {
+      "url": "/api/types/cifsShare/instances?compact=True",
+      "body": {
+        "snap": {
+          "id": "171798691899"
+        },
+        "path": "/",
+        "name": "sns2"
+      },
+      "response": "create_SMBShare_15.json"
+    },
+    {
+      "url": "/api/instances/cifsShare/SMBShare_15?compact=True",
+      "body": {},
+      "response": "success.json"
     }
   ]
 }

@@ -20,7 +20,7 @@ from hamcrest import assert_that, equal_to, instance_of, none, raises, \
     only_contains
 
 from storops.exception import UnityNasServerNameUsedError, \
-    UnityResourceNotFoundError, UnityXmbNameInUseError, \
+    UnityResourceNotFoundError, UnitySmbNameInUseError, \
     UnityCifsServiceNotEnabledError
 from storops.unity.enums import ReplicationTypeEnum, \
     NasServerUnixDirectoryServiceEnum, FileInterfaceRoleEnum
@@ -180,4 +180,4 @@ class UnityNasServerTest(TestCase):
                                        workgroup='CEDRIC',
                                        local_password='Password123!')
 
-        assert_that(f, raises(UnityXmbNameInUseError, 'name already exists'))
+        assert_that(f, raises(UnitySmbNameInUseError, 'name already exists'))

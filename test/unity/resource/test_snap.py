@@ -17,10 +17,11 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, instance_of
+from hamcrest import assert_that, equal_to, instance_of, raises
 
+from storops.exception import UnityShareOnCkptSnapError
 from storops.unity.enums import FilesystemSnapAccessTypeEnum, \
-    SnapCreatorTypeEnum, SnapStateEnum
+    SnapCreatorTypeEnum, SnapStateEnum, NFSTypeEnum, CIFSTypeEnum
 from storops.unity.resource.snap import UnitySnap, UnitySnapList
 from storops.unity.resource.storage_resource import UnityStorageResource
 from test.unity.rest_mock import t_rest, patch_rest
@@ -67,3 +68,27 @@ class UnitySnapTest(TestCase):
         snap = UnitySnap(_id='171798691885', cli=t_rest())
         resp = snap.remove()
         assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_create_nfs_share_type_error(self):
+        def f():
+            snap = UnitySnap(cli=t_rest(), _id='171798691852')
+            snap.create_nfs_share('sns1')
+
+        assert_that(f, raises(UnityShareOnCkptSnapError, 'is a checkpoint'))
+
+    @patch_rest()
+    def test_create_nfs_share_success(self):
+        snap = UnitySnap(cli=t_rest(), _id='171798691896')
+        share = snap.create_nfs_share('sns1')
+        assert_that(share.snap, equal_to(snap))
+        assert_that(share.name, equal_to('sns1'))
+        assert_that(share.type, equal_to(NFSTypeEnum.NFS_SNAPSHOT))
+
+    @patch_rest()
+    def test_create_cifs_share_success(self):
+        snap = UnitySnap(cli=t_rest(), _id='171798691899')
+        share = snap.create_cifs_share('sns2')
+        assert_that(share.snap, equal_to(snap))
+        assert_that(share.name, equal_to('sns2'))
+        assert_that(share.type, equal_to(CIFSTypeEnum.CIFS_SNAPSHOT))

@@ -92,3 +92,9 @@ class UnityCifsShareTest(TestCase):
         assert_that(len(shares), equal_to(1))
         share = shares[0]
         assert_that(share.name, equal_to('cs1'))
+
+    @patch_rest()
+    def test_remove_snap_based_share(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_15')
+        resp = share.remove()
+        assert_that(resp.is_ok(), equal_to(True))

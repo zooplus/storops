@@ -93,3 +93,9 @@ class UnityNfsShareTest(TestCase):
         job = resp.job
         assert_that(job.existed, equal_to(True))
         assert_that(str(job.est_remain_time), equal_to('0:00:01'))
+
+    @patch_rest()
+    def test_remove_snap_based_share(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_11')
+        resp = share.remove()
+        assert_that(resp.is_ok(), equal_to(True))

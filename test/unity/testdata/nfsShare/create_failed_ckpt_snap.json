@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 1903001786,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "The share could not be created because the snapshot is a checkpoint snapshot. (Error Code:0x716d80ba)"
+      }
+    ],
+    "created": "2016-03-30T06:51:49.713Z"
+  }
+}

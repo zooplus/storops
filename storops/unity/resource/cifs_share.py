@@ -20,6 +20,8 @@ import logging
 
 import storops.unity.resource.cifs_server
 import storops.unity.resource.filesystem
+import storops.unity.resource.snap
+from storops.unity.enums import CIFSTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList
 
 __author__ = 'Jay Xu'
@@ -50,11 +52,30 @@ class UnityCifsShare(UnityResource):
         resp.raise_if_err()
         return UnityCifsShareList(cli=cli, name=name).first_item
 
+    @classmethod
+    def create_from_snap(cls, cli, snap, name, path=None, is_read_only=None):
+        snap_clz = storops.unity.resource.snap.UnitySnap
+        snap = snap_clz.get(cli, snap)
+
+        if path is None:
+            path = '/'
+
+        resp = cli.post(cls().resource_class,
+                        snap=snap,
+                        path=path,
+                        name=name,
+                        isReadOnly=is_read_only)
+        resp.raise_if_err()
+        return cls(_id=resp.resource_id, cli=cli)
+
     def remove(self, async=False):
-        fs = self.filesystem.verify()
-        sr = fs.storage_resource
-        param = self._cli.make_body(cifsShare=self)
-        resp = sr.modify_fs(async=async, cifsShareDelete=[param])
+        if self.type == CIFSTypeEnum.CIFS_SNAPSHOT:
+            resp = super(UnityCifsShare, self).remove(async=async)
+        else:
+            fs = self.filesystem.verify()
+            sr = fs.storage_resource
+            param = self._cli.make_body(cifsShare=self)
+            resp = sr.modify_fs(async=async, cifsShareDelete=[param])
         resp.raise_if_err()
         return resp
 

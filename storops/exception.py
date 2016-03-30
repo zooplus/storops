@@ -147,7 +147,7 @@ class UnityNasServerNameUsedError(UnityException):
 
 
 @rest_exception
-class UnityXmbNameInUseError(UnityException):
+class UnitySmbNameInUseError(UnityException):
     error_code = 108011873
 
 
@@ -194,6 +194,11 @@ class UnityFileSystemNameAlreadyExisted(UnityException):
 @rest_exception
 class UnitySnapNameInUseError(UnityException):
     error_code = 1903001605
+
+
+@rest_exception
+class UnityShareOnCkptSnapError(UnityException):
+    error_code = 1903001786
 
 
 class VNXException(StoropsException):

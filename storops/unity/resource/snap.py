@@ -17,6 +17,8 @@ from __future__ import unicode_literals
 
 from storops.unity.enums import FilesystemSnapAccessTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList
+import storops.unity.resource.cifs_share
+import storops.unity.resource.nfs_share
 from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Cedric Zhuang'
@@ -41,6 +43,19 @@ class UnitySnap(UnityResource):
                         filesystemAccessType=fs_access_type)
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
+
+    def create_cifs_share(self, name, path=None, is_read_only=None):
+        clz = storops.unity.resource.cifs_share.UnityCifsShare
+        return clz.create_from_snap(
+            self._cli, snap=self, name=name, path=path,
+            is_read_only=is_read_only)
+
+    def create_nfs_share(self, name, path=None, is_read_only=None,
+                         default_access=None):
+        clz = storops.unity.resource.nfs_share.UnityNfsShare
+        return clz.create_from_snap(
+            self._cli, snap=self, name=name, path=path,
+            is_read_only=is_read_only, default_access=default_access)
 
     def create_snap(self, name=None,
                     description=None, is_auto_delete=None,

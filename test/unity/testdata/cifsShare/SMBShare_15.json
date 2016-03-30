@@ -1,0 +1,30 @@
+{
+  "content": {
+    "id": "SMBShare_15",
+    "type": 2,
+    "offlineAvailability": 0,
+    "instanceId": "root/emc:EMC_UEM_CIFSShareLeaf%InstanceID=SMBShare_15",
+    "name": "sns2",
+    "path": "/",
+    "exportPaths": [
+      "\\\\nas1130.win2012.dev\\sns2",
+      "\\\\10.244.220.120\\sns2"
+    ],
+    "description": "",
+    "creationTime": "2016-03-30T07:32:29.285Z",
+    "modifiedTime": "2016-03-30T07:32:29.285Z",
+    "isContinuousAvailabilityEnabled": false,
+    "isEncryptionEnabled": false,
+    "isACEEnabled": false,
+    "isABEEnabled": false,
+    "isBranchCacheEnabled": false,
+    "isDFSEnabled": false,
+    "umask": "000",
+    "filesystem": {
+      "id": "fs_22"
+    },
+    "snap": {
+      "id": "171798691899"
+    }
+  }
+}

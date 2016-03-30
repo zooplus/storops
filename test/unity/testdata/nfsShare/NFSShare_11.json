@@ -1,0 +1,24 @@
+{
+  "content": {
+    "id": "NFSShare_11",
+    "type": 3,
+    "role": 0,
+    "defaultAccess": 0,
+    "minSecurity": 0,
+    "instanceId": "root/emc:EMC_UEM_NFSShareLeaf%InstanceID=NFSShare_11",
+    "name": "sns1",
+    "path": "/",
+    "exportPaths": [
+      "10.244.220.120:/sns1"
+    ],
+    "description": "",
+    "creationTime": "2016-03-30T07:04:37.075Z",
+    "modificationTime": "2016-03-30T07:04:37.075Z",
+    "filesystem": {
+      "id": "fs_21"
+    },
+    "snap": {
+      "id": "171798691896"
+    }
+  }
+}
