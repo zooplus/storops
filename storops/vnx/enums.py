@@ -232,8 +232,8 @@ class VNXError(VNXEnum):
     CG_SNAP_NAME_EXISTED = 0x716d8005
     CG_NOT_FOUND = "Cannot find the consistency group"
 
-    SNAP_NAME_EXISTED = 0x716d8005
-    SNAP_NAME_IN_USE = 0x716d8003
+    SNAP_NAME_IN_USE = 0x716d8005
+    SNAP_ATTACHED = 0x716d8003
     SNAP_ALREADY_MOUNTED = 0x716d8055
     SNAP_NOT_ATTACHED = ('The specified Snapshot mount point '
                          'is not currently attached.')

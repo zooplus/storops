@@ -48,7 +48,7 @@ class VNXSnap(VNXCliResource):
     def create(cls, cli, res, name, allow_rw=None, auto_delete=None):
         out = cli.create_snap(res, name, allow_rw, auto_delete)
         raise_if_err(out, ex.VNXSnapNameInUseError, 'snap name used.',
-                     VNXError.SNAP_NAME_EXISTED)
+                     VNXError.SNAP_NAME_IN_USE)
         raise_if_err(out, ex.VNXCreateSnapError,
                      'failed to create snap "{}" for {}'.format(name, res))
         return VNXSnap(name, cli=cli)
@@ -67,6 +67,8 @@ class VNXSnap(VNXCliResource):
     def remove(self):
         name = self._get_name()
         out = self._cli.remove_snap(name, poll=self.poll)
+        raise_if_err(out, ex.VNXRemoveAttachedSnapError,
+                     expected_error=VNXError.SNAP_ATTACHED)
         raise_if_err(out, ex.VNXSnapNotExistsError,
                      'failed to remove snap {}.'.format(name))
         raise_if_err(out, ex.VNXRemoveSnapError)

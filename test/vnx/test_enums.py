@@ -36,7 +36,7 @@ class VNXErrorTest(TestCase):
 
     def test_has_error_with_specific_error(self):
         output = "The specified snapshot name is already in use. (0x716d8005)"
-        err = has_error(output, VNXError.SNAP_NAME_EXISTED)
+        err = has_error(output, VNXError.SNAP_NAME_IN_USE)
         assert_that(err, equal_to(True))
         err = has_error(output, VNXError.LUN_ALREADY_EXPANDED)
         assert_that(err, equal_to(False))

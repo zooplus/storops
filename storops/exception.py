@@ -293,6 +293,10 @@ class VNXRemoveSnapError(VNXSnapError):
     pass
 
 
+class VNXRemoveAttachedSnapError(VNXRemoveSnapError):
+    pass
+
+
 class VNXSnapNotExistsError(VNXSnapError):
     pass
 
