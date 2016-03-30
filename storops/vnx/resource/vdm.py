@@ -18,9 +18,8 @@ from __future__ import unicode_literals
 import logging
 import re
 
-from storops.exception import VNXMoverInterfaceNotFound, \
-    VNXMoverInterfaceNotAttached
-from storops.vnx.enums import raise_if_err, VNXError, VNXShareType
+from storops.exception import check_nas_cmd_error
+from storops.vnx.enums import VNXShareType
 from storops.vnx.resource.mover import VNXMover
 from storops.vnx.resource import VNXResource, VNXCliResourceList
 
@@ -132,15 +131,11 @@ class VNXVdm(VNXResource):
     def attach_nfs_interface(self, if_name):
         out = self._cli.attach_nfs_interface(
             if_name, vdm_name=self._get_name())
-        raise_if_err(out, VNXMoverInterfaceNotFound,
-                     expected_error=VNXError.GENERAL_NOT_FOUND)
+        check_nas_cmd_error(out)
         return out
 
     def detach_nfs_interface(self, if_name):
         out = self._cli.detach_nfs_interface(
             if_name, vdm_name=self._get_name())
-        raise_if_err(out, VNXMoverInterfaceNotFound,
-                     expected_error=VNXError.GENERAL_NOT_FOUND)
-        raise_if_err(out, VNXMoverInterfaceNotAttached,
-                     expected_error=VNXError.MOVER_INTERFACE_NOT_ATTACHED)
+        check_nas_cmd_error(out)
         return out

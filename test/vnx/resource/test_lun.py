@@ -23,10 +23,13 @@ from hamcrest import assert_that, equal_to, contains_string, has_item, \
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_lun_0
 from storops.exception import VNXModifyLunError, VNXCompressionError, \
-    VNXDedupError, VNXCreateSnapError, VNXLunNotFoundError, \
+    VNXDedupError, VNXLunNotFoundError, \
     VNXLunExtendError, VNXLunExpandSizeError, VNXLunPreparingError, \
     VNXSnapNameInUseError, VNXCompressionAlreadyEnabledError, \
-    VNXLunNameInUseError, VNXTargetNotReadyError
+    VNXLunNameInUseError, VNXTargetNotReadyError, \
+    VNXCreateSnapResourceNotFoundError, VNXLunInStorageGroupError, \
+    VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
+    VNXDetachSnapLunTypeError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -213,6 +216,23 @@ class VNXLunTest(TestCase):
         assert_that(lun.attached_snapshot, none())
 
     @patch_cli()
+    def test_attached_snapshot_invalid_lun_type(self):
+        def f():
+            lun = VNXLun(name='l1', cli=t_cli())
+            lun.attach_snap('s1')
+
+        assert_that(f, raises(VNXAttachSnapLunTypeError, 'Invalid LUN type.'))
+
+    @patch_cli()
+    def test_detach_snap_invalid_lun_type(self):
+        def f():
+            lun = VNXLun(lun_id=0, cli=t_cli())
+            lun.detach_snap()
+
+        assert_that(f, raises(VNXDetachSnapLunTypeError,
+                              'not a snapshot mount point'))
+
+    @patch_cli()
     def test_create_mount_point(self):
         lun = VNXLun(name='l1', cli=t_cli())
         m2 = lun.create_mount_point(mount_point_name='m2')
@@ -265,7 +285,7 @@ class VNXLunTest(TestCase):
             l = VNXLun(lun_id=4000, cli=t_cli())
             l.name = 'l1'
 
-        assert_that(f, raises(VNXModifyLunError, 'may not exist'))
+        assert_that(f, raises(VNXLunNotFoundError, 'may not exist'))
 
     @patch_cli()
     def test_change_name_failed(self):
@@ -282,7 +302,7 @@ class VNXLunTest(TestCase):
             l = VNXLun(lun_id=4000, cli=t_cli())
             l.tier = VNXTieringEnum.LOW
 
-        assert_that(f, raises(VNXModifyLunError, 'may not exist'))
+        assert_that(f, raises(VNXLunNotFoundError, 'may not exist'))
 
     @patch_cli()
     def test_expand_too_large(self):
@@ -405,12 +425,29 @@ class VNXLunTest(TestCase):
         assert_that(f, raises(VNXLunNotFoundError, 'not exist'))
 
     @patch_cli()
+    def test_remove_lun_in_storage_group(self):
+        def f():
+            l2 = VNXLun(name='in_sg', cli=t_cli())
+            l2.remove()
+
+        assert_that(f, raises(VNXLunInStorageGroupError, 'in a Storage Group'))
+
+    @patch_cli()
+    def test_remove_lun_in_cg(self):
+        def f():
+            l2 = VNXLun(name='l2', cli=t_cli())
+            l2.remove()
+
+        assert_that(f, raises(VNXLunInConsistencyGroupError,
+                              'member of a consistency group'))
+
+    @patch_cli()
     def test_create_snap(self):
         def f():
             l1 = VNXLun(lun_id=11, cli=t_cli())
             l1.create_snap('s1')
 
-        assert_that(f, raises(VNXCreateSnapError,
+        assert_that(f, raises(VNXCreateSnapResourceNotFoundError,
                               'Cannot create the snapshot'))
 
     @patch_cli()

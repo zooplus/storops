@@ -20,7 +20,7 @@ import unittest
 from hamcrest import assert_that, equal_to, raises, has_item
 
 from test.vnx.nas_mock import t_nas, patch_nas
-from storops.exception import VNXBackendError
+from storops.exception import VNXGeneralNasError
 from storops.vnx.resource.cifs_share import VNXCifsShareList, VNXCifsShare
 from storops.vnx.resource.fs import VNXFileSystem
 from storops.vnx.resource.mover import VNXMover
@@ -87,7 +87,7 @@ class VNXCifsShareTest(unittest.TestCase):
             VNXCifsShare.create(t_nas(), 'test_zhuanc', 'CIFS', mover,
                                 path='/test_zhuanc')
 
-        assert_that(f, raises(VNXBackendError, 'Invalid path'))
+        assert_that(f, raises(VNXGeneralNasError, 'Invalid path'))
 
     @patch_nas()
     def test_create_success(self):
@@ -109,4 +109,4 @@ class VNXCifsShareTest(unittest.TestCase):
                                  cli=t_nas())
             share.remove('CIFS')
 
-        assert_that(f, raises(VNXBackendError, 'No such file'))
+        assert_that(f, raises(VNXGeneralNasError, 'No such file'))

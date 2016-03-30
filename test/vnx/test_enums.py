@@ -20,67 +20,54 @@ from unittest import TestCase
 import six
 from hamcrest import assert_that, raises
 from hamcrest import equal_to
+from storops import exception
 
-from storops.exception import StoropsException
-from storops.vnx.enums import VNXError, VNXProvisionEnum, \
-    VNXTieringEnum, VNXSPEnum, has_error, VNXRaidType, raise_if_err, \
+from storops.exception import VNXFsNotFoundError, VNXException, raise_if_err
+from storops.vnx.enums import VNXProvisionEnum, \
+    VNXTieringEnum, VNXSPEnum, VNXRaidType, \
     VNXMigrationRate
 from storops.vnx.nas_client import NasXmlResponse
 from test.vnx.nas_mock import MockXmlPost
 
 
 class VNXErrorTest(TestCase):
-    def test_has_error(self):
-        output = "The specified snapshot name is already in use. (0x716d8005)"
-        assert_that(has_error(output), equal_to(True))
-
     def test_has_error_with_specific_error(self):
-        output = "The specified snapshot name is already in use. (0x716d8005)"
-        err = has_error(output, VNXError.SNAP_NAME_IN_USE)
-        assert_that(err, equal_to(True))
-        err = has_error(output, VNXError.LUN_ALREADY_EXPANDED)
-        assert_that(err, equal_to(False))
+        def f():
+            msg = ("SP A: Expansion LUN size must be "
+                   "greater than current LUN size. (0x712d8e04)")
+            raise_if_err(msg)
 
-    def test_has_error_not_found(self):
-        output = "Cannot find the consistency group."
-        err = has_error(output)
-        assert_that(err, equal_to(True))
+        assert_that(f, raises(exception.VNXLunExpandSizeError))
 
-        err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(True))
+    def test_cg_not_found(self):
+        def f():
+            output = "Cannot find the consistency group."
+            raise_if_err(output)
 
-    def test_has_error_not_exist(self):
-        output = "The specified snapshot does not exist."
-        err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(True))
+        assert_that(f, raises(exception.VNXConsistencyGroupNotFoundError))
 
-        output = "The (pool lun) may not exist."
-        err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(True))
+    def test_snap_not_exists(self):
+        def f():
+            output = "The specified snapshot does not exist."
+            raise_if_err(output)
 
-    def test_has_error_multi_line(self):
-        output = """Could not retrieve the specified (pool lun).
+        assert_that(f, raises(exception.VNXSnapNotExistsError))
+
+    def test_pool_lun_not_exists_multi_line(self):
+        def f():
+            output = """Could not retrieve the specified (pool lun).
                     The (pool lun) may not exist."""
-        err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(True))
+            raise_if_err(output)
+
+        assert_that(f, raises(exception.VNXLunNotFoundError))
 
     def test_has_error_regular_string_false(self):
-        output = "Cannot unbind LUN because it's contained in a Storage Group."
-        err = has_error(output, VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(False))
+        def f():
+            output = ("Cannot unbind LUN because "
+                      "it's contained in a Storage Group.")
+            raise_if_err(output)
 
-    def test_has_error_multi_errors(self):
-        output = "Cannot unbind LUN because it's contained in a Storage Group."
-        err = has_error(output,
-                        VNXError.LUN_IN_SG,
-                        VNXError.GENERAL_NOT_FOUND)
-        assert_that(err, equal_to(True))
-
-        output = "Cannot unbind LUN because it's contained in a Storage Group."
-        err = has_error(output,
-                        VNXError.LUN_ALREADY_EXPANDED,
-                        VNXError.LUN_NOT_MIGRATING)
-        assert_that(err, equal_to(False))
+        assert_that(f, raises(exception.VNXLunInStorageGroupError))
 
     def test_has_error_ev_error(self):
         class ForTest(object):
@@ -91,22 +78,28 @@ class VNXErrorTest(TestCase):
         error.why = 'SP A: LUN already exists in the specified storage group.'
         error.who = '@(#)libconnect Revision 7.33.6.2.50 on 1/6/2015 21:54:55'
 
-        err = has_error(error,
-                        VNXError.SG_LUN_ALREADY_EXISTS)
-        assert_that(err, equal_to(True))
+        def f():
+            raise_if_err(error)
+
+        assert_that(f, raises(exception.VNXAluAlreadyAttachedError))
 
     def test_sp_error_not_supported(self):
-        out = ('Error returned from the target: 10.244.211.32\n'
-               'CLI commands are not supported by the target storage system.')
-        err = has_error(out, VNXError.NOT_A_SP)
-        assert_that(err, equal_to(True))
+        def f():
+            out = ('Error returned from the target: 10.244.211.32\n'
+                   'CLI commands are not supported by the '
+                   'target storage system.')
+            raise_if_err(out)
+
+        assert_that(f, raises(exception.VNXNotSupportedError))
 
     def test_sp_error_time_out(self):
-        out = ("A network error occurred while "
-               "trying to connect: '10.244.211.33'.\n"
-               "Message : select: The connect timed out.")
-        err = has_error(out, VNXError.SP_NOT_AVAILABLE)
-        assert_that(err, equal_to(True))
+        def f():
+            out = ("A network error occurred while "
+                   "trying to connect: '10.244.211.33'.\n"
+                   "Message : select: The connect timed out.")
+            raise_if_err(out)
+
+        assert_that(f, raises(exception.VNXTimeoutError))
 
     def test_raise_if_err_normal(self):
         raise_if_err('')
@@ -116,22 +109,22 @@ class VNXErrorTest(TestCase):
         def f():
             raise_if_err('error msg', msg="error received")
 
-        assert_that(f, raises(ValueError, "error received"))
+        assert_that(f, raises(VNXException, "error received"))
 
-    def test_raise_if_err_vnx_error(self):
+    def test_raise_if_err_lun_not_found(self):
         def f():
-            raise_if_err('specified lun may not exist', StoropsException,
-                         expected_error=VNXError.GENERAL_NOT_FOUND)
+            out = ('Could not retrieve the specified (pool lun). '
+                   'The (pool lun) may not exist')
+            raise_if_err(out)
 
-        assert_that(f, raises(StoropsException, 'specified lun may not exist'))
+        assert_that(f, raises(exception.VNXLunNotFoundError))
 
     def test_raise_if_err_nas_response_input(self):
         def f():
             resp = NasXmlResponse(MockXmlPost.read_file('fs_not_found.xml'))
-            raise_if_err(resp, StoropsException,
-                         expected_error=VNXError.FS_NOT_FOUND)
+            resp.raise_if_err()
 
-        assert_that(f, raises(StoropsException, 'not found'))
+        assert_that(f, raises(VNXFsNotFoundError, 'not found'))
 
 
 class VNXProvisionEnumTest(TestCase):

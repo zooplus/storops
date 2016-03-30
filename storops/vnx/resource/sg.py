@@ -18,8 +18,9 @@ from __future__ import unicode_literals
 import logging
 from threading import Lock
 
-from storops.vnx.enums import VNXSPEnum, VNXPortType, has_error, VNXError, \
-    raise_if_err
+from retryz import retry
+
+from storops.vnx.enums import VNXSPEnum, VNXPortType
 import storops.vnx.resource.lun
 from storops.vnx.resource.port import VNXHbaPort
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
@@ -54,7 +55,9 @@ class VNXStorageGroup(VNXCliResource):
 
     @classmethod
     def create(cls, name, cli):
-        cli.create_sg(name)
+        out = cli.create_sg(name)
+        msg = 'failed to create storage group "{}".'.format(name)
+        ex.raise_if_err(out, msg, default=ex.VNXCreateStorageGroupError)
         return VNXStorageGroup(name, cli)
 
     def remove(self):
@@ -170,36 +173,41 @@ class VNXStorageGroup(VNXCliResource):
     class _HluOccupiedError(Exception):
         pass
 
-    def attach_alu(self, lun):
-        alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
-        while True:
-            hlu = self._get_hlu_to_add(alu)
-            out = self._cli.sg_add_hlu(self._get_name(), hlu, alu,
+    def attach_alu(self, lun, retry_limit=None):
+        def _update():
+            self.update()
+
+        @retry(on_error=ex.VNXAluNumberInUseError, on_retry=_update,
+               limit=retry_limit)
+        def _do(alu_id):
+            hlu = self._get_hlu_to_add(alu_id)
+            out = self._cli.sg_add_hlu(self._get_name(), hlu, alu_id,
                                        poll=self.poll)
-            if has_error(out, VNXError.SG_HOST_LUN_USED):
-                self.update()
-                continue
-            break
-        return storops.vnx.resource.lun.VNXLun(self._cli, alu)
+            ex.raise_if_err(out, default=ex.VNXAttachAluError)
+
+        lun_clz = storops.vnx.resource.lun.VNXLun
+        alu = lun_clz.get_id(lun)
+        _do(alu)
+        return lun_clz(self._cli, alu)
 
     def detach_alu(self, lun):
         alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
         hlu = self.get_hlu(lun)
         out = self._cli.sg_remove_hlu(self._get_name(), hlu, poll=self.poll)
-        raise_if_err(out, ex.VNXStorageGroupError,
-                     'failed to detach hlu {}/alu {}.'.format(hlu, alu))
+        msg = 'failed to detach hlu {}/alu {}.'.format(hlu, alu)
+        ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError, )
         self._remove_alu(alu)
 
     def connect_host(self, host):
         out = self._cli.sg_connect_host(self._get_name(), host, poll=self.poll)
-        raise_if_err(out, ex.VNXStorageGroupError,
-                     'failed to connect host {}.'.format(host))
+        msg = 'failed to connect host {}.'.format(host)
+        ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError)
 
     def disconnect_host(self, host):
         out = self._cli.sg_disconnect_host(self._get_name(), host,
                                            poll=self.poll)
-        raise_if_err(out, ex.VNXStorageGroupError,
-                     'failed to disconnect host {}.'.format(host))
+        msg = 'failed to disconnect host {}.'.format(host)
+        ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError)
 
     @property
     def uid(self):

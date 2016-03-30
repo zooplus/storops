@@ -20,7 +20,7 @@ from hamcrest import assert_that, equal_to, none, only_contains, raises
 
 from test.vnx.nas_mock import t_nas, patch_post, patch_nas
 from storops.vnx.enums import VNXPortType
-from storops.exception import VNXBackendError
+from storops.exception import VNXBackendError, VNXGeneralNasError
 from storops.vnx.resource.mover import VNXMoverList, VNXMover, \
     VNXMoverRefList, VNXMoverRef, VNXMoverHost, VNXMoverHostList
 
@@ -109,7 +109,7 @@ class VNXMoverRefTest(unittest.TestCase):
             dm = VNXMoverRef(mover_id=1, cli=t_nas())
             dm.remove_dns('bb')
 
-        assert_that(f, raises(VNXBackendError, 'server_2'))
+        assert_that(f, raises(VNXGeneralNasError, 'server_2'))
 
     @patch_post()
     def test_physical_devices(self):

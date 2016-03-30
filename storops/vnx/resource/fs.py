@@ -21,9 +21,7 @@ import re
 import six
 
 from storops.connection.exceptions import SSHExecutionError
-from storops.exception import VNXFsExistedError
 from storops.lib.common import check_int
-from storops.vnx.enums import raise_if_err, VNXError
 import storops.vnx.resource.mover
 import storops.vnx.resource.nas_pool
 from storops.vnx.resource import VNXResource, VNXCliResourceList
@@ -97,8 +95,6 @@ class VNXFileSystem(VNXResource):
         pool = storops.vnx.resource.nas_pool.VNXNasPool.get_id(pool)
         mover = storops.vnx.resource.mover.VNXMover.get_id(mover)
         resp = cli.create_filesystem(name, size_kb, pool, mover, is_vdm)
-        raise_if_err(resp, VNXFsExistedError,
-                     expected_error=VNXError.FS_EXIST)
         resp.raise_if_err()
         return VNXFileSystem(name, cli=cli)
 

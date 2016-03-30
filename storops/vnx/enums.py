@@ -18,18 +18,9 @@ from __future__ import unicode_literals
 import logging
 import re
 
-import six
-
 from storops.lib.common import Enum, cache, JsonPrinter
 
 log = logging.getLogger(__name__)
-
-
-def to_hex(number):
-    h = hex(number)
-    if h.endswith('L'):
-        h = h[:-1]
-    return h
 
 
 class VNXEnum(JsonPrinter, Enum):
@@ -190,147 +181,6 @@ class VNXTieringEnum(VNXEnum):
     @staticmethod
     def match_option(output, option):
         return output.replace(' ', '').lower() == option.lower()
-
-
-class VNXError(VNXEnum):
-    GENERAL_NOT_FOUND = ('cannot find|'
-                         'may not exist|'
-                         'does not exist|'
-                         'cannot be found')
-
-    SP_NOT_AVAILABLE = ('^Error.*Message.*End of data stream.*|'
-                        '.*Message.*connection refused.*|'
-                        '^Error.*Message.*Service Unavailable.*|'
-                        '^A network error occurred while trying to connect.*|'
-                        '^Exception: Error occurred because of time out\s*')
-    NOT_A_SP = ('.*CLI commands are not supported '
-                'by the target storage system.*')
-
-    SG_NAME_IN_USE = 'Storage Group name already in use'
-    SG_LUN_ALREADY_EXISTS = ('LUN already exists in the '
-                             'specified storage group|'
-                             'Requested LUN has already '
-                             'been added to this Storage Group')
-    SG_HOST_LUN_NOT_EXISTS = 'No such Host LUN in this Storage Group'
-    SG_HOST_LUN_USED = ('Requested Host LUN Number already in use|'
-                        'LUN mapping still exists')
-
-    LUN_ALREADY_EXPANDED = 0x712d8e04
-    LUN_EXPAND_ERROR_SIZE = 0x712d8e04
-    LUN_NAME_IN_USE = 0x712d8d04
-    LUN_IS_PREPARING = 0x712d8e0e
-    LUN_IN_SG = 'contained in a Storage Group|LUN mapping still exists'
-    LUN_NOT_MIGRATING = ('The specified source LUN is '
-                         'not currently migrating')
-    LUN_IS_NOT_SMP = 'it is not a snapshot mount point'
-    LUN_IN_CG = 0x716d8025
-
-    COMPRESSION_ALREADY_ENABLED = 'already turned on'
-
-    CG_IS_DELETING = 0x712d8801
-    CG_EXISTED = 0x716d8021
-    CG_SNAP_NAME_EXISTED = 0x716d8005
-    CG_NOT_FOUND = "Cannot find the consistency group"
-
-    SNAP_NAME_IN_USE = 0x716d8005
-    SNAP_ATTACHED = 0x716d8003
-    SNAP_ALREADY_MOUNTED = 0x716d8055
-    SNAP_NOT_ATTACHED = ('The specified Snapshot mount point '
-                         'is not currently attached.')
-
-    MIGRATION_TGT_NOT_READY = 'not available for migration'
-
-    NAS_GENERAL_ERROR = 13690601492
-
-    INVALID_VDM_ID = 14227341325
-    VDM_EXIST = 13421840550
-    INVALID_MOVER_ID = 14227341323
-
-    FS_NOT_FOUND = 18522112101
-    FS_EXIST = 13691191325
-
-    FS_SNAP_EXIST = 13690535947
-
-    MOVER_INTERFACE_NAME_EXIST = 13421840550
-    MOVER_INTERFACE_EXIST = 13691781136
-    MOVER_INTERFACE_INVALID_VLAN_ID = 13421850371
-    MOVER_INTERFACE_NON_EXISTANCE = 13691781134
-    MOVER_INTERFACE_NOT_ATTACHED = 'not currently attached'
-
-    JOIN_DOMAIN = 13157007726
-    UNJOIN_DOMAIN = 13157007723
-
-    @classmethod
-    def _match(cls, output, error_code):
-        is_match = False
-        if isinstance(error_code, cls):
-            error_code = error_code.value
-
-        if isinstance(error_code, six.integer_types):
-            error_code = to_hex(error_code)
-
-        if hasattr(output, 'message'):
-            output = output.message
-        elif hasattr(output, 'why'):
-            # for EvError
-            output = getattr(output, 'why')
-        elif hasattr(output, 'hex_problem_message_codes'):
-            codes = getattr(output, 'hex_problem_message_codes')
-            output = ' '.join(codes)
-        else:
-            try:
-                output = output.get('why')
-            except AttributeError:
-                pass
-
-        if isinstance(error_code, six.string_types):
-            error_code = error_code.strip()
-            flags = re.IGNORECASE | re.MULTILINE | re.DOTALL
-            found = re.findall(error_code, output,
-                               flags=flags)
-            is_match = len(found) > 0
-
-        return is_match
-
-    @classmethod
-    def has_error(cls, output, *error_codes):
-        if error_codes is None or len(error_codes) == 0:
-            error_codes = VNXError.get_all()
-        return any([cls._match(output, error_code)
-                    for error_code in error_codes])
-
-    @classmethod
-    def sp_not_available(cls, out):
-        return len(out) < 500 and has_error(out, cls.SP_NOT_AVAILABLE)
-
-
-def has_error(output, *error_codes):
-    return VNXError.has_error(output, *error_codes)
-
-
-def raise_if_err(out, ex_clz=None, msg=None, expected_error=None):
-    def on_error():
-        log.error(msg)
-        raise ex_clz(msg)
-
-    if msg is None:
-        if hasattr(out, 'get_status_msg'):
-            msg = out.get_status_msg()
-        else:
-            msg = out
-    else:
-        msg = '{}  detail:\n{}'.format(msg, out)
-    if ex_clz is None:
-        ex_clz = ValueError
-    if not expected_error:
-        # check if out is empty
-        if out is not None and len(out) > 0:
-            on_error()
-    else:
-        if not isinstance(expected_error, (list, tuple)):
-            expected_error = [expected_error]
-        if has_error(out, *expected_error):
-            on_error()
 
 
 class VNXPortType(VNXEnum):

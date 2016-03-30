@@ -22,7 +22,7 @@ import six
 from datetime import datetime
 
 from storops.lib.common import daemon, WeightedAverage
-from storops.vnx.enums import VNXSPEnum, VNXError
+from storops.vnx.enums import VNXSPEnum
 import storops.exception as ex
 from storops.vnx.navi_command import NaviCommand
 
@@ -217,12 +217,18 @@ class NodeHeartBeat(NaviCommand):
         self.update_by_ip(ip, working=True)
         start = time()
         out = self.execute_naviseccli(cmd, raise_on_rc, check_rc)
-        if VNXError.sp_not_available(out):
-            available = False
-            latency = None
-        else:
+        try:
+            ex.raise_if_err(out)
             available = True
             latency = time() - start
+        except ex.VNXSpNotAvailableError:
+            available = False
+            latency = None
+        except ex.VNXException:
+            # swallow the exception, passed the output to upper level
+            available = True
+            latency = time() - start
+
         self.update_by_ip(ip, available, False, latency)
         self.command_count += 1
 

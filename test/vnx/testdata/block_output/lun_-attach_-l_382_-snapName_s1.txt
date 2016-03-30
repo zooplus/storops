@@ -1,0 +1,1 @@
+Cannot attach the snapshot. Invalid LUN type.

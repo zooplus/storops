@@ -21,7 +21,7 @@ from hamcrest import assert_that, equal_to, raises
 
 from test.vnx.nas_mock import t_nas, patch_post
 
-from storops.exception import VNXFsSnapExistedError
+from storops.exception import VNXFsSnapNameInUseError
 from storops.vnx.resource.fs_snap import VNXFsSnapList, VNXFsSnap
 
 __author__ = 'Jay Xu'
@@ -65,7 +65,7 @@ class VXNFsSnapTest(unittest.TestCase):
         self.verify_snap_230(snap)
 
     @patch_post()
-    def test_create(self):
+    def test_create_success(self):
         snap = VNXFsSnap.create(t_nas(), 'test', 222, 61)
         assert_that(snap.name, equal_to('test'))
         assert_that(snap.fs_id, equal_to(222))
@@ -76,7 +76,7 @@ class VXNFsSnapTest(unittest.TestCase):
         def f():
             VNXFsSnap.create(t_nas(), 'Tan_Manual_CheckPoint', 228, 61)
 
-        assert_that(f, raises(VNXFsSnapExistedError, 'already in use'))
+        assert_that(f, raises(VNXFsSnapNameInUseError, 'already in use'))
 
     @patch_post()
     def test_remove(self):

@@ -30,7 +30,7 @@ import sys
 from retryz import retry
 from threading import Lock, Thread
 
-from storops.exception import EnumValueNotFoundError
+import storops.exception
 
 log = logging.getLogger(__name__)
 
@@ -180,7 +180,7 @@ class Enum(_Enum):
     def _raise_invalid_value(cls, value):
         msg = '{} is not a valid value for {}.'.format(value, cls.__name__)
         log.warn(msg)
-        raise EnumValueNotFoundError(msg)
+        raise storops.exception.EnumValueNotFoundError(msg)
 
     @classmethod
     def get_option_map(cls):

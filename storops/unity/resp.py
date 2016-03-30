@@ -15,9 +15,9 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.exception import get_rest_exception
 from storops.unity.resource import health
 from storops.unity.resource import job
-from storops.exception import get_rest_exception
 from storops.lib.common import instance_cache
 
 __author__ = 'Cedric Zhuang'

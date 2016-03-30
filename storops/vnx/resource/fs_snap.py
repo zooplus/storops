@@ -17,8 +17,6 @@ from __future__ import unicode_literals
 
 import logging
 
-from storops.exception import VNXFsSnapExistedError
-from storops.vnx.enums import raise_if_err, VNXError
 import storops.vnx.resource.fs
 import storops.vnx.resource.nas_pool
 from storops.vnx.resource import VNXCliResourceList, VNXResource
@@ -70,8 +68,6 @@ class VNXFsSnap(VNXResource):
         fs_id = fs_clz.get_id(fs)
         pool_id = pool_clz.get_id(pool)
         resp = cli.create_snap(name, fs_id, pool_id, size)
-        raise_if_err(resp, VNXFsSnapExistedError,
-                     expected_error=VNXError.FS_SNAP_EXIST)
         resp.raise_if_err()
         return VNXFsSnap(name=name, cli=cli)
 

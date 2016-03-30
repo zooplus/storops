@@ -24,11 +24,10 @@ from lxml import etree
 from retryz import retry
 
 from storops.connection import connector
-from storops.exception import VNXLockRequiredException, VNXBackendError, \
-    VNXObjectNotFound, VNXInvalidMoverID
+from storops.exception import VNXBackendError, VNXLockRequiredException, \
+    VNXObjectNotFound, VNXInvalidMoverID, VNXException, get_xmlapi_exception
 from storops.lib.common import Enum, check_int
 from storops.lib.converter import to_int, to_hex
-from storops.vnx.enums import has_error, VNXError
 from storops.vnx.nas_cmd import NasCommand
 from storops.vnx.resource.cifs_share import CifsAccessControl
 from storops.vnx.xmlapi import NasXmlBuilder
@@ -116,7 +115,7 @@ class VNXNasConnections(object):
             response.raise_if_no_object(error_desc)
 
         if check_invalid_data_mover:
-            response.check_invalid_data_mover(error_desc)
+            response.check_invalid_data_mover()
 
         return response
 
@@ -445,17 +444,22 @@ class NasXmlResponse(object):
                                 d=v.get('Diagnostics', 'N/A')))
         return ''.join(msgs)
 
-    def check_invalid_data_mover(self, desc=None):
+    def check_invalid_data_mover(self):
         if not self.is_ok():
-            msg = self.get_status_msg(desc)
-            log.error(msg)
-            if has_error(self, VNXError.INVALID_MOVER_ID):
-                raise VNXInvalidMoverID(message=msg)
+            try:
+                self.raise_if_err()
+            except VNXInvalidMoverID:
+                raise
+            except VNXException:
+                # pass to upper level for further process
+                pass
 
     def raise_if_err(self, desc=None):
         if not self.is_ok():
             msg = self.get_status_msg(desc)
-            raise VNXBackendError(message=msg)
+            exception_clz = get_xmlapi_exception(
+                self.problem_message_codes, default=VNXBackendError)
+            raise exception_clz(message=msg)
 
     def raise_if_no_object(self, desc=None):
         if not self.objects:

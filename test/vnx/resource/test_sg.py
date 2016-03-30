@@ -21,7 +21,9 @@ from hamcrest import assert_that, equal_to, has_item, raises
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
-from storops.exception import VNXStorageGroupError
+from storops.exception import VNXStorageGroupError, \
+    VNXStorageGroupNameInUseError, VNXDetachAluNotFoundError, \
+    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXAluNumberInUseError
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.sg import VNXStorageGroupList, VNXStorageGroup, \
@@ -73,7 +75,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.initiator_uid_list), equal_to(5))
 
     @patch_cli()
-    def test_attach_alu(self):
+    def test_attach_alu_success(self):
         sg = self.test_sg()
         lun = VNXLun(name='x', cli=t_cli())
         assert_that(sg.has_alu(0), equal_to(False))
@@ -82,10 +84,45 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.get_hlu(0), equal_to(1))
 
     @patch_cli()
-    def test_detach_hlu(self):
+    def test_attach_alu_already_attached(self):
+        def f():
+            sg = self.test_sg()
+            sg.attach_alu(123)
+
+        assert_that(f, raises(VNXAluAlreadyAttachedError,
+                              'already been added'))
+
+    @patch_cli()
+    def test_attach_alu_not_found(self):
+        def f():
+            sg = self.test_sg()
+            sg.attach_alu(124)
+
+        assert_that(f, raises(VNXAluNotFoundError,
+                              'not a bound ALU number'))
+
+    @patch_cli()
+    def test_attach_alu_hlu_in_use_retry(self):
+        def f():
+            sg = self.test_sg()
+            sg.attach_alu(13, retry_limit=2)
+
+        assert_that(f, raises(VNXAluNumberInUseError,
+                              'LUN Number already in use'))
+
+    @patch_cli()
+    def test_detach_hlu_success(self):
         sg = self.test_sg()
         sg.detach_alu(10)
         assert_that(sg.has_hlu(10), equal_to(False))
+
+    @patch_cli()
+    def test_detach_hlu_not_found(self):
+        def f():
+            sg = self.test_sg()
+            sg.detach_alu(1032)
+
+        assert_that(f, raises(VNXDetachAluNotFoundError, 'No such Host LUN'))
 
     @patch_cli()
     def test_connect_host(self):
@@ -104,6 +141,13 @@ class VNXStorageGroupTest(TestCase):
 
         assert_that(f, raises(VNXStorageGroupError,
                               'not currently connected'))
+
+    @patch_cli()
+    def test_create_sg_name_in_use(self):
+        def f():
+            VNXStorageGroup.create('existed', t_cli())
+
+        assert_that(f, raises(VNXStorageGroupNameInUseError, 'already in use'))
 
 
 class VNXStorageGroupHBATest(TestCase):

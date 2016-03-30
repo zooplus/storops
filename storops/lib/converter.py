@@ -42,6 +42,16 @@ def to_bool(str_input):
     return ret
 
 
+def to_hex(number):
+    if number is not None:
+        h = hex(number)
+        if h.endswith('L'):
+            h = h[:-1]
+    else:
+        h = None
+    return h
+
+
 def to_wwn(str_input):
     str_input = str_input.upper()
     if ':' not in str_input:
@@ -203,7 +213,6 @@ to_mirror_view_recovery_policy = _to_enum(enums.VNXMirrorViewRecoveryPolicy)
 to_mirror_view_sync_rate = _to_enum(enums.VNXMirrorViewSyncRate)
 to_raid_type = _to_enum(enums.VNXRaidType)
 to_port_type = _to_enum(enums.VNXPortType)
-to_hex = enums.to_hex
 to_migration_rate_enum = _to_enum(enums.VNXMigrationRate)
 
 

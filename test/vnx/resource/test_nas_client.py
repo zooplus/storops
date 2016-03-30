@@ -70,9 +70,9 @@ class NasXmlResponseTest(TestCase):
     def test_check_invalid_data_mover(self):
         def f():
             resp = self.invalid_dm
-            resp.check_invalid_data_mover('customized message')
+            resp.check_invalid_data_mover()
 
-        assert_that(f, raises(VNXInvalidMoverID, 'customized message'))
+        assert_that(f, raises(VNXInvalidMoverID, 'id=100 not found'))
 
     def test_raise_if_not_found(self):
         def f():

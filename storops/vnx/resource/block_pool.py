@@ -16,7 +16,6 @@
 from __future__ import unicode_literals
 
 from storops.lib.common import instance_cache
-from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops.vnx.resource.lun import VNXLun, VNXLunList
 from storops import exception as ex
@@ -75,18 +74,18 @@ class VNXPool(VNXCliResource):
             ret = self._cli.modify_storage_pool(new_name=new_name,
                                                 poll=self.poll,
                                                 **self._get_name_or_id())
-            raise_if_err(ret, ex.VNXModifyPoolError)
+            ex.raise_if_err(ret, default=ex.VNXModifyPoolError)
             self._name = new_name
 
     @staticmethod
     def create(cli, name, disks, raid_type=None, ):
         ret = cli.create_pool(name, disks, raid_type)
-        raise_if_err(ret, ex.VNXCreatePoolError)
+        ex.raise_if_err(ret, default=ex.VNXCreatePoolError)
         return VNXPool(name=name, cli=cli)
 
     def remove(self):
         ret = self._cli.remove_pool(poll=self.poll, **self._get_name_or_id())
-        raise_if_err(ret, ex.VNXRemovePoolError)
+        ex.raise_if_err(ret, default=ex.VNXRemovePoolError)
 
     @classmethod
     def get(cls, cli, pool_id=None, name=None):
@@ -117,9 +116,8 @@ class VNXPool(VNXCliResource):
             ignore_thresholds=ignore_thresholds,
             poll=self.poll,
             **pool)
-        raise_if_err(ret, ex.VNXLunNameInUseError,
-                     expected_error=VNXError.LUN_NAME_IN_USE)
-        raise_if_err(ret, ex.VNXCreateLunError, 'error creating lun.')
+        ex.raise_if_err(ret, 'error creating lun.',
+                        default=ex.VNXCreateLunError)
         return VNXLun(lun_id, lun_name, self._cli)
 
     @staticmethod

@@ -1,0 +1,3 @@
+Error: storagegroup command failed
+Error returned from Agent
+Requested LUN has already been added to this Storage Group

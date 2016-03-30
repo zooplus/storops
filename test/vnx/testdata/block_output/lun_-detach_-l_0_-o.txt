@@ -1,0 +1,1 @@
+Cannot detach the specified LUN 3 as it is not a snapshot mount point. Retry the detach operation with a valid snapshot mount point.

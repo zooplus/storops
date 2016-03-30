@@ -15,7 +15,6 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.vnx.enums import raise_if_err
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 from storops import exception as ex
 
@@ -41,12 +40,12 @@ class VNXRaidGroup(VNXCliResource):
     @staticmethod
     def create(cli, raid_group_id, disks, raid_type=None):
         ret = cli.create_rg(disks, raid_group_id, raid_type)
-        raise_if_err(ret, ex.VNXCreateRaidGroupError)
+        ex.raise_if_err(ret, default=ex.VNXCreateRaidGroupError)
         return VNXRaidGroup(raid_group_id, cli)
 
     def remove(self):
         ret = self._cli.remove_rg(self._get_raid_group_id(), poll=self.poll)
-        raise_if_err(ret, ex.VNXRemoveRaidGroupError)
+        ex.raise_if_err(ret, default=ex.VNXRemoveRaidGroupError)
 
     @classmethod
     def get(cls, cli, raid_group_id=None):

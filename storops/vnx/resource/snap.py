@@ -17,7 +17,6 @@ from __future__ import unicode_literals
 
 import six
 
-from storops.vnx.enums import raise_if_err, VNXError
 from storops.vnx.resource import VNXCliResourceList
 from storops.vnx.resource import VNXCliResource
 from storops import exception as ex
@@ -47,10 +46,8 @@ class VNXSnap(VNXCliResource):
     @classmethod
     def create(cls, cli, res, name, allow_rw=None, auto_delete=None):
         out = cli.create_snap(res, name, allow_rw, auto_delete)
-        raise_if_err(out, ex.VNXSnapNameInUseError, 'snap name used.',
-                     VNXError.SNAP_NAME_IN_USE)
-        raise_if_err(out, ex.VNXCreateSnapError,
-                     'failed to create snap "{}" for {}'.format(name, res))
+        msg = 'failed to create snap "{}" for {}'.format(name, res)
+        ex.raise_if_err(out, msg, default=ex.VNXCreateSnapError)
         return VNXSnap(name, cli=cli)
 
     def _get_raw_resource(self):
@@ -67,11 +64,7 @@ class VNXSnap(VNXCliResource):
     def remove(self):
         name = self._get_name()
         out = self._cli.remove_snap(name, poll=self.poll)
-        raise_if_err(out, ex.VNXRemoveAttachedSnapError,
-                     expected_error=VNXError.SNAP_ATTACHED)
-        raise_if_err(out, ex.VNXSnapNotExistsError,
-                     'failed to remove snap {}.'.format(name))
-        raise_if_err(out, ex.VNXRemoveSnapError)
+        ex.raise_if_err(out, default=ex.VNXRemoveSnapError)
 
     def copy(self, new_name,
              ignore_migration_check=False,
@@ -80,8 +73,8 @@ class VNXSnap(VNXCliResource):
         out = self._cli.copy_snap(name, new_name,
                                   ignore_migration_check,
                                   ignore_dedup_check, poll=self.poll)
-        raise_if_err(out, ex.VNXSnapError,
-                     'failed to copy snap {}.'.format(name))
+        ex.raise_if_err(out, 'failed to copy snap {}.'.format(name),
+                        default=ex.VNXSnapError)
         return VNXSnap(name=new_name, cli=self._cli)
 
     def modify(self, new_name=None, desc=None,
@@ -89,8 +82,8 @@ class VNXSnap(VNXCliResource):
         name = self._get_name()
         out = self._cli.modify_snap(name, new_name, desc, auto_delete,
                                     allow_rw, poll=self.poll)
-        raise_if_err(out, ex.VNXSnapError,
-                     'failed to modify snap {}.'.format(name))
+        ex.raise_if_err(out, 'failed to modify snap {}.'.format(name),
+                        default=ex.VNXModifySnapError)
         if new_name is not None:
             self._name = new_name
 

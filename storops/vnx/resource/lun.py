@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
-    VNXMigrationRate, raise_if_err, VNXError
+    VNXMigrationRate
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 import storops.vnx.resource.block_pool
 from storops.vnx.resource.migration import VNXMigrationSession
@@ -119,7 +119,7 @@ class VNXLun(VNXCliResource):
                                    new_tier=new_tier,
                                    poll=self.poll)
         msg = 'error change lun tier.'
-        raise_if_err(out, ex.VNXModifyLunError, msg)
+        ex.raise_if_err(out, msg, default=ex.VNXModifyLunError)
 
     @property
     def provision(self):
@@ -153,13 +153,14 @@ class VNXLun(VNXCliResource):
         snap_name = VNXSnap.get_name(snap)
         out = self._cli.attach_snap(snap_name, lun_id=self.get_id(self),
                                     poll=self.poll)
-        if len(out):
-            raise ex.VNXAttachSnapError(out)
+        ex.raise_if_err(out, 'failed to attach snap {}'.format(snap_name),
+                        default=ex.VNXAttachSnapError)
 
     def detach_snap(self):
-        out = self._cli.detach_snap(lun_id=self.get_id(self), poll=self.poll)
-        if len(out):
-            raise ex.VNXDetachSnapError(out)
+        lun_id = self.get_id(self)
+        out = self._cli.detach_snap(lun_id=lun_id, poll=self.poll)
+        msg = 'failed to detach snap for lun {}.'.format(lun_id)
+        ex.raise_if_err(out, msg, default=ex.VNXDetachSnapError)
 
     def get_snap(self, name=None):
         if name is not None:
@@ -175,29 +176,19 @@ class VNXLun(VNXCliResource):
         tgt_id = self.get_id(tgt)
         src_id = self.get_id(self)
         out = self._cli.migrate_lun(src_id, tgt_id, rate, poll=self.poll)
-        raise_if_err(out, ex.VNXTargetNotReadyError,
-                     expected_error=VNXError.MIGRATION_TGT_NOT_READY)
-        if len(out) > 0:
-            raise ex.VNXMigrationError(out)
+        ex.raise_if_err(out, default=ex.VNXMigrationError)
 
     def expand(self, new_size, ignore_thresholds=False):
         out = self._cli.expand_pool_lun(new_size, self.get_id(self),
                                         ignore_thresholds=ignore_thresholds,
                                         poll=self.poll)
-        raise_if_err(out, ex.VNXLunExpandSizeError, 'target size too small.',
-                     VNXError.LUN_EXPAND_ERROR_SIZE)
-        raise_if_err(out, ex.VNXLunPreparingError,
-                     'LUN is in preparing state.',
-                     VNXError.LUN_IS_PREPARING)
-        raise_if_err(out, ex.VNXLunExtendError,
-                     'failed to expand lun.')
+        ex.raise_if_err(out, default=ex.VNXLunExtendError)
 
     def cancel_migrate(self):
         src_id = self.get_id(self)
         out = self._cli.cancel_migrate_lun(src_id, poll=self.poll)
-        raise_if_err(out, ex.VNXLunNotMigratingError,
-                     expected_error=VNXError.LUN_NOT_MIGRATING)
-        raise_if_err(out, ex.VNXMigrationError, 'migrate lun error.')
+        ex.raise_if_err(out, 'migrate lun {} error.'.format(src_id),
+                        default=ex.VNXMigrationError)
 
     def get_migration_session(self):
         return VNXMigrationSession.get(self._cli, self)
@@ -250,15 +241,15 @@ class VNXLun(VNXCliResource):
         if detach_from_cg:
             self.detach_from_cg()
 
+        name = self._get_name()
         out = self._cli.remove_pool_lun(self._lun_id,
-                                        self._name,
+                                        name,
                                         remove_snapshots=remove_snapshots,
                                         force_detach=force_detach,
                                         poll=self.poll)
 
-        raise_if_err(out, ex.VNXLunNotFoundError,
-                     expected_error=VNXError.GENERAL_NOT_FOUND)
-        raise_if_err(out, ex.VNXRemoveLunError, 'failed to remove lun.')
+        ex.raise_if_err(out, 'failed to remove lun {}'.format(name),
+                        default=ex.VNXRemoveLunError)
 
     def rename(self, new_name):
         if new_name is not None and self._name != new_name:
@@ -266,8 +257,8 @@ class VNXLun(VNXCliResource):
                                        lun_name=self._name,
                                        new_name=new_name,
                                        poll=self.poll)
-            raise_if_err(out, ex.VNXModifyLunError,
-                         'failed to change lun name.')
+            ex.raise_if_err(out, 'failed to change lun name.',
+                            default=ex.VNXModifyLunError)
             self._name = new_name
 
     def __setattr__(self, key, value):
@@ -291,24 +282,23 @@ class VNXLun(VNXCliResource):
             lun_id=lun_id, rate=rate, ignore_thresholds=ignore_thresholds,
             poll=self.poll)
         msg = 'failed to enable compression on {}.'.format(lun_id)
-        raise_if_err(out, ex.VNXCompressionAlreadyEnabledError, msg,
-                     VNXError.COMPRESSION_ALREADY_ENABLED)
-        raise_if_err(out, ex.VNXCompressionError, msg)
+        ex.raise_if_err(out, msg, ex.VNXCompressionError)
 
     def disable_compression(self, ignore_thresholds=None):
         lun_id = self.get_id(self)
         out = self._cli.disable_compression(lun_id, ignore_thresholds,
                                             poll=self.poll)
-        raise_if_err(out, ex.VNXCompressionError,
-                     'failed to disable compression on {}.'.format(lun_id))
+        ex.raise_if_err(
+            out, 'failed to disable compression on {}.'.format(lun_id),
+            default=ex.VNXCompressionError)
 
     def _update_dedup_state(self, tgt_state):
         out = self._cli.modify_lun(lun_id=self._lun_id,
                                    lun_name=self._name,
                                    dedup=tgt_state, poll=self.poll)
-        raise_if_err(out, ex.VNXDedupError,
-                     'failed to set dedup state to {} for {}.'
-                     .format(tgt_state, self.get_id(self)))
+        ex.raise_if_err(out, 'failed to set dedup state to {} for {}.'
+                        .format(tgt_state, self.get_id(self)),
+                        default=ex.VNXDedupError)
 
     def enable_dedup(self):
         self._update_dedup_state(True)

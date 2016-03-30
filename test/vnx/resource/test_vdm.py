@@ -21,8 +21,8 @@ from hamcrest import equal_to
 
 from test.vnx.nas_mock import t_nas, patch_nas
 from storops.vnx.enums import VNXShareType
-from storops.exception import VNXBackendError, \
-    VNXInvalidMoverID, VNXMoverInterfaceNotFound, VNXMoverInterfaceNotAttached
+from storops.exception import VNXBackendError, VNXInvalidMoverID, \
+    VNXMoverInterfaceNotAttachedError, VNXMoverInterfaceNotExistsError
 from storops.vnx.resource.vdm import VNXVdmList, VNXVdm
 
 __author__ = 'Jay Xu'
@@ -97,7 +97,7 @@ class VNXVdmTest(unittest.TestCase):
         assert_that(f, raises(VNXBackendError, 'not found'))
 
     @patch_nas()
-    def test_attach_interface(self):
+    def test_attach_interface_success(self):
         dm = VNXVdm(name='myvdm', cli=t_nas())
         dm.attach_nfs_interface('1.1.1.1-0')
 
@@ -107,10 +107,10 @@ class VNXVdmTest(unittest.TestCase):
             dm = VNXVdm(name='myvdm', cli=t_nas())
             dm.attach_nfs_interface('1.1.1.2-0')
 
-        assert_that(f, raises(VNXMoverInterfaceNotFound, 'not exist'))
+        assert_that(f, raises(VNXMoverInterfaceNotExistsError, 'not exist'))
 
     @patch_nas()
-    def test_detach_interface(self):
+    def test_detach_interface_success(self):
         dm = VNXVdm(name='myvdm', cli=t_nas())
         dm.detach_nfs_interface('1.1.1.1-0')
 
@@ -120,7 +120,7 @@ class VNXVdmTest(unittest.TestCase):
             dm = VNXVdm(name='myvdm', cli=t_nas())
             dm.detach_nfs_interface('1.1.1.2-0')
 
-        assert_that(f, raises(VNXMoverInterfaceNotFound, 'not exist'))
+        assert_that(f, raises(VNXMoverInterfaceNotExistsError, 'not exist'))
 
     @patch_nas()
     def test_detach_interface_not_attached(self):
@@ -128,7 +128,7 @@ class VNXVdmTest(unittest.TestCase):
             dm = VNXVdm(name='myvdm', cli=t_nas())
             dm.detach_nfs_interface('1.1.1.3-0')
 
-        assert_that(f, raises(VNXMoverInterfaceNotAttached, 'attached'))
+        assert_that(f, raises(VNXMoverInterfaceNotAttachedError, 'attached'))
 
     @patch_nas()
     def test_get_interfaces(self):
