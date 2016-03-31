@@ -35,6 +35,7 @@ from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
 from storops.unity.resource.port import UnityIpPortList
+from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessor, \
     UnityStorageProcessorList
 from storops.unity.resource.system import UnitySystemList, UnitySystem, \
@@ -106,6 +107,20 @@ class UnitySystemTest(TestCase):
         pools = unity.get_pool()
         assert_that(pools, instance_of(UnityPoolList))
         assert_that(len(pools), equal_to(2))
+
+    @patch_rest()
+    def test_get_snaps_all(self):
+        unity = t_unity()
+        snaps = unity.get_snap()
+        assert_that(snaps, instance_of(UnitySnapList))
+        assert_that(len(snaps), equal_to(3))
+
+    @patch_rest()
+    def test_get_snap_by_name(self):
+        unity = t_unity()
+        snap = unity.get_snap(name='2016-03-15_10:56:08')
+        assert_that(snap.name, equal_to('2016-03-15_10:56:08'))
+        assert_that(snap.existed, equal_to(True))
 
     @patch_rest()
     def test_get_nas_servers(self):

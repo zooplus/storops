@@ -32,6 +32,7 @@ from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
 from storops.unity.resource.port import UnityIpPortList
+from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessorList
 
 __author__ = 'Jay Xu'
@@ -69,6 +70,10 @@ class UnitySystem(UnitySingletonResource):
 
     def get_nfs_server(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityNfsServerList, _id=_id, name=name,
+                                   **filters)
+
+    def get_snap(self, _id=None, name=None, **filters):
+        return self._get_unity_rsc(UnitySnapList, _id=_id, name=name,
                                    **filters)
 
     def create_nas_server(self, name, sp=None, pool=None, is_repl_dst=None,
