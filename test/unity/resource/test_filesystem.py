@@ -178,3 +178,11 @@ class UnityFileSystemTest(TestCase):
             fs.create_snap(name='2016-03-15_10:56:08')
 
         assert_that(f, raises(UnitySnapNameInUseError, 'in use'))
+
+    @patch_rest()
+    def test_create_snap_fs_snap_existed(self):
+        def f():
+            fs = UnityFileSystem(_id='fs_8', cli=t_rest())
+            fs.create_snap('s1')
+
+        assert_that(f, raises(UnitySnapNameInUseError, 'in use'))

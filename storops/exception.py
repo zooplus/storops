@@ -31,7 +31,12 @@ def rest_exception(clz):
             '"error_code" property is required on class {}.'.format(
                 clz.__name__))
     if clz not in __rest_exception_map__:
-        __rest_exception_map__[clz.error_code] = clz
+        error_codes = clz.error_code
+        if not isinstance(error_codes, (tuple, list)):
+            error_codes = [error_codes]
+
+        for code in error_codes:
+            __rest_exception_map__[code] = clz
     return clz
 
 
@@ -193,7 +198,7 @@ class UnityFileSystemNameAlreadyExisted(UnityException):
 
 @rest_exception
 class UnitySnapNameInUseError(UnityException):
-    error_code = 1903001605
+    error_code = (1903001605, 1903132675)
 
 
 @rest_exception

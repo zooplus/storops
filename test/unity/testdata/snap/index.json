@@ -62,6 +62,16 @@
       "response": "create_snap_over_snap.json"
     },
     {
+      "url": "/api/types/snap/instances?compact=True",
+      "body": {
+        "storageResource": {
+          "id": "res_23"
+        },
+        "name": "s1"
+      },
+      "response": "fs_snap_name_existed.json"
+    },
+    {
       "url": "/api/instances/snap/171798691885?compact=True",
       "response": "success.json"
     }
