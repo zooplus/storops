@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, only_contains, instance_of
+from hamcrest import assert_that, only_contains, instance_of, contains_string
 from hamcrest import equal_to
 
 from storops.unity.resource.lun import UnityLun, UnityLunList
@@ -71,3 +71,12 @@ class UnityLunTest(TestCase):
     def test_get_all(self):
         lun_list = UnityLunList.get(cli=t_rest())
         assert_that(len(lun_list), equal_to(5))
+
+    @patch_rest()
+    def test_get_lun_doc(self):
+        lun = UnityLun(_id='sv_2', cli=t_rest())
+        doc = lun.doc
+        assert_that(doc,
+                    contains_string('Represents Volume, LUN, Virtual Disk.'))
+        assert_that(doc, contains_string('current_node'))
+        assert_that(doc, contains_string('Current SP'))

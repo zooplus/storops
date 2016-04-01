@@ -40,7 +40,7 @@ class UnityTypeTest(TestCase):
     def test_get_type_fields(self):
         t = UnityType(_id='type')
         assert_that(t.fields_str, starts_with(
-            'name,type,attributes.name,attributes.initialValue'))
+            'name,description,documentation,type,attributes.name'))
 
     @patch_rest()
     def test_fields_str(self):

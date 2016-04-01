@@ -127,6 +127,24 @@ class Resource(JsonPrinter):
             ret = []
         return ret
 
+    @classmethod
+    def get_property_label(cls, key):
+        parser = cls._get_parser()
+        if parser is not None:
+            ret = parser.get_property_label(key)
+        else:
+            ret = None
+        return ret
+
+    @classmethod
+    def get_property_key(cls, label):
+        parser = cls._get_parser()
+        if parser is not None:
+            ret = parser.get_property_key(label)
+        else:
+            ret = None
+        return ret
+
     def _get_properties(self, dec=0):
         props = {'hash': self.__hash__()}
 

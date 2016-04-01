@@ -18,10 +18,11 @@ from __future__ import unicode_literals
 
 import unittest
 
-from hamcrest import assert_that, equal_to, only_contains, none, any_of
+from hamcrest import assert_that, equal_to, only_contains, none, any_of, \
+    contains_string
 
-from storops.unity.client import UnityClient
-from storops.unity.enums import RaidTypeEnum
+from storops.unity.client import UnityClient, UnityDoc
+from storops.unity.enums import RaidTypeEnum, HealthEnum, RaidTypeEnumList
 from storops.unity.resource.lun import UnityLun, UnityLunList
 from test.unity.rest_mock import patch_rest, t_rest
 
@@ -39,8 +40,7 @@ class UnityClientTest(unittest.TestCase):
 
     @patch_rest()
     def test_get_fields(self):
-        client = UnityClient('10.244.223.66', 'admin', 'Password123!')
-        fields = client.get_fields('metric')
+        fields = t_rest().get_fields('metric')
         assert_that(fields, only_contains(
             'id', 'name', 'path', 'product', 'type', 'objectType',
             'description', 'isHistoricalAvailable', 'isRealtimeAvailable',
@@ -127,3 +127,57 @@ class UnityClientTest(unittest.TestCase):
         assert_that(ret, none())
         ret = UnityClient.dict_to_filter_string(None)
         assert_that(ret, none())
+
+
+class UnityDocTest(unittest.TestCase):
+    @patch_rest()
+    def test_get_doc_of_field(self):
+        unity_doc = UnityDoc(t_rest(), UnityLun)
+        doc = unity_doc._get_doc(field='name')
+        assert_that(doc, equal_to('Readable name'))
+
+    @patch_rest()
+    def test_get_doc_of_resource(self):
+        unity_doc = UnityDoc(t_rest(), UnityLun)
+        doc = unity_doc._get_doc()
+        assert_that(doc, contains_string('Represents Volume'))
+
+    @patch_rest()
+    def test_get_doc_of_index(self):
+        unity_doc = UnityDoc(t_rest(), HealthEnum)
+        doc = unity_doc._get_doc(value=5)
+        assert_that(doc, equal_to('OK'))
+
+    @patch_rest()
+    def test_get_doc_enum_list(self):
+        unity_doc = UnityDoc(t_rest(), RaidTypeEnumList)
+        doc = unity_doc.doc
+        assert_that(doc, contains_string('RAID5 has the only'))
+
+    @patch_rest()
+    def test_get_doc_unity_resource_list(self):
+        unity_doc = UnityDoc(t_rest(), UnityLunList)
+        doc = unity_doc.doc
+        assert_that(doc, contains_string('Represents Volume'))
+        assert_that(doc, contains_string('current_node'))
+        assert_that(doc, contains_string('Current SP'))
+
+    def test_get_fmt_str(self):
+        assert_that(UnityDoc.get_fmt_str((3, 5, 2)), equal_to('{:5}{:7}{:4}'))
+
+    def test_get_column_max_len_str(self):
+        data = [('but', '', 'd'), ('of', 'hand', 'i')]
+        assert_that(UnityDoc.get_column_max_len(data), equal_to([3, 4, 1]))
+
+    def test_get_column_max_len_int(self):
+        data = [(1, 'd'), (11, 'd')]
+        assert_that(UnityDoc.get_column_max_len(data), equal_to([2, 1]))
+
+    def test_format_prop_no_header(self):
+        props = [('a', 'b'), ('cc', 'dd')]
+        assert_that(UnityDoc.format_prop(props), equal_to(['a   b', 'cc  dd']))
+
+    def test_format_prop_with_header(self):
+        props = [('a', 'b')]
+        assert_that(UnityDoc.format_prop(props, header=('name', 'value')),
+                    equal_to(['name  value', 'a     b']))

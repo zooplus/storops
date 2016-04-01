@@ -1,6 +1,14 @@
 {
   "content": {
     "name": "lun",
+    "description": "Represents Volume, LUN, Virtual Disk. Management of element made through requests for storageResource object. ",
+    "documentation": "https://10.244.223.66/apidocs/classes/lun.html",
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://10.244.223.66/api/types/lun/instances"
+      }
+    ],
     "attributes": [
       {
         "name": "instanceId",

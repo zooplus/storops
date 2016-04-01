@@ -1,7 +1,7 @@
 {
   "indices": [
     {
-      "url": "/api/types/cifsShare?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,name,type",
+      "url": "/api/types/cifsShare?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
       "response": "type.json"
     },
     {

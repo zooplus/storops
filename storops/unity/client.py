@@ -21,7 +21,7 @@ import six
 
 from storops.connection.connector import UnityRESTConnector
 import storops.unity.resource.type_resource
-from storops.lib.common import instance_cache
+from storops.lib.common import instance_cache, EnumList
 from storops.unity.enums import UnityEnum
 from storops.unity.resource import UnityResource, UnityResourceList
 from storops.unity.resp import RestResponse
@@ -100,14 +100,20 @@ class UnityClient(object):
         return url
 
     @instance_cache
+    def _get_type_resource(self, type_name):
+        type_clz = storops.unity.resource.type_resource.UnityType
+        return type_clz(type_name, self)
+
     def get_fields(self, type_name, fields=None):
         if fields is not None:
             ret = fields
         else:
-            type_clz = storops.unity.resource.type_resource.UnityType
-            unity_type = type_clz(type_name, self)
+            unity_type = self._get_type_resource(type_name)
             ret = unity_type.fields
         return ret
+
+    def get_doc(self, clz):
+        return UnityDoc.get_doc(self, clz)
 
     def get(self, type_name, obj_id, fields=None):
         """Get the resource by resource id.
@@ -183,4 +189,132 @@ class UnityClient(object):
             ret = {'id': value.get_id()}
         else:
             ret = value
+        return ret
+
+
+class UnityDoc(object):
+    def __init__(self, cli, clz):
+        self._cli = cli
+
+        if issubclass(clz, UnityResourceList):
+            clz = clz.get_resource_class()
+        elif issubclass(clz, EnumList):
+            clz = clz.get_enum_class()
+        self._clz = clz
+
+    @classmethod
+    def get_doc(cls, cli, clz):
+        return UnityDoc(cli, clz).doc
+
+    @property
+    def doc(self):
+        if issubclass(self._clz, UnityResource):
+            ret = self._get_unity_resource_doc()
+        elif issubclass(self._clz, UnityEnum):
+            ret = self._get_unity_enum_doc()
+        else:
+            raise ValueError(
+                'get_doc not support {}.'.format(self._clz.__name__))
+        return ret
+
+    def _get_unity_enum_doc(self):
+        docs = self._header
+        docs.append('Members:')
+        docs.append('--------')
+        props = []
+        for index in sorted(self._clz.indices()):
+            doc = self._get_doc(value=index)
+            props.append((index, doc))
+        docs += self.format_prop(props,
+                                 header=('Enum Index:', 'Description:'))
+        return '\n'.join(docs)
+
+    def _get_unity_resource_doc(self):
+        docs = self._header
+        docs.append('Properties:')
+        docs.append('-----------')
+        props = []
+        for name in self._clz.property_names():
+            field = self._clz.get_property_label(name)
+            if field:
+                doc = self._get_doc(field=field)
+                props.append((name, doc))
+        docs += self.format_prop(props,
+                                 header=('Property Name:', 'Description:'))
+        return '\n'.join(docs)
+
+    @property
+    def _header(self):
+        title = self._clz.__name__
+        ret = [title, '=' * len(title)]
+        desc = self._get_doc()
+        if desc:
+            ret.append(desc)
+        ret.append('')
+        return ret
+
+    @property
+    @instance_cache
+    def rsc_name(self):
+        if issubclass(self._clz, UnityResource):
+            ret = self._clz().resource_class
+        elif issubclass(self._clz, UnityEnum):
+            ret = self._clz.__name__
+        else:
+            ret = self._clz
+        return ret
+
+    @classmethod
+    def format_prop(cls, props, header=None):
+        if header is not None:
+            props.insert(0, header)
+
+        ret = []
+        if props:
+            max_char_counts = cls.get_column_max_len(props)
+            fmt_str = cls.get_fmt_str(max_char_counts)
+            for prop in props:
+                ret.append(fmt_str.format(*map(str, prop)).strip())
+        return ret
+
+    @staticmethod
+    def get_column_max_len(array):
+        max_char_count = []
+        if array:
+            column_size = len(array[0])
+            for i in range(column_size):
+                max_len = 0
+                for prop in array:
+                    max_len = max(max_len, len(str(prop[i])))
+                max_char_count.append(max_len)
+        return max_char_count
+
+    @staticmethod
+    def get_fmt_str(max_char_counts, padding=2):
+        out = []
+        for count in max_char_counts:
+            out.append('{{:{}}}'.format(count + padding))
+        return ''.join(out)
+
+    def _get_doc(self, field=None, value=None):
+        # noinspection PyProtectedMember
+        unity_type = self._cli._get_type_resource(self.rsc_name)
+        ret = None
+        if field is not None:
+            if unity_type.attributes:
+                for attr in unity_type.attributes:
+                    if field == attr.get('name'):
+                        ret = attr.get('description')
+                        break
+        elif value is not None:
+            if unity_type.attributes:
+                for attr in unity_type.attributes:
+                    if value == attr.get('initialValue'):
+                        ret = attr.get('description')
+                        break
+        else:
+            ret = unity_type.description
+
+        if ret:
+            ret = ret.strip()
         return ret

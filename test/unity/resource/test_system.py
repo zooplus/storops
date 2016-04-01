@@ -17,10 +17,11 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, instance_of, only_contains, raises
+from hamcrest import assert_that, equal_to, instance_of, only_contains, \
+    raises, contains_string
 
 from storops.exception import UnityResourceNotFoundError
-from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum
+from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum, HealthEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
 from storops.unity.resource.cifs_share import UnityCifsShareList, \
     UnityCifsShare
@@ -213,6 +214,25 @@ class UnitySystemTest(TestCase):
 
         assert_that(f, raises(UnityResourceNotFoundError,
                               'UnityFileSystem:not_found'))
+
+    @patch_rest()
+    def test_get_doc_enum_member(self):
+        unity = t_unity()
+        doc = unity.get_doc(HealthEnum.NON_RECOVERABLE)
+        assert_that(doc, contains_string('OK But Minor Warning'))
+
+    @patch_rest()
+    def test_get_doc_enum(self):
+        unity = t_unity()
+        doc = unity.get_doc(HealthEnum)
+        assert_that(doc, contains_string('OK But Minor Warning'))
+
+    @patch_rest()
+    def test_get_doc_resource(self):
+        unity = t_unity()
+        doc = unity.get_doc(unity.get_snap())
+        assert_that(doc, contains_string(
+            'For a file system or VMware NFS datastore'))
 
 
 class UnityDpeTest(TestCase):

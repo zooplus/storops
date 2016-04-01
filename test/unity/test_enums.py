@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, contains_string, raises
+from hamcrest import assert_that, equal_to, contains_string, raises, \
+    only_contains
 
 from storops.exception import EnumValueNotFoundError
 from storops.unity.enums import HealthEnum
@@ -42,3 +43,10 @@ class HealthEnumTest(TestCase):
 
     def test_enum_item_name(self):
         assert_that(HealthEnum.MINOR.name, equal_to('MINOR'))
+
+    def test_enum_item_index(self):
+        assert_that(HealthEnum.MINOR.index, equal_to(15))
+
+    def test_enum_indices(self):
+        assert_that(HealthEnum.indices(),
+                    only_contains(0, 5, 7, 10, 15, 20, 25, 30))

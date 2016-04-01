@@ -125,6 +125,16 @@ class UnityResource(Resource):
     def __hash__(self):
         return super(UnityResource, self).__hash__()
 
+    @property
+    def doc(self):
+        """ Document string of all retrieved properties.
+
+        Return the string that including the description of this resource
+        and the the property description of this resource.
+        :return: string
+        """
+        return self._cli.get_doc(self.__class__)
+
 
 class UnitySingletonResource(UnityResource):
     def __init__(self, cli=None):

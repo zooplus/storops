@@ -227,6 +227,15 @@ class OutputParser(object):
             ret = None
         return ret
 
+    def get_property_key(self, label):
+        for k, v in self._property_map.items():
+            if v.label == label:
+                ret = k.lower()
+                break
+        else:
+            ret = None
+        return ret
+
     @property
     def property_names(self):
         return sorted(p.key for p in self.properties)

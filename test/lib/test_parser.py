@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 import six
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, none, only_contains
 
 from storops.lib.parser import PropMapper, PropDescriptor, OutputParser
 
@@ -83,7 +83,25 @@ class OutputParserTest(TestCase):
         assert_that(parser.has_property_key('prop_b'), equal_to(True))
         assert_that(parser.has_property_key('D'), equal_to(False))
 
-    def test_get_property_label(self):
+    def test_get_property_label_found(self):
         parser = DemoParser()
         assert_that(parser.get_property_label('prop_a'),
                     equal_to('Prop A (name):'))
+
+    def test_get_property_label_not_found(self):
+        parser = DemoParser()
+        assert_that(parser.get_property_label('na'), none())
+
+    def test_get_property_key_found(self):
+        parser = DemoParser()
+        assert_that(parser.get_property_key('Prop A (name):'),
+                    equal_to('prop_a'))
+
+    def test_get_property_key_not_found(self):
+        parser = DemoParser()
+        assert_that(parser.get_property_key('Prop B (name):'), none())
+
+    def test_property_names(self):
+        parser = DemoParser()
+        assert_that(parser.property_names,
+                    only_contains('id', 'prop_a', 'prop_b', 'prop_c'))

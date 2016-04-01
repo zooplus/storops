@@ -1,0 +1,58 @@
+{
+  "content": {
+    "name": "HealthEnum",
+    "type": "Integer",
+    "description": "Possible values for health attribute. ",
+    "documentation": "https://10.244.223.66/apidocs/enumerations.html#bookmark_HealthEnum",
+    "attributes": [
+      {
+        "name": "UNKNOWN",
+        "description": "Unknown ",
+        "initialValue": 0,
+        "displayValue": "Unknown"
+      },
+      {
+        "name": "OK",
+        "description": "OK ",
+        "initialValue": 5,
+        "displayValue": "OK"
+      },
+      {
+        "name": "OK_BUT",
+        "description": "OK But Minor Warning ",
+        "initialValue": 7,
+        "displayValue": "OK But"
+      },
+      {
+        "name": "DEGRADED",
+        "description": "Degraded ",
+        "initialValue": 10,
+        "displayValue": "Degraded"
+      },
+      {
+        "name": "MINOR",
+        "description": "Minor Issue ",
+        "initialValue": 15,
+        "displayValue": "Minor problem"
+      },
+      {
+        "name": "MAJOR",
+        "description": "Major Issue ",
+        "initialValue": 20,
+        "displayValue": "Major Issue"
+      },
+      {
+        "name": "CRITICAL",
+        "description": "Critical Issue ",
+        "initialValue": 25,
+        "displayValue": "Critical"
+      },
+      {
+        "name": "NON_RECOVERABLE",
+        "description": "Non Recoverable Issue ",
+        "initialValue": 30,
+        "displayValue": "Non Recoverable"
+      }
+    ]
+  }
+}

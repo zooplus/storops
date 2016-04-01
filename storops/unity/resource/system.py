@@ -19,6 +19,7 @@ import logging
 
 from storops.lib.common import instance_cache
 from storops.unity.client import UnityClient
+from storops.unity.enums import UnityEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnitySingletonResource
 from storops.unity.resource.cifs_server import UnityCifsServerList
@@ -107,6 +108,13 @@ class UnitySystem(UnitySingletonResource):
     def get_nfs_share(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityNfsShareList, _id=_id, name=name,
                                    **filters)
+
+    def get_doc(self, resource):
+        if isinstance(resource, (UnityResource, UnityEnum)):
+            clz = resource.__class__
+        else:
+            clz = resource
+        return self._cli.get_doc(clz)
 
     @property
     @instance_cache

@@ -15,6 +15,10 @@ class UnityEnum(JsonPrinter, Enum):
     def index(self):
         return self.value[0]
 
+    @classmethod
+    def indices(cls):
+        return [i.index for i in cls.get_all()]
+
     def is_equal(self, value):
         return self.index == value
 

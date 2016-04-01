@@ -18,6 +18,8 @@ UnityType:
   name: type
   properties:
     - label: name
+    - label: description
+    - label: documentation
     - label: attributes
 
 

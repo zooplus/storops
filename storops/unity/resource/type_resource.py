@@ -23,8 +23,8 @@ __author__ = 'Cedric Zhuang'
 class UnityType(UnityResource):
     resource_class = 'type'
 
-    _fields = ('name', 'type', 'attributes.name',
-               'attributes.initialValue', 'attributes.type',
+    _fields = ('name', 'description', 'documentation', 'type',
+               'attributes.name', 'attributes.initialValue', 'attributes.type',
                'attributes.description', 'attributes.displayValue')
 
     def _get_raw_resource(self):
