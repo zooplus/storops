@@ -1,0 +1,45 @@
+{
+  "content": {
+    "id": "NFSShare_7",
+    "type": 1,
+    "role": 0,
+    "defaultAccess": 3,
+    "minSecurity": 0,
+    "instanceId": "root/emc:EMC_UEM_NFSShareLeaf%InstanceID=NFSShare_5",
+    "name": "esa_nfs1",
+    "path": "/",
+    "exportPaths": [
+      "10.244.220.120:/esa_nfs1"
+    ],
+    "description": "",
+    "creationTime": "2016-03-18T02:19:49.606Z",
+    "modificationTime": "2016-04-05T12:22:06.692Z",
+    "filesystem": {
+      "id": "fs_11"
+    },
+    "readOnlyHosts": [
+      {
+        "id": "Host_1"
+      },
+      {
+        "id": "Host_14"
+      }
+    ],
+    "readWriteHosts": [
+      {
+        "id": "Host_15"
+      }
+    ],
+    "hostAccesses": [
+      {
+        "id": "HostShare_3"
+      },
+      {
+        "id": "HostShare_5"
+      },
+      {
+        "id": "HostShare_6"
+      }
+    ]
+  }
+}

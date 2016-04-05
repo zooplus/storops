@@ -1,0 +1,12 @@
+{
+  "content": {
+    "id": "HostNetworkAddress_10",
+    "type": 0,
+    "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_10",
+    "address": "1.1.1.1",
+    "isIgnored": false,
+    "host": {
+      "id": "Host_9"
+    }
+  }
+}

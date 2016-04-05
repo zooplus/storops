@@ -17,14 +17,93 @@ from __future__ import unicode_literals
 
 import logging
 
-from storops.unity.enums import NFSShareDefaultAccessEnum, NFSTypeEnum
+from storops.unity.enums import NFSShareDefaultAccessEnum, NFSTypeEnum, \
+    NFSShareSecurityEnum
 import storops.unity.resource.filesystem
 import storops.unity.resource.snap
 from storops.unity.resource import UnityResource, UnityResourceList
+import storops.unity.resource.host
 
 __author__ = 'Jay Xu'
 
 LOG = logging.getLogger(__name__)
+
+
+class UnityNfsHostConfig(object):
+    def __init__(self, root=None, ro=None, rw=None, no_access=None,
+                 nfs_share=None):
+        if nfs_share is not None:
+            root = nfs_share.root_access_hosts
+            ro = nfs_share.read_only_hosts
+            rw = nfs_share.read_write_hosts
+            no_access = nfs_share.no_access_hosts
+
+        self.root = root
+        self.ro = ro
+        self.rw = rw
+        self.no_access = no_access
+
+    @classmethod
+    def _add(cls, left, right):
+        if left is None:
+            ret = right
+        elif right is None:
+            ret = left
+        else:
+            ret = left
+            for r in right:
+                if r not in left:
+                    ret.append(r)
+        return ret
+
+    @classmethod
+    def _remove(cls, left, right):
+        if left is None:
+            ret = None
+        elif right is None:
+            ret = left
+        else:
+            ret = []
+            for l in left:
+                if l not in right:
+                    ret.append(l)
+        return ret
+
+    def add_root(self, *hosts):
+        self.remove_access(*hosts)
+        self.root = self._add(self.root, hosts)
+        return self
+
+    def add_ro(self, *hosts):
+        self.remove_access(*hosts)
+        self.ro = self._add(self.ro, hosts)
+        self.root = self._add(self.root, hosts)
+        return self
+
+    def add_rw(self, *hosts):
+        self.remove_access(*hosts)
+        self.rw = self._add(self.rw, hosts)
+        self.root = self._add(self.root, hosts)
+        return self
+
+    def add_no_access(self, *hosts):
+        self.remove_access(*hosts)
+        self.no_access = self._add(self.no_access, hosts)
+        return self
+
+    def remove_access(self, *hosts):
+        self.rw = self._remove(self.rw, hosts)
+        self.ro = self._remove(self.ro, hosts)
+        self.no_access = self._remove(self.no_access, hosts)
+        self.root = self._remove(self.root, hosts)
+        return self
+
+    def clear_all(self):
+        self.rw = []
+        self.ro = []
+        self.no_access = []
+        self.root = []
+        return self
 
 
 class UnityNfsShare(UnityResource):
@@ -72,6 +151,100 @@ class UnityNfsShare(UnityResource):
             sr = fs.storage_resource
             param = self._cli.make_body(nfsShare=self)
             resp = sr.modify_fs(async=async, nfsShareDelete=[param])
+        resp.raise_if_err()
+        return resp
+
+    def _get_hosts(self, hosts, force_create_host=False):
+        if not isinstance(hosts, (tuple, list, set, UnityResourceList)):
+            hosts = [hosts]
+        host_clz = storops.unity.resource.host.UnityHost
+        ret = []
+        for item in hosts:
+            host = host_clz.get_host(self._cli, item, force_create_host)
+            if host is not None:
+                ret.append(host)
+        return ret
+
+    @property
+    def host_config(self):
+        return UnityNfsHostConfig(nfs_share=self)
+
+    def add_root(self, hosts, force_create_host=False):
+        hosts = self._get_hosts(hosts, force_create_host)
+        config = self.host_config.add_root(*hosts)
+        return self.modify(host_config=config)
+
+    def add_read_only(self, hosts, force_create_host=False):
+        hosts = self._get_hosts(hosts, force_create_host)
+        config = self.host_config.add_ro(*hosts)
+        return self.modify(host_config=config)
+
+    def add_read_write(self, hosts, force_create_host=False):
+        hosts = self._get_hosts(hosts, force_create_host)
+        config = self.host_config.add_rw(*hosts)
+        return self.modify(host_config=config)
+
+    def add_no_access(self, hosts, force_create_host=False):
+        hosts = self._get_hosts(hosts, force_create_host)
+        config = self.host_config.add_no_access(*hosts)
+        return self.modify(host_config=config)
+
+    def remove_access(self, hosts):
+        hosts = self._get_hosts(hosts)
+        config = self.host_config.remove_access(*hosts)
+        return self.modify(host_config=config)
+
+    def clear_access(self):
+        config = self.host_config.clear_all()
+        return self.modify(host_config=config)
+
+    def modify(self,
+               default_access=None,
+               min_security=None,
+               no_access_hosts=None,
+               read_only_hosts=None,
+               read_write_hosts=None,
+               root_access_hosts=None,
+               host_config=None):
+        if host_config is not None:
+            no_access_hosts = host_config.no_access
+            root_access_hosts = host_config.root
+            read_only_hosts = host_config.ro
+            read_write_hosts = host_config.rw
+
+        NFSShareDefaultAccessEnum.verify(default_access)
+        NFSShareSecurityEnum.verify(min_security)
+        clz = storops.unity.resource.host.UnityHostList
+        no_access_hosts = clz.get_list(self._cli, no_access_hosts)
+        read_only_hosts = clz.get_list(self._cli, read_only_hosts)
+        read_write_hosts = clz.get_list(self._cli, read_write_hosts)
+        root_access_hosts = clz.get_list(self._cli, root_access_hosts)
+
+        fs = self.filesystem
+        if fs is None:
+            raise ValueError(
+                'filesystem for share {} not found.'.format(self.name))
+        sr = fs.storage_resource
+        if sr is None:
+            raise ValueError('storage resource for filesystem {}, '
+                             'share {} not found.'.format(self.name, fs.name))
+
+        nfs_share_param = self._cli.make_body(
+            allow_empty=True,
+            defaultAccess=default_access,
+            minSecurity=min_security,
+            noAccessHosts=no_access_hosts,
+            readOnlyHosts=read_only_hosts,
+            readWriteHosts=read_write_hosts,
+            rootAccessHosts=root_access_hosts)
+        nfs_share = self._cli.make_body(
+            allow_empty=True,
+            nfsShare=self,
+            nfsShareParameters=nfs_share_param)
+        param = self._cli.make_body(
+            allow_empty=True,
+            nfsShareModify=[nfs_share])
+        resp = sr.modify_fs(**param)
         resp.raise_if_err()
         return resp
 

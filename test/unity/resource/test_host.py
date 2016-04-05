@@ -17,12 +17,13 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, instance_of
+from hamcrest import equal_to, assert_that, instance_of, raises
 
-from storops.unity.enums import HostTypeEnum, HostManageEnum
+from storops.exception import UnityHostIpInUseError, UnityResourceNotFoundError
+from storops.unity.enums import HostTypeEnum, HostManageEnum, HostPortTypeEnum
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.host import UnityHost, UnityHostContainer, \
-    UnityHostInitiatorList, UnityHostIpPortList, UnityHostList
+    UnityHostInitiatorList, UnityHostIpPortList, UnityHostList, UnityHostIpPort
 from storops.unity.resource.vmware import UnityDataStoreList, UnityVmList
 from test.unity.rest_mock import t_rest, patch_rest
 
@@ -57,3 +58,79 @@ class UnityHotTest(TestCase):
     def test_get_all(self):
         hosts = UnityHostList(cli=t_rest())
         assert_that(len(hosts), equal_to(6))
+
+    @patch_rest()
+    def test_create_simple_host(self):
+        host = UnityHost.create(t_rest(), name='host1',
+                                host_type=HostTypeEnum.HOST_MANUAL,
+                                os='customized os')
+        assert_that(host.get_id(), equal_to('Host_11'))
+        assert_that(host.name, equal_to('host1'))
+        assert_that(host.os_type, equal_to('customized os'))
+
+    @patch_rest()
+    def test_remove_host_success(self):
+        host = UnityHost(cli=t_rest(), _id='Host_11')
+        resp = host.remove()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_add_ip_port(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        port = host.add_ip_port('1.1.1.1')
+        assert_that(port.existed, equal_to(True))
+        assert_that(port.address, equal_to('1.1.1.1'))
+
+    @patch_rest()
+    def test_remove_ip_port(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        resp = host.remove_ip_port('1.1.1.1')
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_remove_host_and_ip_port(self):
+        host = UnityHost(cli=t_rest(), _id='Host_1')
+        ip_port = host.host_ip_ports[0]
+        resp = host.remove()
+        assert_that(resp.is_ok(), equal_to(True))
+        assert_that(ip_port.remove, raises(UnityResourceNotFoundError))
+
+
+class UnityHostIpPortTest(TestCase):
+    @patch_rest()
+    def test_properties(self):
+        ip_port = UnityHostIpPort(cli=t_rest(), _id='HostNetworkAddress_1')
+        assert_that(ip_port.host, instance_of(UnityHost))
+        assert_that(ip_port.address, equal_to('10.244.209.90'))
+        assert_that(ip_port.type, equal_to(HostPortTypeEnum.IPv4))
+
+    @patch_rest()
+    def test_get_all(self):
+        ip_ports = UnityHostIpPortList(cli=t_rest())
+        assert_that(len(ip_ports), equal_to(8))
+
+    @patch_rest()
+    def test_create_success(self):
+        ip_port = UnityHostIpPort.create(t_rest(), 'Host_9', '1.1.1.1')
+        assert_that(ip_port.address, equal_to('1.1.1.1'))
+        assert_that(ip_port.type, equal_to(HostPortTypeEnum.IPv4))
+        assert_that(ip_port.existed, equal_to(True))
+
+    @patch_rest()
+    def test_create_ip_in_use(self):
+        def f():
+            UnityHostIpPort.create(t_rest(), 'Host_1', '1.1.1.1')
+
+        assert_that(f, raises(UnityHostIpInUseError, 'already exists'))
+
+    @patch_rest()
+    def test_remove_success(self):
+        ip_port = UnityHostIpPort(cli=t_rest(), _id='HostNetworkAddress_10')
+        resp = ip_port.remove()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_get_by_ip(self):
+        ip_ports = UnityHostIpPortList(cli=t_rest(), address='10.244.209.90')
+        assert_that(len(ip_ports), equal_to(1))
+        assert_that(ip_ports[0].address, equal_to('10.244.209.90'))

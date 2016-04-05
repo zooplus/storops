@@ -144,8 +144,11 @@ class UnityClient(object):
             del kwargs['async']
             if async:
                 url_params['timeout'] = 0
-        body = self.make_body(kwargs)
+        body = self.make_body(kwargs, allow_empty=True)
         return self.rest_post(url, body, **url_params)
+
+    def modify(self, type_name, obj_id, **kwargs):
+        return self.action(type_name, obj_id, 'modify', **kwargs)
 
     def type_action(self, type_name, action, **kwargs):
         url = '/api/types/{}/action/{}'.format(type_name, action)
@@ -172,17 +175,17 @@ class UnityClient(object):
         return ret
 
     @classmethod
-    def make_body(cls, value=None, **kwargs):
+    def make_body(cls, value=None, allow_empty=False, **kwargs):
         if value is None and kwargs:
             value = kwargs
         if isinstance(value, dict):
             ret = {}
             for k, v in value.items():
-                v = cls.make_body(v)
-                if not cls._is_empty(v) and v is not None:
+                v = cls.make_body(v, allow_empty=allow_empty)
+                if v is not None and (allow_empty or not cls._is_empty(v)):
                     ret[k] = v
         elif isinstance(value, (list, tuple, UnityResourceList)):
-            ret = [cls.make_body(v) for v in value]
+            ret = [cls.make_body(v, allow_empty=allow_empty) for v in value]
         elif isinstance(value, UnityEnum):
             ret = value.index
         elif isinstance(value, UnityResource):

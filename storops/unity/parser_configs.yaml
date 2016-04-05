@@ -425,9 +425,13 @@ UnityNfsShare:
     - label: minSecurity
       converter: NFSShareSecurityEnum
     - label: noAccessHosts
+      converter: UnityHostList
     - label: readOnlyHosts
+      converter: UnityHostList
     - label: readWriteHosts
+      converter: UnityHostList
     - label: rootAccessHosts
+      converter: UnityHostList
     - label: hostAccesses
 
 

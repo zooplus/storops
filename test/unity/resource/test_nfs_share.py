@@ -17,16 +17,23 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, only_contains, instance_of, raises
+from hamcrest import equal_to, assert_that, only_contains, instance_of, \
+    raises, none
 
 from storops.exception import UnityException, UnityNfsShareNameExistedError
 from storops.unity.enums import NFSTypeEnum, NFSShareRoleEnum, \
     NFSShareDefaultAccessEnum, NFSShareSecurityEnum
 from storops.unity.resource.filesystem import UnityFileSystem
-from storops.unity.resource.nfs_share import UnityNfsShare, UnityNfsShareList
+from storops.unity.resource.host import UnityHostList, UnityHost
+from storops.unity.resource.nfs_share import UnityNfsShare, \
+    UnityNfsShareList, UnityNfsHostConfig
 from test.unity.rest_mock import patch_rest, t_rest
 
 __author__ = 'Cedric Zhuang'
+
+
+def host(_id):
+    return UnityHost(_id=_id, cli=t_rest())
 
 
 class UnityNfsShareTest(TestCase):
@@ -50,6 +57,14 @@ class UnityNfsShareTest(TestCase):
                     equal_to('2016-03-02 02:39:22.856000+00:00'))
         assert_that(nfs.filesystem.get_id(), equal_to('fs_1'))
         assert_that(nfs.filesystem, instance_of(UnityFileSystem))
+
+    @patch_rest()
+    def test_host_access_properties(self):
+        nfs = UnityNfsShare('NFSShare_5', cli=t_rest())
+        assert_that(nfs.read_write_hosts, only_contains(host('Host_7')))
+        assert_that(nfs.read_only_hosts, none())
+        assert_that(nfs.root_access_hosts, none())
+        assert_that(nfs.no_access_hosts, none())
 
     @patch_rest()
     def test_get_all(self):
@@ -99,3 +114,83 @@ class UnityNfsShareTest(TestCase):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_11')
         resp = share.remove()
         assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_modify_read_write_hosts(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
+        resp = share.modify(read_write_hosts=['Host_7'])
+        assert_that(resp.is_ok(), equal_to(True))
+        share.update()
+        assert_that(share.read_write_hosts, instance_of(UnityHostList))
+        assert_that(share.read_write_hosts[0].get_id(), equal_to('Host_7'))
+
+    @patch_rest()
+    def test_modify_multiple_hosts(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
+        host7 = UnityHost(_id='Host_7', cli=t_rest())
+        resp = share.modify(read_only_hosts=host7,
+                            read_write_hosts=['Host_1', 'Host_2'])
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_add_ip_access_force_create(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
+        h1 = UnityHost(_id='Host_1', cli=t_rest())
+        resp = share.add_read_write([h1, '1.1.1.2'], force_create_host=True)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_add_ip_access_existed(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
+        h1 = UnityHost(_id='Host_1', cli=t_rest())
+        resp = share.add_read_only([h1, '1.1.1.1'], force_create_host=True)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_remove_access(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
+        resp = share.remove_access(['Host_1', 'Host_14', 'Host_15'])
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_clear_access(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
+        resp = share.clear_access()
+        assert_that(resp.is_ok(), equal_to(True))
+
+
+class UnityNfsHostConfigTest(TestCase):
+    def test_add_ro(self):
+        config = UnityNfsHostConfig(
+            no_access=[host('Host_1'), host('Host_9')])
+        config.add_ro(host('Host_1'), host('Host_11'))
+        config.add_rw(host('Host_9'))
+
+        assert_that(config.root,
+                    only_contains(host('Host_1'),
+                                  host('Host_9'),
+                                  host('Host_11')))
+        assert_that(config.ro,
+                    only_contains(host('Host_1'),
+                                  host('Host_11')))
+        assert_that(config.rw, only_contains(host('Host_9')))
+        assert_that(len(config.no_access), equal_to(0))
+
+    def test_add_same_twice(self):
+        config = UnityNfsHostConfig(no_access=[host('Host_9')])
+        config.add_rw(host('Host_9'), host('Host_9'))
+        config.add_rw(host('Host_9'))
+        assert_that(len(config.rw), equal_to(1))
+        assert_that(config.rw, only_contains(host('Host_9')))
+        assert_that(config.no_access, equal_to([]))
+        assert_that(config.ro, none())
+        assert_that(config.root, only_contains(host('Host_9')))
+
+    def test_clear_access(self):
+        config = UnityNfsHostConfig(no_access=[host('Host_9')])
+        config.add_rw(host('Host_1'))
+        config.clear_all()
+        assert_that(len(config.rw), equal_to(0))
+        assert_that(len(config.ro), equal_to(0))
+        assert_that(len(config.no_access), equal_to(0))
+        assert_that(len(config.root), equal_to(0))

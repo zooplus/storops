@@ -95,7 +95,7 @@ class UnityFileSystemTest(TestCase):
     @patch_rest()
     def test_remove_not_found(self):
         def f():
-            fs = UnityFileSystem(_id='fs_11', cli=t_rest())
+            fs = UnityFileSystem(_id='fs_99', cli=t_rest())
             fs.remove(force_snap_delete=True, force_vvol_delete=True)
 
         assert_that(f, raises(UnityResourceNotFoundError))

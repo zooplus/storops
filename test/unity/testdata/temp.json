@@ -1,0 +1,30 @@
+{
+  "nfsShareModify": [
+    {
+      "nfsShare": {
+        "id": "NFSShare_5"
+      },
+      "nfsShareParameters": {
+        "readWriteHosts": [
+          {
+            "id": "Host_7"
+          },
+          {
+            "id": "Host_1"
+          },
+          {
+            "id": "Host_15"
+          }
+        ],
+        "rootAccessHosts": [
+          {
+            "id": "Host_1"
+          },
+          {
+            "id": "Host_15"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -207,6 +207,18 @@ class UnityResourceList(UnityResource, ResourceList):
             ret = cls.get_resource_class().get(cli=cli, _id=_id)
         return ret
 
+    @classmethod
+    def get_list(cls, cli, value):
+        if value is None:
+            ret = None
+        elif isinstance(value, cls):
+            ret = value
+        elif isinstance(value, (tuple, list, set)):
+            ret = [cls.get_resource_class().get(cli, v) for v in value]
+        else:
+            ret = [cls.get_resource_class().get(cli, value)]
+        return ret
+
     @property
     def first_item(self):
         if len(self) > 0:

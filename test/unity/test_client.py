@@ -105,6 +105,14 @@ class UnityClientTest(unittest.TestCase):
         ret = UnityClient.make_body(a=0, b='')
         assert_that(ret, equal_to({'a': 0, 'b': ''}))
 
+    def test_make_body_empty_collection(self):
+        ret = UnityClient.make_body(allow_empty=True, b=(), c=[])
+        assert_that(ret, equal_to({'b': [], 'c': []}))
+
+    def test_make_body_nested_empty_collection(self):
+        ret = UnityClient.make_body(allow_empty=True, b=(), c={'d': []})
+        assert_that(ret, equal_to({'b': [], 'c': {'d': []}}))
+
     def test_make_body_empty_dict(self):
         inner = UnityClient.make_body(a=None)
         outer = UnityClient.make_body(b=inner, c=3)
