@@ -82,11 +82,11 @@ class UnitySystemTest(TestCase):
         assert_that(sps, instance_of(UnityStorageProcessorList))
         assert_that(len(sps), equal_to(2))
 
-    @patch_rest()
     def test_get_spa(self):
         unity = t_unity()
         sp = unity.get_sp('spa')
         assert_that(sp, instance_of(UnityStorageProcessor))
+        assert_that(sp.get_id(), equal_to('spa'))
 
     @patch_rest()
     def test_get_sp_by_name(self):

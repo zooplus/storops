@@ -27,7 +27,7 @@
         "isAutoDelete": true,
         "size": 4294967296,
         "storageResource": {
-          "id": "sv_6"
+          "id": "sv_2"
         },
         "lun": {
           "id": "sv_6"

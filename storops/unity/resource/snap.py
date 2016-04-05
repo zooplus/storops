@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.lib.common import instance_cache
 from storops.unity.enums import FilesystemSnapAccessTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList
 import storops.unity.resource.cifs_share
@@ -69,6 +70,16 @@ class UnitySnap(UnityResource):
                            retention_duration=retention_duration,
                            is_read_only=is_read_only,
                            fs_access_type=fs_access_type)
+
+    @property
+    @instance_cache
+    def filesystem(self):
+        sr = self.storage_resource
+        if sr:
+            ret = sr.filesystem
+        else:
+            ret = None
+        return ret
 
 
 class UnitySnapList(UnityResourceList):

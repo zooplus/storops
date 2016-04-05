@@ -17,11 +17,13 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, instance_of, raises
+from hamcrest import assert_that, equal_to, instance_of, raises, none
 
 from storops.exception import UnityShareOnCkptSnapError
 from storops.unity.enums import FilesystemSnapAccessTypeEnum, \
     SnapCreatorTypeEnum, SnapStateEnum, NFSTypeEnum, CIFSTypeEnum
+from storops.unity.resource.filesystem import UnityFileSystem
+from storops.unity.resource.lun import UnityLun
 from storops.unity.resource.snap import UnitySnap, UnitySnapList
 from storops.unity.resource.storage_resource import UnityStorageResource
 from test.unity.rest_mock import t_rest, patch_rest
@@ -92,3 +94,18 @@ class UnitySnapTest(TestCase):
         assert_that(share.snap, equal_to(snap))
         assert_that(share.name, equal_to('sns2'))
         assert_that(share.type, equal_to(CIFSTypeEnum.CIFS_SNAPSHOT))
+
+    @patch_rest()
+    def test_filesystem_snap(self):
+        snap = UnitySnap(cli=t_rest(), _id='171798691852')
+        fs = snap.filesystem
+        assert_that(fs, instance_of(UnityFileSystem))
+        assert_that(fs.storage_resource, equal_to(snap.storage_resource))
+        assert_that(snap.lun, none())
+
+    @patch_rest()
+    def test_lun_snap(self):
+        snap = UnitySnap(cli=t_rest(), _id='38654705785')
+        lun = snap.lun
+        assert_that(lun, instance_of(UnityLun))
+        assert_that(snap.filesystem, none())
