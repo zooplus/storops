@@ -218,16 +218,13 @@ class NodeHeartBeat(NaviCommand):
         start = time()
         out = self.execute_naviseccli(cmd, raise_on_rc, check_rc)
         try:
-            ex.raise_if_err(out)
+            ex.check_error(out, ex.VNXSpNotAvailableError)
             available = True
             latency = time() - start
         except ex.VNXSpNotAvailableError:
+            log.exception('{} is not available.  detail: {}'.format(ip, out))
             available = False
             latency = None
-        except ex.VNXException:
-            # swallow the exception, passed the output to upper level
-            available = True
-            latency = time() - start
 
         self.update_by_ip(ip, available, False, latency)
         self.command_count += 1

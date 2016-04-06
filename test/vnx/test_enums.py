@@ -99,7 +99,7 @@ class VNXErrorTest(TestCase):
                    "Message : select: The connect timed out.")
             raise_if_err(out)
 
-        assert_that(f, raises(exception.VNXTimeoutError))
+        assert_that(f, raises(exception.VNXSpNotAvailableError))
 
     def test_raise_if_err_normal(self):
         raise_if_err('')

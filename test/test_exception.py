@@ -17,9 +17,10 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, raises
 
-from storops.exception import StoropsException
+from storops.exception import StoropsException, check_error, \
+    VNXSpNotAvailableError
 
 __author__ = 'Cedric Zhuang'
 
@@ -49,3 +50,17 @@ class ExceptionTest(TestCase):
     def test_exception_convert_to_message(self):
         ex = StoropsException(message=StrangeException())
         assert_that(str(ex), equal_to('strange exception'))
+
+    def test_check_error_found(self):
+        def f():
+            out = ("A network error occurred while trying to connect: "
+                   "'10.244.211.39'.\n"
+                   "Message : Error occurred because of time out")
+            check_error(out, VNXSpNotAvailableError)
+
+        assert_that(f, raises(VNXSpNotAvailableError))
+
+    def test_check_error_not_found(self):
+        out = 'The specified source LUN is not currently migrating.'
+        # no exception, not checking a `VNXLunNotMigratingError`
+        check_error(out, VNXSpNotAvailableError)

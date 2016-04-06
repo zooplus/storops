@@ -205,8 +205,24 @@ def raise_if_err(out, msg=None, default=None):
 
     # check if out is empty
     if out is not None and len(out) > 0:
-        log.error(msg)
         raise ex_clz(msg)
+
+
+def check_error(out, ex_clz):
+    """ check whether this cli output contains the specified exception
+
+    :param out: output of naviseccli
+    :param ex_clz: exception class to check
+    :return: nothing, raise `ex_clz` if match
+    """
+    try:
+        raise_if_err(out)
+    except ex_clz:
+        raise
+    except StoropsException:
+        # swallow other errors
+        pass
+    return out
 
 
 def check_nas_cmd_error(output, default=None):
@@ -338,20 +354,14 @@ class VNXLockRequiredException(VNXException):
 
 @cli_exception
 class VNXSpNotAvailableError(VNXException):
-    error_message = ('End of data stream.',
-                     'connection refused.',
-                     'A network error occurred while trying to connect.',)
-
-
-@cli_exception
-class VNXTimeoutError(VNXSpNotAvailableError):
-    error_message = ('Exception: Error occurred because of time out',
-                     'The connect timed out.')
+    error_message = ('End of data stream',
+                     'connection refused',
+                     'A network error occurred while trying to connect')
 
 
 @cli_exception
 class VNXNotSupportedError(VNXException):
-    error_message = 'commands are not supported by the target storage system.'
+    error_message = 'commands are not supported by the target storage system'
 
 
 class VNXSystemError(VNXException):
@@ -428,7 +438,7 @@ class VNXLunNotMigratingError(VNXMigrationError):
 
 @cli_exception
 class VNXTargetNotReadyError(VNXMigrationError):
-    error_message = 'The destination LUN is not available for migration.'
+    error_message = 'The destination LUN is not available for migration'
 
 
 class VNXSnapError(VNXException):
