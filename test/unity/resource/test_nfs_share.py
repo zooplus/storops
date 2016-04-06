@@ -136,14 +136,16 @@ class UnityNfsShareTest(TestCase):
     def test_add_ip_access_force_create(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
         h1 = UnityHost(_id='Host_1', cli=t_rest())
-        resp = share.add_read_write([h1, '1.1.1.2'], force_create_host=True)
+        resp = share.allow_read_write_access([h1, '1.1.1.2'],
+                                             force_create_host=True)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
     def test_add_ip_access_existed(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_5')
         h1 = UnityHost(_id='Host_1', cli=t_rest())
-        resp = share.add_read_only([h1, '1.1.1.1'], force_create_host=True)
+        resp = share.allow_read_only_access([h1, '1.1.1.1'],
+                                            force_create_host=True)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -163,8 +165,8 @@ class UnityNfsHostConfigTest(TestCase):
     def test_add_ro(self):
         config = UnityNfsHostConfig(
             no_access=[host('Host_1'), host('Host_9')])
-        config.add_ro(host('Host_1'), host('Host_11'))
-        config.add_rw(host('Host_9'))
+        config.allow_ro(host('Host_1'), host('Host_11'))
+        config.allow_rw(host('Host_9'))
 
         assert_that(config.root,
                     only_contains(host('Host_1'),
@@ -178,8 +180,8 @@ class UnityNfsHostConfigTest(TestCase):
 
     def test_add_same_twice(self):
         config = UnityNfsHostConfig(no_access=[host('Host_9')])
-        config.add_rw(host('Host_9'), host('Host_9'))
-        config.add_rw(host('Host_9'))
+        config.allow_rw(host('Host_9'), host('Host_9'))
+        config.allow_rw(host('Host_9'))
         assert_that(len(config.rw), equal_to(1))
         assert_that(config.rw, only_contains(host('Host_9')))
         assert_that(config.no_access, equal_to([]))
@@ -188,7 +190,7 @@ class UnityNfsHostConfigTest(TestCase):
 
     def test_clear_access(self):
         config = UnityNfsHostConfig(no_access=[host('Host_9')])
-        config.add_rw(host('Host_1'))
+        config.allow_rw(host('Host_1'))
         config.clear_all()
         assert_that(len(config.rw), equal_to(0))
         assert_that(len(config.ro), equal_to(0))

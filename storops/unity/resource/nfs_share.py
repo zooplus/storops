@@ -69,24 +69,24 @@ class UnityNfsHostConfig(object):
                     ret.append(l)
         return ret
 
-    def add_root(self, *hosts):
+    def allow_root(self, *hosts):
         self.remove_access(*hosts)
         self.root = self._add(self.root, hosts)
         return self
 
-    def add_ro(self, *hosts):
+    def allow_ro(self, *hosts):
         self.remove_access(*hosts)
         self.ro = self._add(self.ro, hosts)
         self.root = self._add(self.root, hosts)
         return self
 
-    def add_rw(self, *hosts):
+    def allow_rw(self, *hosts):
         self.remove_access(*hosts)
         self.rw = self._add(self.rw, hosts)
         self.root = self._add(self.root, hosts)
         return self
 
-    def add_no_access(self, *hosts):
+    def deny_access(self, *hosts):
         self.remove_access(*hosts)
         self.no_access = self._add(self.no_access, hosts)
         return self
@@ -169,24 +169,24 @@ class UnityNfsShare(UnityResource):
     def host_config(self):
         return UnityNfsHostConfig(nfs_share=self)
 
-    def add_root(self, hosts, force_create_host=False):
+    def allow_root_access(self, hosts, force_create_host=False):
         hosts = self._get_hosts(hosts, force_create_host)
-        config = self.host_config.add_root(*hosts)
+        config = self.host_config.allow_root(*hosts)
         return self.modify(host_config=config)
 
-    def add_read_only(self, hosts, force_create_host=False):
+    def allow_read_only_access(self, hosts, force_create_host=False):
         hosts = self._get_hosts(hosts, force_create_host)
-        config = self.host_config.add_ro(*hosts)
+        config = self.host_config.allow_ro(*hosts)
         return self.modify(host_config=config)
 
-    def add_read_write(self, hosts, force_create_host=False):
+    def allow_read_write_access(self, hosts, force_create_host=False):
         hosts = self._get_hosts(hosts, force_create_host)
-        config = self.host_config.add_rw(*hosts)
+        config = self.host_config.allow_rw(*hosts)
         return self.modify(host_config=config)
 
-    def add_no_access(self, hosts, force_create_host=False):
+    def deny_access(self, hosts, force_create_host=False):
         hosts = self._get_hosts(hosts, force_create_host)
-        config = self.host_config.add_no_access(*hosts)
+        config = self.host_config.deny_access(*hosts)
         return self.modify(host_config=config)
 
     def remove_access(self, hosts):
