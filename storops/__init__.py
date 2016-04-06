@@ -13,12 +13,11 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+from __future__ import unicode_literals
 
-# please do not add unicode literal here.
-# it does not work with `__all__`.
-from storops.vnx.resource.system import VNXSystem
-from storops.unity.resource.system import UnitySystem
+from storops.vnx.resource.system import VNXSystem  # noqa
+from storops.unity.resource.system import UnitySystem  # noqa
+from storops.vnx.enums import *  # noqa
+from storops.unity.enums import *  # noqa
 
 __author__ = 'Cedric Zhuang'
-
-__all__ = ['VNXSystem', 'UnitySystem']
