@@ -141,7 +141,7 @@ class VNXLunTest(TestCase):
         lun = self.get_lun()
         assert_that(str(lun), contains_string('"VNXLun": {'))
         assert_that(str(lun), contains_string(
-            '{"VNXSPEnum": {"value": "SP A"}}'))
+            '"current_owner": "VNXSPEnum.SP_A"'))
 
     @patch_cli()
     def test_get_snap(self):

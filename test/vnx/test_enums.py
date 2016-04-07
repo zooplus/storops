@@ -210,4 +210,5 @@ class VNXRaidTypeTest(TestCase):
 
 class VNXMigrationRateTest(TestCase):
     def test_text_type(self):
-        assert_that(six.text_type(VNXMigrationRate.HIGH), equal_to('high'))
+        assert_that(six.text_type(VNXMigrationRate.HIGH),
+                    equal_to('{"VNXMigrationRate": {"value": "high"}}'))

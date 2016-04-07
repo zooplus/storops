@@ -179,7 +179,7 @@ class VNXStorageGroupHBAParserTest(TestCase):
         assert_that(
             data.hba,
             equal_to(('iqn.1991-05.com.microsoft:abc.def.dev',
-                      str(VNXSPEnum.SP_A), '3')))
+                      'SP A', '3')))
 
     def test_parse_no_header(self):
         output = """
@@ -198,7 +198,7 @@ class VNXStorageGroupHBAParserTest(TestCase):
         assert_that(data.isid, equal_to('10000000000'))
         assert_that(data.hba,
                     equal_to(('iqn.1991-05.com.microsoft:abc.def.dev',
-                              str(VNXSPEnum.SP_A),
+                              'SP A',
                               '1')))
 
 

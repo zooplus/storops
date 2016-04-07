@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, has_item, raises
+from hamcrest import assert_that, equal_to, has_item, raises, instance_of
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
@@ -27,7 +27,7 @@ from storops.exception import VNXStorageGroupError, \
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.sg import VNXStorageGroupList, VNXStorageGroup, \
-    VNXStorageGroupHBA
+    VNXStorageGroupHBA, VNXStorageGroupHBAList
 
 __author__ = 'Cedric Zhuang'
 
@@ -59,6 +59,17 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.has_hlu(153), equal_to(True))
         assert_that(sg.has_hlu(11), equal_to(False))
         assert_that(sg.existed, equal_to(True))
+
+    @patch_cli()
+    def test_get_sg_os01(self):
+        sg = VNXStorageGroup(name='os01', cli=t_cli())
+        assert_that(len(sg.hba_sp_pairs), equal_to(1))
+        assert_that(sg.hba_sp_pairs, instance_of(VNXStorageGroupHBAList))
+        hba = sg.hba_sp_pairs[0]
+        assert_that(hba.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(hba.uid,
+                    equal_to('iqn.1993-08.org.debian:01:95bbe389e025'))
+        assert_that(hba.port_id, equal_to(4))
 
     @patch_cli()
     def test_initiator_uid_list(self):

@@ -118,9 +118,8 @@ class Resource(JsonPrinter):
             ret.append(obj.update(data))
         return ret
 
-    @classmethod
-    def property_names(cls):
-        parser = cls._get_parser()
+    def property_names(self):
+        parser = self._get_parser()
         if parser is not None:
             ret = parser.property_names
         else:

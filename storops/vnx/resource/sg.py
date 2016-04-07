@@ -250,10 +250,11 @@ class VNXStorageGroupHBA(VNXCliResource):
 
     @property
     def vlan(self):
-        ret = None
         sp_port = self.sp_port
-        if 'v' in sp_port:
+        if sp_port is not None and 'v' in sp_port:
             ret = int(sp_port[sp_port.find('v') + 1:])
+        else:
+            ret = None
         return ret
 
     @property
@@ -264,6 +265,10 @@ class VNXStorageGroupHBA(VNXCliResource):
         elif ':' in self.uid:
             ret = VNXPortType.FC
         return ret
+
+    def property_names(self):
+        ret = super(VNXStorageGroupHBA, self).property_names()
+        return ret + ['uid', 'sp', 'port_id', 'vlan', 'port_type']
 
 
 class VNXStorageGroupHBAList(VNXCliResourceList):

@@ -237,7 +237,7 @@ class UnityDoc(object):
         docs.append('Properties:')
         docs.append('-----------')
         props = []
-        for name in self._clz.property_names():
+        for name in self._clz().property_names():
             field = self._clz.get_property_label(name)
             if field:
                 doc = self._get_doc(field=field)

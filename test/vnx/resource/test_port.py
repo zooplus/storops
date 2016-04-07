@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
-    only_contains
+    only_contains, contains_string
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
@@ -125,14 +125,13 @@ class VNXHbaPortTest(TestCase):
 
     def test_as_tuple(self):
         port = VNXHbaPort.create(VNXSPEnum.SP_A, 1)
-        assert_that(port.as_tuple(), only_contains('SP A', 1))
+        assert_that(port.as_tuple(), only_contains(VNXSPEnum.SP_A, 1))
 
     def test_repr(self):
         port = VNXHbaPort.create(VNXSPEnum.SP_B, 3)
-        assert_that(port.__repr__(),
-                    equal_to(
-                        '<VNXPort {sp: SP B, port_id: 3, '
-                        'vport_id: 0, host_initiator_list: ()}>'))
+        ret = port.__repr__()
+        assert_that(ret, contains_string('"sp": "VNXSPEnum.SP_B"'))
+        assert_that(ret, contains_string('"existed": true'))
 
 
 class VNXConnectionPortTest(TestCase):

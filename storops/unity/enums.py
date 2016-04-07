@@ -49,10 +49,6 @@ class UnityEnum(JsonPrinter, Enum):
             ret = super(UnityEnum, cls).from_int(value)
         return ret
 
-    @classmethod
-    def enum_name(cls):
-        return cls.__name__
-
     def __str__(self):
         return JsonPrinter.__str__(self)
 

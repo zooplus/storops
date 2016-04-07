@@ -194,6 +194,10 @@ class Enum(_Enum):
     def values(cls):
         return [m.value for m in cls.__members__.values()]
 
+    @classmethod
+    def enum_name(cls):
+        return cls.__name__
+
 
 class Dict(dict):
     def __getattr__(self, item):

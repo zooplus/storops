@@ -118,18 +118,14 @@ class VNXHbaPort(VNXCliResource):
         return port
 
     def as_tuple(self):
-        return str(self.sp), self.port_id
+        return self.sp, self.port_id
 
-    def __repr__(self):
-        return ('<VNXPort {{'
-                'sp: {}, '
-                'port_id: {}, '
-                'vport_id: {}, '
-                'host_initiator_list: {}}}>'
-                .format(self.sp,
-                        self.port_id,
-                        self.vport_id,
-                        self.host_initiator_list))
+    def get_index(self):
+        return 'sp'
+
+    def property_names(self):
+        return ['sp', 'port_id', 'vport_id', 'type',
+                'host_initiator_list']
 
     def __hash__(self):
         return hash('<VNXPort {{'

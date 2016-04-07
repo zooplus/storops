@@ -27,11 +27,18 @@ class VNXEnum(JsonPrinter, Enum):
     def _get_properties(self, dec=0):
         return {'value': self.value}
 
+    def get_dict_repr(self, dec=0):
+        if dec < 0:
+            ret = '{}.{}'.format(self.__class__.__name__, self.name)
+        else:
+            ret = super(VNXEnum, self).get_dict_repr(dec)
+        return ret
+
     def __str__(self):
-        return self.value
+        return JsonPrinter.__str__(self)
 
     def __repr__(self):
-        return self.value
+        return JsonPrinter.__repr__(self)
 
 
 class VNXSPEnum(VNXEnum):

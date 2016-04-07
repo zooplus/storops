@@ -301,7 +301,7 @@ VNXStorageGroup:
       end_pattern: "Shareable"
     - label: "HBA/SP Pairs:"
       converter: VNXStorageGroupHBAList
-      end_pattern: "HLU/ALU Pairs:"
+      end_pattern: "[HLU\\/ALU Pairs|Shareable]"
 
 
 VNXStorageGroupHBA:
