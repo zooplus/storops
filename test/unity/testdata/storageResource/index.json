@@ -374,6 +374,60 @@
         ]
       },
       "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_25/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareModify": [
+          {
+            "cifsShareParameters": {
+              "isACEEnabled": true
+            },
+            "cifsShare": {
+              "id": "SMBShare_8"
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_25/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareModify": [
+          {
+            "cifsShareParameters": {
+              "isACEEnabled": false
+            },
+            "cifsShare": {
+              "id": "SMBShare_8"
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_25/action/modifyFilesystem?compact=True",
+      "body": {
+        "cifsShareModify": [
+          {
+            "cifsShareParameters": {
+              "addACE": [
+                {
+                  "accessLevel": 4,
+                  "accessType": 1,
+                  "sid": "S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4"
+                }
+              ]
+            },
+            "cifsShare": {
+              "id": "SMBShare_8"
+            }
+          }
+        ]
+      },
+      "response": "empty.json"
     }
   ]
 }

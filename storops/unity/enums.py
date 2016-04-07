@@ -671,3 +671,15 @@ class SeverityEnum(UnityEnum):
     CRITICAL = (2, 'Critical')
     ALERT = (1, 'Alert')
     EMERGENCY = (0, 'Emergency')
+
+
+class ACEAccessTypeEnum(UnityEnum):
+    DENY = (0, 'Deny')
+    GRANT = (1, 'Grant')
+    NONE = (2, 'None')
+
+
+class ACEAccessLevelEnum(UnityEnum):
+    READ = (1, 'Read')
+    WRITE = (2, 'Write')
+    FULL = (4, 'Full')

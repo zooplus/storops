@@ -17,6 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
+from storops.lib.common import instance_cache
 from storops.unity.enums import NFSShareDefaultAccessEnum, NFSTypeEnum, \
     NFSShareSecurityEnum
 import storops.unity.resource.filesystem
@@ -220,14 +221,10 @@ class UnityNfsShare(UnityResource):
         read_write_hosts = clz.get_list(self._cli, read_write_hosts)
         root_access_hosts = clz.get_list(self._cli, root_access_hosts)
 
-        fs = self.filesystem
-        if fs is None:
-            raise ValueError(
-                'filesystem for share {} not found.'.format(self.name))
-        sr = fs.storage_resource
+        sr = self.storage_resource
         if sr is None:
-            raise ValueError('storage resource for filesystem {}, '
-                             'share {} not found.'.format(self.name, fs.name))
+            raise ValueError('storage resource for share {} not found.'
+                             .format(self.name))
 
         nfs_share_param = self._cli.make_body(
             allow_empty=True,
@@ -247,6 +244,16 @@ class UnityNfsShare(UnityResource):
         resp = sr.modify_fs(**param)
         resp.raise_if_err()
         return resp
+
+    @property
+    @instance_cache
+    def storage_resource(self):
+        fs = self.filesystem
+        if fs is not None:
+            ret = fs.storage_resource
+        else:
+            ret = None
+        return ret
 
 
 class UnityNfsShareList(UnityResourceList):

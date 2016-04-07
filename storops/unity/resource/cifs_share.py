@@ -21,8 +21,11 @@ import logging
 import storops.unity.resource.cifs_server
 import storops.unity.resource.filesystem
 import storops.unity.resource.snap
-from storops.unity.enums import CIFSTypeEnum
-from storops.unity.resource import UnityResource, UnityResourceList
+from storops.lib.common import instance_cache
+from storops.unity.enums import CIFSTypeEnum, ACEAccessTypeEnum, \
+    ACEAccessLevelEnum
+from storops.unity.resource import UnityResource, UnityResourceList, \
+    UnityAttributeResource
 
 __author__ = 'Jay Xu'
 
@@ -68,6 +71,16 @@ class UnityCifsShare(UnityResource):
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
 
+    @property
+    @instance_cache
+    def storage_resource(self):
+        fs = self.filesystem
+        if fs is not None:
+            ret = fs.storage_resource
+        else:
+            ret = None
+        return ret
+
     def remove(self, async=False):
         if self.type == CIFSTypeEnum.CIFS_SNAPSHOT:
             resp = super(UnityCifsShare, self).remove(async=async)
@@ -79,8 +92,87 @@ class UnityCifsShare(UnityResource):
         resp.raise_if_err()
         return resp
 
+    def get_ace_list(self):
+        resp = self.action('getACEs')
+        resp.raise_if_err()
+
+    def enable_ace(self):
+        return self.modify(is_ace_enabled=True)
+
+    def disable_ace(self):
+        return self.modify(is_ace_enabled=False)
+
+    def add_ace(self, domain, user, access_level=None):
+        if access_level is None:
+            access_level = ACEAccessLevelEnum.FULL
+        sid = UnityAclUser.get_sid(self._cli, user=user, domain=domain)
+        ace = self._cli.make_body(
+            sid=sid,
+            accessType=ACEAccessTypeEnum.GRANT,
+            accessLevel=access_level
+        )
+
+        resp = self.modify(add_ace=[ace])
+        resp.raise_if_err()
+        return resp
+
+    def modify(self, is_read_only=None, is_ace_enabled=None, add_ace=None,
+               delete_ace=None):
+        sr = self.storage_resource
+        if sr is None:
+            raise ValueError('storage resource for share {} not found.'
+                             .format(self.name))
+
+        share_param = self._cli.make_body(
+            allow_empty=True,
+            isReadOnly=is_read_only,
+            isACEEnabled=is_ace_enabled,
+            addACE=add_ace,
+            deleteAce=delete_ace)
+        modify_param = self._cli.make_body(
+            allow_empty=True,
+            cifsShare=self,
+            cifsShareParameters=share_param)
+        param = self._cli.make_body(
+            allow_empty=True,
+            cifsShareModify=[modify_param])
+
+        resp = sr.modify_fs(**param)
+        resp.raise_if_err()
+        return resp
+
 
 class UnityCifsShareList(UnityResourceList):
     @classmethod
     def get_resource_class(cls):
         return UnityCifsShare
+
+
+class UnityCifsShareAce(UnityAttributeResource):
+    pass
+
+
+class UnityCifsShareAceList(UnityResourceList):
+    def sid_list(self):
+        return [ace.sid for ace in self]
+
+    @classmethod
+    def get_resource_class(cls):
+        return UnityCifsShareAce
+
+
+class UnityAclUser(UnityResource):
+    @classmethod
+    def get_sid(cls, cli, user, domain):
+        resp = cli.type_action(cls().resource_class,
+                               'lookupSIDByDomainUser',
+                               domainName=domain,
+                               userName=user)
+        resp.raise_if_err()
+        return resp.first_content.get('sid')
+
+
+class UnityAclUserList(UnityResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return UnityAclUser

@@ -375,6 +375,17 @@ UnityCifsShare:
     - label: umask
 
 
+UnityCifsShareAce:
+  data_src: rest
+  name: cifsShareACE
+  properties:
+    - label: sid
+    - label: accessType
+      converter: ACEAccessTypeEnum
+    - label: accessLevel
+      converter: ACEAccessLevelEnum
+
+
 UnityNfsServer:
   data_src: rest
   name: nfsServer
@@ -1333,3 +1344,13 @@ UnityLocalizedMessage:
   properties:
     - label: locale
     - label: message
+
+
+UnityAclUser:
+  data_src: rest
+  name: aclUser
+  properties:
+    - label: id
+    - label: userName
+    - label: domainName
+    - label: sid

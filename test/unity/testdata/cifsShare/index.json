@@ -13,6 +13,10 @@
       "response": "SMBShare_7.json"
     },
     {
+      "url": "/api/instances/cifsShare/SMBShare_8?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
+      "response": "SMBShare_8.json"
+    },
+    {
       "url": "/api/instances/cifsShare/SMBShare_15?compact=True&fields=creationTime,description,exportPaths,filesystem,id,instanceId,isABEEnabled,isACEEnabled,isBranchCacheEnabled,isContinuousAvailabilityEnabled,isDFSEnabled,isEncryptionEnabled,isReadOnly,modifiedTime,name,offlineAvailability,path,snap,type,umask",
       "response": "SMBShare_15.json"
     },

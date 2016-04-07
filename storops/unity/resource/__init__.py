@@ -135,6 +135,12 @@ class UnityResource(Resource):
         """
         return self._cli.get_doc(self.__class__)
 
+    def action(self, action, **kwargs):
+        return self._cli.action(self.resource_class,
+                                self.get_id(),
+                                action,
+                                **kwargs)
+
 
 class UnitySingletonResource(UnityResource):
     def __init__(self, cli=None):

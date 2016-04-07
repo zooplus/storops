@@ -19,10 +19,11 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, only_contains, raises
 
-from storops.exception import UnityException, UnitySmbShareNameExistedError
+from storops.exception import UnityException, UnitySmbShareNameExistedError, \
+    UnityAclUserNotFoundError
 from storops.unity.enums import CIFSTypeEnum, CifsShareOfflineAvailabilityEnum
 from storops.unity.resource.cifs_share import UnityCifsShare, \
-    UnityCifsShareList
+    UnityCifsShareList, UnityAclUser, UnityAclUserList
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
@@ -98,3 +99,54 @@ class UnityCifsShareTest(TestCase):
         share = UnityCifsShare(cli=t_rest(), _id='SMBShare_15')
         resp = share.remove()
         assert_that(resp.is_ok(), equal_to(True))
+
+    # def test_get_ace_list_success(self):
+    #     share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+    #     print share.get_ace_list()
+
+    @patch_rest()
+    def test_add_ace_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.add_ace('win2012.dev', 'administrator')
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_enabled_ace_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.enable_ace()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_disable_ace_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.disable_ace()
+        assert_that(resp.is_ok(), equal_to(True))
+
+
+class UnityAclUserTest(TestCase):
+    @patch_rest()
+    def test_properties(self):
+        _id = 'S-1-5-15-be80fa7-8ddad211-d49ba5f9-452'
+        user = UnityAclUser(cli=t_rest(), _id=_id)
+        assert_that(user.existed, equal_to(True))
+        assert_that(user.id, equal_to(_id))
+        assert_that(user.sid, equal_to(_id))
+        assert_that(user.user_name, equal_to('L1PFC239208$'))
+        assert_that(user.domain_name, equal_to('win2012.dev'))
+
+    @patch_rest()
+    def test_get_all(self):
+        users = UnityAclUserList(cli=t_rest())
+        assert_that(len(users), equal_to(3))
+
+    @patch_rest()
+    def test_get_sid_found(self):
+        sid = UnityAclUser.get_sid(t_rest(), 'administrator', 'win2012.dev')
+        assert_that(sid, equal_to('S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4'))
+
+    @patch_rest()
+    def test_get_sid_not_found(self):
+        def f():
+            UnityAclUser.get_sid(t_rest(), 'not_exists', 'win2012.dev')
+
+        assert_that(f, raises(UnityAclUserNotFoundError))

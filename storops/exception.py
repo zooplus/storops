@@ -329,6 +329,11 @@ class UnityHostIpInUseError(UnityException):
     error_code = 100663538
 
 
+@rest_exception
+class UnityAclUserNotFoundError(UnityException):
+    error_code = 100663499
+
+
 class NaviseccliNotAvailableError(VNXException):
     message = ("naviseccli not found.  please make sure it's installed"
                " and available in path.")
