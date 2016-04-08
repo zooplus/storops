@@ -202,6 +202,23 @@ class VNXPortType(VNXEnum):
     def get_int_index(cls):
         return None, cls.FC, cls.ISCSI, cls.FCOE, cls.SAS
 
+    @classmethod
+    def from_str(cls, value):
+        if '.' in value:
+            value = 'iSCSI'
+        elif ':' in value:
+            value = 'FC'
+
+        ret = None
+        if value is not None:
+            for item in cls.get_all():
+                if item.is_equal(value):
+                    ret = item
+                    break
+            else:
+                cls._raise_invalid_value(value)
+        return ret
+
 
 class VNXSnapType(VNXEnum):
     LUN = 1

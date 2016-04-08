@@ -110,10 +110,7 @@ class VNXHbaPort(VNXCliResource):
     def from_storage_group_hba(sg_hba):
         port = VNXHbaPort.create(sg_hba.sp, sg_hba.port_id,
                                  vport_id=sg_hba.vlan)
-        if '.' in sg_hba.hba[0]:
-            port._type = VNXPortType.ISCSI
-        elif ':' in sg_hba.hba[0]:
-            port._type = VNXPortType.FC
+        port._type = VNXPortType.parse(sg_hba.hba[0])
         port._host_initiator_list.append(sg_hba.hba[0])
         return port
 
@@ -159,13 +156,26 @@ class VNXConnectionPort(VNXCliResource):
         self._vport_id = vport_id
         self._cli = cli
 
+    @property
+    def type(self):
+        ret = VNXPortType.parse(self.wwn)
+        if ret == VNXPortType.FC and self.virtual_port_id is not None:
+            ret = VNXPortType.FCOE
+        return ret
+
     def _get_raw_resource(self):
         return self._cli.get_connection_port(
             sp=self._sp, port_id=self._port_id, vport_id=self._vport_id,
             poll=self.poll)
 
+    def property_names(self):
+        names = super(VNXConnectionPort, self).property_names()
+        names.append('type')
+        return names
+
     @classmethod
-    def get(cls, cli, sp=None, port_id=None, vport_id=None):
+    def get(cls, cli, sp=None, port_id=None, vport_id=None, port_type=None):
+        VNXPortType.verify(port_type)
         if sp is not None and port_id is not None and vport_id is not None:
             ret = VNXConnectionPort(sp, port_id, vport_id, cli)
         else:
@@ -180,4 +190,7 @@ class VNXConnectionPort(VNXCliResource):
             if port_id is not None:
                 ret = filter(lambda p: p.virtual_port_id == vport_id,
                              ret)
+
+            if port_type is not None:
+                ret = filter(lambda p: p.type == port_type, ret)
         return ret

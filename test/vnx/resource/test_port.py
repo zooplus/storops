@@ -157,6 +157,7 @@ class VNXConnectionPortTest(TestCase):
         assert_that(port.ip_address, equal_to('192.168.4.52'))
         assert_that(port.subnet_mask, equal_to('255.255.255.0'))
         assert_that(port.gateway_address, equal_to('0.0.0.0'))
+        assert_that(port.type, equal_to(VNXPortType.ISCSI))
         assert_that(port.existed, equal_to(True))
 
     @patch_cli()
@@ -173,6 +174,13 @@ class VNXConnectionPortTest(TestCase):
     def test_get_by_port(self):
         ports = VNXConnectionPort.get(t_cli(), port_id=8)
         assert_that(len(ports), equal_to(2))
+
+    @patch_cli()
+    def test_get_by_type(self):
+        ports = VNXConnectionPort.get(t_cli(), port_type=VNXPortType.ISCSI)
+        assert_that(len(ports), equal_to(16))
+        ports = VNXConnectionPort.get(t_cli(), port_type=VNXPortType.FCOE)
+        assert_that(len(ports), equal_to(4))
 
     @patch_cli()
     def test_get_single(self):

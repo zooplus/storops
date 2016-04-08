@@ -25,7 +25,7 @@ from storops import exception
 from storops.exception import VNXFsNotFoundError, VNXException, raise_if_err
 from storops.vnx.enums import VNXProvisionEnum, \
     VNXTieringEnum, VNXSPEnum, VNXRaidType, \
-    VNXMigrationRate
+    VNXMigrationRate, VNXPortType
 from storops.vnx.nas_client import NasXmlResponse
 from test.vnx.nas_mock import MockXmlPost
 
@@ -212,3 +212,14 @@ class VNXMigrationRateTest(TestCase):
     def test_text_type(self):
         assert_that(six.text_type(VNXMigrationRate.HIGH),
                     equal_to('{"VNXMigrationRate": {"value": "high"}}'))
+
+
+class VNXPortTypeTest(TestCase):
+    def test_parse_iqn(self):
+        ret = VNXPortType.parse('iqn.1992-04.com.emc:c.a.b')
+        assert_that(ret, equal_to(VNXPortType.ISCSI))
+
+    def test_parse_wwn(self):
+        ret = VNXPortType.parse('50:06:01:60:B6:E0:16:81:'
+                                '50:06:01:68:36:E4:16:81')
+        assert_that(ret, equal_to(VNXPortType.FC))
