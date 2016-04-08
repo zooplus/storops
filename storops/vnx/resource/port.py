@@ -15,8 +15,6 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from past.builtins import filter
-
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
@@ -25,6 +23,26 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXSPPortList(VNXCliResourceList):
+    def __init__(self, cli, sp=None, port_id=None, port_type=None):
+        super(VNXSPPortList, self).__init__(cli=cli)
+        self._sp = sp
+        self._port_id = port_id
+        self._port_type = port_type
+
+    def _filter(self, item):
+        ret = True
+
+        if self._sp is not None:
+            ret &= item.sp == self._sp
+
+        if self._port_id is not None:
+            ret &= item.port_id == self._port_id
+
+        if self._port_type is not None:
+            ret &= item.type == self._port_type
+
+        return ret
+
     @classmethod
     def get_resource_class(cls):
         return VNXSPPort
@@ -46,18 +64,19 @@ class VNXSPPort(VNXCliResource):
                          .format(self.__class__.__name__))
 
     @classmethod
-    def get(cls, cli, sp=None, port_id=None):
-
-        ret = VNXSPPortList(cli)
-        if sp is not None:
-            ret = filter(lambda p: p.sp == sp, ret)
-
-        if port_id is not None:
-            ret = filter(lambda p: p.port_id == port_id, ret)
-
+    def get(cls, cli, sp=None, port_id=None, port_type=None):
+        ret = VNXSPPortList(cli, sp=sp, port_id=port_id, port_type=port_type)
         if sp is not None and port_id is not None and len(ret) == 1:
             ret = ret[0]
+        return ret
 
+    @property
+    def type(self):
+        return VNXPortType.parse(self.wwn)
+
+    def property_names(self):
+        ret = super(VNXSPPort, self).property_names()
+        ret.append('type')
         return ret
 
 
@@ -94,7 +113,10 @@ class VNXHbaPort(VNXCliResource):
 
     @property
     def type(self):
-        return self._type
+        ret = None
+        if self.host_initiator_list:
+            ret = VNXPortType.parse(self.host_initiator_list[0])
+        return ret
 
     @property
     def host_initiator_list(self):
@@ -110,7 +132,6 @@ class VNXHbaPort(VNXCliResource):
     def from_storage_group_hba(sg_hba):
         port = VNXHbaPort.create(sg_hba.sp, sg_hba.port_id,
                                  vport_id=sg_hba.vlan)
-        port._type = VNXPortType.parse(sg_hba.hba[0])
         port._host_initiator_list.append(sg_hba.hba[0])
         return port
 
@@ -138,6 +159,29 @@ class VNXHbaPort(VNXCliResource):
 
 
 class VNXConnectionPortList(VNXCliResourceList):
+    def __init__(self, cli, sp=None, port_id=None, vport_id=None,
+                 port_type=None):
+        super(VNXConnectionPortList, self).__init__(cli=cli)
+        self._sp = sp
+        self._port_id = port_id
+        self._vport_id = vport_id
+        self._port_type = port_type
+
+    def _filter(self, item):
+        ret = True
+        if self._sp is not None:
+            ret &= item.sp == self._sp
+
+        if self._port_id is not None:
+            ret &= item.port_id == self._port_id
+
+        if self._vport_id is not None:
+            ret = item.virtual_port_id == self._vport_id
+
+        if self._port_type is not None:
+            ret &= item.type == self._port_type
+        return ret
+
     @classmethod
     def get_resource_class(cls):
         return VNXConnectionPort
@@ -179,18 +223,5 @@ class VNXConnectionPort(VNXCliResource):
         if sp is not None and port_id is not None and vport_id is not None:
             ret = VNXConnectionPort(sp, port_id, vport_id, cli)
         else:
-            ret = VNXConnectionPortList(cli)
-
-            if sp is not None:
-                ret = filter(lambda p: p.sp == sp, ret)
-
-            if port_id is not None:
-                ret = filter(lambda p: p.port_id == port_id, ret)
-
-            if port_id is not None:
-                ret = filter(lambda p: p.virtual_port_id == vport_id,
-                             ret)
-
-            if port_type is not None:
-                ret = filter(lambda p: p.type == port_type, ret)
+            ret = VNXConnectionPortList(cli, sp, port_id, vport_id, port_type)
         return ret

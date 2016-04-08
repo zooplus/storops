@@ -18,11 +18,12 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, instance_of
+from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
 from storops import VNXSystem
-from storops.vnx.enums import VNXLunType
+from storops.vnx.enums import VNXLunType, VNXPortType
 from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.lun import VNXLun
 
@@ -125,3 +126,27 @@ class VNXSystemTest(TestCase):
     def test_member_ip_no_cs(self):
         vnx = VNXSystem('1.1.1.1', heartbeat_interval=0)
         assert_that(vnx.control_station_ip, none())
+
+    @patch_cli()
+    def test_get_fc_port(self):
+        ports = self.vnx.get_fc_port()
+        assert_that(ports, instance_of(VNXSPPortList))
+        assert_that(len(ports), equal_to(28))
+        for port in ports:
+            assert_that(port.type, equal_to(VNXPortType.FC))
+
+    @patch_cli()
+    def test_get_iscsi_port(self):
+        ports = self.vnx.get_iscsi_port()
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(16))
+        for port in ports:
+            assert_that(port.type, equal_to(VNXPortType.ISCSI))
+
+    @patch_cli()
+    def test_get_fcoe_port(self):
+        ports = self.vnx.get_fcoe_port()
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(4))
+        for port in ports:
+            assert_that(port.type, equal_to(VNXPortType.FCOE))

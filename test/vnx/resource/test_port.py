@@ -54,7 +54,7 @@ class VNXSPPortTest(TestCase):
             '50:06:01:60:B6:E0:16:81:50:06:01:67:36:E4:16:81'))
 
     @patch_cli()
-    def test_get_port(self):
+    def test_get_port_property(self):
         port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 0)
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(0))
@@ -67,6 +67,14 @@ class VNXSPPortTest(TestCase):
         assert_that(port.registered_initiators, equal_to(3))
         assert_that(port.logged_in_initiators, equal_to(1))
         assert_that(port.not_logged_in_initiators, equal_to(2))
+        assert_that(port.type, equal_to(VNXPortType.FC))
+
+    @patch_cli()
+    def test_get_port_by_type(self):
+        ports = VNXSPPort.get(cli=t_cli(), port_type=VNXPortType.ISCSI)
+        assert_that(len(ports), equal_to(4))
+        ports = VNXSPPort.get(cli=t_cli(), port_type=VNXPortType.FC)
+        assert_that(len(ports), equal_to(28))
 
 
 class VNXHbaPortTest(TestCase):
@@ -184,5 +192,13 @@ class VNXConnectionPortTest(TestCase):
 
     @patch_cli()
     def test_get_single(self):
-        port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 4)
-        assert_that(port, equal_to([]))
+        ports = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 4)
+        assert_that(len(ports), equal_to(1))
+        port = ports[0]
+        assert_that(port.port_id, equal_to(4))
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+
+    @patch_cli()
+    def test_get_port_not_found(self):
+        ports = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 44)
+        assert_that(len(ports), equal_to(0))

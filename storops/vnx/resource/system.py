@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.vnx.enums import VNXPortType
 from storops.lib.common import daemon, instance_cache
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
@@ -152,6 +153,15 @@ class VNXSystem(VNXCliResource):
 
     def get_sp_port(self, sp=None, port_id=None):
         return VNXSPPort.get(self._cli, sp, port_id)
+
+    def get_fc_port(self):
+        return VNXSPPort.get(self._cli, port_type=VNXPortType.FC)
+
+    def get_iscsi_port(self):
+        return VNXConnectionPort.get(self._cli, port_type=VNXPortType.ISCSI)
+
+    def get_fcoe_port(self):
+        return VNXConnectionPort.get(self._cli, port_type=VNXPortType.FCOE)
 
     def remove_snap(self, name):
         self._remove_resource(VNXSnap(name, self._cli))
