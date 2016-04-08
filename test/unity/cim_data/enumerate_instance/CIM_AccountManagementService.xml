@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+    <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+        <SIMPLERSP>
+            <IMETHODRESPONSE NAME="EnumerateInstances">
+                <IRETURNVALUE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME
+                                CLASSNAME="EMC_VNXe_AccountManagementServiceLeaf">
+                            <KEYBINDING NAME="CreationClassName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    EMC_VNXe_AccountManagementServiceLeaf
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="Name">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    FNM00151200215
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="SystemCreationClassName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    EMC_VNXe_StorageSystemLeaf
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="SystemName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    FNM00151200215
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE
+                                CLASSNAME="EMC_VNXe_AccountManagementServiceLeaf">
+                            <PROPERTY NAME="CreationClassName" TYPE="string">
+                                <VALUE>EMC_VNXe_AccountManagementServiceLeaf
+                                </VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>FNM00151200215</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SystemCreationClassName"
+                                      TYPE="string">
+                                <VALUE>EMC_VNXe_StorageSystemLeaf</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SystemName" TYPE="string">
+                                <VALUE>FNM00151200215</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>Account Management Service</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                </IRETURNVALUE>
+            </IMETHODRESPONSE>
+        </SIMPLERSP>
+    </MESSAGE>
+</CIM>
+

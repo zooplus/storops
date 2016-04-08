@@ -45,7 +45,7 @@ class Resource(JsonPrinter):
         return hasattr(data, '__getitem__')
 
     def _get_name(self):
-        if self._name is not None:
+        if hasattr(self, '_name') and self._name is not None:
             name = self._name
         else:
             name = self.name

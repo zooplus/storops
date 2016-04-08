@@ -17,6 +17,10 @@ from __future__ import unicode_literals
 
 import logging
 
+from emc_pywbem import CIMInstanceName
+
+from storops.exception import UnityCimResourceNotFoundError
+from storops.lib.common import instance_cache
 from storops.unity import resource
 import storops.unity.resource.cifs_share
 import storops.unity.resource.interface
@@ -79,6 +83,33 @@ class UnityCifsServer(resource.UnityResource):
                                 async=async)
         resp.raise_if_err()
         return resp
+
+    @property
+    @instance_cache
+    def cim(self):
+        return self._cli.gi(self.cim_instance_name)
+
+    @property
+    def cim_instance_name(self):
+        return CIMInstanceName(
+            'EMC_VNXe_CIFSServerLeaf',
+            {'CreationClassName': 'EMC_VNXe_CIFSServerLeaf',
+             'Name': self.netbios_name},
+            namespace='root/emc/smis')
+
+    @property
+    @instance_cache
+    def cim_export_service(self):
+        inst_name = self.cim_instance_name
+        instances = self._cli.ai(inst_name, 'CIM_HostedService',
+                                 'CIM_FileExportService')
+        if instances:
+            ret = instances[0]
+        else:
+            raise UnityCimResourceNotFoundError(
+                'FileExportService not found for cifs server: {}'.format(
+                    self._id))
+        return ret
 
 
 class UnityCifsServerList(resource.UnityResourceList):

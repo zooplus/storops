@@ -7,7 +7,7 @@ from hamcrest import assert_that, equal_to, contains_string, raises, \
     only_contains
 
 from storops.exception import EnumValueNotFoundError
-from storops.unity.enums import HealthEnum
+from storops.unity.enums import HealthEnum, ACEAccessLevelEnum
 
 __author__ = 'Cedric Zhuang'
 
@@ -50,3 +50,7 @@ class HealthEnumTest(TestCase):
     def test_enum_indices(self):
         assert_that(HealthEnum.indices(),
                     only_contains(0, 5, 7, 10, 15, 20, 25, 30))
+
+    def test_to_smis_activity_value(self):
+        assert_that(ACEAccessLevelEnum.READ.to_smis_activity_value(),
+                    equal_to(5))

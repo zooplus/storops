@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+    <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+        <SIMPLERSP>
+            <IMETHODRESPONSE NAME="GetInstance">
+                <IRETURNVALUE>
+                    <INSTANCE CLASSNAME="EMC_VNXe_UserContactLeaf">
+                        <PROPERTY NAME="CreationClassName" TYPE="string">
+                            <VALUE>EMC_VNXe_UserContactLeaf</VALUE>
+                        </PROPERTY>
+                        <PROPERTY NAME="Name" TYPE="string">
+                            <VALUE>win2012.dev\hyperv</VALUE>
+                        </PROPERTY>
+                        <PROPERTY NAME="UserID" TYPE="string">
+                            <VALUE>S-1-5-15-be80fa7-8ddad211-d49ba5f9-467
+                            </VALUE>
+                        </PROPERTY>
+                    </INSTANCE>
+                </IRETURNVALUE>
+            </IMETHODRESPONSE>
+        </SIMPLERSP>
+    </MESSAGE>
+</CIM>

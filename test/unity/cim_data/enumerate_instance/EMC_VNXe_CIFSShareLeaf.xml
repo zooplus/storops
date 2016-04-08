@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+    <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+        <SIMPLERSP>
+            <IMETHODRESPONSE NAME="EnumerateInstances">
+                <IRETURNVALUE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_5
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>vmmsh1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>vmmsh1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_8
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_8</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>esa_cifs1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>esa_cifs1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_9
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_9</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>cifs_1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>cifs_1</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_11
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_11</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>cifs_2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>cifs_2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_12
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>cifs_3</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>cifs_3</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <KEYBINDING NAME="InstanceID">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    SMBShare_13
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_CIFSShareLeaf">
+                            <PROPERTY NAME="InstanceID" TYPE="string">
+                                <VALUE>SMBShare_13</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Description" TYPE="string">
+                                <VALUE/>
+                            </PROPERTY>
+                            <PROPERTY NAME="ElementName" TYPE="string">
+                                <VALUE>cifs_4</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledDefault" TYPE="uint16">
+                                <VALUE>2</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="EnabledState" TYPE="uint16">
+                                <VALUE>5</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>cifs_4</VALUE>
+                            </PROPERTY>
+                            <PROPERTY.ARRAY NAME="OperationalStatus"
+                                            TYPE="uint16">
+                                <VALUE.ARRAY>
+                                    <VALUE>2</VALUE>
+                                </VALUE.ARRAY>
+                            </PROPERTY.ARRAY>
+                            <PROPERTY NAME="PathNameSeparatorString"
+                                      TYPE="string">
+                                <VALUE>\</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="RequestedState" TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="SharingDirectory" TYPE="boolean">
+                                <VALUE>true</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="TransitioningToState"
+                                      TYPE="uint16">
+                                <VALUE>12</VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                </IRETURNVALUE>
+            </IMETHODRESPONSE>
+        </SIMPLERSP>
+    </MESSAGE>
+</CIM>
+

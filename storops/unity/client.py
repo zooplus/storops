@@ -19,10 +19,11 @@ import logging
 
 import six
 
-from storops.connection.connector import UnityRESTConnector
+from storops.connection.connector import UnityRESTConnector, UnityWbemConnector
 import storops.unity.resource.type_resource
+from storops.exception import UnityException
 from storops.lib.common import instance_cache, EnumList
-from storops.unity.enums import UnityEnum
+from storops.unity.enums import UnityEnum, SmisReturnValueEnum
 from storops.unity.resource import UnityResource, UnityResourceList
 from storops.unity.resp import RestResponse
 
@@ -35,6 +36,7 @@ class UnityClient(object):
     def __init__(self, ip, username, password, port=443):
         self._rest = UnityRESTConnector(ip, port=port, user=username,
                                         password=password)
+        self._smis = UnityWbemConnector(ip, user=username, password=password)
 
     def get_all(self, type_name, fields=None, the_filter=None):
         """Get the resource by resource id.
@@ -193,6 +195,67 @@ class UnityClient(object):
         else:
             ret = value
         return ret
+
+    @property
+    @instance_cache
+    def account_management_service(self):
+        return self.ei_first('CIM_AccountManagementService')
+
+    @property
+    @instance_cache
+    def system(self):
+        return self.ei_first('EMC_VNXe_StorageSystemLeaf')
+
+    def ei(self, clz_name):
+        return self._smis.ei(clz_name)
+
+    def ai(self, from_inst_name, assoc_clz, result_clz):
+        return self._smis.ai(from_inst_name, assoc_clz, result_clz)
+
+    def ei_first(self, clz_name):
+        return self._smis.ei_first(clz_name)
+
+    def im(self, method_name, instance_name, **kwargs):
+        ret = self._smis.im(method_name, instance_name, **kwargs)
+        return CimResponse(ret)
+
+    def ref(self, obj_name, result_clz):
+        return self._smis.ref(obj_name, result_clz)
+
+    def di(self, obj_name):
+        return CimResponse(self._smis.di(obj_name))
+
+    def gi(self, obj_name):
+        return self._smis.gi(obj_name)
+
+
+class CimResponse(object):
+    def __init__(self, inputs):
+        if inputs is None:
+            inputs = [0, None]
+        self._error_code = inputs[0]
+        self._value = inputs[1]
+
+    @property
+    @instance_cache
+    def error_code(self):
+        return SmisReturnValueEnum.parse(self._error_code)
+
+    @property
+    def value(self):
+        return self._value
+
+    def raise_if_err(self, default=None):
+        if default is not None:
+            ex_clz = default
+        else:
+            ex_clz = UnityException
+
+        if self.error_code != SmisReturnValueEnum.OK:
+            raise ex_clz()
+
+    def is_ok(self):
+        return self.error_code == SmisReturnValueEnum.OK
 
 
 class UnityDoc(object):

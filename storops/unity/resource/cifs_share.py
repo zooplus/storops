@@ -18,9 +18,15 @@ from __future__ import unicode_literals
 
 import logging
 
+from emc_pywbem import CIMInstance, CIMInstanceName, Uint16, CIMError
+
 import storops.unity.resource.cifs_server
 import storops.unity.resource.filesystem
 import storops.unity.resource.snap
+from storops.exception import UnityCreateCifsUserError, \
+    UnityImportCifsUserError, UnityAddCifsAceError, \
+    UnityRemoveCifsAceError, UnityAceNotFoundError, \
+    UnityCimResourceNotFoundError
 from storops.lib.common import instance_cache
 from storops.unity.enums import CIFSTypeEnum, ACEAccessTypeEnum, \
     ACEAccessLevelEnum
@@ -93,6 +99,23 @@ class UnityCifsShare(UnityResource):
         return resp
 
     def get_ace_list(self):
+        obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
+        ret = {
+            ACEAccessLevelEnum.FULL: [],
+            ACEAccessLevelEnum.READ: [],
+            ACEAccessLevelEnum.WRITE: [],
+        }
+        for obj in obj_list:
+            try:
+                sid = obj['subject']['instanceId']
+                access = ACEAccessLevelEnum.from_list(obj['activities'])
+                ret[access].append(sid)
+            except (AttributeError, IndexError, ValueError):
+                # skip, next one
+                pass
+        return ret
+
+    def get_ace_list_rest(self):
         resp = self.action('getACEs')
         resp.raise_if_err()
 
@@ -102,7 +125,48 @@ class UnityCifsShare(UnityResource):
     def disable_ace(self):
         return self.modify(is_ace_enabled=False)
 
-    def add_ace(self, domain, user, access_level=None):
+    def add_ace(self, domain=None, user=None, access_level=None):
+        name = self._get_domain_user_name(domain, user)
+        if access_level is None:
+            access_level = ACEAccessLevelEnum.FULL
+        ACEAccessLevelEnum.verify(access_level)
+
+        activity = Uint16(access_level.to_smis_activity_value())
+        identity = self.get_identity_instance_name(name)
+
+        resp = self._cli.im(
+            'AssignPrivilegeToExportedShare',
+            self.cim_export_service.path,
+            Identities=[identity],
+            Activities=[activity],
+            FileShare=self.cim_instance_name)
+        resp.raise_if_err(default=UnityAddCifsAceError)
+        return resp
+
+    def _get_domain_user_name(self, domain=None, user=None):
+        if domain is None:
+            domain = self.cifs_server.domain
+        if user is None:
+            raise ValueError('username not specified.')
+        return r'{}\{}'.format(domain, user)
+
+    def remove_ace(self, domain=None, user=None):
+        name = self._get_domain_user_name(domain, user)
+        sid = self.get_user_sids(self._cli, name)
+        obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
+        for obj in obj_list:
+            try:
+                if sid == obj['subject']['instanceId']:
+                    ret = self._cli.di(obj.path)
+                    ret.raise_if_err(default=UnityRemoveCifsAceError)
+                    break
+            except (ValueError, AttributeError, IndexError):
+                pass
+        else:
+            raise UnityAceNotFoundError()
+        return ret
+
+    def add_ace_rest(self, domain, user, access_level=None):
         if access_level is None:
             access_level = ACEAccessLevelEnum.FULL
         sid = UnityAclUser.get_sid(self._cli, user=user, domain=domain)
@@ -140,6 +204,100 @@ class UnityCifsShare(UnityResource):
         resp = sr.modify_fs(**param)
         resp.raise_if_err()
         return resp
+
+    @property
+    @instance_cache
+    def cim(self):
+        return self._cli.gi(self.cim_instance_name)
+
+    @property
+    def cim_instance_name(self):
+        return CIMInstanceName('EMC_VNXe_CIFSShareLeaf',
+                               {'InstanceID': self.get_id()},
+                               namespace='root/emc/smis')
+
+    def get_identity_instance_name(self, name):
+        sid = self.get_user_sids(self._cli, name)
+        return CIMInstanceName('EMC_VNXe_IdentityLeaf',
+                               {'InstanceID': sid})
+
+    @classmethod
+    def create_user(cls, cli, name):
+        contact_clz_name = 'CIM_UserContact'
+        user = CIMInstance(contact_clz_name,
+                           {
+                               'Name': name,
+                               'CreationClassName': contact_clz_name
+                           })
+        ret = cli.im('CreateUserContact',
+                     cli.account_management_service.path,
+                     System=cli.system.path,
+                     UserContactTemplate=user)
+        ret.raise_if_err(default=UnityCreateCifsUserError)
+        try:
+            ret = ret.value['Identities'][0]['InstanceID']
+        except (AttributeError, IndexError, ValueError):
+            raise UnityImportCifsUserError()
+        return ret
+
+    @property
+    @instance_cache
+    def cim_export_service(self):
+        inst_name = self.cim_instance_name
+        instances = self._cli.ai(inst_name, 'CIM_ServiceAffectsElement',
+                                 'CIM_FileExportService')
+        if instances:
+            ret = instances[0]
+        else:
+            raise UnityCimResourceNotFoundError(
+                'FileExportService not found for cifs share: {}'.format(
+                    self.get_id()))
+        return ret
+
+    @classmethod
+    def get_user_sids(cls, cli, name=None):
+        if name is None:
+            ret = [user['userID'] for user in cls.get_user(cli, name)]
+        else:
+            ret = cls.get_user(cli, name)
+            if ret is None:
+                ret = cls.create_user(cli, name)
+            else:
+                ret = ret['userID']
+        return ret
+
+    @classmethod
+    def get_user(cls, cli, name=None):
+        if name is not None:
+            try:
+                ret = cli.gi(cls.get_user_instance_name(name))
+            except CIMError:
+                ret = None
+        else:
+            ret = cli.ei('EMC_VNXe_UserContactLeaf')
+        return ret
+
+    @classmethod
+    def get_user_instance_name(cls, name):
+        clz_name = 'EMC_VNXe_UserContactLeaf'
+        return CIMInstanceName(
+            clz_name,
+            {'CreationClassName': clz_name,
+             'Name': name},
+            namespace='root/emc/smis')
+
+    @property
+    @instance_cache
+    def cifs_server(self):
+        ret = None
+        fs = self.filesystem
+        if fs:
+            nas_server = fs.nas_server
+            if nas_server:
+                cifs_servers = nas_server.cifs_server
+                if cifs_servers:
+                    ret = cifs_servers[0]
+        return ret
 
 
 class UnityCifsShareList(UnityResourceList):

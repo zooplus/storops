@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+    <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+        <SIMPLERSP>
+            <IMETHODRESPONSE NAME="GetInstance">
+                <IRETURNVALUE>
+                    <INSTANCE CLASSNAME="EMC_VNXe_CIFSServerLeaf">
+                        <PROPERTY NAME="CreationClassName" TYPE="string">
+                            <VALUE>EMC_VNXe_CIFSServerLeaf</VALUE>
+                        </PROPERTY>
+                        <PROPERTY NAME="Name" TYPE="string">
+                            <VALUE>nas1130</VALUE>
+                        </PROPERTY>
+                        <PROPERTY.ARRAY NAME="Dedicated" TYPE="uint16">
+                            <VALUE.ARRAY>
+                                <VALUE>16</VALUE>
+                            </VALUE.ARRAY>
+                        </PROPERTY.ARRAY>
+                        <PROPERTY NAME="EnabledState" TYPE="uint16">
+                            <VALUE>5</VALUE>
+                        </PROPERTY>
+                        <PROPERTY NAME="NameFormat" TYPE="string">
+                            <VALUE>Other</VALUE>
+                        </PROPERTY>
+                        <PROPERTY.ARRAY NAME="OperationalStatus" TYPE="uint16">
+                            <VALUE.ARRAY>
+                                <VALUE>0</VALUE>
+                            </VALUE.ARRAY>
+                        </PROPERTY.ARRAY>
+                        <PROPERTY NAME="PrimaryStatus" TYPE="uint16">
+                            <VALUE>0</VALUE>
+                        </PROPERTY>
+                        <PROPERTY NAME="RequestedState" TYPE="uint16">
+                            <VALUE>12</VALUE>
+                        </PROPERTY>
+                        <PROPERTY.ARRAY NAME="StatusDescriptions"
+                                        TYPE="string">
+                            <VALUE.ARRAY>
+                                <VALUE>Unknown</VALUE>
+                            </VALUE.ARRAY>
+                        </PROPERTY.ARRAY>
+                        <PROPERTY NAME="TransitioningToState" TYPE="uint16">
+                            <VALUE>12</VALUE>
+                        </PROPERTY>
+                    </INSTANCE>
+                </IRETURNVALUE>
+            </IMETHODRESPONSE>
+        </SIMPLERSP>
+    </MESSAGE>
+</CIM>
+

@@ -15,18 +15,25 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import logging
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, only_contains, raises
+from hamcrest import assert_that, equal_to, only_contains, raises, none
 
 from storops.exception import UnityException, UnitySmbShareNameExistedError, \
-    UnityAclUserNotFoundError
-from storops.unity.enums import CIFSTypeEnum, CifsShareOfflineAvailabilityEnum
+    UnityAclUserNotFoundError, UnityCreateCifsUserError, \
+    UnityAddCifsAceError, \
+    UnityAceNotFoundError
+from storops.unity.enums import CIFSTypeEnum, ACEAccessLevelEnum, \
+    CifsShareOfflineAvailabilityEnum
 from storops.unity.resource.cifs_share import UnityCifsShare, \
     UnityCifsShareList, UnityAclUser, UnityAclUserList
+from test.unity.cim_mock import patch_cim
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
+
+log = logging.getLogger(__name__)
 
 
 class UnityCifsShareTest(TestCase):
@@ -55,6 +62,12 @@ class UnityCifsShareTest(TestCase):
         assert_that(cifs.is_dfs_enabled, equal_to(False))
         assert_that(cifs.umask, equal_to('022'))
         assert_that(cifs.filesystem.get_id(), equal_to('fs_2'))
+
+    @patch_rest()
+    def test_cifs_server(self):
+        share = UnityCifsShare('SMBShare_1', cli=t_rest())
+        assert_that(share.cifs_server.name, equal_to('nas1130'))
+        assert_that(share.cifs_server.domain, equal_to('win2012.dev'))
 
     @patch_rest()
     def test_get_all(self):
@@ -100,14 +113,108 @@ class UnityCifsShareTest(TestCase):
         resp = share.remove()
         assert_that(resp.is_ok(), equal_to(True))
 
-    # def test_get_ace_list_success(self):
-    #     share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
-    #     print share.get_ace_list()
+    @patch_cim()
+    def test_get_user_all(self):
+        users = UnityCifsShare.get_user(cli=t_rest())
+        assert_that(len(users), equal_to(3))
+
+    @patch_cim()
+    def test_get_user_by_name_found(self):
+        user = UnityCifsShare.get_user(cli=t_rest(),
+                                       name=r'win2012.dev\hyperv')
+        assert_that(user['name'], equal_to(r'win2012.dev\hyperv'))
+        assert_that(user['userID'],
+                    equal_to('S-1-5-15-be80fa7-8ddad211-d49ba5f9-467'))
+
+    @patch_cim(mock_map={'EMC_VNXe_UserContactLeaf.xml': 'not_found.xml'})
+    def test_get_user_by_name_not_found(self):
+        user = UnityCifsShare.get_user(cli=t_rest(), name=r'win2012.dev\abc')
+        assert_that(user, none())
+
+    @patch_cim()
+    def test_get_user_sids_all(self):
+        users = UnityCifsShare.get_user_sids(cli=t_rest())
+        assert_that(len(users), equal_to(3))
+
+    @patch_cim()
+    def test_get_user_sids_found(self):
+        sid = UnityCifsShare.get_user_sids(cli=t_rest(),
+                                           name=r'win2012.dev\hyperv')
+        assert_that(sid, equal_to('S-1-5-15-be80fa7-8ddad211-d49ba5f9-467'))
+
+    @patch_cim(mock_map={'CreateUserContact': 'create_user_failed.xml',
+                         'EMC_VNXe_UserContactLeaf.xml': 'not_found.xml'})
+    def test_get_user_sids_not_found(self):
+        def f():
+            UnityCifsShare.get_user_sids(cli=t_rest(), name=r'a')
+
+        assert_that(f, raises(UnityCreateCifsUserError))
+
+    @patch_cim(mock_map={'EMC_VNXe_UserContactLeaf.xml': 'not_found.xml'})
+    def test_get_user_sid_with_create(self):
+        sid = UnityCifsShare.get_user_sids(cli=t_rest(),
+                                           name=r'win2012.dev\administrator')
+        assert_that(sid, equal_to('S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4'))
+
+    @patch_cim(mock_map={'CreateUserContact': 'create_user_failed.xml'})
+    def test_create_user_not_exists(self):
+        def f():
+            UnityCifsShare.create_user(cli=t_rest(), name=r'a.b\c')
+
+        assert_that(f, raises(UnityCreateCifsUserError, 'failed to import'))
+
+    @patch_cim()
+    def test_create_user_success(self):
+        ret = UnityCifsShare.create_user(cli=t_rest(),
+                                         name=r'win2012.dev\administrator')
+        uid = 'S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4'
+        assert_that(ret, equal_to(uid))
+
+    @patch_cim()
+    def test_add_ace_cim_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.add_ace('win2012.dev', 'SMIS_User_1')
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_cim(
+        mock_map={'AssignPrivilegeToExportedShare': 'set_ace_failed.xml'})
+    def test_add_ace_cim_failed(self):
+        def f():
+            share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+            share.add_ace('win2012.dev', 'administrator')
+
+        assert_that(f, raises(UnityAddCifsAceError, 'failed to'))
+
+    @patch_cim()
+    def test_remove_ace_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.remove_ace('win2012.dev', 'administrator')
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_cim(
+        mock_map={'EMC_VNXe_UserContactLeaf.xml': 'user_administrator.xml'})
+    def test_remove_ace_not_found(self):
+        def f():
+            share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+            share.remove_ace('win2012.dev', 'hyperv')
+
+        assert_that(f, raises(UnityAceNotFoundError))
+
+    @patch_cim()
+    def test_cim_property(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        assert_that(share.cim['ElementName'], equal_to('esa_cifs1'))
 
     @patch_rest()
-    def test_add_ace_success(self):
+    def test_get_domain_user_name_default_domain(self):
         share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
-        resp = share.add_ace('win2012.dev', 'administrator')
+        name = share._get_domain_user_name(user='admin')
+        assert_that(name, equal_to(r'win2012.dev\admin'))
+
+    @patch_rest()
+    def test_add_ace_rest_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        resp = share.add_ace_rest('win2012.dev', 'administrator')
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -121,6 +228,20 @@ class UnityCifsShareTest(TestCase):
         share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
         resp = share.disable_ace()
         assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_cim()
+    def test_get_ace_list(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        access_list = share.get_ace_list()
+        assert_that(len(access_list[ACEAccessLevelEnum.FULL]), equal_to(2))
+        assert_that(len(access_list[ACEAccessLevelEnum.READ]), equal_to(0))
+        assert_that(len(access_list[ACEAccessLevelEnum.WRITE]), equal_to(0))
+
+    @patch_cim()
+    def test_cim_export_service_property(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        export_service = share.cim_export_service
+        assert_that(export_service['SystemName'], equal_to('cifs_2'))
 
 
 class UnityAclUserTest(TestCase):

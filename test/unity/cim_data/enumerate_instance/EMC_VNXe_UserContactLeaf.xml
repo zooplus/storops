@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CIM CIMVERSION="2.0" DTDVERSION="2.0">
+    <MESSAGE ID="1001" PROTOCOLVERSION="1.0">
+        <SIMPLERSP>
+            <IMETHODRESPONSE NAME="EnumerateInstances">
+                <IRETURNVALUE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <KEYBINDING NAME="CreationClassName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    EMC_VNXe_UserContactLeaf
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="Name">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    win2012.dev\L1PFC239208$
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <PROPERTY NAME="CreationClassName" TYPE="string">
+                                <VALUE>EMC_VNXe_UserContactLeaf</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>win2012.dev\L1PFC239208$</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="UserID" TYPE="string">
+                                <VALUE>S-1-5-15-be80fa7-8ddad211-d49ba5f9-452
+                                </VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <KEYBINDING NAME="CreationClassName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    EMC_VNXe_UserContactLeaf
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="Name">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    win2012.dev\hyperv
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <PROPERTY NAME="CreationClassName" TYPE="string">
+                                <VALUE>EMC_VNXe_UserContactLeaf</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>win2012.dev\hyperv</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="UserID" TYPE="string">
+                                <VALUE>S-1-5-15-be80fa7-8ddad211-d49ba5f9-467
+                                </VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                    <VALUE.NAMEDINSTANCE>
+                        <INSTANCENAME CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <KEYBINDING NAME="CreationClassName">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    EMC_VNXe_UserContactLeaf
+                                </KEYVALUE>
+                            </KEYBINDING>
+                            <KEYBINDING NAME="Name">
+                                <KEYVALUE VALUETYPE="string" TYPE="string">
+                                    win2012.dev\NLPC20982$
+                                </KEYVALUE>
+                            </KEYBINDING>
+                        </INSTANCENAME>
+                        <INSTANCE CLASSNAME="EMC_VNXe_UserContactLeaf">
+                            <PROPERTY NAME="CreationClassName" TYPE="string">
+                                <VALUE>EMC_VNXe_UserContactLeaf</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="Name" TYPE="string">
+                                <VALUE>win2012.dev\NLPC20982$</VALUE>
+                            </PROPERTY>
+                            <PROPERTY NAME="UserID" TYPE="string">
+                                <VALUE>S-1-5-15-be80fa7-8ddad211-d49ba5f9-4b7
+                                </VALUE>
+                            </PROPERTY>
+                        </INSTANCE>
+                    </VALUE.NAMEDINSTANCE>
+                </IRETURNVALUE>
+            </IMETHODRESPONSE>
+        </SIMPLERSP>
+    </MESSAGE>
+</CIM>

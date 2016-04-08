@@ -21,6 +21,7 @@ import pipes
 
 import functools
 import paramiko
+from emc_pywbem import WBEMConnection
 from paramiko import ssh_exception
 import six
 from storops.connection import client
@@ -79,6 +80,48 @@ class UnityRESTConnector(object):
         resp, body = self.get(path_user)
         headers = {'emc-csrf-token': resp.headers['emc-csrf-token']}
         self.http_client.update_headers(headers)
+
+
+class UnityWbemConnector(object):
+    ns = 'root/emc/smis'
+
+    def __init__(self, host, user, password, namespace=None):
+        if namespace is None:
+            namespace = 'interop'
+        if user is not None and '/' not in user:
+            user = 'Local/{}'.format(user)
+        if host is not None and 'https' not in host:
+            host = 'https://{}:5989'.format(host)
+        self.conn = WBEMConnection(host, (user, password), namespace)
+
+    def ei(self, clz_name):
+        return self.conn.EnumerateInstances(clz_name, self.ns)
+
+    def gi(self, obj_name):
+        return self.conn.GetInstance(obj_name)
+
+    def im(self, method_name, instance_name, **kwargs):
+        return self.conn.InvokeMethod(
+            method_name, instance_name, kwargs.items())
+
+    def ai(self, from_inst_name, assoc_clz, result_clz):
+        return self.conn.Associators(from_inst_name,
+                                     AssocClass=assoc_clz,
+                                     ResultClass=result_clz)
+
+    def ei_first(self, clz_name):
+        instances = self.ei(clz_name)
+        if len(instances) > 0:
+            ret = instances[0]
+        else:
+            raise ValueError('instance of "{}" not found.'.format(clz_name))
+        return ret
+
+    def ref(self, obj_name, result_clz):
+        return self.conn.References(obj_name, ResultClass=result_clz)
+
+    def di(self, obj_name):
+        return self.conn.DeleteInstance(obj_name)
 
 
 class XMLAPIConnector(object):

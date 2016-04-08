@@ -48,7 +48,7 @@ def t_unity():
 
 
 class MockRestClient(ConnectorMock):
-    base_folder = os.path.join('unity', 'testdata')
+    base_folder = os.path.join('unity', 'rest_data')
 
     @classmethod
     def get_folder_from_url(cls, url):

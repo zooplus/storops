@@ -117,6 +117,10 @@ class UnityException(StoropsException):
     def __str__(self):
         if hasattr(self.error, 'get_messages'):
             ret = '.  '.join(self.error.get_messages())
+        elif isinstance(self.error, six.string_types):
+            ret = self.error
+        elif hasattr(self, 'message'):
+            ret = self.message
         else:
             ret = self.error
         return ret
@@ -259,6 +263,26 @@ class UnityCifsServiceNotEnabledError(UnityException):
     pass
 
 
+class UnityCimException(UnityException):
+    pass
+
+
+class UnityCimResourceNotFoundError(UnityCimException):
+    pass
+
+
+class UnityAddCifsAceError(UnityCimException):
+    message = 'failed to add ace for cifs share.'
+
+
+class UnityRemoveCifsAceError(UnityCimException):
+    message = 'failed to remove ace for cifs share.'
+
+
+class UnityAceNotFoundError(UnityCimException):
+    message = 'specified ace not found.'
+
+
 @rest_exception
 class UnityResourceNotFoundError(UnityException):
     error_code = 131149829
@@ -332,6 +356,14 @@ class UnityHostIpInUseError(UnityException):
 @rest_exception
 class UnityAclUserNotFoundError(UnityException):
     error_code = 100663499
+
+
+class UnityImportCifsUserError(UnityException):
+    message = 'failed to import cifs user.'
+
+
+class UnityCreateCifsUserError(UnityImportCifsUserError):
+    message = 'failed to import cifs user.  please make sure this user exists.'
 
 
 class NaviseccliNotAvailableError(VNXException):

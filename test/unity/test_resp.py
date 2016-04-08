@@ -29,7 +29,7 @@ __author__ = 'Cedric Zhuang'
 
 
 def read_error_json(filename):
-    raw = read_test_file(os.path.join('unity', 'testdata', 'error'), filename)
+    raw = read_test_file(os.path.join('unity', 'rest_data', 'error'), filename)
     return json.loads(raw, encoding='utf-8')
 
 
