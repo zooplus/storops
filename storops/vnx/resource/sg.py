@@ -188,7 +188,7 @@ class VNXStorageGroup(VNXCliResource):
         lun_clz = storops.vnx.resource.lun.VNXLun
         alu = lun_clz.get_id(lun)
         _do(alu)
-        return lun_clz(self._cli, alu)
+        return lun_clz(cli=self._cli, lun_id=alu)
 
     def detach_alu(self, lun):
         alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
