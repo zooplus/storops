@@ -193,6 +193,9 @@ class VNXStorageGroup(VNXCliResource):
     def detach_alu(self, lun):
         alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
         hlu = self.get_hlu(lun)
+        if hlu is None:
+            raise ex.VNXDetachAluNotFoundError(
+                'specified lun {} is not attached.'.format(alu))
         out = self._cli.sg_remove_hlu(self._get_name(), hlu, poll=self.poll)
         msg = 'failed to detach hlu {}/alu {}.'.format(hlu, alu)
         ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError, )

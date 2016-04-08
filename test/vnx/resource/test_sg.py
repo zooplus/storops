@@ -137,6 +137,15 @@ class VNXStorageGroupTest(TestCase):
         assert_that(f, raises(VNXDetachAluNotFoundError, 'No such Host LUN'))
 
     @patch_cli()
+    def test_detach_hlu_not_attached(self):
+        def f():
+            sg = self.test_sg()
+            sg.detach_alu(1033)
+
+        assert_that(f, raises(VNXDetachAluNotFoundError,
+                              'is not attached'))
+
+    @patch_cli()
     def test_connect_host(self):
         def f():
             sg = self.test_sg()
