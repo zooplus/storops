@@ -60,7 +60,7 @@ class VNXSPPort(VNXCliResource):
 
     def _get_raw_resource(self):
         raise ValueError('Cannot get single sp port info from cli.  '
-                         'Use {}.get_port(sp, id, cli) instead.'
+                         'Use {}.get(sp, port_id, cli) instead.'
                          .format(self.__class__.__name__))
 
     @classmethod

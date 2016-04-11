@@ -91,7 +91,11 @@ class VNXSPEnum(VNXEnum):
         value = cls.parse(value)
         if value is None:
             raise ValueError('"{}" is not a valid sp name.'.format(value))
-        return value.value.lower()[-1]
+        return value.index
+
+    @property
+    def index(self):
+        return self.value.lower()[-1]
 
 
 class VNXProvisionEnum(VNXEnum):

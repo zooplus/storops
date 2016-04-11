@@ -453,7 +453,7 @@ class CliClient(object):
         cmd += ['-sp', VNXSPEnum.get_sp_index(sp)]
         cmd += int_var('-spport', port_id)
         cmd += int_var('-spvport', vport_id)
-        cmd += ['-ip', ip]
+        cmd += text_var('-ip', ip)
         cmd += text_var('-host', host)
         cmd.append('-o')
         return cmd

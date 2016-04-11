@@ -365,6 +365,14 @@ class CliClientTest(TestCase):
                                   '-hbauid aaa.bbb.ccc -sp a -spport 10 '
                                   '-spvport 1 -ip 10.0.0.1 -host host0 -o'))
 
+    @extract_command
+    def test_set_path_no_host_ip(self):
+        cmd = self.client.set_path('sg0', 'aaa.bbb.ccc', VNXSPEnum.SP_A, 3,
+                                   None, 'host0')
+        assert_that(cmd, equal_to(
+            'storagegroup -setpath -gname sg0 -hbauid aaa.bbb.ccc '
+            '-sp a -spport 3 -host host0 -o'))
+
     def test_set_path_invalid_sp(self):
         def f():
             self.client.set_path('sg0', 'aaa.bbb.ccc', 'abc', 10,

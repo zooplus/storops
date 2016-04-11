@@ -212,9 +212,35 @@ class VNXStorageGroup(VNXCliResource):
         msg = 'failed to disconnect host {}.'.format(host)
         ex.raise_if_err(out, msg, default=ex.VNXStorageGroupError)
 
+    def connect_hba(self, port, hba_uid, host_name, host_ip=None):
+        return self.set_path(port, hba_uid, host_name, host_ip)
+
     @property
     def uid(self):
         return self.wwn
+
+    def set_path(self, port, hba_uid, host_name, host_ip=None):
+        if hasattr(port, 'sp'):
+            sp = port.sp
+        else:
+            raise ValueError('sp is not available from {}.'.format(port))
+
+        if hasattr(port, 'port_id'):
+            port_id = port.port_id
+        else:
+            raise ValueError('port id is not available from {}.'.format(port))
+
+        vport_id = None
+        if hasattr(port, 'virtual_port_id'):
+            # FCoE do not need vport_id
+            if hasattr(port, 'type'):
+                port_type = port.type
+                if port_type == VNXPortType.ISCSI:
+                    vport_id = port.virtual_port_id
+
+        out = self._cli.set_path(self._get_name(), hba_uid, sp, port_id,
+                                 host_ip, host_name, vport_id=vport_id)
+        ex.raise_if_err(out)
 
 
 class VNXStorageGroupList(VNXCliResourceList):

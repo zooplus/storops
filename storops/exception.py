@@ -389,6 +389,21 @@ class VNXAttachAluError(VNXException):
 
 
 @cli_exception
+class VNXInvalidCliParamError(VNXException):
+    error_message = 'invalid command line parameters'
+
+
+@cli_exception
+class VNXPortNotInitializedError(VNXStorageGroupError):
+    error_message = 'port is uninitialized'
+
+
+@cli_exception
+class VNXInitiatorExistedError(VNXStorageGroupError):
+    error_message = 'Initiator record already exists'
+
+
+@cli_exception
 class VNXAluAlreadyAttachedError(VNXAttachAluError):
     error_message = (
         'LUN already exists in the specified storage group',

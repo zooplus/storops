@@ -40,7 +40,8 @@ def t_cli():
 
     :return: test cli client
     """
-    return CliClient("10.110.26.101", heartbeat_interval=0)
+    # return CliClient("10.110.26.101", heartbeat_interval=0)
+    return CliClient("10.244.211.30", heartbeat_interval=0)
 
 
 @cache
@@ -61,7 +62,7 @@ class MockCli(ConnectorMock):
     def mock_execute(self, params, *args, **_):
         return self.get_mock_output(params)
 
-    escaped_pattern = re.compile(r"[\\/]")
+    escaped_pattern = re.compile(r"[\\/:]")
 
     flags_to_remove = {
         '-t': 2,

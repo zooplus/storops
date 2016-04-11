@@ -70,6 +70,26 @@ class SampleIntEnum(Enum):
 
 
 class EnumTest(TestCase):
+    def test_verify_allow_none(self):
+        # no error raised
+        SampleIntEnum.verify(None)
+
+    def test_verify_normal_value(self):
+        # no error raised
+        SampleIntEnum.verify(SampleIntEnum.NOT_FOUND)
+
+    def test_verify_not_allow_none(self):
+        def f():
+            SampleIntEnum.verify(None, allow_none=False)
+
+        assert_that(f, raises(ValueError, 'SampleIntEnum'))
+
+    def test_verify_not_valid_value(self):
+        def f():
+            SampleIntEnum.verify(88)
+
+        assert_that(f, raises(ValueError, 'SampleIntEnum'))
+
     def test_get_all(self):
         assert_that(len(SampleEnum.get_all()), equal_to(2))
 

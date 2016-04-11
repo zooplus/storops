@@ -102,8 +102,11 @@ class EnumList(JsonPrinter):
 
 class Enum(_Enum):
     @classmethod
-    def verify(cls, value):
-        if value is not None and not isinstance(value, cls):
+    def verify(cls, value, allow_none=True):
+        if value is None and not allow_none:
+            raise ValueError(
+                'None is not allowed here for {}.'.format(cls.__name__))
+        elif value is not None and not isinstance(value, cls):
             raise ValueError('{} is not an instance of {}.'
                              .format(value, cls.__name__))
 

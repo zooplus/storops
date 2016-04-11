@@ -18,12 +18,15 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, has_item, raises, instance_of
+from storops.vnx.resource.port import VNXSPPort, VNXConnectionPort
 
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from storops.exception import VNXStorageGroupError, \
     VNXStorageGroupNameInUseError, VNXDetachAluNotFoundError, \
-    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXAluNumberInUseError
+    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXAluNumberInUseError, \
+    VNXInvalidCliParamError, VNXPortNotInitializedError, \
+    VNXInitiatorExistedError
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.sg import VNXStorageGroupList, VNXStorageGroup, \
@@ -197,3 +200,51 @@ class VNXStorageGroupHBATest(TestCase):
     def test_port_type(self):
         assert_that(self.test_hba().port_type,
                     equal_to(VNXPortType.ISCSI))
+
+    @patch_cli()
+    def test_set_path_with_sp_port_invalid_wwn(self):
+        def f():
+            port = VNXSPPort.get(sp=VNXSPEnum.SP_A, port_id=0, cli=t_cli())
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(port, '11:22:33', 'host0')
+
+        assert_that(f, raises(VNXInvalidCliParamError))
+
+    @patch_cli()
+    def test_set_path_with_fc_port_success(self):
+        wwn = '01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10'
+        port = VNXSPPort.get(sp=VNXSPEnum.SP_A, port_id=0, cli=t_cli())
+        sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+        # no exception
+        sg.set_path(port, wwn, 'host0')
+
+    @patch_cli()
+    def test_set_path_with_iscsi_port_not_initialized(self):
+        def f():
+            uid = 'iqn.1992-04.com.abc:a.b.c'
+            port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=10,
+                                         cli=t_cli())[0]
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(port, uid, 'host0')
+
+        assert_that(f, raises(VNXPortNotInitializedError))
+
+    @patch_cli()
+    def test_set_path_with_fcoe_port_success(self):
+        uid = 'iqn.1992-04.com.abc:a.b.c'
+        port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                     vport_id=0, cli=t_cli())
+        sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+        # no error raised
+        sg.connect_hba(port, uid, 'host0')
+
+    @patch_cli()
+    def test_set_path_with_fcoe_already_existed(self):
+        def f():
+            uid = 'iqn.1992-04.com.abc:a.b.d'
+            port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                         vport_id=0, cli=t_cli())
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(port, uid, 'host0')
+
+        assert_that(f, raises(VNXInitiatorExistedError))
