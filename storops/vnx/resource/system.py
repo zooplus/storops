@@ -154,14 +154,27 @@ class VNXSystem(VNXCliResource):
     def get_sp_port(self, sp=None, port_id=None):
         return VNXSPPort.get(self._cli, sp, port_id)
 
-    def get_fc_port(self):
-        return VNXSPPort.get(self._cli, port_type=VNXPortType.FC)
+    def get_fc_port(self, sp=None, port_id=None):
+        return VNXSPPort.get(self._cli,
+                             sp=sp,
+                             port_id=port_id,
+                             port_type=VNXPortType.FC)
 
-    def get_iscsi_port(self):
-        return VNXConnectionPort.get(self._cli, port_type=VNXPortType.ISCSI)
+    def get_iscsi_port(self, sp=None, port_id=None, vport_id=None,
+                       has_ip=None):
+        return VNXConnectionPort.get(self._cli,
+                                     sp=sp,
+                                     port_id=port_id,
+                                     vport_id=vport_id,
+                                     port_type=VNXPortType.ISCSI,
+                                     has_ip=has_ip)
 
-    def get_fcoe_port(self):
-        return VNXConnectionPort.get(self._cli, port_type=VNXPortType.FCOE)
+    def get_fcoe_port(self, sp=None, port_id=None, vport_id=None):
+        return VNXConnectionPort.get(self._cli,
+                                     sp=sp,
+                                     port_id=port_id,
+                                     vport_id=vport_id,
+                                     port_type=VNXPortType.FCOE)
 
     def remove_snap(self, name):
         self._remove_resource(VNXSnap(name, self._cli))

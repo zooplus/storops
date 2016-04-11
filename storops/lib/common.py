@@ -399,20 +399,24 @@ instance_cache = Cache.instance_cache
 clear_instance_cache = Cache.clear_instance_cache
 
 
-def check_int(value):
+def check_int(value, allow_none=False):
     def is_digit_str():
         return isinstance(value, six.string_types) and str(value).isdigit()
 
     def is_int():
         return isinstance(value, int)
 
-    if is_int():
-        pass
-    elif is_digit_str():
-        value = int(value)
+    if value is None and allow_none:
+        ret = None
     else:
-        raise ValueError('"{}" must be an integer.'.format(value))
-    return int(value)
+        if is_int():
+            pass
+        elif is_digit_str():
+            value = int(value)
+        else:
+            raise ValueError('"{}" must be an integer.'.format(value))
+        ret = int(value)
+    return ret
 
 
 def check_enum(value, enum_class):

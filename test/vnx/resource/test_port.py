@@ -20,14 +20,15 @@ from unittest import TestCase
 from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
     only_contains, contains_string
 
-from storops.exception import VNXPingNodeTimeOutError, \
-    VNXRemoveHbaNotFoundError
+from storops.exception import VNXInvalidCliParamError, \
+    VNXPortNotInitializedError, VNXInitiatorExistedError, \
+    VNXRemoveHbaNotFoundError, VNXPingNodeTimeOutError
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource.port import VNXHbaPort, VNXSPPort, \
-    VNXConnectionPort
-from storops.vnx.resource.sg import VNXStorageGroupHBA
+    VNXConnectionPort, VNXStorageGroupHBA
+from storops.vnx.resource.sg import VNXStorageGroup
 
 __author__ = 'Cedric Zhuang'
 
@@ -51,15 +52,16 @@ class VNXSPPortTest(TestCase):
     @patch_cli()
     def test_index_sequence(self):
         # this test will fail if the index is not used as splitter is wrong
-        port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 15)
-        assert_that(port.wwn, equal_to(
+        ports = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 15)
+        assert_that(ports[0].wwn, equal_to(
             '50:06:01:60:B6:E0:16:81:50:06:01:67:36:E4:16:81'))
 
     @patch_cli()
     def test_get_port_property(self):
-        port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 0)
+        port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 0)[0]
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(0))
+        assert_that(port.vport_id, none())
         assert_that(port.wwn, equal_to(
             '50:06:01:60:B6:E0:16:81:50:06:01:60:36:E0:16:81'))
         assert_that(port.link_status, equal_to('Up'))
@@ -158,6 +160,7 @@ class VNXConnectionPortTest(TestCase):
         assert_that(port.iscsi_alias, equal_to('6536.a4'))
         assert_that(port.enode_mac_address, equal_to('00-60-16-45-5D-FC'))
         assert_that(port.virtual_port_id, equal_to(0))
+        assert_that(port.vport_id, equal_to(0))
         assert_that(port.vlan_id, none())
         assert_that(port.current_mtu, equal_to(1500))
         assert_that(port.auto_negotiate, equal_to(False))
@@ -238,3 +241,172 @@ class VNXConnectionPortTest(TestCase):
         port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 8)[0]
         # success, no error raised
         port.ping_node('10.244.211.5')
+
+
+def test_hba():
+    return VNXStorageGroupHBA().update(STORAGE_GROUP_HBA)
+
+
+class VNXStorageGroupHBATest(TestCase):
+    def test_properties(self):
+        hba = test_hba()
+        assert_that(hba.host_name, equal_to('abc.def.dev'))
+        assert_that(hba.initiator_ip, equal_to('10.244.209.72'))
+        assert_that(hba.sp_port, equal_to('A-3v1'))
+
+    def test_sp(self):
+        assert_that(test_hba().sp, equal_to(VNXSPEnum.SP_A))
+
+    def test_uid(self):
+        assert_that(test_hba().uid,
+                    equal_to('iqn.1991-05.com.microsoft:abc.def.dev'))
+
+    def test_port_id(self):
+        assert_that(test_hba().port_id, equal_to(3))
+
+    def test_vlan(self):
+        assert_that(test_hba().vlan, equal_to(1))
+
+    def test_port_type(self):
+        assert_that(test_hba().port_type,
+                    equal_to(VNXPortType.ISCSI))
+
+    @patch_cli()
+    def test_set_path_with_sp_port_invalid_wwn(self):
+        def f():
+            ports = VNXSPPort.get(sp=VNXSPEnum.SP_A, port_id=0, cli=t_cli())
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(ports[0], '11:22:33', 'host0')
+
+        assert_that(f, raises(VNXInvalidCliParamError))
+
+    @patch_cli()
+    def test_set_path_with_fc_port_success(self):
+        wwn = '01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10'
+        ports = VNXSPPort.get(sp=VNXSPEnum.SP_A, port_id=0, cli=t_cli())
+        sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+        # no exception
+        sg.set_path(ports[0], wwn, 'host0')
+
+    @patch_cli()
+    def test_set_path_with_iscsi_port_not_initialized(self):
+        def f():
+            uid = 'iqn.1992-04.com.abc:a.b.c'
+            port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=10,
+                                         cli=t_cli())[0]
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(port, uid, 'host0')
+
+        assert_that(f, raises(VNXPortNotInitializedError))
+
+    @patch_cli()
+    def test_set_path_with_fcoe_port_success(self):
+        uid = 'iqn.1992-04.com.abc:a.b.c'
+        ports = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                      vport_id=0, cli=t_cli())
+        sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+        # no error raised
+        sg.connect_hba(ports[0], uid, 'host0')
+
+    @patch_cli()
+    def test_set_path_with_fcoe_already_existed(self):
+        def f():
+            uid = 'iqn.1992-04.com.abc:a.b.d'
+            ports = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                          vport_id=0, cli=t_cli())
+            sg = VNXStorageGroup(cli=t_cli(), name='sg0')
+            sg.set_path(ports[0], uid, 'host0')
+
+        assert_that(f, raises(VNXInitiatorExistedError))
+
+
+class VNXPortTest(TestCase):
+    def hba_port_set(self):
+        return {
+            VNXHbaPort.create(VNXSPEnum.SP_A, 1),
+            VNXHbaPort.create(VNXSPEnum.SP_B, 1),
+            VNXHbaPort.create(VNXSPEnum.SP_A, 4),
+            VNXHbaPort.create(VNXSPEnum.SP_A, 3, vport_id=1),
+            VNXHbaPort.create(VNXSPEnum.SP_A, 6, vport_id=0),
+            VNXHbaPort.create(VNXSPEnum.SP_B, 4, vport_id=0),
+        }
+
+    @patch_cli()
+    def test_connection_port_not_equal_sp_port(self):
+        c_port = VNXConnectionPort(sp='a', port_id=4, cli=t_cli())
+        s_port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 4)
+        # one has vport_id, others not, not equal
+        assert_that(c_port, is_not(equal_to(s_port)))
+
+    @patch_cli()
+    def test_connection_port_equal_sp_port(self):
+        c_port = VNXConnectionPort(sp='a', port_id=9, cli=t_cli())
+        s_port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 9)[0]
+        assert_that(c_port, equal_to(s_port))
+
+    @patch_cli()
+    def test_connection_port_equal_hba_port(self):
+        c_port = VNXConnectionPort(sp='a', port_id=4, cli=t_cli())
+        h_port = VNXHbaPort.create('a', 4, vport_id=0)
+        assert_that(c_port, equal_to(h_port))
+
+    @patch_cli()
+    def test_sp_port_in_hba_port_set(self):
+        ports = self.hba_port_set()
+        s_port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 4)[0]
+        assert_that(ports, has_item(s_port))
+
+    @patch_cli()
+    def test_connection_port_not_in_hba_port_set(self):
+        ports = self.hba_port_set()
+        c_port = VNXConnectionPort(sp='a', port_id=4, cli=t_cli())
+        assert_that(ports, is_not(has_item(c_port)))
+
+        c_port = VNXConnectionPort(sp='a', port_id=9, cli=t_cli())
+        assert_that(ports, is_not(has_item(c_port)))
+
+    @patch_cli()
+    def test_connection_port_in_hba_port_set(self):
+        ports = self.hba_port_set()
+        c_port = VNXConnectionPort(sp='a', port_id=6, vport_id=0, cli=t_cli())
+        assert_that(ports, has_item(c_port))
+
+    @patch_cli()
+    def test_connection_port_in_sp_port_list(self):
+        c_port = VNXConnectionPort(sp='a', port_id=9, cli=t_cli())
+        ports = VNXSPPort.get(t_cli())
+        assert_that(ports, has_item(c_port))
+
+    @patch_cli()
+    def test_hba_equal_connection_port(self):
+        hba = test_hba()
+        c_port = VNXConnectionPort(sp='a', port_id=3, vport_id=1, cli=t_cli())
+        assert_that(hba, equal_to(c_port))
+
+    @patch_cli()
+    def test_hba_not_equal_sp_port(self):
+        hba = test_hba()
+        s_port = VNXSPPort.get(t_cli(), VNXSPEnum.SP_A, 3)
+        assert_that(hba, is_not(equal_to(s_port)))
+
+    @patch_cli()
+    def test_hba_in_sp_port(self):
+        sg = VNXStorageGroup(name='server7', cli=t_cli())
+        hba = None
+        for hba in sg.ports:
+            if hba.sp == VNXSPEnum.SP_A and hba.port_id == 0:
+                break
+        ports = VNXSPPort.get(t_cli())
+        assert_that(ports, has_item(hba))
+
+    @patch_cli()
+    def test_hba_in_hba_port(self):
+        hba = test_hba()
+        ports = self.hba_port_set()
+        assert_that(ports, has_item(hba))
+
+    @patch_cli()
+    def test_hba_equal_hba_port(self):
+        hba = test_hba()
+        h_port = VNXHbaPort.create('a', 3, vport_id=1)
+        assert_that(hba, equal_to(h_port))

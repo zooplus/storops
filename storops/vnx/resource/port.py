@@ -24,6 +24,66 @@ from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 __author__ = 'Cedric Zhuang'
 
 
+class VNXPort(VNXCliResource):
+    """ Base class for all kinds of ports
+
+    Include the basic property like sp, port_id and vport_id.
+    """
+
+    @property
+    def sp(self):
+        return VNXSPEnum.parse(self._get_property('_sp'))
+
+    @property
+    def port_id(self):
+        return self._get_property('_port_id')
+
+    @property
+    def vport_id(self):
+        return self._get_property('_vport_id')
+
+    @property
+    def wwn(self):
+        return self._get_property('_wwn')
+
+    def _get_property(self, prop_name):
+        ret = None
+        if hasattr(self, prop_name):
+            ret = getattr(self, prop_name)
+
+        if ret is None:
+            try:
+                striped_name = prop_name.strip('_')
+                ret = self._get_property_from_raw(striped_name)
+            except AttributeError:
+                pass
+        return ret
+
+    def __hash__(self):
+        return hash('<VNXPort {{sp: {}, port_id: {}, vport_id: {}}}'
+                    .format(self.sp, self.port_id, self.vport_id))
+
+    @staticmethod
+    def _get_inst_prop(instance, name):
+        if hasattr(instance, name):
+            ret = getattr(instance, name)
+        else:
+            ret = None
+        return ret
+
+    def __eq__(self, other):
+        o_sp = self._get_inst_prop(other, 'sp')
+        o_port_id = self._get_inst_prop(other, 'port_id')
+        o_vport_id = self._get_inst_prop(other, 'vport_id')
+
+        ret = True
+        ret &= self.sp == o_sp
+        ret &= self.port_id == o_port_id
+        ret &= self.vport_id == o_vport_id
+
+        return ret
+
+
 class VNXSPPortList(VNXCliResourceList):
     def __init__(self, cli, sp=None, port_id=None, port_type=None):
         super(VNXSPPortList, self).__init__(cli=cli)
@@ -53,7 +113,7 @@ class VNXSPPortList(VNXCliResourceList):
         return self._cli.get_sp_port(poll=self.poll)
 
 
-class VNXSPPort(VNXCliResource):
+class VNXSPPort(VNXPort):
     def __init__(self, sp=None, port_id=None, cli=None):
         super(VNXSPPort, self).__init__()
         self._cli = cli
@@ -67,10 +127,7 @@ class VNXSPPort(VNXCliResource):
 
     @classmethod
     def get(cls, cli, sp=None, port_id=None, port_type=None):
-        ret = VNXSPPortList(cli, sp=sp, port_id=port_id, port_type=port_type)
-        if sp is not None and port_id is not None and len(ret) == 1:
-            ret = ret[0]
-        return ret
+        return VNXSPPortList(cli, sp=sp, port_id=port_id, port_type=port_type)
 
     @property
     def type(self):
@@ -87,16 +144,16 @@ class VNXSPPort(VNXCliResource):
         raise_if_err(out)
 
 
-class VNXHbaPort(VNXCliResource):
+class VNXHbaPort(VNXPort):
     @classmethod
     def _get_parser(cls):
         raise ValueError('property not found.')
 
-    def __init__(self, sp, port_id, vport_id=0):
+    def __init__(self, sp, port_id, vport_id=None):
         super(VNXHbaPort, self).__init__()
         self._sp = VNXSPEnum.parse(sp)
         self._port_id = check_int(port_id)
-        self._vport_id = check_int(vport_id)
+        self._vport_id = check_int(vport_id, allow_none=True)
         self._type = VNXPortType.FC
         self._host_initiator_list = []
 
@@ -130,7 +187,7 @@ class VNXHbaPort(VNXCliResource):
         return tuple(self._host_initiator_list)
 
     @staticmethod
-    def create(sp, port_id, port_type=VNXPortType.FC, vport_id=0):
+    def create(sp, port_id, port_type=VNXPortType.FC, vport_id=None):
         port = VNXHbaPort(sp, port_id, vport_id)
         port._type = port_type
         return port
@@ -152,27 +209,16 @@ class VNXHbaPort(VNXCliResource):
         return ['sp', 'port_id', 'vport_id', 'type',
                 'host_initiator_list']
 
-    def __hash__(self):
-        return hash('<VNXPort {{'
-                    'sp: {}, '
-                    'port_id: {}, '
-                    'vport_id: {}}}'
-                    .format(self.sp,
-                            self.port_id,
-                            self.vport_id))
-
-    def __eq__(self, other):
-        return self.sp == other.sp and self.port_id == other.port_id
-
 
 class VNXConnectionPortList(VNXCliResourceList):
     def __init__(self, cli, sp=None, port_id=None, vport_id=None,
-                 port_type=None):
+                 port_type=None, has_ip=None):
         super(VNXConnectionPortList, self).__init__(cli=cli)
         self._sp = sp
         self._port_id = port_id
         self._vport_id = vport_id
         self._port_type = port_type
+        self._has_ip = has_ip
 
     def _filter(self, item):
         ret = True
@@ -183,10 +229,16 @@ class VNXConnectionPortList(VNXCliResourceList):
             ret &= item.port_id == self._port_id
 
         if self._vport_id is not None:
-            ret = item.virtual_port_id == self._vport_id
+            ret &= item.virtual_port_id == self._vport_id
 
         if self._port_type is not None:
             ret &= item.type == self._port_type
+
+        if self._has_ip is not None:
+            if self._has_ip:
+                ret &= item.ip_address is not None
+            else:
+                ret &= item.ip_address is None
         return ret
 
     @classmethod
@@ -197,15 +249,21 @@ class VNXConnectionPortList(VNXCliResourceList):
         return self._cli.get_connection_port(poll=self.poll)
 
 
-class VNXConnectionPort(VNXCliResource):
+class VNXConnectionPort(VNXPort):
     def __init__(self, sp=None, port_id=None, vport_id=None, cli=None):
         super(VNXConnectionPort, self).__init__()
-        if sp is None:
-            sp = VNXSPEnum.SP_A
         self._sp = sp
         self._port_id = port_id
         self._vport_id = vport_id
         self._cli = cli
+
+    @property
+    def vport_id(self):
+        if self._vport_id is not None:
+            ret = self._vport_id
+        else:
+            ret = self.virtual_port_id
+        return ret
 
     @property
     def type(self):
@@ -225,12 +283,18 @@ class VNXConnectionPort(VNXCliResource):
         return names
 
     @classmethod
-    def get(cls, cli, sp=None, port_id=None, vport_id=None, port_type=None):
+    def get(cls, cli, sp=None, port_id=None, vport_id=None, port_type=None,
+            has_ip=None):
         VNXPortType.verify(port_type)
         if sp is not None and port_id is not None and vport_id is not None:
             ret = VNXConnectionPort(sp, port_id, vport_id, cli)
+            if port_type is not None and ret.type != port_type:
+                ret = []
+            else:
+                ret = [ret]
         else:
-            ret = VNXConnectionPortList(cli, sp, port_id, vport_id, port_type)
+            ret = VNXConnectionPortList(cli, sp, port_id, vport_id, port_type,
+                                        has_ip)
         return ret
 
     def ping_node(self, address, packet_size=None, count=None, timeout=None,
@@ -248,3 +312,55 @@ class VNXConnectionPort(VNXCliResource):
         except VNXPingNodeSuccess:
             # ping success, pass
             pass
+
+
+class VNXStorageGroupHBA(VNXPort):
+    @property
+    def sp(self):
+        return VNXSPEnum.parse(self.hba[1])
+
+    @property
+    def port_id(self):
+        return int(self.hba[2])
+
+    @property
+    def uid(self):
+        return self.hba[0]
+
+    @property
+    def vlan(self):
+        sp_port = self.sp_port
+        ret = None
+
+        if self.type == VNXPortType.ISCSI:
+            # vport only valid for iSCSI
+            if sp_port is not None and 'v' in sp_port:
+                ret = int(sp_port[sp_port.find('v') + 1:])
+        return ret
+
+    @property
+    def vport_id(self):
+        return self.vlan
+
+    @property
+    def port_type(self):
+        return self.type
+
+    @property
+    def type(self):
+        ret = None
+        if '.' in self.uid:
+            ret = VNXPortType.ISCSI
+        elif ':' in self.uid:
+            ret = VNXPortType.FC
+        return ret
+
+    def property_names(self):
+        ret = super(VNXStorageGroupHBA, self).property_names()
+        return ret + ['uid', 'sp', 'port_id', 'vport_id', 'vlan', 'port_type']
+
+
+class VNXStorageGroupHBAList(VNXCliResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return VNXStorageGroupHBA

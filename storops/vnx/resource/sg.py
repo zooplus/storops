@@ -20,7 +20,7 @@ from threading import Lock
 
 from retryz import retry
 
-from storops.vnx.enums import VNXSPEnum, VNXPortType
+from storops.vnx.enums import VNXPortType
 import storops.vnx.resource.lun
 from storops.vnx.resource.port import VNXHbaPort
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
@@ -94,9 +94,67 @@ class VNXStorageGroup(VNXCliResource):
             for item in hba_sp_pairs:
                 _process_cli_output(item)
 
+    @staticmethod
+    def _port_filter(ports, sp=None, port_id=None, vport_id=None,
+                     port_type=None):
+        def _filter(port):
+            ret = True
+            if sp is not None:
+                ret &= port.sp == sp
+            if port_id is not None:
+                ret &= port.port_id == port_id
+            if vport_id is not None:
+                ret &= port.vport_id == vport_id
+            if port_type is not None:
+                ret &= port.type == port_type
+            return ret
+
+        return tuple(filter(_filter, ports))
+
+    def _get_hba_ports(self, sp=None, port_id=None, vport_id=None,
+                       port_type=None):
+        ports = set(map(lambda x: x[1], self.hba_port_list))
+        return self._port_filter(ports, sp, port_id, vport_id, port_type)
+
+    def get_ports(self, initiator_uid=None, sp=None, port_id=None,
+                  vport_id=None, port_type=None):
+        if initiator_uid is not None:
+            ret = []
+            for hba, port in self.hba_port_list:
+                if hba == initiator_uid:
+                    ret.append(port)
+            ret = tuple(set(ret))
+        else:
+            ret = self._get_hba_ports(sp, port_id, vport_id, port_type)
+        return ret
+
+    def get_fc_ports(self, initiator_uid=None, sp=None, port_id=None,
+                     vport_id=None):
+        return self.get_ports(initiator_uid=initiator_uid,
+                              sp=sp,
+                              port_id=port_id,
+                              vport_id=vport_id,
+                              port_type=VNXPortType.FC)
+
+    def get_iscsi_ports(self, initiator_uid=None, sp=None, port_id=None,
+                        vport_id=None):
+        return self.get_ports(initiator_uid=initiator_uid,
+                              sp=sp,
+                              port_id=port_id,
+                              vport_id=vport_id,
+                              port_type=VNXPortType.ISCSI)
+
     @property
-    def port_list(self):
-        return tuple(set(map(lambda x: x[1], self.hba_port_list)))
+    def ports(self):
+        return self.get_ports()
+
+    @property
+    def iscsi_ports(self):
+        return self.get_ports(port_type=VNXPortType.ISCSI)
+
+    @property
+    def fc_ports(self):
+        return self.get_ports(port_type=VNXPortType.FC)
 
     @property
     def initiator_uid_list(self):
@@ -111,17 +169,6 @@ class VNXStorageGroup(VNXCliResource):
             else:
                 ret.append(hba)
         return tuple(set(ret))
-
-    def get_ports(self, initiator_uid=None):
-        if initiator_uid is None:
-            ret = self.port_list
-        else:
-            ret = []
-            for hba, port in self.hba_port_list:
-                if hba == initiator_uid:
-                    ret.append(port)
-            ret = tuple(set(ret))
-        return ret
 
     _hlu_full = None
     _max_hlu = 255
@@ -263,45 +310,3 @@ class VNXStorageGroupList(VNXCliResourceList):
 
     def _get_raw_resource(self):
         return self._cli.get_sg(poll=self.poll)
-
-
-class VNXStorageGroupHBA(VNXCliResource):
-    @property
-    def sp(self):
-        return VNXSPEnum.parse(self.hba[1])
-
-    @property
-    def port_id(self):
-        return int(self.hba[2])
-
-    @property
-    def uid(self):
-        return self.hba[0]
-
-    @property
-    def vlan(self):
-        sp_port = self.sp_port
-        if sp_port is not None and 'v' in sp_port:
-            ret = int(sp_port[sp_port.find('v') + 1:])
-        else:
-            ret = None
-        return ret
-
-    @property
-    def port_type(self):
-        ret = None
-        if '.' in self.uid:
-            ret = VNXPortType.ISCSI
-        elif ':' in self.uid:
-            ret = VNXPortType.FC
-        return ret
-
-    def property_names(self):
-        ret = super(VNXStorageGroupHBA, self).property_names()
-        return ret + ['uid', 'sp', 'port_id', 'vlan', 'port_type']
-
-
-class VNXStorageGroupHBAList(VNXCliResourceList):
-    @classmethod
-    def get_resource_class(cls):
-        return VNXStorageGroupHBA

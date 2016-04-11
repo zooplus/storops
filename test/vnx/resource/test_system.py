@@ -25,7 +25,7 @@ from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
 from storops import VNXSystem
-from storops.vnx.enums import VNXLunType, VNXPortType
+from storops.vnx.enums import VNXLunType, VNXPortType, VNXSPEnum
 from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.lun import VNXLun
 
@@ -130,7 +130,7 @@ class VNXSystemTest(TestCase):
         assert_that(vnx.control_station_ip, none())
 
     @patch_cli()
-    def test_get_fc_port(self):
+    def test_get_fc_port_all(self):
         ports = self.vnx.get_fc_port()
         assert_that(ports, instance_of(VNXSPPortList))
         assert_that(len(ports), equal_to(28))
@@ -138,7 +138,22 @@ class VNXSystemTest(TestCase):
             assert_that(port.type, equal_to(VNXPortType.FC))
 
     @patch_cli()
-    def test_get_iscsi_port(self):
+    def test_get_fc_port_filtered_to_single(self):
+        ports = self.vnx.get_fc_port(sp=VNXSPEnum.SP_A, port_id=1)
+        assert_that(len(ports), equal_to(1))
+        port = ports[0]
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.port_id, equal_to(1))
+        assert_that(port.type, equal_to(VNXPortType.FC))
+
+    @patch_cli()
+    def test_get_fc_port_filtered_by_id(self):
+        ports = self.vnx.get_fc_port(port_id=1)
+        assert_that(ports, instance_of(VNXSPPortList))
+        assert_that(len(ports), equal_to(2))
+
+    @patch_cli()
+    def test_get_iscsi_port_all(self):
         ports = self.vnx.get_iscsi_port()
         assert_that(ports, instance_of(VNXConnectionPortList))
         assert_that(len(ports), equal_to(16))
@@ -146,12 +161,77 @@ class VNXSystemTest(TestCase):
             assert_that(port.type, equal_to(VNXPortType.ISCSI))
 
     @patch_cli()
-    def test_get_fcoe_port(self):
+    def test_get_iscsi_port_with_ip(self):
+        ports = self.vnx.get_iscsi_port(has_ip=True)
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(4))
+
+    @patch_cli()
+    def test_get_iscsi_port_without_ip(self):
+        ports = self.vnx.get_iscsi_port(has_ip=False)
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(12))
+
+    @patch_cli()
+    def test_get_iscsi_port_filtered_type_not_match(self):
+        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=8,
+                                        vport_id=0)
+        assert_that(len(ports), equal_to(0))
+
+    @patch_cli()
+    def test_get_iscsi_port_filtered_type_match(self):
+        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=5,
+                                        vport_id=0)
+        assert_that(len(ports), equal_to(1))
+        port = ports[0]
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.port_id, equal_to(5))
+        assert_that(port.vport_id, equal_to(0))
+
+    @patch_cli()
+    def test_get_iscsi_port_filtered_without_vport(self):
+        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10)
+        port = ports[0]
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_B))
+        assert_that(port.port_id, equal_to(10))
+        assert_that(port.vport_id, none())
+
+    @patch_cli()
+    def test_get_iscsi_port_filtered_no_vport(self):
+        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10,
+                                        vport_id=0)
+        assert_that(len(ports), equal_to(0))
+
+    @patch_cli()
+    def test_get_iscsi_port_filtered_by_vport(self):
+        ports = self.vnx.get_iscsi_port(vport_id=0)
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(4))
+
+    @patch_cli()
+    def test_get_fcoe_port_all(self):
         ports = self.vnx.get_fcoe_port()
         assert_that(ports, instance_of(VNXConnectionPortList))
         assert_that(len(ports), equal_to(4))
         for port in ports:
             assert_that(port.type, equal_to(VNXPortType.FCOE))
+
+    @patch_cli()
+    def test_get_fcoe_port_filtered_to_single(self):
+        ports = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_A, port_id=6,
+                                       vport_id=0)
+        assert_that(len(ports), equal_to(1))
+        port = ports[0]
+        assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.port_id, equal_to(6))
+        assert_that(port.vport_id, equal_to(0))
+        assert_that(port.type, equal_to(VNXPortType.FCOE))
+
+    @patch_cli()
+    def test_get_fcoe_port_filtered_by_sp(self):
+        ports = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_B)
+        assert_that(ports, instance_of(VNXConnectionPortList))
+        assert_that(len(ports), equal_to(2))
 
     @patch_cli()
     def test_remove_hba_already_removed(self):
