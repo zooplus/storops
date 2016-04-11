@@ -248,5 +248,8 @@ class VNXSystem(VNXCliResource):
     def is_fast_cache_enabled(self):
         return self._ndu_list.is_fast_cache_enabled()
 
+    def remove_hba(self, hba_uid):
+        return VNXSPPort.remove_hba(self._cli, hba_uid)
+
     def __del__(self):
         del self._cli

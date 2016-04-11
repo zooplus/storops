@@ -20,6 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
     only_contains, contains_string
 
+from storops.exception import VNXRemoveHbaNotFoundError
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from storops.vnx.enums import VNXSPEnum, VNXPortType
@@ -202,3 +203,17 @@ class VNXConnectionPortTest(TestCase):
     def test_get_port_not_found(self):
         ports = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 44)
         assert_that(len(ports), equal_to(0))
+
+    @patch_cli()
+    def test_remove_fc_hba_success(self):
+        uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00'
+        # no error raised
+        VNXSPPort.remove_hba(t_cli(), uid)
+
+    @patch_cli()
+    def test_remove_hba_already_removed(self):
+        def f():
+            uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:01'
+            VNXSPPort.remove_hba(t_cli(), uid)
+
+        assert_that(f, raises(VNXRemoveHbaNotFoundError))

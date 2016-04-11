@@ -17,7 +17,9 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, none, instance_of
+from hamcrest import assert_that, equal_to, none, instance_of, raises
+
+from storops.exception import VNXRemoveHbaNotFoundError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 
 from test.vnx.cli_mock import patch_cli, t_vnx
@@ -150,3 +152,11 @@ class VNXSystemTest(TestCase):
         assert_that(len(ports), equal_to(4))
         for port in ports:
             assert_that(port.type, equal_to(VNXPortType.FCOE))
+
+    @patch_cli()
+    def test_remove_hba_already_removed(self):
+        def f():
+            uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:01'
+            self.vnx.remove_hba(uid)
+
+        assert_that(f, raises(VNXRemoveHbaNotFoundError))

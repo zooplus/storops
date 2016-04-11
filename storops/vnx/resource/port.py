@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.exception import raise_if_err
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
@@ -78,6 +79,11 @@ class VNXSPPort(VNXCliResource):
         ret = super(VNXSPPort, self).property_names()
         ret.append('type')
         return ret
+
+    @classmethod
+    def remove_hba(cls, cli, hba_uid):
+        out = cli.remove_hba(hba_uid)
+        raise_if_err(out)
 
 
 class VNXHbaPort(VNXCliResource):

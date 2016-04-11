@@ -607,6 +607,15 @@ class VNXConsistencyGroupIsDeletingError(VNXConsistencyGroupError):
     error_code = 0x712d8801
 
 
+class VNXRemoveHbaError(VNXException):
+    pass
+
+
+@cli_exception
+class VNXRemoveHbaNotFoundError(VNXException):
+    error_message = 'The HBA UID specified is not known by the array'
+
+
 class VNXRaidGroupError(VNXException):
     pass
 
