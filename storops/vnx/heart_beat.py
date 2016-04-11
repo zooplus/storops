@@ -156,14 +156,8 @@ class NodeHeartBeat(NaviCommand):
 
     def get_alive_sp_ip(self):
         def get_sp_from_list(sp_list):
-            for s in sp_list:
-                if not s.working:
-                    r = s.ip
-                    break
-            else:
-                # both working, pick random
-                r = sp_list[0].ip
-            return r
+            ips = [sp.ip for sp in sp_list]
+            return sorted(ips)[0]
 
         available, unavailable = self._get_sp_by_category()
         if len(available) == 0:

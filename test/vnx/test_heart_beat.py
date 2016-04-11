@@ -80,11 +80,11 @@ class NodeHeartBeatTest(TestCase):
                               'no storage processor available'))
 
     @patch_cli()
-    def test_get_alive_sp_ip_not_working(self):
+    def test_get_alive_sp_ip_no_load_balance(self):
         hb = NodeHeartBeat(interval=0)
         hb.add('spa', '1.1.1.1', True, True)
         hb.add('spb', '1.1.1.2', True, False)
-        assert_that(hb.get_alive_sp_ip(), equal_to('1.1.1.2'))
+        assert_that(hb.get_alive_sp_ip(), equal_to('1.1.1.1'))
 
     @patch_cli()
     def test_update_by_ip(self):
