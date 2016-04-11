@@ -82,11 +82,26 @@ class VNXStorageGroupTest(TestCase):
                     has_item('iqn.1991-05.com.microsoft:abc.def.dev'))
 
     @patch_cli()
-    def test_hba_port_map(self):
+    def test_hba_port_list(self):
         sg = self.test_sg()
-        assert_that(len(sg.hba_port_map), equal_to(15))
+        assert_that(len(sg.hba_port_list), equal_to(15))
         assert_that(len(sg.port_list), equal_to(8))
         assert_that(len(sg.initiator_uid_list), equal_to(5))
+
+    @patch_cli()
+    def test_get_ports_by_wwn(self):
+        sg = self.test_sg()
+        wwn = '20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0'
+        ports = sg.get_ports(wwn)
+        assert_that(len(ports), equal_to(6))
+        for port in ports:
+            assert_that(port.host_initiator_list, has_item(wwn))
+
+    @patch_cli()
+    def test_get_ports_no_wwn(self):
+        sg = self.test_sg()
+        ports = sg.get_ports()
+        assert_that(len(ports), equal_to(8))
 
     @patch_cli()
     def test_attach_alu_success(self):

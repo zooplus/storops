@@ -38,7 +38,7 @@ class VNXStorageGroup(VNXCliResource):
         self._name = name
 
         self._uid = ''
-        self._hba_port_map = []
+        self._hba_port_list = []
         self._conn = None
         self._hlu_lock = Lock()
 
@@ -78,17 +78,17 @@ class VNXStorageGroup(VNXCliResource):
         return len(self.name) > 0 and len(self.uid) > 0
 
     @property
-    def hba_port_map(self):
-        if not self._hba_port_map:
-            self.hba_port_map = self.hba_sp_pairs
-        return self._hba_port_map
+    def hba_port_list(self):
+        if not self._hba_port_list:
+            self.hba_port_list = self.hba_sp_pairs
+        return self._hba_port_list
 
-    @hba_port_map.setter
-    def hba_port_map(self, hba_sp_pairs):
+    @hba_port_list.setter
+    def hba_port_list(self, hba_sp_pairs):
         def _process_cli_output(value):
             port = VNXHbaPort.from_storage_group_hba(value)
             hba = value.uid
-            self._hba_port_map.append((hba, port))
+            self._hba_port_list.append((hba, port))
 
         if hba_sp_pairs is not None:
             for item in hba_sp_pairs:
@@ -96,7 +96,7 @@ class VNXStorageGroup(VNXCliResource):
 
     @property
     def port_list(self):
-        return tuple(set(map(lambda x: x[1], self.hba_port_map)))
+        return tuple(set(map(lambda x: x[1], self.hba_port_list)))
 
     @property
     def initiator_uid_list(self):
@@ -104,7 +104,7 @@ class VNXStorageGroup(VNXCliResource):
 
     def get_initiator_uids(self, port_type=None):
         ret = []
-        for hba, port in self.hba_port_map:
+        for hba, port in self.hba_port_list:
             if port_type is not None:
                 if port.type == port_type:
                     ret.append(hba)
@@ -112,12 +112,16 @@ class VNXStorageGroup(VNXCliResource):
                 ret.append(hba)
         return tuple(set(ret))
 
-    def get_ports(self, initiator_uid):
-        ret = []
-        for hba, port in self.hba_port_map:
-            if hba == initiator_uid:
-                ret.append(port)
-        return tuple(set(ret))
+    def get_ports(self, initiator_uid=None):
+        if initiator_uid is None:
+            ret = self.port_list
+        else:
+            ret = []
+            for hba, port in self.hba_port_list:
+                if hba == initiator_uid:
+                    ret.append(port)
+            ret = tuple(set(ret))
+        return ret
 
     _hlu_full = None
     _max_hlu = 255
@@ -169,9 +173,6 @@ class VNXStorageGroup(VNXCliResource):
             if self.has_alu(alu):
                 ret = self.get_alu_hlu_map().pop(alu)
         return ret
-
-    class _HluOccupiedError(Exception):
-        pass
 
     def attach_alu(self, lun, retry_limit=None):
         def _update():
