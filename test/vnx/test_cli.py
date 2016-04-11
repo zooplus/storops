@@ -217,6 +217,14 @@ class CliClientTest(TestCase):
                 'connection -getport -all -sp a -portid 6 -vportid 0'))
 
     @extract_command
+    def test_ping_node(self):
+        cmd = self.client.ping_node('10.244.211.33', sp='a', port_id=10,
+                                    count=1)
+        assert_that(cmd,
+                    equal_to('connection -pingnode -sp a -portid 10 '
+                             '-vportid 0 -address 10.244.211.33 -count 1'))
+
+    @extract_command
     def test_create_lun_with_lun_id_pool_id(self):
         cmd = self.client.create_pool_lun(pool_id=0, lun_id=29)
         assert_that(

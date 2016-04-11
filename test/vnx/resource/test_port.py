@@ -20,7 +20,8 @@ from unittest import TestCase
 from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
     only_contains, contains_string
 
-from storops.exception import VNXRemoveHbaNotFoundError
+from storops.exception import VNXPingNodeTimeOutError, \
+    VNXRemoveHbaNotFoundError
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from storops.vnx.enums import VNXSPEnum, VNXPortType
@@ -217,3 +218,23 @@ class VNXConnectionPortTest(TestCase):
             VNXSPPort.remove_hba(t_cli(), uid)
 
         assert_that(f, raises(VNXRemoveHbaNotFoundError))
+
+    @patch_cli()
+    def test_ping_node_timeout(self):
+        def f():
+            port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 8)[0]
+            port.ping_node('10.244.211.3', count=1)
+
+        assert_that(f, raises(VNXPingNodeTimeOutError))
+
+    @patch_cli()
+    def test_ping_node_success(self):
+        port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 8)[0]
+        # success, no error raised
+        port.ping_node('10.244.211.4', count=1)
+
+    @patch_cli()
+    def test_ping_node_multiple_success(self):
+        port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 8)[0]
+        # success, no error raised
+        port.ping_node('10.244.211.5')

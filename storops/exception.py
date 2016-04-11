@@ -616,6 +616,20 @@ class VNXRemoveHbaNotFoundError(VNXException):
     error_message = 'The HBA UID specified is not known by the array'
 
 
+class VNXPingNodeError(VNXException):
+    pass
+
+
+@cli_exception
+class VNXPingNodeTimeOutError(VNXPingNodeError):
+    error_message = 'Request timed out.'
+
+
+@cli_exception
+class VNXPingNodeSuccess(VNXPingNodeError):
+    error_regex = 'TTL=\w+'
+
+
 class VNXRaidGroupError(VNXException):
     pass
 

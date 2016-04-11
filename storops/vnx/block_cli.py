@@ -721,6 +721,23 @@ class CliClient(object):
     def install_disk(self, disk_index):
         return 'cru_on_off -messner {} 1'.format(disk_index).split()
 
+    @command
+    def ping_node(self, address, sp, port_id, vport_id=None, packet_size=None,
+                  count=None, timeout=None, delay=None):
+        if vport_id is None:
+            vport_id = 0
+        cmd = ['connection', '-pingnode']
+        sp = VNXSPEnum.get_sp_index(sp)
+        cmd += text_var('-sp', sp)
+        cmd += int_var('-portid', port_id)
+        cmd += int_var('-vportid', vport_id)
+        cmd += text_var('-address', address)
+        cmd += int_var('-packetSize', packet_size)
+        cmd += int_var('-count', count)
+        cmd += int_var('-timeout', timeout)
+        cmd += int_var('-delay', delay)
+        return cmd
+
     @property
     def ip(self):
         return self._heart_beat.get_alive_sp_ip()

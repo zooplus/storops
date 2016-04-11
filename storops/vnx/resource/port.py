@@ -15,7 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.exception import raise_if_err
+from storops.exception import raise_if_err, VNXPingNodeError, \
+    VNXPingNodeSuccess
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXSPEnum, VNXPortType
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
@@ -231,3 +232,19 @@ class VNXConnectionPort(VNXCliResource):
         else:
             ret = VNXConnectionPortList(cli, sp, port_id, vport_id, port_type)
         return ret
+
+    def ping_node(self, address, packet_size=None, count=None, timeout=None,
+                  delay=None):
+        out = self._cli.ping_node(address=address,
+                                  sp=self.sp,
+                                  port_id=self.port_id,
+                                  vport_id=self.virtual_port_id,
+                                  packet_size=packet_size,
+                                  count=count,
+                                  timeout=timeout,
+                                  delay=delay)
+        try:
+            raise_if_err(out, default=VNXPingNodeError)
+        except VNXPingNodeSuccess:
+            # ping success, pass
+            pass
