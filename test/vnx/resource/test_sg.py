@@ -93,10 +93,10 @@ class VNXStorageGroupTest(TestCase):
         sg = self.test_sg()
         lun = VNXLun(name='x', cli=t_cli())
         assert_that(sg.has_alu(0), equal_to(False))
-        lun = sg.attach_alu(lun)
+        hlu = sg.attach_alu(lun)
         assert_that(sg.has_alu(0), equal_to(True))
         assert_that(sg.get_hlu(0), equal_to(1))
-        assert_that(lun.name, equal_to('File_CS0_21132_0_d7'))
+        assert_that(hlu, equal_to(1))
 
     @patch_cli()
     def test_attach_alu_already_attached(self):
