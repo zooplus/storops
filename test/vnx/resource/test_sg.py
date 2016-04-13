@@ -218,3 +218,14 @@ class VNXStorageGroupTest(TestCase):
             VNXStorageGroup.create('existed', t_cli())
 
         assert_that(f, raises(VNXStorageGroupNameInUseError, 'already in use'))
+
+    @patch_cli()
+    def test_empty_sg_property(self):
+        sg = VNXStorageGroup.get(t_cli(), 'sg1')
+        wwn = 'BB:50:E8:2F:23:01:E6:11:83:36:00:60:16:58:B3:E9'
+        assert_that(sg.name, equal_to('sg1'))
+        assert_that(sg.wwn, equal_to(wwn))
+        assert_that(len(sg.initiator_uid_list), equal_to(0))
+        assert_that(len(sg.ports), equal_to(0))
+        assert_that(len(sg.fc_ports), equal_to(0))
+        assert_that(len(sg.iscsi_ports), equal_to(0))

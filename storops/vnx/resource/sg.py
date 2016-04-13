@@ -158,7 +158,11 @@ class VNXStorageGroup(VNXCliResource):
 
     @property
     def initiator_uid_list(self):
-        return tuple(set(map(lambda x: x.uid, self.hba_sp_pairs)))
+        if self.hba_sp_pairs is not None:
+            ret = tuple(set(map(lambda x: x.uid, self.hba_sp_pairs)))
+        else:
+            ret = tuple()
+        return ret
 
     def get_initiator_uids(self, port_type=None):
         ret = []
