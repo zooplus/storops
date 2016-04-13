@@ -15,8 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import logging
 from unittest import TestCase
-
 from hamcrest import assert_that, equal_to, none, instance_of, only_contains, \
     raises
 
@@ -32,6 +32,8 @@ from test.unity.cim_mock import patch_cim
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
+
+log = logging.getLogger(__name__)
 
 
 class UnityCifsServerTest(TestCase):
@@ -150,9 +152,10 @@ class UnityCifsServerTest(TestCase):
         inst = server.cim
         assert_that(inst['name'], equal_to('nas1130'))
 
+    @patch_rest()
     def test_cifs_server(self):
         server = UnityCifsServer(_id='cifs_2', cli=t_rest())
-        server._name = 'nas1130'
+        log.debug('netbios name: {}'.format(server.netbios_name))
         return server
 
     @patch_cim()

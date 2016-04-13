@@ -43,6 +43,7 @@ def t_rest():
     return UnityClient('10.244.223.66', 'admin', 'Password123!')
 
 
+@cache
 def t_unity():
     return UnitySystem('10.244.223.66', 'admin', 'Password123!')
 
@@ -91,6 +92,7 @@ class MockRestClient(ConnectorMock):
         return response
 
     @staticmethod
+    @cache
     def read_index(folder):
         return read_test_file(folder, 'index.json')
 

@@ -75,6 +75,7 @@ class MockXmlPost(ConnectorMock):
         return tag
 
     @staticmethod
+    @cache
     def read_index(folder):
         return read_test_file(folder, 'index.xml')
 
