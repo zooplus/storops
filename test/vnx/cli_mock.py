@@ -65,11 +65,7 @@ class MockCli(ConnectorMock):
     escaped_pattern = re.compile(r"[\\/:]")
 
     flags_to_remove = {
-        '-t': 2,
-        '-user': 2,
-        '-password': 2,
-        '-scope': 2,
-        '-h': 2
+        '-t': 2
     }
 
     @classmethod
@@ -86,7 +82,19 @@ class MockCli(ConnectorMock):
         def remove_cli_binary(p):
             return p[1:]
 
+        def remove_confidential(p):
+            if p[0] == '-h':
+                p = p[2:]
+            if p[0] == '-user':
+                p = p[2:]
+            if p[0] == '-password':
+                p = p[2:]
+            if p[0] == '-scope':
+                p = p[2:]
+            return p
+
         params = remove_cli_binary(params)
+        params = remove_confidential(params)
 
         for k, v in cls.flags_to_remove.items():
             params = remove_flag(params, k, v)

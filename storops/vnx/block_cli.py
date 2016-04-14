@@ -30,7 +30,7 @@ from storops.lib.common import check_int, text_var, int_var, enum_var, \
 from storops.vnx.enums import VNXSPEnum, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, VNXCompressionRate, \
     VNXMirrorViewRecoveryPolicy, VNXMirrorViewSyncRate, VNXLunType, \
-    VNXRaidType, VNXPoolRaidType
+    VNXRaidType, VNXPoolRaidType, VNXUserScopeEnum, VNXUserRoleEnum
 from storops.vnx.heart_beat import NodeHeartBeat
 
 __author__ = 'Cedric Zhuang'
@@ -736,6 +736,39 @@ class CliClient(object):
         cmd += int_var('-count', count)
         cmd += int_var('-timeout', timeout)
         cmd += int_var('-delay', delay)
+        return cmd
+
+    @command
+    def list_user(self, name=None):
+        cmd = ['security', '-list']
+        cmd += text_var('-user', name)
+        cmd.append('-type')
+        return cmd
+
+    @command
+    def add_user(self, name, password, scope=None, role=None):
+        if scope is None:
+            scope = VNXUserScopeEnum.GLOBAL
+        if role is None:
+            role = VNXUserRoleEnum.ADMIN
+
+        cmd = ['security', '-adduser']
+        cmd += text_var('-user', name)
+        cmd += text_var('-password', password)
+        cmd += enum_var('-scope', scope, VNXUserScopeEnum)
+        cmd += enum_var('-role', role, VNXUserRoleEnum)
+        cmd.append('-o')
+        return cmd
+
+    @command
+    def remove_user(self, name, scope=None):
+        if scope is None:
+            scope = VNXUserScopeEnum.GLOBAL
+
+        cmd = ['security', '-rmuser']
+        cmd += text_var('-user', name)
+        cmd += enum_var('-scope', scope, VNXUserScopeEnum)
+        cmd.append('-o')
         return cmd
 
     @property

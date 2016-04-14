@@ -667,6 +667,20 @@ class VNXPingNodeSuccess(VNXPingNodeError):
     error_regex = 'TTL=\w+'
 
 
+class VNXSecurityException(VNXException):
+    pass
+
+
+@cli_exception
+class VNXUserNameInUseError(VNXSecurityException):
+    error_message = 'The specified user already exists.'
+
+
+@cli_exception
+class VNXUserNotFoundError(VNXSecurityException):
+    error_message = 'User does not exist'
+
+
 class VNXRaidGroupError(VNXException):
     pass
 

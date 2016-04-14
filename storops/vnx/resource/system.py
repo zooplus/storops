@@ -21,6 +21,7 @@ from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.disk import VNXDisk
+from storops.vnx.resource.security import VNXBlockUser
 from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
     VNXNetworkAdmin, VNXDomainNodeList
 from storops.vnx.resource.lun import VNXLun
@@ -263,6 +264,12 @@ class VNXSystem(VNXCliResource):
 
     def remove_hba(self, hba_uid):
         return VNXSPPort.remove_hba(self._cli, hba_uid)
+
+    def get_block_user(self, name=None):
+        return VNXBlockUser.get(cli=self._cli, name=name)
+
+    def create_block_user(self, name, password, scope=None, role=None):
+        return VNXBlockUser.create(self._cli, name, password, scope, role)
 
     def __del__(self):
         del self._cli

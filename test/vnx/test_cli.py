@@ -23,7 +23,7 @@ from test.vnx.cli_mock import patch_cli, extract_command, MockCli
 from storops.exception import VNXSystemDownError
 from storops.vnx.block_cli import CliClient
 from storops.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
-    VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType
+    VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType, VNXUserRoleEnum
 
 __author__ = 'Cedric Zhuang'
 
@@ -726,3 +726,24 @@ class CliClientTest(TestCase):
     def test_sp_network_status(self):
         cmd = self.client.sp_network_status(VNXSPEnum.SP_A)
         assert_that(cmd, equal_to('networkadmin -get -sp a -all'))
+
+    @extract_command
+    def test_list_all_users(self):
+        cmd = self.client.list_user()
+        assert_that(cmd, equal_to('security -list -type'))
+
+    @extract_command
+    def test_list_specified_user(self):
+        cmd = self.client.list_user(name='a')
+        assert_that(cmd, equal_to('security -list -user a -type'))
+
+    @extract_command
+    def test_add_user(self):
+        cmd = self.client.add_user('s', 'd', role=VNXUserRoleEnum.OPERATOR)
+        assert_that(cmd, equal_to('security -adduser -user s -password d '
+                                  '-scope global -role operator -o'))
+
+    @extract_command
+    def test_remove_user(self):
+        cmd = self.client.remove_user('s')
+        assert_that(cmd, equal_to('security -rmuser -user s -scope global -o'))

@@ -285,3 +285,22 @@ class VNXAccessLevel(VNXEnum):
 class VNXShareType(VNXEnum):
     NFS = 'nfs'
     CIFS = 'cifs'
+
+
+class VNXUserScopeEnum(VNXEnum):
+    GLOBAL = 'global'
+    LOCAL = 'local'
+
+
+class VNXUserRoleEnum(VNXEnum):
+    ADMIN = 'administrator'
+    STORAGE_ADMIN = 'storageadmin'
+    OPERATOR = 'operator'
+    SECURITY_ADMIN = 'securityadministrator'
+    DATA_PROTECTION = 'dataprotection'
+    LOCAL_DATA_PROTECTION = 'localdataprotection'
+    DATA_RECOVERY = 'datarecovery'
+    SAN_ADMIN = 'sanadmin'
+    NETWORK_ADMIN = 'networkadmin'
+    NAS_ADMIN = 'nasadmin'
+    VM_ADMIN = 'vmadmin'

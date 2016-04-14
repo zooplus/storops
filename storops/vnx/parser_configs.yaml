@@ -606,6 +606,19 @@ VNXRaidGroup:
       converter: to_raid_type
 
 
+VNXBlockUser:
+  data_src: cli
+  properties:
+    - label: "Username:"
+      is_index: True
+      key: name
+    - label: "Role:"
+      converter: VNXUserRoleEnum
+    - label: "Scope:"
+      converter: VNXUserScopeEnum
+    - label: "Type:"
+
+
 VNXCifsServer:
   data_src: xmlapi
   properties:

@@ -19,13 +19,14 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, instance_of, raises
 
-from storops.exception import VNXRemoveHbaNotFoundError
+from storops.exception import VNXRemoveHbaNotFoundError, VNXUserNameInUseError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
 from storops import VNXSystem
-from storops.vnx.enums import VNXLunType, VNXPortType, VNXSPEnum
+from storops.vnx.enums import VNXLunType, VNXPortType, VNXSPEnum, \
+    VNXUserRoleEnum
 from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.lun import VNXLun
 
@@ -240,3 +241,15 @@ class VNXSystemTest(TestCase):
             self.vnx.remove_hba(uid)
 
         assert_that(f, raises(VNXRemoveHbaNotFoundError))
+
+    @patch_cli()
+    def test_get_block_users(self):
+        users = self.vnx.get_block_user()
+        assert_that(len(users), equal_to(2))
+
+    @patch_cli()
+    def test_create_user_existed(self):
+        def f():
+            self.vnx.create_block_user('b', 'b', role=VNXUserRoleEnum.OPERATOR)
+
+        assert_that(f, raises(VNXUserNameInUseError, 'failed'))
