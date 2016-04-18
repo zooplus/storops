@@ -362,6 +362,10 @@ class UnityImportCifsUserError(UnityException):
     message = 'failed to import cifs user.'
 
 
+class UnityShareTypeNotSupportAccessControlError(UnityException):
+    message = 'share type does not support access control.'
+
+
 class UnityCreateCifsUserError(UnityImportCifsUserError):
     message = 'failed to import cifs user.  please make sure this user exists.'
 

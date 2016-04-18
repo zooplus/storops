@@ -17,7 +17,8 @@ from __future__ import unicode_literals
 
 import logging
 
-from storops.exception import UnityHostNotFoundException
+from storops.exception import UnityShareTypeNotSupportAccessControlError, \
+    UnityHostNotFoundException
 from storops.lib.common import instance_cache
 from storops.unity.enums import NFSShareDefaultAccessEnum, NFSTypeEnum, \
     NFSShareSecurityEnum
@@ -172,6 +173,8 @@ class UnityNfsShare(UnityResource):
 
     @property
     def host_config(self):
+        # host config must be up-to-date for each call!
+        self.update()
         return UnityNfsHostConfig(nfs_share=self)
 
     def allow_root_access(self, hosts, force_create_host=False):
@@ -225,11 +228,6 @@ class UnityNfsShare(UnityResource):
         read_write_hosts = clz.get_list(self._cli, read_write_hosts)
         root_access_hosts = clz.get_list(self._cli, root_access_hosts)
 
-        sr = self.storage_resource
-        if sr is None:
-            raise ValueError('storage resource for share {} not found.'
-                             .format(self.name))
-
         nfs_share_param = self._cli.make_body(
             allow_empty=True,
             defaultAccess=default_access,
@@ -238,19 +236,42 @@ class UnityNfsShare(UnityResource):
             readOnlyHosts=read_only_hosts,
             readWriteHosts=read_write_hosts,
             rootAccessHosts=root_access_hosts)
+
         if nfs_share_param:
-            nfs_share = self._cli.make_body(
-                allow_empty=True,
-                nfsShare=self,
-                nfsShareParameters=nfs_share_param)
-            param = self._cli.make_body(
-                allow_empty=True,
-                nfsShareModify=[nfs_share])
-            resp = sr.modify_fs(**param)
-            resp.raise_if_err()
+            # different api for different type of share
+            if self.type == NFSTypeEnum.NFS_SHARE:
+                resp = self._modify_fs_share(nfs_share_param)
+            elif self.type == NFSTypeEnum.NFS_SNAPSHOT:
+                resp = self._modify_snap_share(default_access,
+                                               min_security,
+                                               nfs_share_param)
+            else:
+                raise UnityShareTypeNotSupportAccessControlError()
         else:
             resp = RestResponse('', self._cli)
+        resp.raise_if_err()
         return resp
+
+    def _modify_snap_share(self, default_access, min_security,
+                           nfs_share_param):
+        return self.action('modify',
+                           defaultAccess=default_access,
+                           minSecurity=min_security,
+                           **nfs_share_param)
+
+    def _modify_fs_share(self, nfs_share_param):
+        sr = self.storage_resource
+        if sr is None:
+            raise ValueError('storage resource for share {} not found.'
+                             .format(self.name))
+        nfs_share = self._cli.make_body(
+            allow_empty=True,
+            nfsShare=self,
+            nfsShareParameters=nfs_share_param)
+        param = self._cli.make_body(
+            allow_empty=True,
+            nfsShareModify=[nfs_share])
+        return sr.modify_fs(**param)
 
     @property
     @instance_cache

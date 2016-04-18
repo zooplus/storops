@@ -29,6 +29,14 @@
       "response": "NFSShare_11.json"
     },
     {
+      "url": "/api/instances/nfsShare/NFSShare_30?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_30.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_31?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_31.json"
+    },
+    {
       "url": "/api/types/nfsShare/instances?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
       "response": "all.json"
     },
@@ -61,6 +69,46 @@
     {
       "url": "/api/instances/nfsShare/NFSShare_11?compact=True",
       "body": {},
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_30/action/modify?compact=True",
+      "body": {
+        "rootAccessHosts": [
+          {
+            "id": "Host_11"
+          }
+        ],
+        "readOnlyHosts": [
+          {
+            "id": "Host_11"
+          }
+        ]
+      },
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_30/action/modify?compact=True",
+      "body": {
+        "readWriteHosts": [
+          {
+            "id": "Host_19"
+          }
+        ],
+        "rootAccessHosts": [
+          {
+            "id": "Host_19"
+          }
+        ]
+      },
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_31/action/modify?compact=True",
+      "body": {
+        "readWriteHosts": [],
+        "readOnlyHosts": []
+      },
       "response": "success.json"
     }
   ]

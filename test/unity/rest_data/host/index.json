@@ -38,6 +38,14 @@
       "response": "create_host_15.json"
     },
     {
+      "url": "/api/types/host/instances?compact=True",
+      "body": {
+        "type": 1,
+        "name": "2.2.2.2"
+      },
+      "response": "create_host_19.json"
+    },
+    {
       "url": "/api/instances/host/Host_11?compact=True",
       "response": "empty.json"
     },

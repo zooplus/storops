@@ -1,0 +1,42 @@
+{
+  "content": {
+    "id": "NFSShare_31",
+    "type": 3,
+    "role": 0,
+    "defaultAccess": 1,
+    "minSecurity": 0,
+    "instanceId": "root/emc:EMC_UEM_NFSShareLeaf%InstanceID=NFSShare_31",
+    "name": "esa_nfs1_snap2",
+    "path": "/",
+    "exportPaths": [
+      "10.244.220.120:/esa_nfs1_snap2"
+    ],
+    "description": "",
+    "creationTime": "2016-04-18T05:47:09.622Z",
+    "modificationTime": "2016-04-18T08:30:56.331Z",
+    "filesystem": {
+      "id": "fs_10"
+    },
+    "snap": {
+      "id": "171798691969"
+    },
+    "readOnlyHosts": [
+      {
+        "id": "Host_11"
+      }
+    ],
+    "readWriteHosts": [
+      {
+        "id": "Host_9"
+      }
+    ],
+    "hostAccesses": [
+      {
+        "id": "HostShare_11"
+      },
+      {
+        "id": "HostShare_9"
+      }
+    ]
+  }
+}

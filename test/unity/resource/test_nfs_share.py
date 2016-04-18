@@ -175,6 +175,24 @@ class UnityNfsShareTest(TestCase):
         resp = share.clear_access()
         assert_that(resp.is_ok(), equal_to(True))
 
+    @patch_rest()
+    def test_add_read_only_snap_share(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_30')
+        resp = share.allow_read_only_access('1.1.1.1', True)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_add_read_write_snap_share(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_30')
+        resp = share.allow_read_write_access('2.2.2.2', True)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_remove_access_snap_share(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_31')
+        resp = share.remove_access(['1.1.1.1', '1.1.1.3'])
+        assert_that(resp.is_ok(), equal_to(True))
+
 
 class UnityNfsHostConfigTest(TestCase):
     def test_add_ro(self):

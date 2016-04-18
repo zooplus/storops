@@ -83,7 +83,7 @@ class VNXSPEnum(VNXEnum):
                 ret = item
                 break
         else:
-            log.warn('cannot parse "{}" to a vnx sp.'.format(value))
+            log.info('cannot parse "{}" to a vnx sp.'.format(value))
         return ret
 
     @classmethod
