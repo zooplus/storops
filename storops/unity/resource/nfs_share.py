@@ -17,6 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
+from storops.exception import UnityHostNotFoundException
 from storops.lib.common import instance_cache
 from storops.unity.enums import NFSShareDefaultAccessEnum, NFSTypeEnum, \
     NFSShareSecurityEnum
@@ -24,6 +25,7 @@ import storops.unity.resource.filesystem
 import storops.unity.resource.snap
 from storops.unity.resource import UnityResource, UnityResourceList
 import storops.unity.resource.host
+from storops.unity.resp import RestResponse
 
 __author__ = 'Jay Xu'
 
@@ -164,6 +166,8 @@ class UnityNfsShare(UnityResource):
             host = host_clz.get_host(self._cli, item, force_create_host)
             if host is not None:
                 ret.append(host)
+        if hosts and len(ret) == 0:
+            raise UnityHostNotFoundException()
         return ret
 
     @property
@@ -234,15 +238,18 @@ class UnityNfsShare(UnityResource):
             readOnlyHosts=read_only_hosts,
             readWriteHosts=read_write_hosts,
             rootAccessHosts=root_access_hosts)
-        nfs_share = self._cli.make_body(
-            allow_empty=True,
-            nfsShare=self,
-            nfsShareParameters=nfs_share_param)
-        param = self._cli.make_body(
-            allow_empty=True,
-            nfsShareModify=[nfs_share])
-        resp = sr.modify_fs(**param)
-        resp.raise_if_err()
+        if nfs_share_param:
+            nfs_share = self._cli.make_body(
+                allow_empty=True,
+                nfsShare=self,
+                nfsShareParameters=nfs_share_param)
+            param = self._cli.make_body(
+                allow_empty=True,
+                nfsShareModify=[nfs_share])
+            resp = sr.modify_fs(**param)
+            resp.raise_if_err()
+        else:
+            resp = RestResponse('', self._cli)
         return resp
 
     @property

@@ -428,6 +428,20 @@
         ]
       },
       "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/storageResource/res_24/action/modifyFilesystem?compact=True",
+      "body": {
+        "nfsShareModify": [
+          {
+            "nfsShare": {
+              "id": "NFSShare_4"
+            },
+            "nfsShareParameters": {}
+          }
+        ]
+      },
+      "response": "nfsShareParameters_empty.json"
     }
   ]
 }

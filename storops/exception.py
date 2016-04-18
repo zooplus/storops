@@ -366,6 +366,10 @@ class UnityCreateCifsUserError(UnityImportCifsUserError):
     message = 'failed to import cifs user.  please make sure this user exists.'
 
 
+class UnityHostNotFoundException(UnityException):
+    message = 'specified host not found.'
+
+
 class NaviseccliNotAvailableError(VNXException):
     message = ("naviseccli not found.  please make sure it's installed"
                " and available in path.")

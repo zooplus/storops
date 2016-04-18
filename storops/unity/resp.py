@@ -37,7 +37,7 @@ class RestResponse(object):
         else:
             self.response = None
             self.body = inputs
-        if self.body is None:
+        if not self.body:
             self.body = {}
         self._cli = cli
 

@@ -20,7 +20,8 @@ from unittest import TestCase
 from hamcrest import equal_to, assert_that, only_contains, instance_of, \
     raises, none
 
-from storops.exception import UnityException, UnityNfsShareNameExistedError
+from storops.exception import UnityException, UnityNfsShareNameExistedError, \
+    UnityHostNotFoundException
 from storops.unity.enums import NFSTypeEnum, NFSShareRoleEnum, \
     NFSShareDefaultAccessEnum, NFSShareSecurityEnum
 from storops.unity.resource.filesystem import UnityFileSystem
@@ -149,9 +150,23 @@ class UnityNfsShareTest(TestCase):
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_access(self):
+    def test_remove_access_success(self):
         share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
         resp = share.remove_access(['Host_1', 'Host_14', 'Host_15'])
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_remove_access_ip_not_found(self):
+        def f():
+            share = UnityNfsShare(cli=t_rest(), _id='NFSShare_7')
+            share.remove_access(['9.9.9.9'])
+
+        assert_that(f, raises(UnityHostNotFoundException, 'not found'))
+
+    @patch_rest()
+    def test_remove_access_host_not_found(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_4')
+        resp = share.remove_access(['Host_99'])
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()

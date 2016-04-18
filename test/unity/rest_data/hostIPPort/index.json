@@ -33,6 +33,10 @@
       "response": "filter_1.1.1.1.json"
     },
     {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"9.9.9.9\"",
+      "response": "host_not_found.json"
+    },
+    {
       "url": "/api/types/hostIPPort/instances?compact=True",
       "body": {
         "host": {
