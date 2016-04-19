@@ -18,14 +18,15 @@ from __future__ import unicode_literals
 from setuptools import setup, find_packages
 import io
 import os
+import re
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.2.1'
-
 
 def version():
-    return __version__
+    desc = get_long_description()
+    ret = re.findall(r'VERSION: (.*)', desc)[0]
+    return ret.strip()
 
 
 def here(filename=None):
@@ -55,13 +56,8 @@ def get_description():
 
 
 def get_long_description():
-    filename = 'README.md'
-    try:
-        import pypandoc
-        ret = pypandoc.convert(filename, 'rst')
-    except ImportError:
-        ret = read(filename)
-    return ret
+    filename = 'README.rst'
+    return read(filename)
 
 
 setup(
