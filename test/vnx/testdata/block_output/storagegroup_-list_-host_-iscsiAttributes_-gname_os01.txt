@@ -1,0 +1,8 @@
+Storage Group Name:    ops01
+Storage Group UID:     62:B7:FA:1E:6D:FC:E5:11:A7:65:EF:58:73:80:7E:17
+HBA/SP Pairs:
+
+  HBA UID                                          SP Name     SPPort
+  -------                                          -------     ------
+  iqn.1993-08.org.debian:01:95bbe389e025            SP A         4
+Shareable:             YES

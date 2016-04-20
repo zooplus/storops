@@ -1,0 +1,9 @@
+Username:  sysadmin
+Role:      administrator
+Scope:     global
+Type:      system
+
+Username:  a
+Role:      administrator
+Scope:     global
+Type:      user

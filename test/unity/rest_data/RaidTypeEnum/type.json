@@ -1,0 +1,64 @@
+{
+  "content": {
+    "name": "RaidTypeEnum",
+    "type": "Integer",
+    "description": "",
+    "documentation": "https://10.244.223.66/apidocs/enumerations.html#bookmark_RaidTypeEnum",
+    "attributes": [
+      {
+        "name": "None",
+        "description": "",
+        "initialValue": 0,
+        "displayValue": "None"
+      },
+      {
+        "name": "RAID5",
+        "description": "RAID5 has the only one parity disk. It provides best performance and space efficiency. Only one disk failure allows avoid data loss so the RAID5 is valnurable to double disk fault. Most preffred stripes 4+1 and 8+1. ",
+        "initialValue": 1,
+        "displayValue": "RAID 5"
+      },
+      {
+        "name": "RAID0",
+        "description": "RAID0 is a stripping RAID. No parity or mirroring protection used. ",
+        "initialValue": 2,
+        "displayValue": "RAID 0"
+      },
+      {
+        "name": "RAID1",
+        "description": "RAID1 provides mirroring protection. It used only to create storage objects for FAST Cache. ",
+        "initialValue": 3,
+        "displayValue": "RAID 1"
+      },
+      {
+        "name": "RAID3",
+        "description": "RAID3 is not used in the storage system. ",
+        "initialValue": 4,
+        "displayValue": "RAID 3"
+      },
+      {
+        "name": "RAID10",
+        "description": "RAID1/0 is mixture of stripping and mirroring. It has number of parity disks equals to half of disks in the RAID group. The best for heavy transactional workloads with random writes. Most preffered stripes 4+4. ",
+        "initialValue": 7,
+        "displayValue": "RAID 1/0"
+      },
+      {
+        "name": "RAID6",
+        "description": "RAID6 used two disks for parity, it's mostly used with NL-SAS disks and read prevailed workloads, for archives and backups. Two disks in the RAID group may fail simultaneosly without data loss. Most preffered stripes 8+2 and 14+2. ",
+        "initialValue": 10,
+        "displayValue": "RAID 6"
+      },
+      {
+        "name": "Mixed",
+        "description": "(Applies to pool objects only.) Indicates that RAID groups in a pool have different RAID levels. Do not use this value in Create or Modify requests. ",
+        "initialValue": 12,
+        "displayValue": "Mixed"
+      },
+      {
+        "name": "Automatic",
+        "description": "Automatic is valid value for create/modify requests. Indicates that the default RAID level will be used in pool's Create and Modify requests for the specified TierType. E.g. for SAS disk type (performance tier) RAID5, for NL-SAS disk type (capacity tier) RAID6. You can obtain the default RAID levels by querying the storageTier objects. ",
+        "initialValue": 48879,
+        "displayValue": "Automatic"
+      }
+    ]
+  }
+}

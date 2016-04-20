@@ -1,0 +1,124 @@
+{
+  "@base": "https://10.244.223.66/api/types/ipPort/instances?fields=cascadeNames,id,instanceId,isLinkUp,linuxDeviceName,macAddress,name,shortName,storageProcessor.id&per_page=2000&compact=true",
+  "updated": "2016-03-16T06:27:56.121Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "spa_eth2",
+        "instanceId": "root/emc:EMC_UEM_EthernetPortLeaf%Tag=03:00:00:00",
+        "name": "SP A Ethernet Port 2",
+        "shortName": "Ethernet Port 2",
+        "linuxDeviceName": "eth2",
+        "macAddress": "00:60:16:5C:08:E1",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spa"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spa_eth3",
+        "instanceId": "root/emc:EMC_UEM_EthernetPortLeaf%Tag=03:00:00:01",
+        "name": "SP A Ethernet Port 3",
+        "shortName": "Ethernet Port 3",
+        "linuxDeviceName": "eth3",
+        "macAddress": "00:60:16:5C:08:E0",
+        "isLinkUp": false,
+        "storageProcessor": {
+          "id": "spa"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spa_mgmt",
+        "instanceId": "root/emc:EMC_UEM_ManagementPortLeaf%Tag=00:00:00:00",
+        "name": "SP A Management Port",
+        "shortName": "Management Port",
+        "linuxDeviceName": "mgmt_vdev",
+        "macAddress": "08:00:1B:FF:EA:CD",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spa"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spa_srm",
+        "instanceId": "root/emc:EMC_UEM_ManagementPortLeaf%Tag=00:00:00:FF",
+        "name": "SP A Sync Replication Management Port",
+        "shortName": "Sync Replication Management Port",
+        "linuxDeviceName": "srm",
+        "macAddress": "C6:0C:0C:3A:68:FD",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spa"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spb_eth2",
+        "instanceId": "root/emc:EMC_UEM_EthernetPortLeaf%Tag=03:00:01:00",
+        "name": "SP B Ethernet Port 2",
+        "shortName": "Ethernet Port 2",
+        "linuxDeviceName": "eth2",
+        "macAddress": "00:60:16:5C:0B:8F",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spb"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spb_eth3",
+        "instanceId": "root/emc:EMC_UEM_EthernetPortLeaf%Tag=03:00:01:01",
+        "name": "SP B Ethernet Port 3",
+        "shortName": "Ethernet Port 3",
+        "linuxDeviceName": "eth3",
+        "macAddress": "00:60:16:5C:0B:8E",
+        "isLinkUp": false,
+        "storageProcessor": {
+          "id": "spb"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spb_mgmt",
+        "instanceId": "root/emc:EMC_UEM_ManagementPortLeaf%Tag=00:00:01:00",
+        "name": "SP B Management Port",
+        "shortName": "Management Port",
+        "linuxDeviceName": "mgmt",
+        "macAddress": "00:00:00:00:00:00",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spb"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "spb_srm",
+        "instanceId": "root/emc:EMC_UEM_ManagementPortLeaf%Tag=00:00:01:FF",
+        "name": "SP B Sync Replication Management Port",
+        "shortName": "Sync Replication Management Port",
+        "linuxDeviceName": "srm",
+        "macAddress": "02:F5:2D:57:2E:2E",
+        "isLinkUp": true,
+        "storageProcessor": {
+          "id": "spb"
+        }
+      }
+    }
+  ]
+}

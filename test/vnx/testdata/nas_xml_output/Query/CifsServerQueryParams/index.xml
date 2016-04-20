@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="get_cifs_server_all.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_by_mover_1.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams>
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                    </CifsServerQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_cifs.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams name="CIFS"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_cifs_s8.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams name="S8"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_not_found.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams name="NOT_FOUND"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_by_mover_nothing.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams>
+                        <MoverOrVdm mover="1" moverIdIsVdm="true"/>
+                    </CifsServerQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_cifs_test.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams name="TEST"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_cifs_s2.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <CifsServerQueryParams name="S2"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

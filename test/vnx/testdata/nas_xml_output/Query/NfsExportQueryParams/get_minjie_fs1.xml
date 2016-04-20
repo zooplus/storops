@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <NfsExport readOnly="false" fileSystem="236" mover="1" path="/minjie_fs1">
+            <RootHosts>
+                <li>10.244.23.101</li>
+            </RootHosts>
+        </NfsExport>
+    </Response>
+</ResponsePacket>

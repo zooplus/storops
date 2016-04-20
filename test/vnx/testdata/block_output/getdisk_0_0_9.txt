@@ -1,0 +1,40 @@
+Bus 0 Enclosure 0  Disk 9
+Vendor Id:               HITACHI
+Product Id:              HUC10906 CLAR600
+Product Revision:        C600
+Lun:                     Unbound
+Type:                    N/A
+State:                   Enabled
+Hot Spare:               N/A
+Prct Rebuilt:            Unbound
+Prct Bound:              Unbound
+Serial Number:           W7H59L3G
+Sectors:                 N/A
+Capacity:                549691
+Private:                 Unbound
+Bind Signature:          N/A, 0, 9
+Hard Read Errors:        0
+Hard Write Errors:       0
+Soft Read Errors:        0
+Soft Write Errors:       0
+Read Retries:     N/A
+Write Retries:    N/A
+Remapped Sectors:        N/A
+Number of Reads:         8243236
+Number of Writes:        12962
+Number of Luns:          0
+Raid Group ID:           N/A
+Clariion Part Number:    DG118033213
+Request Service Time:    N/A
+Read Requests:           8243236
+Write Requests:          12962
+Kbytes Read:             1987902639
+Kbytes Written:          452534
+Stripe Boundary Crossing: None
+Drive Type:              SAS
+Clariion TLA Part Number:005050344PWR
+User Capacity:           0
+Idle Ticks:              3606418262
+Busy Ticks:              438210914
+Current Speed: 6Gbps
+Maximum Speed: 6Gbps

@@ -1,0 +1,21 @@
+Storage Processor:                  SP B
+Storage Processor Network Name:     vnx2_1_53
+
+Port ID:                            0
+Management Port Settings:
+Link Status:                        Link-Up
+Current Speed:                      1000Mbps/full duplex
+Requested Speed:                    Auto
+Auto-Negotiate:                     YES
+Capable Speeds:                     10Mbps half/full duplex
+                                    100Mbps half/full duplex
+                                    1000Mbps full duplex
+                                    Auto
+
+Virtual Port ID:                    0
+VLAN ID:                            Disabled
+Storage Processor IP Mode:          Manual
+Storage Processor IP Address:       192.168.1.53
+Storage Processor Subnet Mask:      255.255.255.0
+Storage Processor Gateway Address:  192.168.1.1
+Storage Processor IPv6 Mode:                Disabled

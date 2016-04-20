@@ -1,0 +1,219 @@
+{
+  "@base": "https://10.244.223.66/api/types/filesystem/instances?fields=accessPolicy,backendId,cifsNotifyOnChangeDirDepth,cifsNumUsedFiles,creationTime,description,format,health,hostIOSize,id,instanceId,isCIFSNotifyOnAccessEnabled,isCIFSNotifyOnWriteEnabled,isCIFSOpLocksEnabled,isCIFSSyncWritesEnabled,isReadOnly,isSMBCA,isThinEnabled,lockingPolicy,metadataSize,metadataSizeAllocated,modificationTime,name,oid,operationalStatus,perTierSizeUsed,poolFullPolicy,renamePolicy,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapsSize,snapsSizeAllocated,supportedProtocols,tieringPolicy,tieringPolicy,type,nasServer.id,nfsShare.id,storageResource.id,cifsShare.id,pool.id&per_page=2000&compact=true",
+  "updated": "2016-03-15T16:52:07.714Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "fs_1",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "tieringPolicy": 0,
+        "supportedProtocols": 0,
+        "accessPolicy": 1,
+        "renamePolicy": 0,
+        "lockingPolicy": 0,
+        "format": 2,
+        "hostIOSize": 8192,
+        "poolFullPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_FileSystemLeaf%InstanceID=fs_1",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_APP_FS_OK"
+          ],
+          "descriptions": [
+            "This storage resource is operating normally. No action is required."
+          ]
+        },
+        "name": "esa_nfs1",
+        "description": "",
+        "creationTime": "2016-03-02T02:39:22.315Z",
+        "modificationTime": "2016-03-02T02:39:22.320Z",
+        "sizeTotal": 5368709120,
+        "sizeUsed": 2440314880,
+        "sizeAllocated": 3221225472,
+        "isReadOnly": false,
+        "isThinEnabled": true,
+        "isCIFSSyncWritesEnabled": false,
+        "isCIFSOpLocksEnabled": true,
+        "isCIFSNotifyOnWriteEnabled": false,
+        "isCIFSNotifyOnAccessEnabled": false,
+        "cifsNotifyOnChangeDirDepth": 512,
+        "cifsNumUsedFiles": 0,
+        "oid": 8589934601,
+        "backendId": "171798691845",
+        "metadataSize": 6979321856,
+        "metadataSizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "snapsSize": 5368709120,
+        "snapsSizeAllocated": 0,
+        "snapCount": 1,
+        "isSMBCA": false,
+        "storageResource": {
+          "id": "res_3"
+        },
+        "pool": {
+          "id": "pool_1"
+        },
+        "nasServer": {
+          "id": "nas_1"
+        },
+        "nfsShare": [
+          {
+            "id": "NFSShare_1"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "fs_2",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "tieringPolicy": 0,
+        "supportedProtocols": 1,
+        "accessPolicy": 2,
+        "renamePolicy": 0,
+        "lockingPolicy": 0,
+        "format": 2,
+        "hostIOSize": 8192,
+        "poolFullPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_FileSystemLeaf%InstanceID=fs_2",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_APP_FS_OK"
+          ],
+          "descriptions": [
+            "This storage resource is operating normally. No action is required."
+          ]
+        },
+        "name": "esa_cifs1",
+        "description": "",
+        "creationTime": "2016-03-02T02:43:33.495Z",
+        "modificationTime": "2016-03-02T02:43:33.496Z",
+        "sizeTotal": 5368709120,
+        "sizeUsed": 1642971136,
+        "sizeAllocated": 3221225472,
+        "isReadOnly": false,
+        "isThinEnabled": true,
+        "isCIFSSyncWritesEnabled": false,
+        "isCIFSOpLocksEnabled": true,
+        "isCIFSNotifyOnWriteEnabled": false,
+        "isCIFSNotifyOnAccessEnabled": false,
+        "cifsNotifyOnChangeDirDepth": 512,
+        "cifsNumUsedFiles": 0,
+        "oid": 8589934602,
+        "backendId": "171798691846",
+        "metadataSize": 6979321856,
+        "metadataSizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "snapsSize": 5368709120,
+        "snapsSizeAllocated": 0,
+        "snapCount": 1,
+        "isSMBCA": false,
+        "storageResource": {
+          "id": "res_4"
+        },
+        "pool": {
+          "id": "pool_1"
+        },
+        "nasServer": {
+          "id": "nas_1"
+        },
+        "cifsShare": [
+          {
+            "id": "SMBShare_1"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "id": "fs_3",
+        "operationalStatus": [
+          2
+        ],
+        "type": 1,
+        "tieringPolicy": 0,
+        "supportedProtocols": 0,
+        "accessPolicy": 1,
+        "renamePolicy": 0,
+        "lockingPolicy": 0,
+        "format": 2,
+        "hostIOSize": 8192,
+        "poolFullPolicy": 0,
+        "instanceId": "root/emc:EMC_UEM_FileSystemLeaf%InstanceID=fs_3",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_APP_FS_OK"
+          ],
+          "descriptions": [
+            "This storage resource is operating normally. No action is required."
+          ]
+        },
+        "name": "fs_demo",
+        "description": "",
+        "creationTime": "2016-03-08T06:35:12.018Z",
+        "modificationTime": "2016-03-08T06:35:12.020Z",
+        "sizeTotal": 107374182400,
+        "sizeUsed": 1620303872,
+        "sizeAllocated": 3221225472,
+        "isReadOnly": false,
+        "isThinEnabled": true,
+        "isCIFSSyncWritesEnabled": false,
+        "isCIFSOpLocksEnabled": true,
+        "isCIFSNotifyOnWriteEnabled": false,
+        "isCIFSNotifyOnAccessEnabled": false,
+        "cifsNotifyOnChangeDirDepth": 512,
+        "cifsNumUsedFiles": 0,
+        "oid": 8589934609,
+        "backendId": "171798691849",
+        "metadataSize": 5100273664,
+        "metadataSizeAllocated": 3221225472,
+        "perTierSizeUsed": [
+          6442450944,
+          0,
+          0
+        ],
+        "snapsSize": 0,
+        "snapsSizeAllocated": 0,
+        "snapCount": 0,
+        "isSMBCA": false,
+        "storageResource": {
+          "id": "res_8"
+        },
+        "pool": {
+          "id": "pool_1"
+        },
+        "nasServer": {
+          "id": "nas_1"
+        },
+        "nfsShare": [
+          {
+            "id": "NFSShare_2"
+          }
+        ]
+      }
+    }
+  ]
+}

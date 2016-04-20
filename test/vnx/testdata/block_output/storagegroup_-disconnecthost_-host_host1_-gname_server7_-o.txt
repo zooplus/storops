@@ -1,0 +1,2 @@
+Error: storagegroup command failed
+The specified host is not currently connected to the storage group server7

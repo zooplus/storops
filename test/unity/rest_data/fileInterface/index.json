@@ -1,0 +1,70 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/fileInterface?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/fileInterface/if_16?compact=True&fields=gateway,health,id,instanceId,ipAddress,ipPort,ipProtocolVersion,isDisabled,isPreferred,isSystem,macAddress,name,nasServer,netmask,replicationPolicy,role,sourceParameters,v6PrefixLength,vlanId",
+      "response": "if_16.json"
+    },
+    {
+      "url": "/api/instances/fileInterface/if_20?compact=True&fields=gateway,health,id,instanceId,ipAddress,ipPort,ipProtocolVersion,isDisabled,isPreferred,isSystem,macAddress,name,nasServer,netmask,replicationPolicy,role,sourceParameters,v6PrefixLength,vlanId",
+      "response": "if_20.json"
+    },
+    {
+      "url": "/api/types/fileInterface/instances?compact=True&fields=gateway,health,id,instanceId,ipAddress,ipPort,ipProtocolVersion,isDisabled,isPreferred,isSystem,macAddress,name,nasServer,netmask,replicationPolicy,role,sourceParameters,v6PrefixLength,vlanId",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/fileInterface/instances?compact=True",
+      "body": {
+        "ipPort": {
+          "id": "spa_eth2"
+        },
+        "ipAddress": "1.1.1.1",
+        "nasServer": {
+          "id": "nas_1"
+        },
+        "role": 0
+      },
+      "response": "create_nas_server_not_found.json"
+    },
+    {
+      "url": "/api/types/fileInterface/instances?compact=True",
+      "body": {
+        "ipPort": {
+          "id": "spa_eth2"
+        },
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "ipAddress": "1.1.1.1",
+        "role": 0
+      },
+      "response": "create_if_20.json"
+    },
+    {
+      "url": "/api/types/fileInterface/instances?compact=True",
+      "body": {
+        "ipPort": {
+          "id": "spa_eth2"
+        },
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "ipAddress": "1.1.1.2",
+        "role": 0
+      },
+      "response": "create_ip_in_use.json"
+    },
+    {
+      "url": "/api/instances/fileInterface/if_20?compact=True",
+      "response": "remove_if_20.json"
+    },
+    {
+      "url": "/api/instances/fileInterface/if_25?compact=True",
+      "response": "remove_not_found.json"
+    }
+  ]
+}

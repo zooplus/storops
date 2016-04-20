@@ -1,0 +1,3 @@
+id     name               source_server   destination_system   destination_server
+20001  loopback           server_2        VNX5600-12AM-CS0     server_2
+30001  loopback           server_3        VNX5600-12AM-CS0     server_3

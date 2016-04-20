@@ -1,0 +1,52 @@
+{
+  "content": {
+    "id": "sv_3",
+    "operationalStatus": [
+      2
+    ],
+    "type": 3,
+    "tieringPolicy": 0,
+    "defaultNode": 0,
+    "currentNode": 0,
+    "auSize": 8192,
+    "instanceId": "root/emc:EMC_UEM_StorageVolumeLeaf%InstanceID=sv_3",
+    "creationTime": "2016-03-01T04:28:56.000Z",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_VOL_OK"
+      ],
+      "descriptions": [
+        "The LUN is operating normally. No action is required."
+      ]
+    },
+    "name": "datastore_0",
+    "description": "",
+    "modificationTime": "2016-03-01T04:29:00.944Z",
+    "sizeTotal": 214748364800,
+    "sizeAllocated": 0,
+    "perTierSizeUsed": [
+      2952790016,
+      0,
+      0
+    ],
+    "isThinEnabled": true,
+    "wwn": "60:06:01:60:17:50:3C:00:88:1A:D5:56:45:65:03:9C",
+    "isReplicationDestination": false,
+    "isSnapSchedulePaused": false,
+    "objectId": 42949672971,
+    "lunGroupObjectId": 81604378627,
+    "metadataSize": 7247757312,
+    "metadataSizeAllocated": 2684354560,
+    "snapWwn": "60:06:01:60:17:50:3C:00:8A:1A:D5:56:A5:05:92:3B",
+    "snapsSize": 0,
+    "snapsSizeAllocated": 0,
+    "snapCount": 0,
+    "storageResource": {
+      "id": "res_2"
+    },
+    "pool": {
+      "id": "pool_1"
+    }
+  }
+}

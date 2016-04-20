@@ -1,0 +1,22 @@
+LOGICAL UNIT NUMBER 19
+Name:  test_lun
+UID:  60:06:01:60:1A:50:35:00:CC:22:61:D6:76:B1:E4:11
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Pool Name:  Pool4File
+Is Thin LUN:  Yes
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Tiering Policy:  No Movement
+Initial Tier:  Optimize Pool
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Current Owner:  SP A
+Attached Snapshot:  N/A

@@ -1,0 +1,225 @@
+{
+  "content": {
+    "name": "lun",
+    "description": "Represents Volume, LUN, Virtual Disk. Management of element made through requests for storageResource object. ",
+    "documentation": "https://10.244.223.66/apidocs/classes/lun.html",
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://10.244.223.66/api/types/lun/instances"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal instance id. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the lun instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "creationTime",
+        "type": "DateTime",
+        "description": "Creation date ",
+        "displayValue": "creationTime"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<ProvisioningOpStatusEnum>",
+        "description": "Current operational status ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health of LUN ",
+        "displayValue": "health"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Readable name ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Description ",
+        "displayValue": "description"
+      },
+      {
+        "name": "modificationTime",
+        "type": "DateTime",
+        "description": "Last modification date ",
+        "displayValue": "modificationTime"
+      },
+      {
+        "name": "type",
+        "type": "LUNTypeEnum",
+        "description": "Type of the LUN ",
+        "displayValue": "type"
+      },
+      {
+        "name": "sizeTotal",
+        "type": "Integer",
+        "description": "Storage element size ",
+        "displayValue": "sizeTotal"
+      },
+      {
+        "name": "sizeUsed",
+        "type": "Integer",
+        "description": "Storage element used size ",
+        "displayValue": "sizeUsed"
+      },
+      {
+        "name": "sizeAllocated",
+        "type": "Integer",
+        "description": "Storage element current allocation size ",
+        "displayValue": "sizeAllocated"
+      },
+      {
+        "name": "perTierSizeUsed",
+        "type": "List<Integer>",
+        "description": "Size used by this LUN from each tier in pool ",
+        "displayValue": "perTierSizeUsed"
+      },
+      {
+        "name": "isThinEnabled",
+        "type": "Boolean",
+        "description": "True if thin provisioning is enabled ",
+        "displayValue": "isThinEnabled"
+      },
+      {
+        "name": "storageResource",
+        "type": "storageResource",
+        "description": "associated storageResource ",
+        "displayValue": "storageResource"
+      },
+      {
+        "name": "pool",
+        "type": "pool",
+        "description": "pool used for this LUN ",
+        "displayValue": "pool"
+      },
+      {
+        "name": "wwn",
+        "type": "String",
+        "description": "The world wide name of the ISCSI LUN ",
+        "displayValue": "wwn"
+      },
+      {
+        "name": "tieringPolicy",
+        "type": "TieringPolicyEnum",
+        "description": "Data relocation policy for auto tiering ",
+        "displayValue": "tieringPolicy"
+      },
+      {
+        "name": "defaultNode",
+        "type": "NodeEnum",
+        "description": "Default owning SP ",
+        "displayValue": "defaultNode"
+      },
+      {
+        "name": "isReplicationDestination",
+        "type": "Boolean",
+        "description": "True if LUN is read only ",
+        "displayValue": "isReplicationDestination"
+      },
+      {
+        "name": "currentNode",
+        "type": "NodeEnum",
+        "description": "Current SP ",
+        "displayValue": "currentNode"
+      },
+      {
+        "name": "snapSchedule",
+        "type": "snapSchedule",
+        "description": "snapshot schedule ",
+        "displayValue": "snapSchedule"
+      },
+      {
+        "name": "isSnapSchedulePaused",
+        "type": "Boolean",
+        "description": "true if attached schedule is paused ",
+        "displayValue": "isSnapSchedulePaused"
+      },
+      {
+        "name": "ioLimitPolicy",
+        "type": "ioLimitPolicy",
+        "description": "I/O limit policy that applies to the LUN, as defined by the ioLimitPolicy resource type. ",
+        "displayValue": "ioLimitPolicy"
+      },
+      {
+        "name": "objectId",
+        "type": "Integer",
+        "description": "Unique object ID of SYSAPI::MLU object. ",
+        "displayValue": "objectId"
+      },
+      {
+        "name": "lunGroupObjectId",
+        "type": "Integer",
+        "description": "Unique object ID of SYSAPI::ConsistencyGroup object. Zero for standalone storage volume. ",
+        "displayValue": "lunGroupObjectId"
+      },
+      {
+        "name": "metadataSize",
+        "type": "Integer",
+        "description": "Subscribed metadata capacity ",
+        "displayValue": "metadataSize"
+      },
+      {
+        "name": "metadataSizeAllocated",
+        "type": "Integer",
+        "description": "Used metadata capacity ",
+        "displayValue": "metadataSizeAllocated"
+      },
+      {
+        "name": "snapWwn",
+        "type": "String",
+        "description": "WWN of Snap Mount Point ",
+        "displayValue": "snapWwn"
+      },
+      {
+        "name": "smpBackendId",
+        "type": "String",
+        "description": "Contains the identifier of associated SYSAPI::MLU with type SLU ",
+        "displayValue": "smpBackendId"
+      },
+      {
+        "name": "snapsSize",
+        "type": "Integer",
+        "description": "Subscribed snapshot capacity ",
+        "displayValue": "snapsSize"
+      },
+      {
+        "name": "snapsSizeAllocated",
+        "type": "Integer",
+        "description": "Used snapshot capacity ",
+        "displayValue": "snapsSizeAllocated"
+      },
+      {
+        "name": "hostAccess",
+        "type": "List<blockHostAccess>",
+        "description": "",
+        "displayValue": "hostAccess"
+      },
+      {
+        "name": "snapCount",
+        "type": "Integer",
+        "description": "Count of snapshots of the LUN ",
+        "displayValue": "snapCount"
+      },
+      {
+        "name": "auSize",
+        "type": "AUSizeEnum",
+        "description": "Allocation Unit size ",
+        "displayValue": "auSize"
+      }
+    ]
+  }
+}

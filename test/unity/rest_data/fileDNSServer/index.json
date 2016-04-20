@@ -1,0 +1,69 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/fileDNSServer?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/fileDNSServer/dns_2?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
+      "response": "dns_2.json"
+    },
+    {
+      "url": "/api/instances/fileDNSServer/dns_3?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
+      "response": "dns_3.json"
+    },
+    {
+      "url": "/api/instances/fileDNSServer/dns_4?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
+      "response": "dns_4.json"
+    },
+    {
+      "url": "/api/types/fileDNSServer/instances?compact=True&fields=addresses,domain,id,instanceId,nasServer,replicationPolicy,sourceParameters",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/fileDNSServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "domain": "emc.dev",
+        "addresses": [
+          "2.2.2.2",
+          "3.3.3.3"
+        ]
+      },
+      "response": "create_one_dns_per_nas.json"
+    },
+    {
+      "url": "/api/types/fileDNSServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_4"
+        },
+        "domain": "emc.dev",
+        "addresses": [
+          "2.2.2.2",
+          "3.3.3.3"
+        ]
+      },
+      "response": "create_dns_3.json"
+    },
+    {
+      "url": "/api/instances/fileDNSServer/dns_30?compact=True",
+      "response": "remove_not_found.json"
+    },
+    {
+      "url": "/api/types/fileDNSServer/instances?compact=True",
+      "body": {
+        "nasServer": {
+          "id": "nas_6"
+        },
+        "domain": "emc.dev",
+        "addresses": [
+          "4.4.4.4"
+        ]
+      },
+      "response": "create_dns_4.json"
+    }
+  ]
+}

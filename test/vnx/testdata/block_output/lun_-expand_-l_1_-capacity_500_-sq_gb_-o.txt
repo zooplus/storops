@@ -1,0 +1,1 @@
+The specified operation is prohibited because it can potentially affect a File System Storage configuration.

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test14">
+                        <Mover mover="1"/>
+                        <StoragePool mayContainSlices="true" pool="61"
+                                     size="5120"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="invalid_vdm_id.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test18">
+                        <Vdm vdm="1"/>
+                        <StoragePool mayContainSlices="true" pool="0"
+                                     size="1"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="invalid_pool.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test17">
+                        <Mover mover="1"/>
+                        <StoragePool mayContainSlices="true" pool="0"
+                                     size="1"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="invalid_size.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test16">
+                        <Mover mover="1"/>
+                        <StoragePool mayContainSlices="true" pool="59"
+                                     size="1"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="not_enough_space.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test15">
+                        <Mover mover="1"/>
+                        <StoragePool mayContainSlices="true" pool="59"
+                                     size="5242880"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="invalid_mover_id.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="test13">
+                        <Mover mover="6"/>
+                        <StoragePool mayContainSlices="true" pool="61"
+                                     size="5120"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="create_fs_existed.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewFileSystem name="EG_TEST_POOL">
+                        <Mover mover="1"/>
+                        <StoragePool mayContainSlices="true" pool="32"
+                                     size="10240"/>
+                    </NewFileSystem>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

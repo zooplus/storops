@@ -1,0 +1,1 @@
+The HBA UID specified is not known by the array

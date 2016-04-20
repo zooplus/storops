@@ -1,0 +1,24 @@
+{
+  "content": {
+    "id": "NFSShare_30",
+    "type": 3,
+    "role": 0,
+    "defaultAccess": 1,
+    "minSecurity": 0,
+    "instanceId": "root/emc:EMC_UEM_NFSShareLeaf%InstanceID=NFSShare_30",
+    "name": "esa_nfs1_snap1",
+    "path": "/",
+    "exportPaths": [
+      "10.244.220.120:/esa_nfs1_snap1"
+    ],
+    "description": "",
+    "creationTime": "2016-04-18T05:47:09.622Z",
+    "modificationTime": "2016-04-18T08:02:17.402Z",
+    "filesystem": {
+      "id": "fs_10"
+    },
+    "snap": {
+      "id": "171798691969"
+    }
+  }
+}

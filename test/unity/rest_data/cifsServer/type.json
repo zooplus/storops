@@ -1,0 +1,97 @@
+{
+  "content": {
+    "name": "cifsServer",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the cifsServer instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the cifsServer instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "User-specified name for the SMB server. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Description of the SMB server. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "netbiosName",
+        "type": "String",
+        "description": "Computer Name of the SMB server in Windows network. ",
+        "displayValue": "netbiosName"
+      },
+      {
+        "name": "domain",
+        "type": "String",
+        "description": "Domain name where SMB server is registered in Active Directory, if applicable. ",
+        "displayValue": "domain"
+      },
+      {
+        "name": "lastUsedOrganizationalUnit",
+        "type": "String",
+        "description": "Last used organizational unit of the SMB server in Active Directory, if applicable. ",
+        "displayValue": "lastUsedOrganizationalUnit"
+      },
+      {
+        "name": "workgroup",
+        "type": "String",
+        "description": "(Applies to stand-alone SMB servers.) Windows network workgroup for the SMB server. ",
+        "displayValue": "workgroup"
+      },
+      {
+        "name": "isStandalone",
+        "type": "Boolean",
+        "description": "Indicates whether the SMB server is standalone. Values are: <ul> <li>true - SMB server is standalone.</li> <li>false - SMB server is joined to the Active Directory. ",
+        "displayValue": "isStandalone"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the SMB server, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "NAS server that exposes file systems using the SMB server. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "fileInterfaces",
+        "type": "List<fileInterface>",
+        "description": "Interfaces that use the SMB protocol to serve the NAS server's file systems. ",
+        "displayValue": "fileInterfaces"
+      },
+      {
+        "name": "smbcaSupported",
+        "type": "Boolean",
+        "description": "Indicates whether the SMB server supports continuous availability. Values are: <ul> <li>true - SMB server supports continuous availability.</li> <li>false - SMB server does not support continuous availability</li>. </ul> ",
+        "displayValue": "smbcaSupported"
+      },
+      {
+        "name": "smbMultiChannelSupported",
+        "type": "Boolean",
+        "description": "Indicates whether the SMB 3.0+ multichannel feature is supported. Values are: <ul> <li>true - SMB 3.0+ multichannel is supported.</li> <li>false - SMB 3.0+ multichannel is not supported.</li> </ul> ",
+        "displayValue": "smbMultiChannelSupported"
+      },
+      {
+        "name": "smbProtocolVersions",
+        "type": "List<String>",
+        "description": "Supported SMB protocols, such as 1.0, 2.0, 2.1, 3.0, and so on. ",
+        "displayValue": "smbProtocolVersions"
+      }
+    ]
+  }
+}

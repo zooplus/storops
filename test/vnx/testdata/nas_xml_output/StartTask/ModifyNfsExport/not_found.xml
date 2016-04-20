@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1205684">
+            <Status maxSeverity="error">
+                <Problem messageCode="13692370950" component="APL" message="File or directory /EEE does not exist." severity="error">
+                    <Description/>
+                    <Action/>
+                </Problem>
+                <Problem messageCode="13690601505" component="APL" message="Internal Error." severity="error">
+                    <Description/>
+                    <Action/>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

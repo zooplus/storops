@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 131149891,
+    "httpStatusCode": 422,
+    "messages": [
+      {
+        "en-US": "Embedded parameter nfsShareModify[1].nfsShareParameters does not have any property. Please provide at least one property. (Error Code:0x7d13043)"
+      }
+    ],
+    "created": "2016-04-18T04:31:25.577Z"
+  }
+}

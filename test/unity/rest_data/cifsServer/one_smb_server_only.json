@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 108011888,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "Only one SMB server can be created per NAS server. (Error Code:0x6702170)"
+      }
+    ],
+    "created": "2016-03-18T02:45:44.684Z"
+  }
+}

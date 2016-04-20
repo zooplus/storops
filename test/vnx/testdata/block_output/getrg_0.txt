@@ -1,0 +1,21 @@
+RaidGroup ID:                              0
+RaidGroup Type:                            r5
+RaidGroup State:                           Valid_luns
+List of disks:                             Bus 0 Enclosure 0  Disk A0
+                                           Bus 0 Enclosure 0  Disk A1
+                                           Bus 0 Enclosure 0  Disk A2
+                                           Bus 0 Enclosure 0  Disk A3
+                                           Bus 0 Enclosure 0  Disk A4
+List of luns:                              280 303 35 63874 63872 63870 37 305 63873 63869 63868 1647 1198 244 136 1646
+Max Number of disks:                       16
+Max Number of luns:                        256
+Raw Capacity (Blocks):                     4502487040
+Logical Capacity (Blocks):                 4502478848
+Free Capacity (Blocks,non-contiguous):     3744083968
+Free contiguous group of unbound segments: 1749913216
+Defrag/Expand priority:                    N/A
+Percent defragmented:                      N/A
+Percent expanded:                          N/A
+Disk expanding onto:                       N/A
+Lun Expansion enabled:                     NO
+Legal RAID types:                          r5

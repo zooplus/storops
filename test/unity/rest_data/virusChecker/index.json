@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/virusChecker?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/virusChecker/cava_2?compact=True&fields=id,instanceId,isEnabled,nasServer",
+      "response": "cava_2.json"
+    },
+    {
+      "url": "/api/types/virusChecker/instances?compact=True&fields=id,instanceId,isEnabled,nasServer",
+      "response": "all.json"
+    }
+  ]
+}

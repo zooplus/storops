@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <StoragePool movers="" memberVolumes="" storageSystems="1"
+                     name="EMBEDDED_NAS_DM_SG"
+                     description="Mapped Storage Group EMBEDDED_NAS_DM_SG on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed" size="0"
+                     usedSize="0" autoSize="0" virtualProvisioning="true"
+                     isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Gold,HostIOLimits=No"
+                     templatePool="59" stripeCount="8" stripeSize="256"
+                     pool="59">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="0"
+                                   isBackendPool="true"/>
+        </StoragePool>
+        <StoragePool movers="1 2" memberVolumes="102" storageSystems="1"
+                     name="oracle12c"
+                     description="Mapped Storage Group oracle12c on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed"
+                     size="102401" usedSize="102401" autoSize="102401"
+                     virtualProvisioning="true" isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Bronze,HostIOLimits=No"
+                     templatePool="60" stripeCount="8" stripeSize="256"
+                     pool="60">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="0"
+                                   isBackendPool="true"/>
+        </StoragePool>
+        <StoragePool movers="1 2" memberVolumes="110" storageSystems="1"
+                     name="Tan_Storage_Group_81"
+                     description="Mapped Storage Group Tan_Storage_Group_81 on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed"
+                     size="102401" usedSize="43008" autoSize="102401"
+                     virtualProvisioning="true" isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Optimized,HostIOLimits=No"
+                     templatePool="61" stripeCount="8" stripeSize="256"
+                     pool="61">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="0"
+                                   isBackendPool="true"/>
+        </StoragePool>
+        <StoragePool movers="1 2" memberVolumes="104" storageSystems="1"
+                     name="Tan_Disk_RG"
+                     description="Mapped Storage Group Tan_Disk_RG on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed"
+                     size="15359" usedSize="15359" autoSize="15359"
+                     virtualProvisioning="true" isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Bronze,HostIOLimits=No"
+                     templatePool="62" stripeCount="8" stripeSize="256"
+                     pool="62">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="0"
+                                   isBackendPool="true"/>
+        </StoragePool>
+        <StoragePool movers="1 2" memberVolumes="105" storageSystems="1"
+                     name="vnx-sg_test"
+                     description="vnx-sg_test on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed" size="0"
+                     usedSize="0" autoSize="2077" virtualProvisioning="true"
+                     isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Optimized,HostIOLimits=No"
+                     templatePool="63" stripeCount="8" stripeSize="256"
+                     pool="63">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="2077"
+                                   isBackendPool="true"/>
+        </StoragePool>
+        <StoragePool movers="" memberVolumes="" storageSystems="1"
+                     name="treesa_SG"
+                     description="Mapped Storage Group treesa_SG on 000196800192"
+                     mayContainSlicesDefault="false" diskType="Mixed" size="0"
+                     usedSize="0" autoSize="2049" virtualProvisioning="true"
+                     isHomogeneous="true"
+                     dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Optimized,HostIOLimits=No"
+                     templatePool="64" stripeCount="8" stripeSize="256"
+                     pool="64">
+            <SystemStoragePoolData dynamic="true" greedy="false"
+                                   potentialAdditionalSize="2049"
+                                   isBackendPool="true"/>
+        </StoragePool>
+    </Response>
+</ResponsePacket>

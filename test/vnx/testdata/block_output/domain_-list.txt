@@ -1,0 +1,23 @@
+Node:                 APM00152904560
+IP Address:           192.168.1.94
+Name:                 spa
+Port:                 80
+Secure Port:          443
+IP Address:           192.168.1.95
+Name:                 spb
+Port:                 80
+Secure Port:          443
+IP Address:           192.168.1.93
+Name:                 Celerra_cs0_1921681_93
+Port:                 80
+Secure Port:          443
+
+Node:                 APM00153906536
+IP Address:           192.168.1.53
+Name:                 vnx2_1_53
+Port:                 80
+Secure Port:          443
+IP Address:           192.168.1.52 (Master)
+Name:                 vnx2_1_52
+Port:                 80
+Secure Port:          443

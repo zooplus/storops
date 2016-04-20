@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Mount fileSystem="200" disabled="false" ntCredential="false"
+               path="/Min_ESA31_VDM_VNX191" mover="2" moverIdIsVdm="true">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="207" disabled="false" ntCredential="false"
+               path="/Min_ESA_GenerateIO_VNX191_NFS3_VDM" mover="2"
+               moverIdIsVdm="true">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="231" disabled="false" ntCredential="false"
+               path="/1-test" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="233" disabled="false" ntCredential="false"
+               path="/1CY_Test_1_File_System" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="235" disabled="false" ntCredential="false"
+               path="/1CY_Test_2" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="167" disabled="false" ntCredential="false"
+               path="/EG_TEST_POOL" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="168" disabled="false" ntCredential="false"
+               path="/EG_TEST_POOL_DM1" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="241" disabled="false" ntCredential="false"
+               path="/ESA_Filesystem_Meta" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="215" disabled="false" ntCredential="false"
+               path="/ESA_REG_Wing" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="230" disabled="false" ntCredential="false"
+               path="/ESA_Tan" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="true" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="213" disabled="false" ntCredential="false"
+               path="/ESA_Team_Dont_Delete_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="14" disabled="false" ntCredential="false"
+               path="/ESI_CifsTest" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="221" disabled="false" ntCredential="false"
+               path="/Jason_filesystem" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="110" disabled="false" ntCredential="false"
+               path="/Min_ESA23_CIFS_SMB1_Thick_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="109" disabled="false" ntCredential="false"
+               path="/Min_ESA23_CIFS_SMB1_Thin_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="112" disabled="false" ntCredential="false"
+               path="/Min_ESA23_CIFS_SMB2_Thick_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="111" disabled="false" ntCredential="false"
+               path="/Min_ESA23_CIFS_SMB2_Thin_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="106" disabled="false" ntCredential="false"
+               path="/Min_ESA23_NFSv3_Thick_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="105" disabled="false" ntCredential="false"
+               path="/Min_ESA23_NFSv3_Thin_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="108" disabled="false" ntCredential="false"
+               path="/Min_ESA23_NFSv4_Thick_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="107" disabled="false" ntCredential="false"
+               path="/Min_ESA23_NFSv4_Thin_VNX191" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="202" disabled="false" ntCredential="false"
+               path="/Min_ESA_GenerateIO_VNX191_NFS2" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="201" disabled="false" ntCredential="false"
+               path="/Min_ESA_GenerateIO_VNX191_NFS3" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="203" disabled="false" ntCredential="false"
+               path="/Min_ESA_GenerateIO_VNX191_NFS4" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="204" disabled="false" ntCredential="false"
+               path="/Min_ESA_GenerateIO_VNX191_NFS4.1" mover="1"
+               moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="153" disabled="false" ntCredential="false"
+               path="/SFPPath_3ufmjv" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="119" disabled="false" ntCredential="false"
+               path="/SFPPath_9teogv" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="124" disabled="false" ntCredential="false"
+               path="/SFPPath_ca1j7h" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="120" disabled="false" ntCredential="false"
+               path="/SFPPath_llhcsl" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="154" disabled="false" ntCredential="false"
+               path="/SFPPath_ln4wso" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="47" disabled="false" ntCredential="false"
+               path="/SFPPath_ltx4bh" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="127" disabled="false" ntCredential="false"
+               path="/SFPPath_npkm24" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="126" disabled="false" ntCredential="false"
+               path="/SFPPath_phqxq7" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="217" disabled="false" ntCredential="false"
+               path="/SRA_DONT_DELETE" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="222" disabled="false" ntCredential="false"
+               path="/Tan_FileSystem_DS01" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="223" disabled="false" ntCredential="false"
+               path="/Tan_FileSystem_DS02" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="240" disabled="false" ntCredential="false"
+               path="/Tan_File_FS" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="225" disabled="false" ntCredential="false"
+               path="/Tan_Filesystem_d17" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="228" disabled="false" ntCredential="false"
+               path="/Tan_Manual_CheckPoint" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="true" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="198" disabled="false" ntCredential="false"
+               path="/VNX191_Silver_63" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="175" disabled="false" ntCredential="false"
+               path="/Yuli_VNX_NFS_After" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="false" prefetch="false"
+                        uncached="true"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="174" disabled="false" ntCredential="false"
+               path="/Yuli_VNX_NFS_NEW" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="false" prefetch="false"
+                        uncached="true"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="216" disabled="false" ntCredential="false"
+               path="/eDRA_Dont_Delete" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="243" disabled="false" ntCredential="false"
+               path="/fsz" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="220" disabled="false" ntCredential="false"
+               path="/irene_test" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="238" disabled="false" ntCredential="false"
+               path="/jane-file-system-test" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="236" disabled="false" ntCredential="false"
+               path="/minjie_fs1" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="210" disabled="false" ntCredential="false"
+               path="/qd_VNX_File_system" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="211" disabled="false" ntCredential="false"
+               path="/zhuanc_fs_100g" mover="1" moverIdIsVdm="false">
+            <NfsOptions ro="true" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="171" disabled="false" ntCredential="false"
+               path="/EG_TEST_POOL_DM2" mover="2" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="212" disabled="false" ntCredential="false"
+               path="/qd_ESA3.2_NFS" mover="2" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+    </Response>
+</ResponsePacket>

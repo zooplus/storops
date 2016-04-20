@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="get_all.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_share_eee.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams path="/EEE"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_share_by_mover.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams mover="1"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_share_eee_mover_1.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams path="/EEE" mover="1"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_share_fff_mover_1.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams path="/FFF" mover="1"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_minjie_fs1.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams path="/minjie_fs1" mover="1"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_minjie_fs2.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <NfsExportQueryParams path="/minjie_fs2" mover="1"/>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

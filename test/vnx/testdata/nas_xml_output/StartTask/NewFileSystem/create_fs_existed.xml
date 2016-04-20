@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1196859">
+            <Status maxSeverity="error">
+                <Problem messageCode="13691191325" component="APL" message="A file system with the name EG_TEST_POOL already exists." severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

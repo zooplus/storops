@@ -1,0 +1,22 @@
+{
+  "@base": "https://10.244.223.66/api/types/basicSystemInfo/instances?fields=apiVersion,earliestApiVersion,id,model,name,softwareVersion&per_page=2000&compact=true",
+  "updated": "2016-03-22T03:14:49.898Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "0",
+        "model": "Unity 500",
+        "apiVersion": "4.0",
+        "earliestApiVersion": "4.0",
+        "softwareVersion": "4.0.0",
+        "name": "FNM00151200215"
+      }
+    }
+  ]
+}

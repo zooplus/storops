@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <FileSystem name="fsz" type="uxfs" volume="661" storagePools="32" storages="1" containsSlices="true" internalUse="false" fileSystem="243">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="3072" fileSystem="243">
+            <ResourceUsage spaceTotal="2962" spaceUsed="1" filesTotal="377854" filesUsed="14"/>
+        </FileSystemCapacityInfo>
+    </Response>
+</ResponsePacket>

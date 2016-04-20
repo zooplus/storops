@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <FileSystem name="Tan_FileSystem_DS01" type="uxfs" volume="591"
+                    storagePools="32" storages="1" containsSlices="true"
+                    internalUse="false" fileSystem="222">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCheckpointInfo savVolume="616" volumeSize="5120"
+                                  spaceTotal="4992" spaceUsed="128"
+                                  scalingFactor="2000" fileSystem="222"/>
+        <FileSystemCapacityInfo volumeSize="5120" fileSystem="222">
+            <ResourceUsage spaceTotal="4978" spaceUsed="54" filesTotal="629758"
+                           filesUsed="27"/>
+        </FileSystemCapacityInfo>
+    </Response>
+</ResponsePacket>

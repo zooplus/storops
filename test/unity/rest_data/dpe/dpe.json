@@ -1,0 +1,48 @@
+{
+  "content": {
+    "id": "dpe",
+    "operationalStatus": [
+      2
+    ],
+    "enclosureType": 36,
+    "driveTypes": [
+      5,
+      11
+    ],
+    "instanceId": "root/emc:EMC_UEM_DiskProcessorEnclosureLeaf%Tag=06:00:00:00:05:00:00:00:00:00:00:00:00:00:00:01",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "needsReplacement": false,
+    "parent": {
+      "id": "0",
+      "resource": "system"
+    },
+    "slotNumber": 0,
+    "name": "DPE",
+    "manufacturer": "",
+    "model": "OBERON 25 DRIVE CHASSIS",
+    "emcPartNumber": "100-542-901-05",
+    "emcSerialNumber": "CF2CV150500005",
+    "vendorPartNumber": "",
+    "vendorSerialNumber": "",
+    "busId": 0,
+    "currentPower": 429,
+    "avgPower": 397,
+    "maxPower": 429,
+    "currentTemperature": 26,
+    "avgTemperature": 26,
+    "maxTemperature": 26,
+    "currentSpeed": 12000000000,
+    "maxSpeed": 12000000000,
+    "parentSystem": {
+      "id": "0"
+    }
+  }
+}

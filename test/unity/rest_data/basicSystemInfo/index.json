@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/basicSystemInfo?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/basicSystemInfo/0?compact=True&fields=apiVersion,earliestApiVersion,id,model,name,softwareVersion",
+      "response": "0.json"
+    },
+    {
+      "url": "/api/types/basicSystemInfo/instances?compact=True&fields=apiVersion,earliestApiVersion,id,model,name,softwareVersion",
+      "response": "all.json"
+    }
+  ]
+}

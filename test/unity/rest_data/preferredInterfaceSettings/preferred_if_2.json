@@ -1,0 +1,9 @@
+{
+  "content": {
+    "id": "preferred_if_2",
+    "instanceId": "root/emc:EMC_UEM_PreferredInterfaceSettingsLeaf%InstanceID=preferred_if_2",
+    "nasServer": {
+      "id": "nas_2"
+    }
+  }
+}

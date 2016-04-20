@@ -1,0 +1,30 @@
+{
+  "@base": "https://10.244.223.66/api/types/nfsServer/instances?fields=credentialsCacheTTL,hostName,id,instanceId,isExtendedCredentialsEnabled,isSecureEnabled,kdcType,nfsv4Enabled,servicePrincipalName,fileInterfaces.id,nasServer.id&per_page=2000&compact=true",
+  "updated": "2016-03-18T03:24:53.319Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "nfs_2",
+        "instanceId": "root/emc:EMC_UEM_NFSServerLeaf%InstanceID=nfs_2",
+        "nfsv4Enabled": true,
+        "isSecureEnabled": false,
+        "isExtendedCredentialsEnabled": false,
+        "credentialsCacheTTL": "00:15:00.000",
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "fileInterfaces": [
+          {
+            "id": "if_16"
+          }
+        ]
+      }
+    }
+  ]
+}

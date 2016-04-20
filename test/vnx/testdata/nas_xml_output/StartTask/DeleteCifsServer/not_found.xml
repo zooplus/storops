@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1198820">
+            <Status maxSeverity="error">
+                <Problem messageCode="13691781191" component="APL"
+                         message="Host test does not exist." severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

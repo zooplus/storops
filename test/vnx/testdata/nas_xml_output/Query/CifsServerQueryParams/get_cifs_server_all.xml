@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <CifsServer interfaces="10.110.24.194" type="standalone"
+                    localUsers="true" name="CIFS" mover="1"
+                    moverIdIsVdm="false">
+            <Aliases/>
+            <StandaloneServerData workgroup="PIE"/>
+        </CifsServer>
+        <CifsServer type="W2K" localUsers="false" name="TEST" mover="1"
+                    moverIdIsVdm="false">
+            <Aliases/>
+            <W2KServerData domain="TEST.DEV" compName="TEST"
+                           domainJoined="false"/>
+        </CifsServer>
+        <CifsServer interfaces="10.110.24.194" type="W2K" localUsers="false"
+                    name="TEST-CIFS-S8" mover="1" moverIdIsVdm="false">
+            <Aliases/>
+            <W2KServerData domain="TEST.DEV" compName="TEST-CIFS-S8"
+                           domainJoined="false"/>
+        </CifsServer>
+        <CifsServer type="W2K" localUsers="false" name="TESTZ" mover="1"
+                    moverIdIsVdm="false">
+            <Aliases/>
+            <W2KServerData domain="TEST.DEV" compName="TESTZ"
+                           domainJoined="false"/>
+        </CifsServer>
+    </Response>
+</ResponsePacket>

@@ -1,0 +1,100 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/hostIPPort?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_1?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength",
+      "response": "HostNetworkAddress_1.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_10?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength",
+      "response": "HostNetworkAddress_10.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_11?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength",
+      "response": "HostNetworkAddress_11.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"10.244.209.90\"",
+      "response": "filter_10.244.209.90.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"1.1.1.2\"",
+      "response": "filter_1.1.1.2.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"1.1.1.1\"",
+      "response": "filter_1.1.1.1.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"9.9.9.9\"",
+      "response": "host_not_found.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"2.2.2.2\"",
+      "response": "filter_2.2.2.2.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True&fields=address,host,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength&filter=address eq \"1.1.1.3\"",
+      "response": "filter_1.1.1.3.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True",
+      "body": {
+        "host": {
+          "id": "Host_9"
+        },
+        "address": "1.1.1.1"
+      },
+      "response": "create_HostNetworkAddress_10.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True",
+      "body": {
+        "host": {
+          "id": "Host_15"
+        },
+        "address": "1.1.1.2"
+      },
+      "response": "create_HostNetworkAddress_14.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True",
+      "body": {
+        "host": {
+          "id": "Host_1"
+        },
+        "address": "1.1.1.1"
+      },
+      "response": "ip_in_use.json"
+    },
+    {
+      "url": "/api/types/hostIPPort/instances?compact=True",
+      "body": {
+        "host": {
+          "id": "Host_19"
+        },
+        "address": "2.2.2.2"
+      },
+      "response": "create_HostNetworkAddress_18.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_1?compact=True",
+      "response": "not_found.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_10?compact=True",
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/hostIPPort/HostNetworkAddress_11?compact=True",
+      "response": "empty.json"
+    }
+  ]
+}

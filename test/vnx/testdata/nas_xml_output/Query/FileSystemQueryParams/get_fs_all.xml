@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <FileSystem name="root_fs_1" type="uxfs" volume="10" storages="1"
+                    containsSlices="true" internalUse="true" fileSystem="1">
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="16" fileSystem="1"/>
+        <FileSystem name="root_fs_common" type="uxfs" volume="40" storages="1"
+                    containsSlices="true" internalUse="true" fileSystem="2">
+            <RoFileSystemHosts mover="2" moverIdIsVdm="false"/>
+            <RoFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="16" fileSystem="2">
+            <ResourceUsage spaceTotal="15" spaceUsed="5" filesTotal="7870"
+                           filesUsed="27"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_ufslog" type="rawfs" volume="73" storages="1"
+                    containsSlices="true" internalUse="true" fileSystem="3"/>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="3"/>
+        <FileSystem name="root_panic_reserve" type="rawfs" volume="76"
+                    storages="1" containsSlices="true" internalUse="true"
+                    fileSystem="4"/>
+        <FileSystemCapacityInfo volumeSize="22063" fileSystem="4"/>
+        <FileSystem name="root_fs_d3" type="rawfs" volume="93" storages="1"
+                    containsSlices="false" internalUse="true" fileSystem="5"/>
+        <FileSystemCapacityInfo volumeSize="2047" fileSystem="5"/>
+        <FileSystem name="root_fs_d4" type="rawfs" volume="94" storages="1"
+                    containsSlices="false" internalUse="true" fileSystem="6"/>
+        <FileSystemCapacityInfo volumeSize="2047" fileSystem="6"/>
+        <FileSystem name="root_fs_d5" type="rawfs" volume="95" storages="1"
+                    containsSlices="false" internalUse="true" fileSystem="7"/>
+        <FileSystemCapacityInfo volumeSize="4095" fileSystem="7"/>
+        <FileSystem name="root_fs_d6" type="rawfs" volume="96" storages="1"
+                    containsSlices="false" internalUse="true" fileSystem="8"/>
+        <FileSystemCapacityInfo volumeSize="65535" fileSystem="8"/>
+        <FileSystem name="root_fs_2" type="uxfs" volume="12" storages="1"
+                    containsSlices="true" internalUse="true" fileSystem="9">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="256" fileSystem="9">
+            <ResourceUsage spaceTotal="252" spaceUsed="14" filesTotal="31486"
+                           filesUsed="172"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_3" type="uxfs" volume="14" storages="1"
+                    containsSlices="true" internalUse="true" fileSystem="10">
+            <RwFileSystemHosts mover="2" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="256" fileSystem="10">
+            <ResourceUsage spaceTotal="252" spaceUsed="6" filesTotal="31486"
+                           filesUsed="110"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm-5bbbd2e7-ec93-495e-9009-fa3c4727d0b5"
+                    type="uxfs" volume="135" storagePools="59" storages="1"
+                    containsSlices="true" internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="28">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="28">
+            <ResourceUsage spaceTotal="887" spaceUsed="8" filesTotal="938430"
+                           filesUsed="46"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="test_jay_0" type="uxfs" volume="144"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="34">
+            <RwFileSystemHosts mover="7" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="2048" fileSystem="34">
+            <ResourceUsage spaceTotal="1953" spaceUsed="1" filesTotal="251902"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="test_jay_1" type="uxfs" volume="146"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="35">
+            <RwFileSystemHosts mover="7" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="2048" fileSystem="35">
+            <ResourceUsage spaceTotal="1953" spaceUsed="1" filesTotal="251902"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm_src" type="uxfs" volume="148"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="36">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="36">
+            <ResourceUsage spaceTotal="887" spaceUsed="8" filesTotal="938430"
+                           filesUsed="46"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_src0" type="uxfs" volume="150" storagePools="59"
+                    storages="1" containsSlices="true" internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="37">
+            <RwFileSystemHosts mover="8" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="37">
+            <ResourceUsage spaceTotal="945" spaceUsed="945" filesTotal="125950"
+                           filesUsed="20"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm_src_ipv6" type="uxfs" volume="155"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="41">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="41">
+            <ResourceUsage spaceTotal="887" spaceUsed="8" filesTotal="938430"
+                           filesUsed="46"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_src0_ipv6" type="uxfs" volume="157"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="42">
+            <RwFileSystemHosts mover="9" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="42">
+            <ResourceUsage spaceTotal="945" spaceUsed="1" filesTotal="125950"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm_src_ipv6_2" type="uxfs" volume="159"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="44">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="44">
+            <ResourceUsage spaceTotal="887" spaceUsed="8" filesTotal="938430"
+                           filesUsed="44"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_src0_ipv6_2" type="uxfs" volume="161"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="45">
+            <RwFileSystemHosts mover="10" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="45">
+            <ResourceUsage spaceTotal="945" spaceUsed="1" filesTotal="125950"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm1_repli_src" type="uxfs" volume="165"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="58">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="58">
+            <ResourceUsage spaceTotal="887" spaceUsed="8" filesTotal="938430"
+                           filesUsed="44"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="root_fs_vdm_vdm1_repli_dst" type="uxfs" volume="167"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="true"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="59">
+            <RwFileSystemHosts mover="2" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="59">
+            <ResourceUsage spaceTotal="887" spaceUsed="6" filesTotal="938430"
+                           filesUsed="29"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_repli_src0" type="uxfs" volume="169"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="60">
+            <RwFileSystemHosts mover="11" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="60">
+            <ResourceUsage spaceTotal="945" spaceUsed="1" filesTotal="125950"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="mig_fs" type="uxfs" volume="171" storagePools="59"
+                    storages="1" containsSlices="true" internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="61">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="61">
+            <ResourceUsage spaceTotal="945" spaceUsed="1" filesTotal="125950"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_mig_source_jojo1" type="uxfs" volume="173"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="62">
+            <RwFileSystemHosts mover="9" moverIdIsVdm="true"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="62">
+            <ResourceUsage spaceTotal="945" spaceUsed="1" filesTotal="125950"
+                           filesUsed="19"/>
+        </FileSystemCapacityInfo>
+        <FileSystem name="fs_mig_source_jojo2" type="uxfs" volume="175"
+                    storagePools="59" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=No,Compressed=No,Mirrored=No,Tiering policy=N/A/Optimize Pool"
+                    fileSystem="63">
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="1024" fileSystem="63"/>
+    </Response>
+</ResponsePacket>

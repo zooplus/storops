@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <Fault maxSeverity="error">
+            <Problem messageCode="14227341325" facility="Prevalidator" component="API" message="VDM with id=1 not found." severity="error">
+                <Description>The VDM ID supplied with the request is invalid.</Description>
+                <Action>Refer to the XML API v2 schema/documentation and correct your user program logic.</Action>
+                <Diagnostics>
+Exception tag: 152e91e9a39
+Exception message: com.emc.nas.ccmd.common.MessageInstanceImpl@5004000d
+                </Diagnostics>
+            </Problem>
+        </Fault>
+    </Response>
+</ResponsePacket>

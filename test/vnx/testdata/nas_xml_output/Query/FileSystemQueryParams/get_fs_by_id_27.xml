@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <FileSystem name="Francy_eNAS81_20G_0126" type="uxfs" volume="125"
+                    storagePools="61" storages="1" containsSlices="true"
+                    internalUse="false"
+                    dataServicePolicies="Thin=Yes,Compressed=No,Mirrored=No,Slo=Optimized,HostIOLimits=No"
+                    fileSystem="27">
+            <RwFileSystemHosts mover="1" moverIdIsVdm="false"/>
+            <ProductionFileSystemData cwormState="off"/>
+        </FileSystem>
+        <FileSystemCapacityInfo volumeSize="6144" fileSystem="27">
+            <ResourceUsage spaceTotal="5987" spaceUsed="1" filesTotal="755710"
+                           filesUsed="16"/>
+        </FileSystemCapacityInfo>
+    </Response>
+</ResponsePacket>

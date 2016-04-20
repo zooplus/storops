@@ -1,0 +1,265 @@
+{
+  "content": {
+    "name": "filesystem",
+    "attributes": [
+      {
+        "name": "poolFullPolicy",
+        "type": "ResourcePoolFullPolicyEnum",
+        "description": "File system behavior to follow when pool is full and a write to this filesystem is attempted. ",
+        "displayValue": "poolFullPolicy"
+      },
+      {
+        "name": "isReadOnly",
+        "type": "Boolean",
+        "description": "Indicates whether the file system is a destination for a replication session. Values are: <ul> <li>True - File system is read-only.</li> <li>False - File system is read-write.</li> </ul> ",
+        "displayValue": "isReadOnly"
+      },
+      {
+        "name": "cifsShare",
+        "type": "List<cifsShare>",
+        "description": "The cifsShares associated with the current filesystem",
+        "displayValue": "cifsShare"
+      },
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the file system instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the file system instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the file system, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<ProvisioningOpStatusEnum>",
+        "description": "Operational statuses of the file system. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "File system name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "File system description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "type",
+        "type": "FilesystemTypeEnum",
+        "description": "File system type. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "creationTime",
+        "type": "DateTime",
+        "description": "Date and time when the file system was created. ",
+        "displayValue": "creationTime"
+      },
+      {
+        "name": "modificationTime",
+        "type": "DateTime",
+        "description": "Date and time when the file system was last modified. ",
+        "displayValue": "modificationTime"
+      },
+      {
+        "name": "sizeTotal",
+        "type": "Integer",
+        "description": "File system size that the system presents to the host or end user. ",
+        "displayValue": "sizeTotal"
+      },
+      {
+        "name": "sizeUsed",
+        "type": "Integer",
+        "description": "Quantity of used space in the file system. This measurement does not include space reserved for snapshots. ",
+        "displayValue": "sizeUsed"
+      },
+      {
+        "name": "sizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of space reserved for the file system: <ul> <li>For a thin-provisioned file system, this can be less than the value of the sizeTotal attribute. and greater than or equal to the value of the sizeUsed attribute.</li> <li>For a thick-provisioned file system, this is equal to the value of the sizeUsed attribute,</lki> </ul> This measurement does not include space reserved for snapshots. ",
+        "displayValue": "sizeAllocated"
+      },
+      {
+        "name": "hostIOSize",
+        "type": "HostIOSizeEnum",
+        "description": "Typical write I/O size from the host to the file system. ",
+        "displayValue": "hostIOSize"
+      },
+      {
+        "name": "isThinEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the file system is thin-provisioned. Values are: <ul> <li>true - File system is thin-provisioned</li> <li>false - File system is thick-provisoned.</li> </ul> Once thin provisioning is enabled on a file system, you cannot disable it. ",
+        "displayValue": "isThinEnabled"
+      },
+      {
+        "name": "storageResource",
+        "type": "storageResource",
+        "description": "Storage resource to which the file system belongs, as defined by the storageResource resource type. ",
+        "displayValue": "storageResource"
+      },
+      {
+        "name": "isCIFSSyncWritesEnabled",
+        "type": "Boolean",
+        "description": "(CIFS file systems) Indicates whether the synchronous writes option is enabled on the file system. Values are: <ul> <li>Synchronous writes option is enabled on the file system.</li> <li>Synchronous writes option is disabled on the file system.</li> </ul> ",
+        "displayValue": "isCIFSSyncWritesEnabled"
+      },
+      {
+        "name": "pool",
+        "type": "pool",
+        "description": "Storage pool in which file system is provisioned, as defined by the pool resource type. ",
+        "displayValue": "pool"
+      },
+      {
+        "name": "isCIFSOpLocksEnabled",
+        "type": "Boolean",
+        "description": "(CIFS file systems) Indicates whether opportunistic file locking is enabled on the file system. Values are: <ul> <li>Opportunistic file locking is enabled on the file system.</li> <li>Opportunistic file locking is disabled on the file system.</li> </ul> ",
+        "displayValue": "isCIFSOpLocksEnabled"
+      },
+      {
+        "name": "nasServer",
+        "type": "nasServer",
+        "description": "NAS server that provides network connectivity to the file system from the hosts. ",
+        "displayValue": "nasServer"
+      },
+      {
+        "name": "isCIFSNotifyOnWriteEnabled",
+        "type": "Boolean",
+        "description": "(CIFS file systems) Indicates whether notifications on file writes are enabled on the file system. Values are: <ul> <li>Notifications on file writes are enabled on the file system.</li> <li>Notifications on file writes are disabled on the file system.</li> </ul> ",
+        "displayValue": "isCIFSNotifyOnWriteEnabled"
+      },
+      {
+        "name": "isCIFSNotifyOnAccessEnabled",
+        "type": "Boolean",
+        "description": "(CIFS file systems) Indicates whether notifications on file access are enabled on the file system. Values are: <ul> <li>Notifications on file access are enabled on the file system.</li> <li>Notifications on file access are disabled on the file system.</li> </ul> ",
+        "displayValue": "isCIFSNotifyOnAccessEnabled"
+      },
+      {
+        "name": "cifsNotifyOnChangeDirDepth",
+        "type": "Integer",
+        "description": "(CIFS file systems) Lowest directory level to which the enabled notifications apply, if any. ",
+        "displayValue": "cifsNotifyOnChangeDirDepth"
+      },
+      {
+        "name": "cifsNumUsedFiles",
+        "type": "Integer",
+        "description": "Needed for Microsoft SCVMM, for the delete CIFS share use case. ",
+        "displayValue": "cifsNumUsedFiles"
+      },
+      {
+        "name": "tieringPolicy",
+        "type": "TieringPolicyEnum",
+        "description": "(Applies if a FAST VP license is installed.) FAST VP tiering policy for the file system. ",
+        "displayValue": "tieringPolicy"
+      },
+      {
+        "name": "tieringPolicy",
+        "type": "TieringPolicyEnum",
+        "description": "(Applies if a FAST VP license is installed.) FAST VP tiering policy for the file system. ",
+        "displayValue": "tieringPolicy"
+      },
+      {
+        "name": "supportedProtocols",
+        "type": "FSSupportedProtocolEnum",
+        "description": "Protocols supported by the file system. ",
+        "displayValue": "supportedProtocols"
+      },
+      {
+        "name": "oid",
+        "type": "Integer",
+        "description": "Unique object ID of SYSAPI::FileSystem object. ",
+        "displayValue": "oid"
+      },
+      {
+        "name": "backendId",
+        "type": "String",
+        "description": "Unique backend file system ID of SYSAPI::FileSystem object. ",
+        "displayValue": "backendId"
+      },
+      {
+        "name": "metadataSize",
+        "type": "Integer",
+        "description": "Quantity of pool space used by the file system metadata. ",
+        "displayValue": "metadataSize"
+      },
+      {
+        "name": "metadataSizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of pool space reserved for file system metadata. ",
+        "displayValue": "metadataSizeAllocated"
+      },
+      {
+        "name": "perTierSizeUsed",
+        "type": "List<Integer>",
+        "description": "The amount of pool storage that has been consumed by the storage volume within specified tier. Tier size for the storage pool used by the file system. ",
+        "displayValue": "perTierSizeUsed"
+      },
+      {
+        "name": "snapsSize",
+        "type": "Integer",
+        "description": "Quantity of file system space used by file system snapshots. ",
+        "displayValue": "snapsSize"
+      },
+      {
+        "name": "snapsSizeAllocated",
+        "type": "Integer",
+        "description": "Quantity of file system space reserved for file system snapshots. ",
+        "displayValue": "snapsSizeAllocated"
+      },
+      {
+        "name": "snapCount",
+        "type": "Integer",
+        "description": "Number of available file system snapshots. ",
+        "displayValue": "snapCount"
+      },
+      {
+        "name": "isSMBCA",
+        "type": "Boolean",
+        "description": "Indicates whether or not SMB 3.0 is enabled. Values are: <ul> <li>true - SMB 3.0 is enabled.</li> <li>false - SMB 3.0 is disabled.</li> </ul> ",
+        "displayValue": "isSMBCA"
+      },
+      {
+        "name": "accessPolicy",
+        "type": "AccessPolicyEnum",
+        "description": "Access policies which are supported by file system. ",
+        "displayValue": "accessPolicy"
+      },
+      {
+        "name": "renamePolicy",
+        "type": "FSRenamePolicyEnum",
+        "description": "Rename policies which are supported by file system. ",
+        "displayValue": "renamePolicy"
+      },
+      {
+        "name": "lockingPolicy",
+        "type": "FSLockingPolicyEnum",
+        "description": "Locking policies which are supported by file system. ",
+        "displayValue": "lockingPolicy"
+      },
+      {
+        "name": "format",
+        "type": "FSFormatEnum",
+        "description": "File system format. ",
+        "displayValue": "format"
+      },
+      {
+        "name": "nfsShare",
+        "type": "List<nfsShare>",
+        "description": "The nfsShares associated with the current filesystem",
+        "displayValue": "nfsShare"
+      }
+    ]
+  }
+}

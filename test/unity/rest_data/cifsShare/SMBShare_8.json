@@ -1,0 +1,27 @@
+{
+  "content": {
+    "id": "SMBShare_8",
+    "type": 1,
+    "offlineAvailability": 0,
+    "instanceId": "root/emc:EMC_UEM_CIFSShareLeaf%InstanceID=SMBShare_8",
+    "name": "esa_cifs1",
+    "path": "/",
+    "exportPaths": [
+      "\\\\nas1130.win2012.dev\\esa_cifs1",
+      "\\\\10.244.220.120\\esa_cifs1"
+    ],
+    "description": "",
+    "creationTime": "2016-03-18T02:22:58.702Z",
+    "modifiedTime": "2016-04-07T08:01:48.199Z",
+    "isContinuousAvailabilityEnabled": false,
+    "isEncryptionEnabled": false,
+    "isACEEnabled": false,
+    "isABEEnabled": false,
+    "isBranchCacheEnabled": false,
+    "isDFSEnabled": false,
+    "umask": "022",
+    "filesystem": {
+      "id": "fs_11"
+    }
+  }
+}

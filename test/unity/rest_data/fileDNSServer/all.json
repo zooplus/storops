@@ -1,0 +1,25 @@
+{
+  "@base": "https://10.244.223.66/api/types/fileDNSServer/instances?fields=addresses,domain,id,instanceId,replicationPolicy,sourceParameters,nasServer.id&per_page=2000&compact=true",
+  "updated": "2016-03-16T08:19:00.013Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "dns_2",
+        "instanceId": "root/emc:EMC_UEM_FileDNSServerLeaf%InstanceID=dns_2",
+        "addresses": [
+          "10.244.209.72"
+        ],
+        "domain": "win2012.dev",
+        "nasServer": {
+          "id": "nas_2"
+        }
+      }
+    }
+  ]
+}

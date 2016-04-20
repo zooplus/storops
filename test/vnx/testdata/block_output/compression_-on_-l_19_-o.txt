@@ -1,0 +1,15 @@
+Usage:
+  compression -on -l lunNumber [-destPoolId StoragePoolID|-destPoolName StoragePoolName]
+       [-rate low|medium|high|value][-ignoreThresholds][-o]
+  compression -off -l lunNumber [-ignoreThresholds][-o]
+  compression -list [-l lunNumber][-destPoolID] [-uid]
+       [-state] [-status] [-percentComplete] [-rate]
+       [-totalCapacity] [-consumedCapacity]
+  compression -modify -l lunNumber -rate low|medium|high|value [-o]
+  compression -pause -l lunNumber [-o]
+  compression -resume -l lunNumber [-o]
+  compression -feature -pause [-o]
+  compression -feature -resume [-o]
+  compression -feature -info
+
+Management Server - Compression Feature software is not installed or is unavailable

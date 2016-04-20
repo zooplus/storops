@@ -1,0 +1,57 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/host?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/host/instances?compact=True&fields=autoManageType,datastores,description,fcHostInitiators,health,hostContainer,hostIPPorts,hostLUNs,hostPolledUUID,hostPushedUUID,hostUUID,hostVVolDatastore,id,instanceId,isInitializationComplete,iscsiHostInitiators,lastPollTime,name,nfsShareAccesses,operationalStatus,osType,registrationType,storageResources,type,vms",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/instances/host/Host_1?compact=True&fields=autoManageType,datastores,description,fcHostInitiators,health,hostContainer,hostIPPorts,hostLUNs,hostPolledUUID,hostPushedUUID,hostUUID,hostVVolDatastore,id,instanceId,isInitializationComplete,iscsiHostInitiators,lastPollTime,name,nfsShareAccesses,operationalStatus,osType,registrationType,storageResources,type,vms",
+      "response": "host_1.json"
+    },
+    {
+      "url": "/api/instances/host/Host_9?compact=True&fields=autoManageType,datastores,description,fcHostInitiators,health,hostContainer,hostIPPorts,hostLUNs,hostPolledUUID,hostPushedUUID,hostUUID,hostVVolDatastore,id,instanceId,isInitializationComplete,iscsiHostInitiators,lastPollTime,name,nfsShareAccesses,operationalStatus,osType,registrationType,storageResources,type,vms",
+      "response": "host_9.json"
+    },
+    {
+      "url": "/api/instances/host/Host_11?compact=True&fields=autoManageType,datastores,description,fcHostInitiators,health,hostContainer,hostIPPorts,hostLUNs,hostPolledUUID,hostPushedUUID,hostUUID,hostVVolDatastore,id,instanceId,isInitializationComplete,iscsiHostInitiators,lastPollTime,name,nfsShareAccesses,operationalStatus,osType,registrationType,storageResources,type,vms",
+      "response": "host_11.json"
+    },
+    {
+      "url": "/api/types/host/instances?compact=True",
+      "body": {
+        "osType": "customized os",
+        "type": 1,
+        "name": "host1"
+      },
+      "response": "create_host_11.json"
+    },
+    {
+      "url": "/api/types/host/instances?compact=True",
+      "body": {
+        "type": 1,
+        "name": "1.1.1.2"
+      },
+      "response": "create_host_15.json"
+    },
+    {
+      "url": "/api/types/host/instances?compact=True",
+      "body": {
+        "type": 1,
+        "name": "2.2.2.2"
+      },
+      "response": "create_host_19.json"
+    },
+    {
+      "url": "/api/instances/host/Host_11?compact=True",
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/host/Host_1?compact=True",
+      "response": "empty.json"
+    }
+  ]
+}

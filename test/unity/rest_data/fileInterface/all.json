@@ -1,0 +1,43 @@
+{
+  "@base": "https://10.244.223.66/api/types/fileInterface/instances?fields=gateway,health,id,instanceId,ipAddress,ipProtocolVersion,isDisabled,isPreferred,isSystem,macAddress,name,netmask,replicationPolicy,role,sourceParameters,v6PrefixLength,vlanId,nasServer.id,ipPort.id&per_page=2000&compact=true",
+  "updated": "2016-03-16T06:45:43.753Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "if_16",
+        "ipProtocolVersion": 4,
+        "role": 0,
+        "instanceId": "root/emc:EMC_UEM_FileInterfaceLeaf%InstanceID=if_16",
+        "health": {
+          "value": 5,
+          "descriptionIds": [
+            "ALRT_COMPONENT_OK"
+          ],
+          "descriptions": [
+            "The component is operating normally. No action is required."
+          ]
+        },
+        "isSystem": false,
+        "ipAddress": "10.244.220.120",
+        "netmask": "255.255.255.0",
+        "gateway": "10.244.220.1",
+        "macAddress": "00:60:16:5C:08:E1",
+        "name": "8_FNM00151200215",
+        "isPreferred": true,
+        "isDisabled": false,
+        "nasServer": {
+          "id": "nas_2"
+        },
+        "ipPort": {
+          "id": "spa_eth2"
+        }
+      }
+    }
+  ]
+}

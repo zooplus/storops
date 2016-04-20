@@ -1,0 +1,61 @@
+{
+  "content": {
+    "name": "hostIPPort",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the hostIPPort instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the hostIPPort instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Port name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "type",
+        "type": "HostPortTypeEnum",
+        "description": "IP address type. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "address",
+        "type": "IPAddress",
+        "description": "IP address or network name of the port. ",
+        "displayValue": "address"
+      },
+      {
+        "name": "netmask",
+        "type": "IPAddress",
+        "description": "(Applies to IPV4 only.) Subnet mask for the IP address, if any. ",
+        "displayValue": "netmask"
+      },
+      {
+        "name": "v6PrefixLength",
+        "type": "Integer",
+        "description": "(Applies to IPV6 only.) Subnet mask length. ",
+        "displayValue": "v6PrefixLength"
+      },
+      {
+        "name": "isIgnored",
+        "type": "Boolean",
+        "description": "(Applies to NFS access only.) Indicates whether the port should be ignored when storage access is granted to the host. Values are: <ul> <li>true - Ignore the port when granting storage access to the host.</li> <li>false - Include the port when granting storage access to the host.</li> </ul> ",
+        "displayValue": "isIgnored"
+      },
+      {
+        "name": "host",
+        "type": "host",
+        "description": "Identifier of the associated host, as defined by the host resource type. ",
+        "displayValue": "host"
+      }
+    ]
+  }
+}

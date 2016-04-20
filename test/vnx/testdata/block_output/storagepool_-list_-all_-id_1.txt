@@ -1,0 +1,31 @@
+Pool Name:  Pool_daq
+Pool ID:  1
+Raid Type:  Mixed
+Percent Full Threshold:  70
+Description:
+Disk Type:  Mixed
+State:  Ready
+Status:  OK(0x0)
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Raw Capacity (Blocks):  6398264602
+Raw Capacity (GBs):  3050.930
+User Capacity (Blocks):  4885926912
+User Capacity (GBs):  2329.792
+Consumed Capacity (Blocks):  1795516416
+Consumed Capacity (GBs):  856.169
+Available Capacity (Blocks):  3090410496
+Available Capacity (GBs):  1473.623
+Percent Full:  36.749
+Total Subscribed Capacity (Blocks):  5666015232
+Total Subscribed Capacity (GBs):  2701.767
+Percent Subscribed:  115.966
+Oversubscribed by (Blocks):  780088320
+Oversubscribed by (GBs):  371.975
+Disks:
+Bus 0 Enclosure 0 Disk C8
+Bus 4 Enclosure 0 Disk D0
+Bus 4 Enclosure 0 Disk E8
+LUNs:  0

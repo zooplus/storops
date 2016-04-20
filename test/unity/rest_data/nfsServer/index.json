@@ -1,0 +1,48 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/nfsServer?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/nfsServer/nfs_2?compact=True&fields=credentialsCacheTTL,fileInterfaces,hostName,id,instanceId,isExtendedCredentialsEnabled,isSecureEnabled,kdcType,nasServer,nfsv4Enabled,servicePrincipalName",
+      "response": "nfs_2.json"
+    },
+    {
+      "url": "/api/instances/nfsServer/nfs_3?compact=True&fields=credentialsCacheTTL,fileInterfaces,hostName,id,instanceId,isExtendedCredentialsEnabled,isSecureEnabled,kdcType,nasServer,nfsv4Enabled,servicePrincipalName",
+      "response": "nfs_3.json"
+    },
+    {
+      "url": "/api/types/nfsServer/instances?compact=True&fields=credentialsCacheTTL,fileInterfaces,hostName,id,instanceId,isExtendedCredentialsEnabled,isSecureEnabled,kdcType,nasServer,nfsv4Enabled,servicePrincipalName",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/nfsServer/instances?compact=True",
+      "body": {
+        "nfsv4Enabled": true,
+        "nasServer": {
+          "id": "nas_5"
+        }
+      },
+      "response": "create_nfs_3.json"
+    },
+    {
+      "url": "/api/types/nfsServer/instances?compact=True",
+      "body": {
+        "nfsv4Enabled": false,
+        "nasServer": {
+          "id": "nas_5"
+        }
+      },
+      "response": "nfs_already_enabled.json"
+    },
+    {
+      "url": "/api/instances/nfsServer/nfs_3?compact=True",
+      "response": "remove_nfs_3.json"
+    },
+    {
+      "url": "/api/instances/nfsServer/nfs_5?compact=True",
+      "response": "not_found.json"
+    }
+  ]
+}

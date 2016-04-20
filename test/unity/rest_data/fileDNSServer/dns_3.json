@@ -1,0 +1,14 @@
+{
+  "content": {
+    "id": "dns_3",
+    "instanceId": "root/emc:EMC_UEM_FileDNSServerLeaf%InstanceID=dns_3",
+    "addresses": [
+      "2.2.2.2",
+      "3.3.3.3"
+    ],
+    "domain": "emc.dev",
+    "nasServer": {
+      "id": "nas_4"
+    }
+  }
+}

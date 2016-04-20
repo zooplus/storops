@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1200494">
+            <Status maxSeverity="ok"/>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

@@ -1,0 +1,2 @@
+Error: mirrorview command failed
+UID of the secondary image to be promoted is not local to this array.Mirrorview can't promote a secondary image not local to this array. Make sure you are sending the promote command to the correct array where the secondary image is located. (0x7105824e)

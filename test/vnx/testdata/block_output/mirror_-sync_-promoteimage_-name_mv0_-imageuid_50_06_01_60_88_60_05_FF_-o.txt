@@ -1,0 +1,1 @@
+Promoting sync mirror image failed. Image not found

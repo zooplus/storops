@@ -1,0 +1,1 @@
+SP A: The new capacity specified is not supported for the expand operation. (0x712d8e08)

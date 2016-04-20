@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="705539">
+            <Status maxSeverity="error">
+                <Problem messageCode="13421850346" component="CS_CORE" message="The requested space 5242880 is not available from the pool EMBEDDED_NAS_DM_SG." severity="error">
+                    <Description>The specified pool does not have enough space to satisfy the size of the request.</Description>
+                    <Action>Do one of the following recommended actions: reduce the requested size for space, add more disk volumes that match the storage profile of the pool, or if the pool is not dynamic, modify the pool to be dynamic so that if disk volumes are available, the pool is will be automatically extended. To make the pool dynamic, run the `nas_pool -modify pool_name -is_dynamic y` command.</Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

@@ -1,0 +1,1 @@
+SP A: The operation cannot be performed because the LUN is 'Preparing'. Wait for the LUN's Current Operation to complete 'Preparing' and retry the operation. (0x712d8e0e) 

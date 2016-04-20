@@ -1,0 +1,51 @@
+{
+  "content": {
+    "id": "sv_2",
+    "operationalStatus": [
+      2
+    ],
+    "type": 2,
+    "tieringPolicy": 0,
+    "defaultNode": 1,
+    "currentNode": 1,
+    "auSize": 8192,
+    "instanceId": "root/emc:EMC_UEM_StorageVolumeLeaf%InstanceID=sv_2",
+    "creationTime": "2016-03-01T03:21:38.000Z",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_VOL_OK"
+      ],
+      "descriptions": [
+        "The LUN is operating normally. No action is required."
+      ]
+    },
+    "name": "openstack_lun",
+    "description": "sample",
+    "modificationTime": "2016-03-01T03:21:42.748Z",
+    "sizeTotal": 107374182400,
+    "sizeAllocated": 0,
+    "perTierSizeUsed": [
+      2952790016,
+      0,
+      0
+    ],
+    "isThinEnabled": true,
+    "wwn": "60:06:01:60:17:50:3C:00:C2:0A:D5:56:92:D1:BA:12",
+    "isReplicationDestination": false,
+    "isSnapSchedulePaused": false,
+    "objectId": 42949672969,
+    "metadataSize": 5100273664,
+    "metadataSizeAllocated": 2684354560,
+    "snapWwn": "60:06:01:60:17:50:3C:00:C4:0A:D5:56:00:95:DE:11",
+    "snapsSize": 0,
+    "snapsSizeAllocated": 0,
+    "snapCount": 0,
+    "storageResource": {
+      "id": "sv_2"
+    },
+    "pool": {
+      "id": "pool_1"
+    }
+  }
+}

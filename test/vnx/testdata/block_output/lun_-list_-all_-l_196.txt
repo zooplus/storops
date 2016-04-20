@@ -1,0 +1,85 @@
+LOGICAL UNIT NUMBER 196
+Name:  Exch-BronzePlan-AppSync-2.2
+UID:  60:06:01:60:88:A0:31:00:82:0E:F7:B4:B9:FA:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  4194304
+User Capacity (GBs):  2.000
+Consumed Capacity (Blocks):  8404992
+Consumed Capacity (GBs):  4.008
+LUN Allocation (Blocks):  297552
+LUN Allocation (GBs):  0.142
+Snapshot Allocation (Blocks):  146688
+Snapshot Allocation (GBs):  0.070
+Metadata Allocation (Blocks):  4588544
+Metadata Allocation (GBs):  2.188
+Uncommitted Allocation (Blocks):  3372208
+Uncommitted Allocation (GBs):  1.608
+Snapshot Subscribed Capacity (Blocks):  4638912
+Snapshot Subscribed Capacity (GBs):  2.212
+Metadata Subscribed Capacity (Blocks):  7976768
+Metadata Subscribed Capacity (GBs):  3.804
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  Pool - OpenStack-Banglore
+Raid Type:  Mixed
+Disk Type:  Mixed
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  12/12/15 21:38:22
+Read Requests:  41457
+Read Requests SP A:  41455
+Read Requests SP B:  2
+Write Requests:  14974
+Write Requests SP A:  14974
+Write Requests SP B:  0
+Blocks Read:  11298039
+Blocks Read SP A:  11297527
+Blocks Read SP B:  512
+Blocks Written:  652032
+Blocks Written SP A:  652032
+Blocks Written SP B:  0
+Busy Ticks:  25210900
+Busy Ticks SP A:  7425283
+Busy Ticks SP B:  17785617
+Idle Ticks:  2890412205
+Idle Ticks SP A:  2691089571
+Idle Ticks SP B:  199322634
+Sum of Outstanding Requests:  59877
+Sum of Outstanding Requests SP A:  59868
+Sum of Outstanding Requests SP B:  9
+Non-Zero Request Count Arrivals:  2681
+Non-Zero Request Count Arrivals SP A:  2680
+Non-Zero Request Count Arrivals SP B:  1
+Implicit Trespasses:  4
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  4
+Explicit Trespasses:  1
+Explicit Trespasses SP A:  1
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  4062
+Consistency Group:  N/A
+Primary LUN:  N/A
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  N/A
+Allocation Policy:  N/A

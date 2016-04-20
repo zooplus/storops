@@ -1,0 +1,3960 @@
+LOGICAL UNIT NUMBER 63924
+Name:  AppSyncSmp-63924-20140818_235123:261
+UID:  60:06:01:60:33:10:37:00:A0:68:47:0E:89:27:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP A
+User Capacity (Blocks):  20971520
+User Capacity (GBs):  10.000
+Consumed Capacity (Blocks):  5253120
+Consumed Capacity (GBs):  2.505
+LUN Allocation (Blocks):  170224
+LUN Allocation (GBs):  0.081
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3156992
+Metadata Allocation (GBs):  1.505
+Uncommitted Allocation (Blocks):  1925904
+Uncommitted Allocation (GBs):  0.918
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5819392
+Metadata Subscribed Capacity (GBs):  2.775
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  Test_Tao
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  No
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63923
+Name:  LUN 63923
+UID:  60:06:01:60:5A:10:37:00:6C:41:24:68:4B:BE:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_test_0227
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63922
+Name:  LUN 63922
+UID:  60:06:01:60:33:10:37:00:17:DE:CF:69:45:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_test_0227
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63921
+Name:  LUN 63921
+UID:  60:06:01:60:33:10:37:00:0D:B9:05:7D:45:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_test_0227
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63920
+Name:  ps_testsmp_utdiex
+UID:  60:06:01:60:5A:10:37:00:DB:BB:90:A9:D8:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_0qg8m1
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63919
+Name:  ps_testsmp_br3lrp
+UID:  60:06:01:60:5A:10:37:00:21:78:9A:3F:D9:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_qrbism
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63918
+Name:  ps_testsmp_dzrcv9
+UID:  60:06:01:60:5A:10:37:00:C3:24:2F:8B:DB:BF:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_yidtb7
+Attached Snapshot:  ps_adSnapshot_d36fxd
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63917
+Name:  ps_testsmp_kio5kd
+UID:  60:06:01:60:5A:10:37:00:C7:6E:1E:69:DD:BF:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_j1scaj
+Attached Snapshot:  ps_adSnapshot_roqtnm
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63916
+Name:  ps_testsmp_fx92r4
+UID:  60:06:01:60:5A:10:37:00:5C:B0:0A:B5:DE:BF:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_nqo4z3
+Attached Snapshot:  ps_adSnapshot_3agom9
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63915
+Name:  ps_testsmp_jb8ekf
+UID:  60:06:01:60:5A:10:37:00:E3:75:10:37:E1:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_8ns546
+Attached Snapshot:  ps_adSnapshot_ztlw5g
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63914
+Name:  ps_testsmp_083gie
+UID:  60:06:01:60:5A:10:37:00:39:E1:73:DD:E3:BF:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_wqhoq5
+Attached Snapshot:  ps_adSnapshot_fvzctf
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63913
+Name:  ps_testsmp_gj10p8
+UID:  60:06:01:60:5A:10:37:00:D8:CC:54:72:F4:BF:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_ejyoo7
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63912
+Name:  LUN 63912
+UID:  60:06:01:60:5A:10:37:00:2C:62:02:48:18:C0:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_test_0227
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63911
+Name:  LUN 63911
+UID:  60:06:01:60:5A:10:37:00:92:C6:B0:1C:F4:C3:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_snap
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63910
+Name:  ps_testsmp_p6kmpz
+UID:  60:06:01:60:5A:10:37:00:70:07:75:D5:DD:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_soab1n
+Attached Snapshot:  ps_adSnapshot_g4hcza
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63909
+Name:  ps_testsmp_t0g0eg
+UID:  60:06:01:60:5A:10:37:00:FC:A2:F0:E1:E9:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_0d8649
+Attached Snapshot:  ps_adSnapshot_axzxaf
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63908
+Name:  ps_testsmp_vho4b9
+UID:  60:06:01:60:5A:10:37:00:B4:C0:6B:3D:EC:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_loe0n2
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63907
+Name:  ps_testsmp_g4vpiu
+UID:  60:06:01:60:5A:10:37:00:7C:D9:ED:49:ED:C7:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_syw0bb
+Attached Snapshot:  ps_adSnapshot_5jtw98
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63906
+Name:  ps_testsmp_jm8372
+UID:  60:06:01:60:5A:10:37:00:BA:93:13:D4:EE:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_3quwl5
+Attached Snapshot:  ps_adSnapshot_mi6oea
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63905
+Name:  ps_testsmp_w9dxuh
+UID:  60:06:01:60:5A:10:37:00:52:9B:C2:3E:F1:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_on90i8
+Attached Snapshot:  ps_adSnapshot_wwl4oh
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63904
+Name:  ps_testsmp_rnojkf
+UID:  60:06:01:60:5A:10:37:00:E4:7A:48:08:F2:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_gct77e
+Attached Snapshot:  ps_adSnapshot_sst5ir
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63903
+Name:  ps_testsmp_sg2g9w
+UID:  60:06:01:60:5A:10:37:00:89:59:B0:17:F6:C7:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_l35ago
+Attached Snapshot:  ps_adSnapshot_mju726
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63895
+Name:  ps_testsmp_rfyfoh
+UID:  60:06:01:60:5A:10:37:00:2B:9D:85:17:33:CD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2100256
+Snapshot Subscribed Capacity (GBs):  1.001
+Metadata Subscribed Capacity (Blocks):  5783520
+Metadata Subscribed Capacity (GBs):  2.758
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_k3hzux
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63894
+Name:  ps_testsmp_tdwc8h
+UID:  60:06:01:60:5A:10:37:00:7A:E4:E2:38:34:CD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_dkofff
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63893
+Name:  ps_testsmp_to2qkn
+UID:  60:06:01:60:5A:10:37:00:63:2A:72:F5:77:CD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  4194304
+Snapshot Subscribed Capacity (GBs):  2.000
+Metadata Subscribed Capacity (Blocks):  5790720
+Metadata Subscribed Capacity (GBs):  2.761
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_h90ok4
+Attached Snapshot:  ps_adSnapshot_k0rklt
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63892
+Name:  ps_testsmp_jyi1hg
+UID:  60:06:01:60:5A:10:37:00:93:7C:17:8F:78:CD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  4197408
+Snapshot Subscribed Capacity (GBs):  2.001
+Metadata Subscribed Capacity (Blocks):  5787616
+Metadata Subscribed Capacity (GBs):  2.760
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_1940kl
+Attached Snapshot:  ps_adSnapshot_lkdo0c
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63891
+Name:  ps_testsmp_v0fhka
+UID:  60:06:01:60:5A:10:37:00:BB:B6:32:3E:79:CD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2100256
+Snapshot Subscribed Capacity (GBs):  1.001
+Metadata Subscribed Capacity (Blocks):  5783520
+Metadata Subscribed Capacity (GBs):  2.758
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_gshpyx
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63890
+Name:  ps_testsmp_ja6mq8
+UID:  60:06:01:60:5A:10:37:00:A8:B8:15:CF:79:CD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  4197408
+Snapshot Subscribed Capacity (GBs):  2.001
+Metadata Subscribed Capacity (Blocks):  5787616
+Metadata Subscribed Capacity (GBs):  2.760
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_qhql8c
+Attached Snapshot:  ps_adSnapshot_5x5jdt
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63889
+Name:  ps_testsmp_sopv5o
+UID:  60:06:01:60:5A:10:37:00:15:8A:15:E0:7A:CD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2100256
+Snapshot Subscribed Capacity (GBs):  1.001
+Metadata Subscribed Capacity (Blocks):  5783520
+Metadata Subscribed Capacity (GBs):  2.758
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_414hwl
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63888
+Name:  ps_testsmp_s6rp5f
+UID:  60:06:01:60:5A:10:37:00:8E:57:97:8D:7B:CD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_xhnxp5
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63887
+Name:  ps_testsmp_5gpv0s
+UID:  60:06:01:60:5A:10:37:00:2A:88:CF:A1:05:CE:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_n8kjcd
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63886
+Name:  ps_testsmp_zzakm5
+UID:  60:06:01:60:5A:10:37:00:73:FA:C7:D8:0E:CE:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  4197408
+Snapshot Subscribed Capacity (GBs):  2.001
+Metadata Subscribed Capacity (Blocks):  5787616
+Metadata Subscribed Capacity (GBs):  2.760
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_9kv765
+Attached Snapshot:  ps_adSnapshot_llahap
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63885
+Name:  ps_testsmp_d3dhxx
+UID:  60:06:01:60:5A:10:37:00:C8:83:21:F8:41:CE:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3158016
+Metadata Allocation (GBs):  1.506
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_yek8lk
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63884
+Name:  ps_testsmp_5muqif
+UID:  60:06:01:60:5A:10:37:00:DD:15:8A:FE:42:CE:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5782528
+Metadata Subscribed Capacity (GBs):  2.757
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_un8ia4
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63883
+Name:  testtt
+UID:  60:06:01:60:33:10:37:00:DA:28:03:32:2C:D9:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5253120
+Consumed Capacity (GBs):  2.505
+LUN Allocation (Blocks):  59392
+LUN Allocation (GBs):  0.028
+Snapshot Allocation (Blocks):  1248
+Snapshot Allocation (GBs):  0.001
+Metadata Allocation (Blocks):  3156992
+Metadata Allocation (GBs):  1.505
+Uncommitted Allocation (Blocks):  2035488
+Uncommitted Allocation (GBs):  0.971
+Snapshot Subscribed Capacity (Blocks):  2157776
+Snapshot Subscribed Capacity (GBs):  1.029
+Metadata Subscribed Capacity (Blocks):  5726000
+Metadata Subscribed Capacity (GBs):  2.730
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_testlun_ahjf894
+Attached Snapshot:  ps_test_sp
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63882
+Name:  ps_smoketest_773908428
+UID:  60:06:01:60:5A:10:37:00:48:B6:7E:58:3D:D9:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_1740751687
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63881
+Name:  ps_smoketest_169979192
+UID:  60:06:01:60:5A:10:37:00:4E:D7:03:84:15:DD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_1505992048
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63880
+Name:  ps_smoketest_1309054305
+UID:  60:06:01:60:5A:10:37:00:85:58:D7:83:25:DD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_1871191232
+Attached Snapshot:  ps_smoketest_462856344
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63879
+Name:  ps_smoketest_1513592066
+UID:  60:06:01:60:5A:10:37:00:6F:D5:B8:0B:2D:DD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_475646639
+Attached Snapshot:  ps_smoketest_2011161496
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63878
+Name:  ps_smoketest_1286477748
+UID:  60:06:01:60:5A:10:37:00:40:C7:8D:9A:2D:DD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_1162215695
+Attached Snapshot:  ps_smoketest_376899909
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63877
+Name:  ps_smoketest_180138787
+UID:  60:06:01:60:5A:10:37:00:44:97:8D:00:31:DD:E4:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  2097152
+Snapshot Subscribed Capacity (GBs):  1.000
+Metadata Subscribed Capacity (Blocks):  5786624
+Metadata Subscribed Capacity (GBs):  2.759
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_628789748
+Attached Snapshot:  ps_smoketest_608214606
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63876
+Name:  ps_smoketest_1643692770
+UID:  60:06:01:60:5A:10:37:00:9F:BF:28:95:31:DD:E4:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  ps_smoketest_816826220
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  Yes
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63875
+Name:  Jane_Mount_Points
+UID:  60:06:01:60:5A:10:37:00:61:00:96:25:BB:50:E5:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  10485760
+User Capacity (GBs):  5.000
+Consumed Capacity (Blocks):  4202496
+Consumed Capacity (GBs):  2.004
+LUN Allocation (Blocks):  16
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3154944
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  1047536
+Uncommitted Allocation (GBs):  0.500
+Snapshot Subscribed Capacity (Blocks):  10485760
+Snapshot Subscribed Capacity (GBs):  5.000
+Metadata Subscribed Capacity (Blocks):  5819392
+Metadata Subscribed Capacity (GBs):  2.775
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  VPLEX_C2_pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Optimize Pool
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  Jane_LUN_Thin_Pool_191
+Attached Snapshot:  JaneSnopShot2015-09-01 19:00:48
+Allow Inband Snap Attach:  No
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63863
+Name:  esa_reg_block_mount_point
+UID:  60:06:01:60:5A:10:37:00:8D:1D:EE:28:66:BF:E5:11
+Current Owner:  SP B
+Default Owner:  SP B
+Allocation Owner:  SP B
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  VPLEX_C1_pool
+Raid Type:  r_5
+Disk Type:  Mixed
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  esa_reg_block_lun
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  No
+Allocation Policy:  Automatic
+
+LOGICAL UNIT NUMBER 63862
+Name:  jane-block-smp
+UID:  60:06:01:60:5A:10:37:00:EA:BE:7F:49:6E:BF:E5:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  10485760
+User Capacity (GBs):  5.000
+Consumed Capacity (Blocks):  3677184
+Consumed Capacity (GBs):  1.753
+LUN Allocation (Blocks):  0
+LUN Allocation (GBs):  0.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3153920
+Metadata Allocation (GBs):  1.504
+Uncommitted Allocation (Blocks):  523264
+Uncommitted Allocation (GBs):  0.250
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  5798912
+Metadata Subscribed Capacity (GBs):  2.765
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  ESI_Pool
+Raid Type:  r_5
+Disk Type:  SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  01/20/16 21:13:49
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  0
+Busy Ticks SP A:  0
+Busy Ticks SP B:  0
+Idle Ticks:  0
+Idle Ticks SP A:  0
+Idle Ticks SP B:  0
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  0
+Implicit Trespasses SP A:  0
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  Off
+Deduplication Status:  OK(0x0)
+Features:  N/A
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  jane-lun-5g
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  No
+Allocation Policy:  Automatic
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1198747">
+            <Status maxSeverity="warning">
+                <Problem messageCode="17986748532" component="APL"
+                         message="Add CIFS alias server_2 : The new NETBIOS alias 'TEST' already exists as server. failed."
+                         severity="warning">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

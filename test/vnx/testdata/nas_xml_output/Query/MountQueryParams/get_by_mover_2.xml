@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Mount fileSystem="171" disabled="false" ntCredential="false"
+               path="/EG_TEST_POOL_DM2" mover="2" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+        <Mount fileSystem="212" disabled="false" ntCredential="false"
+               path="/qd_ESA3.2_NFS" mover="2" moverIdIsVdm="false">
+            <NfsOptions ro="false" virusScan="true" prefetch="true"
+                        uncached="false"/>
+            <CifsOptions cifsSyncwrite="false" notify="true" triggerLevel="512"
+                         notifyOnAccess="false" notifyOnWrite="false"
+                         oplock="true" accessPolicy="NATIVE"
+                         lockingPolicy="nolock"/>
+        </Mount>
+    </Response>
+</ResponsePacket>

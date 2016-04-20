@@ -1,0 +1,31 @@
+LOGICAL UNIT NUMBER 2
+Name:  test_lun_0
+UID:  60:06:01:60:1A:50:35:00:6D:29:F1:FC:85:78:E5:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  4194304
+User Capacity (GBs):  2.000
+Consumed Capacity (Blocks):  N/A
+Consumed Capacity (GBs):  N/A
+Pool Name:  test pool
+Raid Type:  r_5
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  Yes
+Is Private:  No
+Is Compressed:  No
+Tiering Policy:  Auto Tier
+Initial Tier:  Highest Available
+Tier Distribution:
+Performance:  100.00%

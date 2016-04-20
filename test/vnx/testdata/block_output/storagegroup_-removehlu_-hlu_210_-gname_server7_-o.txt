@@ -1,0 +1,3 @@
+Error: storagegroup command failed
+Error returned from Agent
+LUN 0 : No such Host LUN in this Storage Group

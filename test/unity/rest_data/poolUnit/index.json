@@ -1,0 +1,20 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/poolUnit?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/poolUnit/rg_1?compact=True&fields=description,health,id,instanceId,name,operationalStatus,pool,sizeTotal,tierType,type,wwn",
+      "response": "rg_1.json"
+    },
+    {
+      "url": "/api/instances/poolUnit/rg_2?compact=True&fields=description,health,id,instanceId,name,operationalStatus,pool,sizeTotal,tierType,type,wwn",
+      "response": "rg_2.json"
+    },
+    {
+      "url": "/api/instances/poolUnit/rg_3?compact=True&fields=description,health,id,instanceId,name,operationalStatus,pool,sizeTotal,tierType,type,wwn",
+      "response": "rg_3.json"
+    }
+  ]
+}

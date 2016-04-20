@@ -1,0 +1,2 @@
+Error: storagegroup command failed
+Host specified is not known by storage system

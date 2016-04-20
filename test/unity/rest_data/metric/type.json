@@ -1,0 +1,75 @@
+{
+  "content": {
+    "name": "metric",
+    "description": "One of the following: <ul> <li>Performance measurements for the Unity system. ",
+    "documentation": "https://10.244.223.66/apidocs/classes/metric.html",
+    "links": [
+      {
+        "rel": "self",
+        "href": "https://10.244.223.66/api/types/metric/instances"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "id",
+        "type": "Integer",
+        "description": "Unique identifier for the metric instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Display name of the metric. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "path",
+        "type": "String",
+        "description": "Stat paths for the historical and real-time metrics. A stat path identifies a metric's location in the stats namespace. There are two types of stat paths: <ul> <li> stat paths for historical metrics</li> <li> Stat paths for real-time metrics</i> </ul> <br/> <b>stat paths for historical metrics</b> Use the following URI pattern to retrieve stat paths for all historical metrics: <br/> <br/> <span class=EMCCode>/api/types/metric/instances?compact=true&isHistoricalAvailable eq true </span> <br/> <br/> <b>Stat path for real-time metrics</b> <br/> <br/> Use the following URI pattern to retrieve stat paths for all real-time metrics: <br/> <br/> <span class=EMCCode>/api/types/metric/instances?compact=true&isRealtimeAvailable eq true </span> <br/> <br/> For both historical and real-time quey, the following URI pattern can be used to retrieve stat paths for a group of metrics. In this pattern, %25 is an encoded value for a percent sign (%). <br/> <br/> <span class=EMCCode>/api/types/metric/instances?compact=true&filter=path lk <i>metric-path</i>.%25</span> <br/> <br/> where <i>metric-path</i> is one of the stat paths listed below: <ul> <li>sp.*.blockCache - Counters for cache metrics</li> <li>sp*.cifs - CIFS protocol statistics</li> <li>sp.*.fibreChannel - Fibre Channel statistics</li> <li>sp.*.fs - File system statistics</li> <li>sp.*.ftp - FTP protocol statistics</li> <li>sp.*.http - HTTP protocol statistics</li> <li>sp.*.iscsi - iSCSI protocol statistics</li> <li>sp.*.memory - Memory statistics</li> <li>sp.*.ndmp - NDMP protocal statistics</li> <li>sp.*.cpu - CPU statistics</li> <li>sp.*.net - Network interface and protocol statistics</li> <li>sp.*.nfs - NFS protocol statistics</li> <li>sp.*.ntp - NTP statistics</li> <li>sp.*.physical - Physical device statistics</li> <li>sp.*.replication - Replication statistics</li> <li>sp.*.rpc - RPC statistics</li> <li>sp.*.ssh - SSH statistics</li> <li>sp.*.store - Storage hardware interface statistics</li> <li>sp.*.storage - Storage statistics</li> <li>sp.*.vhdx - Microsoft Hyper-V virtual disks statistics</li> <li>sp.*.virusChecker - Virus checker statistics</li> </ul> <br/> <br/> For example, to retrieve a list of available network performance metrics, you can use the following GET collection request: <br/> <br/> <span class=EMCCode>https://<i>ip-address</i>/api/types/metric/instances?compact=t rue&filter=path lk sp.*.net.%25</span> ",
+        "displayValue": "path"
+      },
+      {
+        "name": "product",
+        "type": "Integer",
+        "description": "Product that supports the metric. Values are: <ul> <li>0 - VNXe</li> <li>1 - VNX</li> <li>2 - Iomega</li> </ul> ",
+        "displayValue": "product"
+      },
+      {
+        "name": "type",
+        "type": "Integer",
+        "description": "Type of metric. Values are: <ul> <li>2 - 32 bits counter</li> <li>3 - 64 bits counter</li> <li>4 - rate</li> <li>5 - fact</li> <li>6 - text</li> </ul> ",
+        "displayValue": "type"
+      },
+      {
+        "name": "objectType",
+        "type": "Integer",
+        "description": "Type of object associated with the metric. Values are: <ul> <li>0 - lun</li> <li>1 - sp</li> <li>2 - pool</li> <li>3 - volume</li> <li>4 - filesys</li> <li>5 - port </li> <li>6 - disk</li> <li>7 - cpu</li> <li>8 - dm</li> <li>9 - enclosure</li> <li>10 - tier</li> <li>11 - sg</li> </ul> ",
+        "displayValue": "objectType"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Short description of the metric. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "isHistoricalAvailable",
+        "type": "Boolean",
+        "description": "Indicates whether the metric is available for historical collection: <ul> <li>true - Metric is supported for historical collection. <li>false - Metric is not supported for historical collection. </ul> ",
+        "displayValue": "isHistoricalAvailable"
+      },
+      {
+        "name": "isRealtimeAvailable",
+        "type": "Boolean",
+        "description": "Indicates whether the metric is supported for real-time collection: <ul> <li> true - Metric is supported for real-time collection. <li>false - Metric is not supported for real-time collection. </ul> ",
+        "displayValue": "isRealtimeAvailable"
+      },
+      {
+        "name": "unitDisplayString",
+        "type": "String",
+        "description": "Localized text used to describe the metric unit. ",
+        "displayValue": "unitDisplayString"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <CifsShare path="\zhuanc_fs_100g" fileSystem="211" maxUsers="10"
+                   comment="100g cifs share for zhuanc" name="zhuanc_cifs_100g"
+                   mover="1" moverIdIsVdm="false">
+            <CifsServers>
+                <li>CIFS</li>
+            </CifsServers>
+        </CifsShare>
+    </Response>
+</ResponsePacket>

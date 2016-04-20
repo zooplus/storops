@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/dpe?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/dpe/dpe?compact=True&fields=avgPower,avgTemperature,busId,currentPower,currentSpeed,currentTemperature,driveTypes,emcPartNumber,emcSerialNumber,enclosureType,health,id,instanceId,manufacturer,maxPower,maxSpeed,maxTemperature,model,name,needsReplacement,operationalStatus,parent,parentSystem,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "dpe.json"
+    },
+    {
+      "url": "/api/types/dpe/instances?compact=True&fields=avgPower,avgTemperature,busId,currentPower,currentSpeed,currentTemperature,driveTypes,emcPartNumber,emcSerialNumber,enclosureType,health,id,instanceId,manufacturer,maxPower,maxSpeed,maxTemperature,model,name,needsReplacement,operationalStatus,parent,parentSystem,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "all.json"
+    }
+  ]
+}

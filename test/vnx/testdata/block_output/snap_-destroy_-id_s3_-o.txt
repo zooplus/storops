@@ -1,0 +1,1 @@
+Cannot destroy the snapshot. The specified snapshot does not exist.

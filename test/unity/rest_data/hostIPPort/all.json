@@ -1,0 +1,112 @@
+{
+  "@base": "https://10.244.223.66/api/types/hostIPPort/instances?fields=address,id,instanceId,isIgnored,name,netmask,type,v6PrefixLength,host.id&per_page=2000&compact=true",
+  "updated": "2016-04-05T07:53:55.965Z",
+  "links": [
+    {
+      "rel": "self",
+      "href": "&page=1"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "id": "HostNetworkAddress_1",
+        "type": 0,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_1",
+        "address": "10.244.209.90",
+        "isIgnored": false,
+        "host": {
+          "id": "Host_1"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_2",
+        "type": 0,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_2",
+        "address": "10.245.239.209",
+        "isIgnored": false,
+        "host": {
+          "id": "Host_2"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_3",
+        "type": 1,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_3",
+        "address": "2620:0:170:1ded:21b:0:af5:efd1",
+        "v6PrefixLength": 0,
+        "isIgnored": false,
+        "host": {
+          "id": "Host_2"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_4",
+        "type": 1,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_4",
+        "address": "2620:0:170:1def:a64c:11ff:fea1:b6a",
+        "v6PrefixLength": 0,
+        "isIgnored": false,
+        "host": {
+          "id": "Host_2"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_5",
+        "type": 0,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_5",
+        "address": "10.245.54.151",
+        "isIgnored": false,
+        "host": {
+          "id": "Host_3"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_6",
+        "type": 1,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_6",
+        "address": "2620:0:170:1d34:a236:9fff:fe66:8960",
+        "v6PrefixLength": 0,
+        "isIgnored": false,
+        "host": {
+          "id": "Host_3"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_7",
+        "type": 1,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_7",
+        "address": "2620:0:170:1d36:a236:9fff:fe66:8960",
+        "v6PrefixLength": 0,
+        "isIgnored": false,
+        "host": {
+          "id": "Host_3"
+        }
+      }
+    },
+    {
+      "content": {
+        "id": "HostNetworkAddress_8",
+        "type": 0,
+        "instanceId": "root/emc:EMC_UEM_HostNetworkAddressLeaf%InstanceID=HostNetworkAddress_8",
+        "address": "10.244.33.119",
+        "isIgnored": false,
+        "host": {
+          "id": "Host_7"
+        }
+      }
+    }
+  ]
+}

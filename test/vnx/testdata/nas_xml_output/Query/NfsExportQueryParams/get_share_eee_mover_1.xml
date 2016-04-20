@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <NfsExport readOnly="false" fileSystem="243" mover="1" path="/EEE"/>
+    </Response>
+</ResponsePacket>

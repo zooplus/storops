@@ -1,0 +1,1 @@
+Unable to create a ThinLU in the specified Storage Pool as the Virtual Provisioning Enabler is missing.

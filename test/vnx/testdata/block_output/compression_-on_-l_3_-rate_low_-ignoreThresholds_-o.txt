@@ -1,0 +1,1 @@
+Compression on the specified LUN is already turned on.

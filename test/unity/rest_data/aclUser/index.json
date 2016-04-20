@@ -1,0 +1,32 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/aclUser?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/aclUser/instances?compact=True&fields=domainName,id,instanceId,isManaged,sid,userName",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/instances/aclUser/S-1-5-15-be80fa7-8ddad211-d49ba5f9-452?compact=True&fields=domainName,id,instanceId,isManaged,sid,userName",
+      "response": "S-1-5-15-be80fa7-8ddad211-d49ba5f9-452.json"
+    },
+    {
+      "url": "/api/types/aclUser/action/lookupSIDByDomainUser?compact=True",
+      "body": {
+        "userName": "administrator",
+        "domainName": "win2012.dev"
+      },
+      "response": "search_by_name.json"
+    },
+    {
+      "url": "/api/types/aclUser/action/lookupSIDByDomainUser?compact=True",
+      "body": {
+        "userName": "not_exists",
+        "domainName": "win2012.dev"
+      },
+      "response": "not_found.json"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "content": {
+    "name": "poolUnit",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the pool unit instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "type",
+        "type": "PoolUnitTypeEnum",
+        "description": "Type of Pool Unit is either RAID group or external virtual disk. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the pool unit, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<PoolUnitOpStatusEnum>",
+        "description": "Operational statuses for the pool unit. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Name of the pool unit instance. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Pool Unit description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "wwn",
+        "type": "String",
+        "description": "World Wide Name (WWN) of the Pool Unit. ",
+        "displayValue": "wwn"
+      },
+      {
+        "name": "sizeTotal",
+        "type": "Integer",
+        "description": "Total usable size of the Pool Unit ",
+        "displayValue": "sizeTotal"
+      },
+      {
+        "name": "tierType",
+        "type": "TierTypeEnum",
+        "description": "Pool Unit Tier type. ",
+        "displayValue": "tierType"
+      },
+      {
+        "name": "pool",
+        "type": "pool",
+        "description": "Pool to which the disk belongs, as defined by the pool resource type. If the this attribute is null the poolUnit is not part of a pool. ",
+        "displayValue": "pool"
+      }
+    ]
+  }
+}

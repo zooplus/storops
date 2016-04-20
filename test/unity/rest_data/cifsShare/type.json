@@ -1,0 +1,127 @@
+{
+  "content": {
+    "name": "cifsShare",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the cifsShare instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the cifsShare instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "type",
+        "type": "CIFSTypeEnum",
+        "description": "The type of CIFS Share. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "filesystem",
+        "type": "filesystem",
+        "description": "(Applies to CIFS shares that are not snaps.) Parent file system associated with the CIFS share, as defined by the filesystem resource type. <br/> <br/> If the CIFS share is a snapshot, the value of this attribute is null. ",
+        "displayValue": "filesystem"
+      },
+      {
+        "name": "snap",
+        "type": "snap",
+        "description": "(Applies to CIFS shares of snapshots.) Parent file system snap associated with the CIFS share, as defined by the snap resource type. <br/> <br/> If the CIFS share is not a snapshot, the value of this attribute is null. ",
+        "displayValue": "snap"
+      },
+      {
+        "name": "isReadOnly",
+        "type": "Boolean",
+        "description": "Indicates whether the CIFS share is read-only. Values are: <ul> <li>true - CIFS share is read-only.</li> <li>false - CIFS share is read-write.</li> </ul> ",
+        "displayValue": "isReadOnly"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "CIFS share name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "path",
+        "type": "String",
+        "description": "Local path to a location within a file system. <br/> <br/> <font color=#0f0f0f>By default, the system creates a share to the root of the file system (top-most directory) at file system creation time. </font>This path specifies the unique location of the file system on the storage system. CIFS shares allow you to create multiple network shares with the same local path. You can specify different host-side access controls for different users, while setting up network shares within the file system to access common content. <br/> <br/> If you want the CIFS network shares within the same file system to access different content, you must first create a share to the root of the file system. Then, you can connect from a Windows host, create additional directories from Windows, and create corresponding network shares using the REST API, Unisphere GUI, or Unisphere CLI. ",
+        "displayValue": "path"
+      },
+      {
+        "name": "exportPaths",
+        "type": "List<String>",
+        "description": "List of export paths which can be used to mount and access share. The list is a combination of above name with all the IP addresses of the SMB server. ",
+        "displayValue": "exportPaths"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "User defined CIFS share description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "creationTime",
+        "type": "DateTime",
+        "description": "Date and time when the CIFS share was created. ",
+        "displayValue": "creationTime"
+      },
+      {
+        "name": "modifiedTime",
+        "type": "DateTime",
+        "description": "Date and time when the CIFS share was last modified. ",
+        "displayValue": "modifiedTime"
+      },
+      {
+        "name": "isContinuousAvailabilityEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether continuous availability for Server Message Block (SMB) 3.0 is enabled for the CIFS share. Values are: <ul> <li> true - Continuous availability for SMB 3.0 is enabled for the CIFS share. </li> <li> false - Continuous availability for SMB 3.0 is disabled for the CIFS share. </li> </ul> ",
+        "displayValue": "isContinuousAvailabilityEnabled"
+      },
+      {
+        "name": "isEncryptionEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether CIFS encryption for Server Message Block (SMB) 3.0 is enabled at the shared folder level. Values are: <ul> <li> true - CIFS encryption for SMB 3.0 is enabled. </li> <li> false - CIFS encryption for SMB 3.0 is disabled. </li> </ul> ",
+        "displayValue": "isEncryptionEnabled"
+      },
+      {
+        "name": "isACEEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether the CIFS share access-level permissions are enabled. Values are: <ul> <li> true - CIFS share access-level permissions are enabled. </li> <li> false - CIFS share access-level permissions are disabled. </li> </ul> ",
+        "displayValue": "isACEEnabled"
+      },
+      {
+        "name": "isABEEnabled",
+        "type": "Boolean",
+        "description": "Access-based Enumeration filters the list of available files and folders on a server to include only those, that the requesting user has access to. Values are: <ul> <li> true - Enumerating is enabled. </li> <li> false - Enumerating is disabled. </li> </ul> ",
+        "displayValue": "isABEEnabled"
+      },
+      {
+        "name": "isBranchCacheEnabled",
+        "type": "Boolean",
+        "description": "BranchCache optimization technology copies content from your main office or hosted cloud content servers and caches the content at branch office locations, allowing client computers at branch offices to access the content locally rather than over the WAN. Values are: <ul> <li> true - BranchCache is enabled. </li> <li> false - BranchCache is disabled. </li> </ul> ",
+        "displayValue": "isBranchCacheEnabled"
+      },
+      {
+        "name": "isDFSEnabled",
+        "type": "Boolean",
+        "description": "Distributed File System allows administrators to group shared folders located on different servers by transparently connection them to one or more DFS namespaces. DFS simplifies the process of moving data from one file server to another. Values are: <ul> <li> true - DFS is enabled. </li> <li> false - DFS is disabled. </li> </ul> ",
+        "displayValue": "isDFSEnabled"
+      },
+      {
+        "name": "offlineAvailability",
+        "type": "CifsShareOfflineAvailabilityEnum",
+        "description": "Whether the system supports the Offline Files feature, which allows user to configure the CIFS client use files from the share even when not connected. Values are: <ul> <li> true - Offline Files feature is supported. </li> <li> false - Offline Files feature is not supported. </li> </ul> ",
+        "displayValue": "offlineAvailability"
+      },
+      {
+        "name": "umask",
+        "type": "String",
+        "description": "The default UNIX umask for new files created on the share. If not specified the umask defaults to 022. ",
+        "displayValue": "umask"
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="invalid_path.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewCifsShare path="/test_zhuanc" name="test_zhuanc">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <CifsServers>
+                            <li>CIFS</li>
+                        </CifsServers>
+                    </NewCifsShare>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="success.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <StartTask timeout="300">
+                    <NewCifsShare path="\zzz" name="zzz">
+                        <MoverOrVdm mover="1" moverIdIsVdm="false"/>
+                        <CifsServers>
+                            <li>CIFS</li>
+                        </CifsServers>
+                    </NewCifsShare>
+                </StartTask>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

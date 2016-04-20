@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 108011873,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "Another SMB server with a similar name already exists. (Error Code:0x6702161)"
+      }
+    ],
+    "created": "2016-03-29T09:12:54.383Z"
+  }
+}

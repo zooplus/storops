@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/pool?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/pool/pool_1?compact=True&fields=alertThreshold,creationTime,description,harvestState,health,id,instanceId,isEmpty,isFASTCacheEnabled,isHarvestEnabled,isSnapHarvestEnabled,metadataSizeSubscribed,metadataSizeUsed,name,objectId,operationalStatus,poolFastVP,poolSpaceHarvestHighThreshold,poolSpaceHarvestLowThreshold,raidType,rebalanceProgress,sizeFree,sizeSubscribed,sizeTotal,sizeUsed,snapSizeSubscribed,snapSizeUsed,snapSpaceHarvestHighThreshold,snapSpaceHarvestLowThreshold,storageResourceType,tiers",
+      "response": "pool_1.json"
+    },
+    {
+      "url": "/api/types/pool/instances?compact=True&fields=alertThreshold,creationTime,description,harvestState,health,id,instanceId,isEmpty,isFASTCacheEnabled,isHarvestEnabled,isSnapHarvestEnabled,metadataSizeSubscribed,metadataSizeUsed,name,objectId,operationalStatus,poolFastVP,poolSpaceHarvestHighThreshold,poolSpaceHarvestLowThreshold,raidType,rebalanceProgress,sizeFree,sizeSubscribed,sizeTotal,sizeUsed,snapSizeSubscribed,snapSizeUsed,snapSpaceHarvestHighThreshold,snapSpaceHarvestLowThreshold,storageResourceType,tiers",
+      "response": "all.json"
+    }
+  ]
+}

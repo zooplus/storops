@@ -1,0 +1,127 @@
+Name of the software package:        -Compression
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -FAST
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -FASTCache
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -MirrorView/A
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -MirrorView/S
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -RecoverPointSplitter
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -SANCopy
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -SnapView
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -ThinProvisioning
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -Unisphere
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -UnisphereBlock
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -UnisphereFile
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -UnisphereQoSManager
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        -VNXSnapshots
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        INTERNAL_USE_ONLY-RALabHosts
+Revision of the software package:    05.31.007.3.655
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
+
+Name of the software package:        VNX-Block-Operating-Environment
+Revision of the software package:    05.32.000.6.004
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO

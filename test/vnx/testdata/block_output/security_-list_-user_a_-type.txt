@@ -1,0 +1,4 @@
+Username:  a
+Role:      administrator
+Scope:     global
+Type:      user

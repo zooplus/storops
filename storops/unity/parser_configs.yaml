@@ -1,0 +1,1356 @@
+# Copyright (c) 2015 EMC Corporation.
+# All Rights Reserved.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+UnityType:
+  data_src: rest
+  name: type
+  properties:
+    - label: name
+    - label: description
+    - label: documentation
+    - label: attributes
+
+
+UnityLun:
+  data_src: rest
+  name: lun
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: type
+      converter: LUNTypeEnum
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: sizeAllocated
+    - label: perTierSizeUsed
+    - label: isThinEnabled
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: pool
+      converter: UnityPool
+    - label: wwn
+    - label: tieringPolicy
+      converter: TieringPolicyEnum
+    - label: defaultNode
+      converter: NodeEnum
+    - label: isReplicationDestination
+    - label: currentNode
+      converter: NodeEnum
+    - label: snapSchedule
+      converter: UnitySnapSchedule
+    - label: isSnapSchedulePaused
+    - label: ioLimitPolicy
+      converter: UnityIoLimitPolicy
+    - label: metadataSize
+    - label: metadataSizeAllocated
+    - label: snapWwn
+    - label: snapsSize
+    - label: snapsSizeAllocated
+    - label: hostAccess
+      converter: UnityBlockHostAccessList
+    - label: snapCount
+
+
+UnityHealth:
+  data_src: rest
+  name: health
+  properties:
+    - label: value
+      converter: HealthEnum
+    - label: descriptionIds
+    - label: descriptions
+    - label: resolutionIds
+    - label: resolutions
+
+
+UnityError:
+  data_src: rest
+  name: error
+  properties:
+    - label: errorCode
+    - label: httpStatusCode
+    - label: messages
+    - label: created
+      converter: to_datetime
+
+
+UnityStorageResource:
+  data_src: rest
+  name: storageResource
+  properties:
+    - label: luns
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: type
+      converter: StorageResourceTypeEnum
+    - label: isReplicationDestination
+    - label: replicationType
+      converter: ReplicationTypeEnum
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: sizeAllocated
+    - label: thinStatus
+      converter: ThinStatusEnum
+    - label: dedupStatus
+      converter: DedupStatusEnum
+    - label: esxFilesystemMajorVersion
+      converter: ESXFilesystemMajorVersionEnum
+    - label: esxFilesystemBlockSize
+      converter: ESXFilesystemBlockSizeEnum
+    - label: snapSchedule
+      converter: UnitySnapScheduleList
+    - label: isSnapSchedulePaused
+    - label: relocationPolicy
+      converter: TieringPolicyEnum
+    - label: perTierSizeUsed
+    - label: blockHostAccess
+      converter: UnityBlockHostAccessList
+    - label: metadataSize
+    - label: metadataSizeAllocated
+    - label: snapsSizeTotal
+    - label: snapsSizeAllocated
+    - label: snapCount
+    - label: vmwareUUID
+    - label: pools
+      converter: UnityPoolList
+    - label: datastores
+      converter: UnityDataStoreList
+    - label: filesystem
+      converter: UnityFileSystem
+    - label: hostVVolDatastore
+      converter: UnityHostVvolDatastoreList
+    - label: virtualVolumes
+      converter: UnityVirtualVolumeList
+
+
+UnityPool:
+  data_src: rest
+  name: pool
+  properties:
+    - label: id
+      is_index: True
+    - label: raidType
+      converter: RaidTypeEnum
+    - label: harbestState
+    - label: objectId
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: sizeFree
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: sizeSubscribed
+    - label: alertThreshold
+    - label: poolSpaceHarvestHighThreshold
+    - label: poolSpaceHarvestLowThreshold
+    - label: snapSpaceHarvestHighThreshold
+    - label: snapSpaceHarvestLowThreshold
+    - label: isFASTCacheEnabled
+    - label: tiers
+      converter: UnityPoolTierList
+    - label: creationTime
+      converter: to_datetime
+    - label: isEmpty
+    - label: poolFastVP
+      converter: UnityPoolFastVp
+    - label: isHarvestEnabled
+    - label: harvestState
+      converter: UsageHarvestStateEnum
+    - label: isSnapHarvestEnabled
+    - label: metadataSizeSubscribed
+    - label: snapSizeSubscribed
+    - label: metadataSizeUsed
+    - label: snapSizeUsed
+    - label: rebalanceProgress
+
+
+UnityPoolTier:
+  data_src: rest
+  name: poolTier
+  properties:
+    - label: tierType
+      converter: TierTypeEnum
+    - label: stripeWidth
+      converter: RaidStripeWidthEnum
+    - label: raidType
+      converter: RaidTypeEnum
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: sizeFree
+    - label: sizeMovingDown
+    - label: sizeMovingUp
+    - label: sizeMovingWithin
+    - label: name
+    - label: poolUnits
+      converter: UnityPoolUnitList
+    - label: diskCount
+
+
+UnityPoolUnit:
+  data_src: rest
+  name: poolUnit
+  properties:
+    - label: id
+      is_index: True
+    - label: type
+      converter: PoolUnitTypeEnum
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: wwn
+    - label: sizeTotal
+    - label: tierType
+      converter: TierTypeEnum
+    - label: pool
+      converter: UnityPool
+
+
+UnityPoolFastVp:
+  data_src: rest
+  name: poolFASTVP
+  properties:
+    - label: status
+      converter: FastVPStatusEnum
+    - label: relocationRate
+      converter: FastVPRelocationRateEnum
+    - label: isScheduleEnabled
+    - label: relocationDurationEstimate
+      converter: to_time_delta
+    - label: sizeMovingDown
+    - label: sizeMovingUp
+    - label: sizeMovingWithin
+    - label: percentComplete
+    - label: type
+      converter: PoolDataRelocationTypeEnum
+    - label: dataRelocated
+    - label: lastStartTime
+      converter: to_datetime
+    - label: lastEndTime
+      converter: to_datetime
+
+UnityNasServer:
+  data_src: rest
+  name: nasServer
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: health
+      converter: UnityHealth
+    - label: homeSP
+      converter: UnityStorageProcessor
+    - label: currentSP
+      converter: UnityStorageProcessor
+    - label: pool
+      converter: UnityPool
+    - label: sizeAllocated
+    - label: isReplicationEnabled
+    - label: isReplicationDestination
+    - label: replicationType
+      converter: ReplicationTypeEnum
+    - label: defaultUnixUser
+    - label: defaultWindowsUser
+    - label: currentUnixDirectoryService
+      converter: NasServerUnixDirectoryServiceEnum
+    - label: isMultiProtocolEnabled
+    - label: isWindowsToUnixUsernameMappingEnabled
+    - label: allowUnmappedUser
+    - label: cifsServer
+      converter: UnityCifsServerList
+    - label: preferredInterfaceSettings
+      converter: UnityPreferredInterfaceSettings
+    - label: fileDNSServer
+      converter: UnityFileDnsServer
+    - label: fileInterface
+      converter: UnityFileInterfaceList
+    - label: virusChecker
+      converter: UnityVirusChecker
+
+
+UnityFileSystem:
+  data_src: rest
+  name: filesystem
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: type
+      converter: FilesystemTypeEnum
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: sizeAllocated
+    - label: isReadOnly
+    - label: isThinEnabled
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: isCIFSSyncWritesEnabled
+    - label: isCIFSOpLocksEnabled
+      key: is_cifs_op_locks_enabled
+    - label: nasServer
+      converter: UnityNasServer
+    - label: isCIFSNotifyOnWriteEnabled
+    - label: isCIFSNotifyOnAccessEnabled
+    - label: cifsNotifyOnChangeDirDepth
+    - label: tieringPolicy
+      converter: TieringPolicyEnum
+    - label: supportedProtocols
+      converter: FSSupportedProtocolEnum
+    - label: metadataSize
+    - label: metadataSizeAllocated
+    - label: perTierSizeUsed
+    - label: snapsSize
+    - label: snapsSizeAllocated
+    - label: snapCount
+    - label: isSMBCA
+    - label: accessPolicy
+      converter: AccessPolicyEnum
+    - label: format
+      converter: FSFormatEnum
+    - label: hostIOSize
+      converter: HostIOSizeEnum
+    - label: poolFullPolicy
+      converter: ResourcePoolFullPolicyEnum
+    - label: pool
+      converter: UnityPool
+    - label: cifsShare
+      converter: UnityCifsShareList
+    - label: nfsShare
+      converter: UnityNfsShareList
+
+
+UnityCifsShare:
+  data_src: rest
+  name: cifsShare
+  properties:
+    - label: id
+      is_index: True
+    - label: type
+      converter: CIFSTypeEnum
+    - label: filesystem
+      converter: UnityFileSystem
+    - label: snap
+      converter: UnitySnap
+    - label: isReadOnly
+    - label: name
+    - label: path
+    - label: exportPaths
+    - label: description
+    - label: creationTime
+      converter: to_datetime
+    - label: modifiedTime
+      converter: to_datetime
+    - label: isContinuousAvailabilityEnabled
+    - label: isEncryptionEnabled
+    - label: isACEEnabled
+    - label: isABEEnabled
+    - label: isBranchCacheEnabled
+    - label: isDFSEnabled
+    - label: offlineAvailability
+      converter: CifsShareOfflineAvailabilityEnum
+    - label: umask
+
+
+UnityCifsShareAce:
+  data_src: rest
+  name: cifsShareACE
+  properties:
+    - label: sid
+    - label: accessType
+      converter: ACEAccessTypeEnum
+    - label: accessLevel
+      converter: ACEAccessLevelEnum
+
+
+UnityNfsServer:
+  data_src: rest
+  name: nfsServer
+  properties:
+    - label: id
+      is_index: True
+    - label: hostName
+    - label: nasServer
+      converter: UnityNasServer
+    - label: fileInterfaces
+      converter: UnityFileInterfaceList
+    - label: nfsv4Enabled
+      key: nfs_v4_enabled
+    - label: isSecureEnabled
+    - label: kdcType
+      converter: KdcTypeEnum
+    - label: serviceePrincipalName
+    - label: isExtendedCredentialsEnabled
+    - label: credentialsCacheTTL
+      converter: to_time_delta
+
+
+UnityNfsShare:
+  data_src: rest
+  name: nfsShare
+  properties:
+    - label: id
+      is_index: True
+    - label: type
+      converter: NFSTypeEnum
+    - label: role
+      converter: NFSShareRoleEnum
+    - label: filesystem
+      converter: UnityFileSystem
+    - label: snap
+      converter: UnitySnap
+    - label: name
+    - label: path
+    - label: exportPaths
+    - label: description
+    - label: isReadOnly
+    - label: creationTime
+      converter: to_datetime
+    - label: modificationTime
+      converter: to_datetime
+    - label: defaultAccess
+      converter: NFSShareDefaultAccessEnum
+    - label: minSecurity
+      converter: NFSShareSecurityEnum
+    - label: noAccessHosts
+      converter: UnityHostList
+    - label: readOnlyHosts
+      converter: UnityHostList
+    - label: readWriteHosts
+      converter: UnityHostList
+    - label: rootAccessHosts
+      converter: UnityHostList
+    - label: hostAccesses
+
+
+UnitySnap:
+  data_src: rest
+  name: snap
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: description
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: lun
+      converter: UnityLun
+    - label: snapGroup
+      converter: UnitySnap
+    - label: parentSnap
+      converter: UnitySnap
+    - label: creationTime
+      converter: to_datetime
+    - label: expirationTime
+      converter: to_datetime
+    - label: creatorType
+      converter: SnapCreatorTypeEnum
+    - label: creatorUser
+    - label: creatorSchedule
+    - label: isSystemSnap
+    - label: isModifiable
+    - label: attachedWWN
+    - label: accessType
+      converter: FilesystemSnapAccessTypeEnum
+    - label: isReadOnly
+    - label: lastWritableTime
+      converter: to_datetime
+    - label: isModified
+    - label: isAutoDelete
+    - label: state
+      converter: SnapStateEnum
+    - label: size
+    - label: ioLimitPolicy
+      converter: UnityIoLimitPolicy
+
+
+UnitySnapSchedule:
+  data_src: rest
+  name: snapSchedule
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: isDefault
+    - label: isModified
+    - label: version
+      converter: ScheduleVersionEnum
+    - label: rules
+      converter: UnitySnapScheduleRuleList
+    - label: storageResources
+      converter: UnityStorageResourceList
+
+
+UnitySnapScheduleRule:
+  data_src: rest
+  name: snapScheduleRule
+  properties:
+    - label: id
+      is_index: True
+    - label: type
+      converter: ScheduleTypeEnum
+    - label: minute
+    - label: hours
+    - label: daysOfWeek
+    - label: daysOfMonth
+    - label: interval
+    - label: isAutoDelete
+    - label: retentionTime
+    - label: accessType
+      converter: FilesystemSnapAccessTypeEnum
+
+
+UnityStorageProcessor:
+  data_src: rest
+  name: storageProcessor
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: needsReplacement
+    - label: isRescueMode
+    - label: model
+    - label: slotNumber
+    - label: name
+    - label: emcPartNumber
+    - label: emcSerialNumber
+    - label: manufacturer
+    - label: vendorPartNumber
+    - label: vendorSerialNumber
+    - label: sasExpanderVersion
+    - label: biosFirmwareRevision
+    - label: postFirmwareRevision
+    - label: memorySize
+    - label: parentDpe
+      converter: UnityDpe
+
+
+UnityDpe:
+  data_src: rest
+  name: dpe
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: needsReplacement
+    - label: slotNumber
+    - label: name
+    - label: manufacturer
+    - label: model
+    - label: emcPartNumber
+    - label: emcSerialNumber
+    - label: vendorPartNumber
+    - label: vendorSerialNumber
+    - label: enclosureType
+      converter: EnclosureTypeEnum
+    - label: busId
+    - label: driveTypes
+      converter: DiskTypeEnumList
+    - label: currentPower
+    - label: avgPower
+    - label: maxPower
+    - label: currentTemperature
+    - label: avgTemperature
+    - label: maxTemperature
+    - label: currentSpeed
+    - label: maxSpeed
+    - label: parentSystem
+      converter: UnitySystem
+
+
+UnitySystem:
+  data_src: rest
+  name: system
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: model
+    - label: serialNumber
+    - label: internalModel
+    - label: platform
+    - label: macAddress
+    - label: isEULAAccepted
+    - label: isUpgradeComplete
+    - label: isAutoFailbackEnabled
+    - label: currentPower
+    - label: avgPower
+
+
+UnityCifsServer:
+  data_src: rest
+  name: cifsServer
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: description
+    - label: netbiosName
+    - label: domain
+    - label: lastUsedOrganizationalUnit
+    - label: workgroup
+    - label: isStandalone
+    - label: health
+      converter: UnityHealth
+    - label: nasServer
+      converter: UnityNasServer
+    - label: fileInterfaces
+      converter: UnityFileInterfaceList
+    - label: smbcaSupported
+    - label: smbMultiChannelSupported
+    - label: smbProtocolVersions
+
+
+UnityFileInterface:
+  data_src: rest
+  name: fileInterface
+  properties:
+    - label: id
+      is_index: True
+    - label: nasServer
+      converter: UnityNasServer
+    - label: ipPort
+      converter: UnityIpPort
+    - label: health
+      converter: UnityHealth
+    - label: ipAddress
+    - label: ipProtocolVersion
+      converter: IpProtocolVersionEnum
+    - label: netmask
+    - label: v6PrefixLength
+    - label: gateway
+    - label: vlanId
+    - label: macAddress
+    - label: name
+    - label: role
+      converter: FileInterfaceRoleEnum
+    - label: isPreferred
+    - label: replicationPolicy
+      converter: ReplicationPolicyEnum
+    - label: sourceParameters
+      converter: UnityFileInterfaceSourceParameters
+    - label: isDisabled
+
+
+UnityFileInterfaceSourceParameters:
+  data_src: rest
+  name: fileInterfaceSourceParameters
+  properties:
+    - label: ipAddress
+    - label: netmask
+    - label: v6PrefixLength
+    - label: gateway
+    - label: vlanId
+    - label: ipPort
+      converter: UnityIpPort
+
+
+UnityPreferredInterfaceSettings:
+  data_src: rest
+  name: preferredInterfaceSettings
+  properties:
+    - label: id
+      is_index: True
+    - label: nasServer
+      converter: UnityNasServer
+    - label: productionIpV4
+      converter: UnityFileInterface
+    - label: productionIpV6
+      converter: UnityFileInterface
+    - label: backupIpV4
+      converter: UnityFileInterface
+    - label: backupIpV6
+      converter: UnityFileInterface
+    - label: sourceParameters
+      converter: UnityPreferredInterfaceSourceParameters
+    - label: replicationPolicy
+      converter: ReplicationPolicyEnum
+
+
+UnityPreferredInterfaceSourceParameters:
+  data_src: rest
+  name: preferredInterfaceSourceParameters
+  properties:
+    - label: productionIpV4
+      converter: UnityFileInterface
+    - label: productionIpV6
+      converter: UnityFileInterface
+
+UnityIpPort:
+  data_src: rest
+  name: ipPort
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: shortName
+    - label: macAddress
+    - label: isLinkUp
+    - label: storageProcessor
+      key: sp
+      converter: UnityStorageProcessor
+
+
+UnityFcPort:
+  data_src: rest
+  name: fcPort
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: slotNumber
+    - label: wwn
+    - label: availableSpeeds
+      converter: FcSpeedEnumList
+    - label: currentSpeed
+      converter: FcSpeedEnum
+    - label: requestedSpeed
+      converter: FcSpeedEnum
+    - label: sfpSupportedSpeeds
+      converter: SFPSpeedValuesEnumList
+    - label: sfpSupportedProtocols
+      converter: SFPProtocolValuesEnumList
+    - label: connectorType
+      converter: ConnectorTypeEnum
+    - label: storageProcessor
+      converter: UnityStorageProcessor
+    - label: needsReplacement
+    - label: nPortId
+    - label: name
+    - label: parentIOModule
+      converter: UnityIoModule
+    - label: parentStorageProcessor
+      converter: UnityStorageProcessor
+
+
+UnityIoModule:
+  data_src: rest
+  name: ioModule
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: needsReplacement
+    - label: slotNumber
+    - label: name
+    - label: manufacturer
+    - label: model
+    - label: emcPartNumber
+    - label: emcSerialNumber
+    - label: vendorPartNumber
+    - label: vendorSerialNumber
+    - label: systemName
+    - label: parentStorageProcessor
+      converter: UnityStorageProcessor
+
+
+UnityIoLimitPolicy:
+  data_src: rest
+  name: ioLimitPolicy
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: description
+    - label: isShared
+    - label: ioLimitRules
+      converter: UnityIoLimitRuleList
+    - label: luns
+      converter: UnityLunList
+    - label: snaps
+      converter: UnitySnapList
+
+
+UnityIoLimitRule:
+  data_src: rest
+  name: ioLimitRule
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: description
+    - label: maxIOPS
+    - label: maxKBPS
+    - label: ioLimitPolicy
+      converter: UnityIoLimitPolicy
+
+
+UnityFileDnsServer:
+  data_src: rest
+  name: fileDNSServer
+  properties:
+    - label: id
+      is_index: True
+    - label: nasServer
+      converter: UnityNasServer
+    - label: addresses
+    - label: domain
+    - label: replicationPolicy
+      converter: ReplicationPolicyEnum
+    - label: sourceParameters
+      converter: UnityFileDNSServerSourceParameters
+
+
+UnityFileDNSServerSourceParameters:
+  data_src: rest
+  name: fileDNSServerSourceParameters
+  properties:
+    - label: addresses
+
+
+UnityVirusChecker:
+  data_src: rest
+  name: virusChecker
+  properties:
+    - label: id
+      is_index: True
+    - label: nasServer
+      converter: UnityNasServer
+    - label: isEnabled
+
+
+UnityBlockHostAccess:
+  data_src: rest
+  name: blockHostAccess
+  properties:
+    - label: host
+      converter: UnityHostList
+    - label: accessMask
+      converter: HostLUNAccessEnum
+
+
+UnityHost:
+  data_src: rest
+  name: host
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: description
+    - label: type
+      converter: HostTypeEnum
+    - label: osType
+    - label: hostUUID
+    - label: hostPushedUUID
+    - label: hostPolledUUID
+    - label: lastPollTime
+      converter: to_datetime
+    - label: autoManageType
+      converter: HostManageEnum
+    - label: registrationType
+      converter: HostRegistrationTypeEnum
+    - label: hostContainer
+      converter: UnityHostContainer
+    - label: fcHostInitiators
+      converter: UnityHostInitiatorList
+    - label: iscsiHostInitiators
+      converter: UnityHostInitiatorList
+    - label: hostIPPorts
+      converter: UnityHostIpPortList
+    - label: storageResources
+      converter: UnityStorageResourceList
+    - label: hostLUNs
+      converter: UnityHostLunList
+    - label: datastores
+      converter: UnityDataStoreList
+    - label: hostVVolDatastore
+      converter: UnityHostVvolDatastoreList
+    - label: vms
+      converter: UnityVmList
+
+
+UnityHostShare:
+  data_src: rest
+  name:
+
+
+UnityHostLun:
+  data_src: rest
+  name: hostLUN
+  properties:
+    - label: id
+      is_index: True
+    - label: host
+      converter: UnityHost
+    - label: type
+      converter: HostLUNTypeEnum
+    - label: hlu
+    - label: lun
+      converter: UnityLun
+    - label: snap
+      converter: UnitySnap
+    - label: isReadOnly
+
+
+UnityHostIpPort:
+  data_src: rest
+  name: hostIPPort
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: type
+      converter: HostPortTypeEnum
+    - label: address
+    - label: netmask
+    - label: v6PrefixLength
+    - label: isIgnored
+    - label: host
+      converter: UnityHost
+
+
+UnityHostContainer:
+  data_src: rest
+  name: hostContainer
+  properties:
+    - label: id
+      is_index: True
+    - label: lastPollTime
+      converter: to_datetime
+    - label: port
+    - label: name
+    - label: type
+      converter: HostContainerTypeEnum
+    - label: address
+    - label: description
+    - label: descriptin
+    - label: productName
+    - label: productVersion
+    - label: health
+      converter: UnityHealth
+    - label: hosts
+      converter: UnityHostList
+
+
+UnityHostInitiator:
+  data_src: rest
+  name: hostInitiator
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: type
+      converter: HostInitiatorTypeEnum
+    - label: initiatorId
+    - label: parentHost
+      converter: UnityHost
+    - label: isIgnored
+    - label: nodeWWN
+    - label: portWWN
+    - label: chapUserName
+    - label: isChapSecretEnabled
+    - label: paths
+      converter: UnityHostInitiatorPathList
+    - label: iscsiType
+      converter: HostInitiatorIscsiTypeEnum
+    - label: isBound
+    - label: sourceType
+      converter: HostInitiatorSourceTypeEnum
+
+
+UnityHostInitiatorPath:
+  data_src: rest
+  name: hostInitiatorPath
+  properties:
+    - label: id
+      is_index: True
+    - label: registrationType
+      converter: HostInitiatorPathTypeEnum
+    - label: isLoggedIn
+    - label: hostPushName
+    - label: sessionIds
+    - label: initiator
+      converter: UnityHostInitiator
+    - label: fcPort
+      converter: UnityFcPort
+    - label: iscsiPortal
+      converter: UnityIscsiPortal
+
+
+UnityIscsiPortal:
+  data_src: rest
+  name: iscsiPortal
+  properties:
+    - label: id
+      is_index: True
+    - label: ethernetPort
+      converter: UnityEthernetPort
+    - label: iscsiNode
+      converter: UnityIscsiNode
+    - label: ipAddress
+    - label: netmask
+    - label: v6PrefixLength
+    - label: gateway
+    - label: vlanId
+    - label: ipProtocolVersion
+      converter: IpProtocolVersionEnum
+
+
+UnityEthernetPort:
+  data_src: rest
+  name:  ethernetPort
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: storageProcessor
+      converter: UnityStorageProcessor
+    - label: needsReplacement
+    - label: name
+    - label: portNumber
+    - label: speed
+      converter: EPSpeedValuesEnum
+    - label: mtu
+    - label: connectorType
+      converter: ConnectorTypeEnum
+    - label: bond
+    - label: isLinkUp
+    - label: macAddress
+    - label: isRSSCapable
+    - label: isRDMACapable
+    - label: requestedSpeed
+      converter: EPSpeedValuesEnum
+    - label: parentIOModule
+      converter: UnityIoModule
+    - label: parentStorageProcessor
+      converter: UnityStorageProcessor
+    - label: supportedSpeeds
+      converter: EPSpeedValuesEnumList
+    - label: requestedMtu
+    - label: supportedMtus
+    - label: sfpSupportedSpeeds
+      converter: SFPSpeedValuesEnumList
+    - label: sfpSupportedProtocols
+      converter: SFPProtocolValuesEnumList
+
+
+UnityIscsiNode:
+  data_src: rest
+  name: iscsiNode
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: ethernetPort
+      converter: UnityEthernetPort
+    - label: alias
+
+
+UnityDataStore:
+  data_src: rest
+  name: datastore
+  properties:
+    - label: id
+      is_index: True
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: name
+    - label: format
+      converter: DatastoreTypeEnum
+    - label: host
+      converter: UnityHost
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: vmDisks
+      converter: UnityVmDiskList
+    - label: vm
+      converter: UnityVmList
+
+
+UnityVmDisk:
+  data_src: rest
+  name: vmDisk
+  properties:
+    - label: id
+      is_index: True
+    - label: datastore
+      converter: UnityDataStore
+    - label: vm
+      converter: UnityVm
+    - label: name
+    - label: spaceTotal
+    - label: type
+      converter: VMDiskTypeEnum
+    - label: virtualVolumes
+      converter: UnityVirtualVolumeList
+
+
+UnityVm:
+  data_src: rest
+  name: vm
+  properties:
+    - label: id
+      is_index: True
+    - label: datastore
+      converter: UnityDataStore
+    - label: name
+    - label: guestAddresses
+    - label: guestHostName
+    - label: notes
+    - label: osType
+    - label: host
+    - label: state
+      converter: VMPowerStateEnum
+    - label: vmDisks
+      converter: UnityVmDiskList
+    - label: virtualVolumes
+      converter: UnityVirtualVolumeList
+
+
+UnityVirtualVolume:
+  data_src: rest
+  name: virtualVolume
+  properties:
+    - label: id
+      is_index: True
+    - label: health
+      converter: UnityHealth
+    - label: name
+    - label: vvolType
+      converter: VVolTypeEnum
+    - label: replicaType
+      converter: ReplicaTypeEnum
+    - label: parent
+      converter: UnityVirtualVolume
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: pool
+      converter: UnityPool
+    - label: capabilityProfile
+      converter: UnityCapabilityProfile
+    - label: policyProfileName
+    - label: isCompliant
+    - label: isThinEnabled
+    - label: sizeTotal
+    - label: sizeUsed
+    - label: bindings
+      converter: UnityVirtualVolumeBindingList
+    - label: vmUUID
+    - label: vm
+      converter: UnityVm
+    - label: vmDisk
+      converter: UnityVmDisk
+
+
+UnityVirtualVolumeBinding:
+  data_src: rest
+  name: virtualVolumeBinding
+  properties:
+    - label: vmwarePE
+      converter: UnityVmwarePE
+    - label: bindingDetails
+
+
+UnityVmwarePE:
+  data_src: rest
+  name: vmwarePE
+  properties:
+    - label: id
+      is_index: True
+    - label: vmwareNasPEServer
+      converter: UnityVmwareNasPEServer
+    - label: name
+    - label: type
+      converter: VmwarePETypeEnum
+    - label: vmwareUUID
+    - label: exportPath
+    - label: ipAddress
+    - label: defaultNode
+      converter: NodeEnum
+    - label: wwn
+    - label: naa
+    - label: vvolds
+      converter: UnityStorageResource
+    - label: host
+      converter: UnityHost
+    - label: boundVVolCount
+    - label: health
+      converter: UnityHealth
+
+
+UnityVmwareNasPEServer:
+  data_src: rest
+  name: vmwareNasPEServer
+  properties:
+    - label: id
+      is_index: True
+    - label: nasServer
+      converter: UnityNasServer
+    - label: fileInterfaces
+      converter: UnityFileInterfaceList
+    - label: boundVVolCount
+
+
+UnityCapabilityProfile:
+  data_src: rest
+  name: capabilityProfile
+  properties:
+    - label: id
+      is_index: True
+    - label: vmwareUUID
+    - label: name
+    - label: description
+    - label: pool
+      converter: UnityPool
+    - label: driveTypes
+      converter: DiskTierEnumList
+    - label: fastCacheStates
+      converter: FastCacheStateEnumList
+    - label: raidTypes
+      converter: RaidTypeEnumList
+    - label: spaceEfficiencies
+      converter: SpaceEfficiencyEnumList
+    - label: tieringPolicies
+      converter: TieringPolicyEnumList
+    - label: serviceLevels
+      converter: ServiceLevelEnumList
+    - label: usageTags
+    - label: inUse
+    - label: health
+      converter: UnityHealth
+    - label: virtualVolumes
+      converter: VirtualVolumeList
+
+
+UnityHostVvolDatastore:
+  data_src: rest
+  name: hostVVolDatastore
+  properties:
+    - label: id
+      is_index: True
+    - label: storageResource
+      converter: UnityStorageResource
+    - label: host
+      converter: UnityHost
+
+
+UnityBasicSystemInfo:
+  data_src: rest
+  name: basicSystemInfo
+  properties:
+    - label: id
+      is_index: True
+    - label: model
+    - label: name
+    - label: softwareVersion
+    - label: apiVersion
+    - label: earliestApiVersion
+
+
+UnityJob:
+  data_src: rest
+  name: job
+  properties:
+    - label: id
+      is_index: True
+    - label: description
+    - label: state
+      converter: JobStateEnum
+    - label: stateChangeTime
+      converter: to_datetime
+    - label: submitTime
+      converter: to_datetime
+    - label: startTime
+      converter: to_datetime
+    - label: endTime
+      converter: to_datetime
+    - label: elapsedTime
+      converter: to_time_delta
+    - label: estRemainTime
+      converter: to_time_delta
+    - label: progressPct
+    - label: tasks
+      converter: UnityJobTaskList
+    - label: parametersOut
+    - label: messageOut
+      converter: UnityMessage
+    - label: isJobCancelable
+    - label: isJobCancelled
+    - label: clientData
+
+
+UnityJobTask:
+  data_src: rest
+  name: jobTask
+  properties:
+    - label: id
+      is_index: True
+    - label: name
+    - label: description
+    - label: object
+    - label: action
+    - label: state
+      converter: JobTaskStateEnum
+    - label: messages
+      converter: UnityMessageList
+    - label: parametersIn
+    - label: parametersOut
+    - label: submitTime
+      converter: to_datetime
+    - label: startTime
+      converter: to_datetime
+
+
+UnityMessage:
+  data_src: rest
+  name: message
+  properties:
+    - label: severity
+      converter: SeverityEnum
+    - label: errorCode
+    - label: created
+      converter: to_datetime
+    - label: httpStatusCode
+    - label: messages
+      converter: UnityLocalizedMessageList
+
+
+UnityLocalizedMessage:
+  data_src: rest
+  name: message
+  properties:
+    - label: locale
+    - label: message
+
+
+UnityAclUser:
+  data_src: rest
+  name: aclUser
+  properties:
+    - label: id
+    - label: userName
+    - label: domainName
+    - label: sid

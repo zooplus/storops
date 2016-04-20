@@ -1,0 +1,1 @@
+Compression on the specified LUN is not turned on. Please use "-on" command to turn on compression on this LUN first.

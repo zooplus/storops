@@ -1,0 +1,133 @@
+{
+  "content": {
+    "name": "job",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the job instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the job instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Job description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "state",
+        "type": "JobStateEnum",
+        "description": "Current state of the job. ",
+        "displayValue": "state"
+      },
+      {
+        "name": "stateChangeTime",
+        "type": "DateTime",
+        "description": "Date and time of the last state change for the job. ",
+        "displayValue": "stateChangeTime"
+      },
+      {
+        "name": "submitTime",
+        "type": "DateTime",
+        "description": "Date and time when the job was submitted. ",
+        "displayValue": "submitTime"
+      },
+      {
+        "name": "startTime",
+        "type": "DateTime",
+        "description": "Date and time when the job started. ",
+        "displayValue": "startTime"
+      },
+      {
+        "name": "endTime",
+        "type": "DateTime",
+        "description": "Date and time when the job ended. ",
+        "displayValue": "endTime"
+      },
+      {
+        "name": "elapsedTime",
+        "type": "DateTime",
+        "description": "Amount of time for which the job has been running. ",
+        "displayValue": "elapsedTime"
+      },
+      {
+        "name": "estRemainTime",
+        "type": "DateTime",
+        "description": "Estimated time remaining until the job completes. ",
+        "displayValue": "estRemainTime"
+      },
+      {
+        "name": "progressPct",
+        "type": "Integer",
+        "description": "Approximate percentage of the job that has completed. ",
+        "displayValue": "progressPct"
+      },
+      {
+        "name": "tasks",
+        "type": "List<jobTask>",
+        "description": "Set of tasks within the job, as defined by the jobTask object. ",
+        "displayValue": "tasks"
+      },
+      {
+        "name": "owner",
+        "type": "String",
+        "description": "Owning provider of the job. ",
+        "displayValue": "owner"
+      },
+      {
+        "name": "requestId",
+        "type": "String",
+        "description": "Request ID for the job, provided by the client in the ?requestId request parameter. If the client attaches unique requestId values to an asynchronous request and the connection gets lost, the client can determine the status of the original request by making a GET job collection request filtered by the specific requestID value. (Store batchJobID for now) ",
+        "displayValue": "requestId"
+      },
+      {
+        "name": "methodName",
+        "type": "String",
+        "description": "Name of the method that the job is calling. ",
+        "displayValue": "methodName"
+      },
+      {
+        "name": "parametersOut",
+        "type": "baseResponse",
+        "description": "Output parameters and their values of what the job is calling. ",
+        "displayValue": "parametersOut"
+      },
+      {
+        "name": "statusCodeOut",
+        "type": "Integer",
+        "description": "Job execution result ",
+        "displayValue": "statusCodeOut"
+      },
+      {
+        "name": "messageOut",
+        "type": "message",
+        "description": "Status messages for job ",
+        "displayValue": "messageOut"
+      },
+      {
+        "name": "isJobCancelable",
+        "type": "Boolean",
+        "description": "Is job cancelable ",
+        "displayValue": "isJobCancelable"
+      },
+      {
+        "name": "isJobCancelled",
+        "type": "Boolean",
+        "description": "Is job cancelled ",
+        "displayValue": "isJobCancelled"
+      },
+      {
+        "name": "clientData",
+        "type": "String",
+        "description": "User-specified data for the job, provided by the client in the clientData request parameter. ",
+        "displayValue": "clientData"
+      }
+    ]
+  }
+}

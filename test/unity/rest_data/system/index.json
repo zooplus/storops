@@ -1,0 +1,16 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/system?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/system/0?compact=True&fields=avgPower,currentPower,health,id,instanceId,internalModel,isAutoFailbackEnabled,isEULAAccepted,isUpgradeComplete,licenseType,macAddress,model,name,operationalStatus,platform,serialNumber",
+      "response": "0.json"
+    },
+    {
+      "url": "/api/types/system/instances?compact=True&fields=avgPower,currentPower,health,id,instanceId,internalModel,isAutoFailbackEnabled,isEULAAccepted,isUpgradeComplete,licenseType,macAddress,model,name,operationalStatus,platform,serialNumber",
+      "response": "all.json"
+    }
+  ]
+}

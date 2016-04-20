@@ -1,0 +1,2 @@
+Error: migrate -list command failed.
+The specified source LUN does not exist

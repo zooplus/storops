@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1198708">
+            <Status maxSeverity="error">
+                <Problem messageCode="13157007811" component="DART"
+                         message="The default NT server (not specifying any interface) cannot be created once a VDM is loaded."
+                         severity="error">
+                    <Description>The default NT server (not specifying any
+                        interface) cannot be created once a VDM is loaded.
+                    </Description>
+                    <Action>Create the server specifying all its interfaces.
+                    </Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

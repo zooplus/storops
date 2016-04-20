@@ -1,0 +1,115 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/nfsShare?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_1?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_1.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_4?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_4.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_5?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_5.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_6?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_6.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_7?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_7.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_11?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_11.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_30?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_30.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_31?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "NFSShare_31.json"
+    },
+    {
+      "url": "/api/types/nfsShare/instances?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/nfsShare/instances?compact=True&fields=creationTime,defaultAccess,description,exportPaths,filesystem,hostAccesses,id,instanceId,isReadOnly,minSecurity,modificationTime,name,noAccessHosts,path,readOnlyHosts,readWriteHosts,role,rootAccessHosts,snap,type&filter=name eq \"ns1\"",
+      "response": "name_ns1.json"
+    },
+    {
+      "url": "/api/types/nfsShare/instances?compact=True",
+      "body": {
+        "snap": {
+          "id": "171798691852"
+        },
+        "path": "/",
+        "name": "sns1"
+      },
+      "response": "create_failed_ckpt_snap.json"
+    },
+    {
+      "url": "/api/types/nfsShare/instances?compact=True",
+      "body": {
+        "snap": {
+          "id": "171798691896"
+        },
+        "path": "/",
+        "name": "sns1"
+      },
+      "response": "create_NFSShare_11.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_11?compact=True",
+      "body": {},
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_30/action/modify?compact=True",
+      "body": {
+        "rootAccessHosts": [
+          {
+            "id": "Host_11"
+          }
+        ],
+        "readOnlyHosts": [
+          {
+            "id": "Host_11"
+          }
+        ]
+      },
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_30/action/modify?compact=True",
+      "body": {
+        "readWriteHosts": [
+          {
+            "id": "Host_19"
+          }
+        ],
+        "rootAccessHosts": [
+          {
+            "id": "Host_19"
+          }
+        ]
+      },
+      "response": "success.json"
+    },
+    {
+      "url": "/api/instances/nfsShare/NFSShare_31/action/modify?compact=True",
+      "body": {
+        "readWriteHosts": [],
+        "readOnlyHosts": []
+      },
+      "response": "success.json"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "content": {
+    "name": "dpe",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the dpe instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the dpe instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<DpeStatusEnum>",
+        "description": "Current operational statuses of the DPE. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the DPE, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "needsReplacement",
+        "type": "Boolean",
+        "description": "Indicates whether the DPE needs replacement. Values are: <ul> <li>true - DPE needs replacement.</li> <li>false - DPE does not need replacement.</li> </ul> ",
+        "displayValue": "needsReplacement"
+      },
+      {
+        "name": "parent",
+        "type": "resourceRef",
+        "description": "Resource type and unique identifier of the DPE's parent enclosure. ",
+        "displayValue": "parent"
+      },
+      {
+        "name": "slotNumber",
+        "type": "Integer",
+        "description": "The enclosure number or position where the DPE is located on the bus. ",
+        "displayValue": "slotNumber"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "DPE name. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "manufacturer",
+        "type": "String",
+        "description": "Manufacturer of the DPE. ",
+        "displayValue": "manufacturer"
+      },
+      {
+        "name": "model",
+        "type": "String",
+        "description": "Manufacturer's model number for the DPE. ",
+        "displayValue": "model"
+      },
+      {
+        "name": "emcPartNumber",
+        "type": "String",
+        "description": "EMC part number for the DPE. ",
+        "displayValue": "emcPartNumber"
+      },
+      {
+        "name": "emcSerialNumber",
+        "type": "String",
+        "description": "EMC serial number for the DPE. ",
+        "displayValue": "emcSerialNumber"
+      },
+      {
+        "name": "vendorPartNumber",
+        "type": "String",
+        "description": "Vendor part number for the DPE. ",
+        "displayValue": "vendorPartNumber"
+      },
+      {
+        "name": "vendorSerialNumber",
+        "type": "String",
+        "description": "Vendor serial number for the DPE. ",
+        "displayValue": "vendorSerialNumber"
+      },
+      {
+        "name": "enclosureType",
+        "type": "EnclosureTypeEnum",
+        "description": "DPE enclosure type. ",
+        "displayValue": "enclosureType"
+      },
+      {
+        "name": "busId",
+        "type": "Integer",
+        "description": "Identifier of the SAS bus used by the DPE. ",
+        "displayValue": "busId"
+      },
+      {
+        "name": "driveTypes",
+        "type": "List<DiskTypeEnum>",
+        "description": "Disk type of the disks in the DPE. ",
+        "displayValue": "driveTypes"
+      },
+      {
+        "name": "currentPower",
+        "type": "Integer",
+        "description": "Current amount of power used by the DPE. ",
+        "displayValue": "currentPower"
+      },
+      {
+        "name": "avgPower",
+        "type": "Integer",
+        "description": "Average amount of power used by the DPE. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "avgPower"
+      },
+      {
+        "name": "maxPower",
+        "type": "Integer",
+        "description": "Maximum amout of power used by the DPE. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "maxPower"
+      },
+      {
+        "name": "currentTemperature",
+        "type": "Integer",
+        "description": "Current temperature of the DPE. ",
+        "displayValue": "currentTemperature"
+      },
+      {
+        "name": "avgTemperature",
+        "type": "Integer",
+        "description": "Average temperature of the DPE. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "avgTemperature"
+      },
+      {
+        "name": "maxTemperature",
+        "type": "Integer",
+        "description": "Maximum temperature of the DPE. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "maxTemperature"
+      },
+      {
+        "name": "currentSpeed",
+        "type": "Integer",
+        "description": "Current speed of the DPE SAS disk connection. ",
+        "displayValue": "currentSpeed"
+      },
+      {
+        "name": "maxSpeed",
+        "type": "Integer",
+        "description": "Maximum speed of the DPE SAS disk connection. The system uses a one hour window of 30-second samples to determine this value. ",
+        "displayValue": "maxSpeed"
+      },
+      {
+        "name": "parentSystem",
+        "type": "system",
+        "description": "Parent system of the Disk Processor Enclosure (DPE). ",
+        "displayValue": "parentSystem"
+      }
+    ]
+  }
+}

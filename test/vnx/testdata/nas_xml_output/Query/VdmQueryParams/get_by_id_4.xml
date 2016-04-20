@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <QueryStatus maxSeverity="ok"/>
+        <Vdm name="myvdm" state="loaded" mover="1" rootFileSystem="246"
+             vdm="4">
+            <Status maxSeverity="ok"/>
+            <Interfaces/>
+        </Vdm>
+    </Response>
+</ResponsePacket>

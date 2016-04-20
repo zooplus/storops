@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResponsePacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+    <Response>
+        <TaskResponse taskId="1200465">
+            <Status maxSeverity="error">
+                <Problem messageCode="13421842443" component="CS_CORE"
+                         message="Path busy: filesystem zhuanc_fs_100g is currently mounted on /zhuanc_fs_100g"
+                         severity="error">
+                    <Description></Description>
+                    <Action></Action>
+                </Problem>
+            </Status>
+        </TaskResponse>
+    </Response>
+</ResponsePacket>

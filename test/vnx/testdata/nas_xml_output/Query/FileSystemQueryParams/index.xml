@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Indices>
+    <Index output="get_fs_all.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_abc.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <Alias name="abc"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_src0.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <Alias name="fs_src0"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_by_id_27.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <FileSystem fileSystem="27"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_id_222.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <FileSystem fileSystem="222"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_id_243.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <FileSystem fileSystem="243"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_testfs.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <Alias name="testfs"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+    <Index output="get_fs_zzz.xml">
+        <RequestPacket xmlns="http://www.emc.com/schemas/celerra/xml_api">
+            <Request>
+                <Query>
+                    <FileSystemQueryParams>
+                        <AspectSelection fileSystemCapacityInfos="true"
+                                         fileSystems="true"/>
+                        <Alias name="zzz"/>
+                    </FileSystemQueryParams>
+                </Query>
+            </Request>
+        </RequestPacket>
+    </Index>
+</Indices>

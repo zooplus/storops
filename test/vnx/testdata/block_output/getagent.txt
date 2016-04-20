@@ -1,0 +1,17 @@
+
+Agent Rev:           7.33.8 (2.97)
+Name:                K10
+Desc:
+Node:                B-APM00153042305
+Physical Node:       K10
+Signature:           4022287
+Peer Signature:      4022290
+Revision:            05.33.008.3.297
+SCSI Id:             0
+Model:               VNX5800
+Model Type:          Rackmount
+Prom Rev:            33.40.00
+SP Memory:           32768
+Serial No:           APM00153042305
+SP Identifier:       B
+Cabinet:             DPE9

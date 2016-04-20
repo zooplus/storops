@@ -1,0 +1,157 @@
+{
+  "content": {
+    "name": "host",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the host instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the host instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "operationalStatus",
+        "type": "List<HostOperationalStatusEnum>",
+        "description": "Operational statuses for the host. ",
+        "displayValue": "operationalStatus"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the host, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Host name: <ul> <li>For an automatically-managed ESX server through vCenter, this is the display name in the vCenter GUI.</li> <li>For a manually-created host, this is the host name entered by the user.</li> </ul> ",
+        "displayValue": "name"
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "description": "Host description. ",
+        "displayValue": "description"
+      },
+      {
+        "name": "type",
+        "type": "HostTypeEnum",
+        "description": "Type of host configuration. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "osType",
+        "type": "String",
+        "description": "Operating system running on the host. ",
+        "displayValue": "osType"
+      },
+      {
+        "name": "hostUUID",
+        "type": "String",
+        "description": "(Applies to VCenter server and ESX host configurations only.) Universal Unique Identifier (UUID) of the host. ",
+        "displayValue": "hostUUID"
+      },
+      {
+        "name": "hostPushedUUID",
+        "type": "String",
+        "description": "(Applies to VCenter server and ESX host configurations only.) Pushed UUID of the host. ",
+        "displayValue": "hostPushedUUID"
+      },
+      {
+        "name": "hostPolledUUID",
+        "type": "String",
+        "description": "(Applies to VCenter server and ESX host configurations only.) Polled UUID of the host. ",
+        "displayValue": "hostPolledUUID"
+      },
+      {
+        "name": "isInitializationComplete",
+        "type": "Boolean",
+        "description": "Through indication only to tell clients to validate vm cache ",
+        "displayValue": "isInitializationComplete"
+      },
+      {
+        "name": "lastPollTime",
+        "type": "DateTime",
+        "description": "(Applies to hosts on ESX servers only.) Indicates the date and time when the storage array received the host configuration data from the ESX server. ",
+        "displayValue": "lastPollTime"
+      },
+      {
+        "name": "autoManageType",
+        "type": "HostManageEnum",
+        "description": "Indicates how the host is managed. ",
+        "displayValue": "autoManageType"
+      },
+      {
+        "name": "registrationType",
+        "type": "HostRegistrationTypeEnum",
+        "description": "Indicates how initiators are registered to the host. ",
+        "displayValue": "registrationType"
+      },
+      {
+        "name": "hostContainer",
+        "type": "hostContainer",
+        "description": "(Applies to VCenter server and ESX host configurations only.) Identifier of the parent host container, as defined by the hostContainer resource type. ",
+        "displayValue": "hostContainer"
+      },
+      {
+        "name": "fcHostInitiators",
+        "type": "List<hostInitiator>",
+        "description": "Identifiers of the Fibre Channel initiators associated with the host, as defined by the hostInitiator resource type. ",
+        "displayValue": "fcHostInitiators"
+      },
+      {
+        "name": "iscsiHostInitiators",
+        "type": "List<hostInitiator>",
+        "description": "Identifiers of the iSCSI initiators associated with the host, as defined by the hostInitiator resource type. ",
+        "displayValue": "iscsiHostInitiators"
+      },
+      {
+        "name": "hostIPPorts",
+        "type": "List<hostIPPort>",
+        "description": "Identifiers of the network ports associated with the host, as defined by the hostIPPort resource type. ",
+        "displayValue": "hostIPPorts"
+      },
+      {
+        "name": "storageResources",
+        "type": "List<storageResource>",
+        "description": "Identifiers of the storage resources used by the host, as defined by the storageResource resource type. ",
+        "displayValue": "storageResources"
+      },
+      {
+        "name": "hostLUNs",
+        "type": "List<hostLUN>",
+        "description": "(Applies to iSCSI and Fibre Channel host configurations only.) Identifiers of the LUNs accessible by the host, as defined by the hostLUN resource type. ",
+        "displayValue": "hostLUNs"
+      },
+      {
+        "name": "datastores",
+        "type": "List<datastore>",
+        "description": "The datastores associated with the current host",
+        "displayValue": "datastores"
+      },
+      {
+        "name": "nfsShareAccesses",
+        "type": "List<hostShare>",
+        "description": "The hostShares associated with the current host",
+        "displayValue": "nfsShareAccesses"
+      },
+      {
+        "name": "hostVVolDatastore",
+        "type": "List<hostVVolDatastore>",
+        "description": "The hostVVolDatastores associated with the current host",
+        "displayValue": "hostVVolDatastore"
+      },
+      {
+        "name": "vms",
+        "type": "List<vm>",
+        "description": "The vms associated with the current host",
+        "displayValue": "vms"
+      }
+    ]
+  }
+}

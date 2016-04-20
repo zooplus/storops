@@ -1,0 +1,21 @@
+{
+  "content": {
+    "id": "NFSShare_6",
+    "type": 1,
+    "role": 0,
+    "defaultAccess": 0,
+    "minSecurity": 0,
+    "instanceId": "root/emc:EMC_UEM_NFSShareLeaf%InstanceID=NFSShare_6",
+    "name": "ns5",
+    "path": "/",
+    "exportPaths": [
+      "10.244.220.120:/ns5"
+    ],
+    "description": "",
+    "creationTime": "2016-03-23T06:46:24.219Z",
+    "modificationTime": "2016-03-23T06:46:24.219Z",
+    "filesystem": {
+      "id": "fs_16"
+    }
+  }
+}

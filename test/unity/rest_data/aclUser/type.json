@@ -1,0 +1,45 @@
+{
+  "content": {
+    "name": "aclUser",
+    "description": "A user associated with a CIFS share level ACL. ",
+    "documentation": "https://10.244.223.66/apidocs/classes/aclUser.html",
+    "attributes": [
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique instance id. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "sid",
+        "type": "String",
+        "description": "Windows user id. ",
+        "displayValue": "sid"
+      },
+      {
+        "name": "domainName",
+        "type": "String",
+        "description": "Windows domain name. ",
+        "displayValue": "domainName"
+      },
+      {
+        "name": "userName",
+        "type": "String",
+        "description": "User name. ",
+        "displayValue": "userName"
+      },
+      {
+        "name": "isManaged",
+        "type": "Boolean",
+        "description": "Indicates whether the user is managed byt the storage system. Value are: <ul> <li>true - The user is managed by the storage system.</li> <li>false - The user is not managed by the storage system.</li> </ul> ",
+        "displayValue": "isManaged"
+      }
+    ]
+  }
+}

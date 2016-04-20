@@ -1,0 +1,3 @@
+The best practices check for the storagepool's creation did not finish successfully. The storagepool will not be created
+  Rule Messages
+      The number of NL SAS disks chosen for RAID 6 is less than minimum required. Number of NL SAS disks should be at least 4.

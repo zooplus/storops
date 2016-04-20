@@ -1,0 +1,43 @@
+{
+  "content": {
+    "name": "basicSystemInfo",
+    "attributes": [
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the basicSystemInfo instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "model",
+        "type": "String",
+        "description": "Model name of this storage system. This value comes from the model attribute of the system resource. ",
+        "displayValue": "model"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "Name of this storage system. This value comes from the name attribute of the system resource. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "softwareVersion",
+        "type": "String",
+        "description": "Software version of this storage system. This value comes from the version attribute of the installedSoftwareVersion resource. ",
+        "displayValue": "softwareVersion"
+      },
+      {
+        "name": "apiVersion",
+        "type": "String",
+        "description": "Latest version of the REST API that this storage system supports. ",
+        "displayValue": "apiVersion"
+      },
+      {
+        "name": "earliestApiVersion",
+        "type": "String",
+        "description": "Earliest version of the REST API that this storage system supports. ",
+        "displayValue": "earliestApiVersion"
+      }
+    ]
+  }
+}

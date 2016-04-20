@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 100663499,
+    "httpStatusCode": 422,
+    "messages": [
+      {
+        "en-US": "ACL User hasn't been found. Please check that username and domain are correct. (Error Code:0x60000cb)"
+      }
+    ],
+    "created": "2016-04-07T09:32:58.572Z"
+  }
+}

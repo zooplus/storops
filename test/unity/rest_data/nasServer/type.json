@@ -1,0 +1,169 @@
+{
+  "content": {
+    "name": "nasServer",
+    "attributes": [
+      {
+        "name": "instanceId",
+        "type": "String",
+        "description": "Internal identifier of the nasServer instance. ",
+        "displayValue": "instanceId"
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "description": "Unique identifier of the nasServer instance. ",
+        "displayValue": "id"
+      },
+      {
+        "name": "objectId",
+        "type": "Integer",
+        "description": "Unique backend or internal ID of the nasServer object ",
+        "displayValue": "objectId"
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "description": "User-specified name of the NAS server. ",
+        "displayValue": "name"
+      },
+      {
+        "name": "health",
+        "type": "health",
+        "description": "Health information for the NAS server, as defined by the health resource type. ",
+        "displayValue": "health"
+      },
+      {
+        "name": "homeSP",
+        "type": "storageProcessor",
+        "description": "Storage Processor on which the NAS Server is intended to run. ",
+        "displayValue": "homeSP"
+      },
+      {
+        "name": "currentSP",
+        "type": "storageProcessor",
+        "description": "Storage Processor on which the NAS server is currently running. ",
+        "displayValue": "currentSP"
+      },
+      {
+        "name": "pool",
+        "type": "pool",
+        "description": "Storage pool that stores the NAS server's configuration metadata, as defined by the pool resource type. ",
+        "displayValue": "pool"
+      },
+      {
+        "name": "sizeAllocated",
+        "type": "Integer",
+        "description": "Amount of storage pool space used for NAS server configuration. ",
+        "displayValue": "sizeAllocated"
+      },
+      {
+        "name": "isSystem",
+        "type": "Boolean",
+        "description": "Indicates whether the NAS server is a system NAS server. Value are: <ul> <li> true - NAS server is a system NAS server. </li> <li> false - NAS server is not a system NAS server. </li> </ul> ",
+        "displayValue": "isSystem"
+      },
+      {
+        "name": "isReplicationEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether a replication session is enabled for the NAS server. The NAS server can't be deleted while replication session is enabled. Values are: <ul> <li> true - Replication session is enabled. </li> <li> false - Replication session is disabled. </li> </ul> ",
+        "displayValue": "isReplicationEnabled"
+      },
+      {
+        "name": "isReplicationDestination",
+        "type": "Boolean",
+        "description": "Indicates whether the NAS server is a replication destination. Values are: <ul> <li>true - NAS server is a replication destination.</li> <li>false - NAS server is a not a replication destination.</li> </ul> ",
+        "displayValue": "isReplicationDestination"
+      },
+      {
+        "name": "replicationType",
+        "type": "ReplicationTypeEnum",
+        "description": "Replication type. ",
+        "displayValue": "replicationType"
+      },
+      {
+        "name": "type",
+        "type": "NasServerTypeEnum",
+        "description": "NAS server type. ",
+        "displayValue": "type"
+      },
+      {
+        "name": "defaultUnixUser",
+        "type": "String",
+        "description": "Default Unix user name to use for an unmapped Windows user. This value only applies when the value of allowUnmappedUser is true. ",
+        "displayValue": "defaultUnixUser"
+      },
+      {
+        "name": "defaultWindowsUser",
+        "type": "String",
+        "description": "Default Windows user name to use for an unmapped Unix user. This value only applies when the value of allowUnmappedUser is true. ",
+        "displayValue": "defaultWindowsUser"
+      },
+      {
+        "name": "currentUnixDirectoryService",
+        "type": "NasServerUnixDirectoryServiceEnum",
+        "description": "Unix Directory Service used to look up users and hosts. ",
+        "displayValue": "currentUnixDirectoryService"
+      },
+      {
+        "name": "isMultiProtocolEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether multiprotocol sharing mode is enabled. This mode enables simultaneous file access for Windows and Unix users. Values are: <ul> <li> true - Multiprotocol sharing mode is enabled. </li> <li> false - Multiprotocol sharing mode is disabled. </li> </ul> ",
+        "displayValue": "isMultiProtocolEnabled"
+      },
+      {
+        "name": "isWindowsToUnixUsernameMappingEnabled",
+        "type": "Boolean",
+        "description": "Indicates whether a Unix to/from Windows user name mapping is enabled. Values are: <ul> <li> true - Unix to/from Windows user name mapping is enabled. </li> <li> false - Unix to/from Windows user name mapping is disabled. </li> </ul> ",
+        "displayValue": "isWindowsToUnixUsernameMappingEnabled"
+      },
+      {
+        "name": "credentialsCacheTTL",
+        "type": "DateTime",
+        "description": "DEPRECATED. The similar property was added to NFS server. Time-To-Live expiration stamp for a Windows entry in the credentials cache. When failed mapping entries expire, the system retries mapping the UID to the SID. ",
+        "displayValue": "credentialsCacheTTL"
+      },
+      {
+        "name": "isExtendedUnixCredentialEnabled",
+        "type": "Boolean",
+        "description": "DEPRECATED. The similar property was added to NFS server. Indicates whether more than 16 Unix groups are supported in a Unix credential. Values are: <ul> <li> true - NAS server supports more than 16 Unix groups in a Unix credential. </li> <li> false - NAS server does not support more than 16 Unix groups in a Unix credential. </li> </ul> ",
+        "displayValue": "isExtendedUnixCredentialEnabled"
+      },
+      {
+        "name": "allowUnmappedUser",
+        "type": "Boolean",
+        "description": "Indicates whether an unmappped user can access the NAS server as a default user. Values are: <ul> <li> true - Allow access for unmapped users. </li> <li> false - Disallow access for unmapped users. </li> </ul> ",
+        "displayValue": "allowUnmappedUser"
+      },
+      {
+        "name": "cifsServer",
+        "type": "List<cifsServer>",
+        "description": "The cifsServers associated with the current nasServer",
+        "displayValue": "cifsServer"
+      },
+      {
+        "name": "fileDNSServer",
+        "type": "fileDNSServer",
+        "description": "The fileDNSServer associated with the current nasServer",
+        "displayValue": "fileDNSServer"
+      },
+      {
+        "name": "fileInterface",
+        "type": "List<fileInterface>",
+        "description": "The fileInterfaces associated with the current nasServer",
+        "displayValue": "fileInterface"
+      },
+      {
+        "name": "preferredInterfaceSettings",
+        "type": "preferredInterfaceSettings",
+        "description": "The preferredInterfaceSettings associated with the current nasServer",
+        "displayValue": "preferredInterfaceSettings"
+      },
+      {
+        "name": "virusChecker",
+        "type": "virusChecker",
+        "description": "The virusChecker associated with the current nasServer",
+        "displayValue": "virusChecker"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+Name of the software package:        -Compression
+Revision of the software package:    -
+Commit Required:                     NO
+Revert Possible:                     NO
+Active State:                        YES
+Is installation completed:           YES
+Is this System Software:             NO
