@@ -14,7 +14,7 @@ Write Intent Log Used:  YES
 Images:
 Image UID:  50:06:01:60:B6:E0:1C:F4
 Is Image Primary:  YES
-Logical Unit UID:  60:06:01:60:13:00:3E:00:DA:87:CE:87:F2:B5:E5:11
+Logical Unit UID:  60:06:01:60:1A:50:35:00:6D:29:F1:FC:85:78:E5:11
 Image Condition:  Primary Image
 Preferred SP:  A
 
@@ -86,7 +86,7 @@ Preferred SP:  A
 
 Image UID:  50:06:01:60:B6:E0:1C:F4
 Is Image Primary:  NO
-Logical Unit UID:  60:06:01:60:54:00:3E:00:3D:3F:F0:9D:CD:94:E5:11
+Logical Unit UID:  60:06:01:60:1A:50:35:00:6D:29:F1:FC:85:78:E5:11
 Image State:  Synchronized
 Image Condition:  Normal
 Recovery Policy:  Manual
@@ -119,7 +119,7 @@ Preferred SP:  A
 
 Image UID:  50:06:01:60:B6:E0:1C:F4
 Is Image Primary:  NO
-Logical Unit UID:  60:06:01:60:54:00:3E:00:85:1C:A5:C0:E3:94:E5:11
+Logical Unit UID:  60:06:01:60:1A:50:35:00:6D:29:F1:FC:85:78:E5:11
 Image State:  Synchronized
 Image Condition:  Normal
 Recovery Policy:  Manual

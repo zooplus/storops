@@ -1,0 +1,1 @@
+Creating mirror failed. Specified LU not available for mirroring.

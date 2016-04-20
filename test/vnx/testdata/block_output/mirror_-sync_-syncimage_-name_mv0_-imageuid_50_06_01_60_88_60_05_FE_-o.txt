@@ -1,0 +1,5 @@
+Synchronizing sync mirror image failed. Cannot synchronize the image because of
+- This was a primary image. OR
+- The image is neither out-of-sync nor fractured. OR
+- The parent mirror is in the attention state. OR
+- The image is participating in a group.

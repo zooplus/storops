@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from storops.lib.common import instance_cache
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
-from storops.vnx.resource.lun import VNXLun, VNXLunList
+import storops.vnx.resource.lun
 from storops import exception as ex
 
 __author__ = 'Cedric Zhuang'
@@ -118,7 +118,8 @@ class VNXPool(VNXCliResource):
             **pool)
         ex.raise_if_err(ret, 'error creating lun.',
                         default=ex.VNXCreateLunError)
-        return VNXLun(lun_id, lun_name, self._cli)
+        lun_clz = storops.vnx.resource.lun.VNXLun
+        return lun_clz(lun_id, lun_name, self._cli)
 
     @staticmethod
     def remove_lun(lun, remove_snapshots=False, force_detach=False):
@@ -129,7 +130,8 @@ class VNXPool(VNXCliResource):
 
     @instance_cache
     def get_lun(self):
-        return VNXLunList(self._cli, pool=self)
+        clz = storops.vnx.resource.lun.VNXLunList
+        return clz(self._cli, pool=self)
 
     @property
     def lun_list(self):

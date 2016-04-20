@@ -47,6 +47,8 @@ class VNXLunTest(TestCase):
     def test_lun_status(self):
         lun = self.get_lun()
         assert_that(lun.status, equal_to('OK(0x0)'))
+        wwn = '60:06:01:60:1A:50:35:00:6D:29:F1:FC:85:78:E5:11'
+        assert_that(lun.wwn, equal_to(wwn))
 
     @patch_cli()
     def test_lun_id_setter_str_input(self):
@@ -468,6 +470,29 @@ class VNXLunTest(TestCase):
 
         assert_that(f, raises(VNXTargetNotReadyError,
                               'not available for migration'))
+
+    @patch_cli()
+    def test_create_mirror_view(self):
+        l = VNXLun(lun_id=245, cli=t_cli())
+        mv = l.create_mirror_view('mv0')
+        assert_that(mv.state, equal_to('Active'))
+
+    @patch_cli()
+    def test_get_source_mirror_view(self):
+        l = self.get_lun()
+        assert_that(len(l.get_mirror_view(as_src=True)), equal_to(1))
+
+    @patch_cli()
+    def test_get_target_mirror_view(self):
+        l = self.get_lun()
+        assert_that(len(l.get_mirror_view(as_tgt=True)), equal_to(2))
+
+    @patch_cli()
+    def test_get_mirror_view_all(self):
+        l = self.get_lun()
+        assert_that(len(l.get_mirror_view(as_src=True, as_tgt=True)),
+                    equal_to(3))
+        assert_that(len(l.get_mirror_view()), equal_to(3))
 
 
 class VNXLunListTest(TestCase):

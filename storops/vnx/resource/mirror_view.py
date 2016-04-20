@@ -15,11 +15,12 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.exception import VNXObjectNotFound
-from storops.lib.common import check_text
+from storops.exception import VNXObjectNotFound, raise_if_err, \
+    VNXMirrorException, VNXMirrorImageNotFoundError
+from storops.lib.common import check_text, instance_cache
 from storops.vnx.enums import VNXMirrorViewRecoveryPolicy
 from storops.vnx.enums import VNXMirrorViewSyncRate
-from storops.vnx.resource.lun import VNXLun
+import storops.vnx.resource.lun
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 
 __author__ = 'Cedric Zhuang'
@@ -58,6 +59,14 @@ class VNXMirrorView(VNXCliResource):
         return self._cli.get_mirror_view(name=self._name, poll=self.poll)
 
     @classmethod
+    def create(cls, cli, name, src_lun):
+        lun_clz = storops.vnx.resource.lun.VNXLun
+        lun_id = lun_clz.get_id(src_lun)
+        out = cli.create_mirror_view(name, lun_id)
+        raise_if_err(out, default=VNXMirrorException)
+        return VNXMirrorView(name, cli=cli)
+
+    @classmethod
     def get(cls, cli, name=None):
         if name is None:
             ret = VNXMirrorViewList(cli)
@@ -68,10 +77,15 @@ class VNXMirrorView(VNXCliResource):
     def add_image(self, sp_ip, lun_id,
                   recovery_policy=VNXMirrorViewRecoveryPolicy.AUTO,
                   sync_rate=VNXMirrorViewSyncRate.HIGH):
-        lun_id = VNXLun.get_id(lun_id)
-        self._cli.add_mirror_view_image(self._get_name(), sp_ip, lun_id,
-                                        recovery_policy, sync_rate,
-                                        poll=self.poll)
+        if hasattr(sp_ip, 'spa_ip'):
+            sp_ip = sp_ip.spa_ip
+
+        lun_clz = storops.vnx.resource.lun.VNXLun
+        lun_id = lun_clz.get_id(lun_id)
+        out = self._cli.add_mirror_view_image(self._get_name(), sp_ip, lun_id,
+                                              recovery_policy, sync_rate,
+                                              poll=self.poll)
+        raise_if_err(out, default=VNXMirrorException)
 
     def get_image(self, image_id):
         for image in self.images:
@@ -87,25 +101,83 @@ class VNXMirrorView(VNXCliResource):
     def _get_image_id(image_id):
         return VNXMirrorViewImage.get_id(image_id)
 
-    def remove_image(self, image_id):
-        image_id = self._get_image_id(image_id)
-        self._cli.remove_mirror_view_image(self._get_name(), image_id,
-                                           poll=self.poll)
+    @property
+    @instance_cache
+    def primary_image(self):
+        for image in self.images:
+            if image.is_primary:
+                ret = image
+                break
+        else:
+            ret = None
+        return ret
 
-    def fracture_image(self, image_id):
-        image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_fracture_image(self._get_name(), image_id,
-                                             poll=self.poll)
+    @property
+    @instance_cache
+    def secondary_image(self):
+        for image in self.images:
+            if not image.is_primary:
+                ret = image
+                break
+        else:
+            ret = None
+        return ret
 
-    def sync_image(self, image_id):
-        image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_sync_image(self._get_name(), image_id,
-                                         poll=self.poll)
+    @property
+    def primary_image_id(self):
+        return self.primary_image.uid
 
-    def promote_image(self, image_id):
+    @property
+    def secondary_image_id(self):
+        image = self.secondary_image
+        if image is None:
+            raise VNXMirrorImageNotFoundError(
+                'no secondary image exists for this mirror view.')
+        return image.uid
+
+    def remove_image(self, image_id=None):
+        if image_id is None:
+            image_id = self.secondary_image_id
+
         image_id = self._get_image_id(image_id)
-        self._cli.mirror_view_promote_image(self._get_name(), image_id,
-                                            poll=self.poll)
+        out = self._cli.remove_mirror_view_image(self._get_name(), image_id,
+                                                 poll=self.poll)
+        raise_if_err(out, default=VNXMirrorException)
+
+    def fracture_image(self, image_id=None):
+        if image_id is None:
+            image_id = self.secondary_image_id
+
+        image_id = self._get_image_id(image_id)
+        out = self._cli.mirror_view_fracture_image(self._get_name(), image_id,
+                                                   poll=self.poll)
+        raise_if_err(out, default=VNXMirrorException)
+
+    def sync_image(self, image_id=None):
+        if image_id is None:
+            image_id = self.secondary_image_id
+
+        image_id = self._get_image_id(image_id)
+        out = self._cli.mirror_view_sync_image(self._get_name(), image_id,
+                                               poll=self.poll)
+        raise_if_err(out, default=VNXMirrorException)
+
+    def promote_image(self, image_id=None):
+        if image_id is None:
+            image_id = self.secondary_image_id
+
+        image_id = self._get_image_id(image_id)
+        out = self._cli.mirror_view_promote_image(self._get_name(), image_id,
+                                                  poll=self.poll)
+        raise_if_err(out, default=VNXMirrorException)
+
+    def remove(self, force=False):
+        if force:
+            if self.secondary_image:
+                self.remove_image()
+
+        out = self._cli.remove_mirror_view(self._get_name())
+        raise_if_err(out, default=VNXMirrorException)
 
 
 class VNXMirrorViewList(VNXCliResourceList):
@@ -113,9 +185,24 @@ class VNXMirrorViewList(VNXCliResourceList):
     def get_resource_class(cls):
         return VNXMirrorView
 
-    def __init__(self, cli=None):
+    def __init__(self, cli=None, src_lun=None, tgt_lun=None):
         super(VNXMirrorViewList, self).__init__()
         self._cli = cli
+        self._src_lun = src_lun
+        self._tgt_lun = tgt_lun
+
+    def _filter(self, item):
+        if self._src_lun is None and self._tgt_lun is None:
+            ret = True
+        else:
+            ret = False
+            pi = item.primary_image
+            si = item.secondary_image
+            if self._src_lun is not None:
+                ret |= self._src_lun.wwn == pi.logical_unit_uid
+            if self._tgt_lun is not None and si is not None:
+                ret |= self._tgt_lun.wwn == si.logical_unit_uid
+        return ret
 
     def _get_raw_resource(self):
         return self._cli.get_mirror_view(poll=self.poll)

@@ -15,6 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.vnx.resource.mirror_view import VNXMirrorView
+
 from storops.vnx.enums import VNXPortType
 from storops.lib.common import daemon, instance_cache
 from storops.vnx.block_cli import CliClient
@@ -270,6 +272,12 @@ class VNXSystem(VNXCliResource):
 
     def create_block_user(self, name, password, scope=None, role=None):
         return VNXBlockUser.create(self._cli, name, password, scope, role)
+
+    def get_mirror_view(self, name=None):
+        return VNXMirrorView.get(self._cli, name)
+
+    def create_mirror_view(self, name, src_lun):
+        return VNXMirrorView.create(self._cli, name, src_lun)
 
     def __del__(self):
         del self._cli

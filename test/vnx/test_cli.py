@@ -610,7 +610,7 @@ class CliClientTest(TestCase):
     @extract_command
     def test_remove_mirror_view(self):
         cmd = self.client.remove_mirror_view('mv')
-        assert_that(cmd, equal_to('mirror -sync -destroy -name mv -force -o'))
+        assert_that(cmd, equal_to('mirror -sync -destroy -name mv -o'))
 
     @extract_command
     def test_add_mirror_view_image(self):

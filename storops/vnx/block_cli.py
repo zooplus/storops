@@ -594,7 +594,7 @@ class CliClient(object):
     def remove_mirror_view(self, name):
         cmd = 'mirror -sync -destroy'.split()
         cmd += text_var('-name', name)
-        cmd += ['-force', '-o']
+        cmd.append('-o')
         return cmd
 
     @command

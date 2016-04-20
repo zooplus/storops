@@ -717,6 +717,66 @@ class VNXRemovePoolError(VNXPoolError):
     pass
 
 
+class VNXMirrorException(VNXException):
+    pass
+
+
+@cli_exception
+class VNXMirrorLunNotAvailableError(VNXMirrorException):
+    error_message = 'Specified LU not available for mirroring.'
+
+
+@cli_exception
+class VNXMirrorNameInUseError(VNXMirrorException):
+    error_message = 'Mirror name already in use'
+
+
+@cli_exception
+class VNXMirrorAlreadyMirroredError(VNXMirrorException):
+    error_message = ('A mirror image for the specified mirror '
+                     'already exists on the chosen subsystem')
+
+
+@cli_exception
+class VNXMirrorImageNotFoundError(VNXMirrorException):
+    error_message = 'Image not found'
+
+
+@cli_exception
+class VNXMirrorFractureImageError(VNXMirrorException):
+    error_message = 'Cannot fracture the image because of'
+
+
+@cli_exception
+class VNXMirrorSyncImageError(VNXMirrorException):
+    error_message = 'Synchronizing sync mirror image failed'
+
+
+@cli_exception
+class VNXMirrorPromoteNonLocalImageError(VNXMirrorException):
+    error_code = 0x7105824e
+
+
+@cli_exception
+class VNXMirrorPromotePrimaryError(VNXMirrorException):
+    error_message = 'Cannot remove or promote a primary image.'
+
+
+@cli_exception
+class VNXMirrorFeatureNotAvailableError(VNXMirrorException):
+    error_message = 'Mirror Feature software is not installed'
+
+
+@cli_exception
+class VNXMirrorNotFoundError(VNXMirrorException):
+    error_message = 'Mirror not found'
+
+
+@cli_exception
+class VNXRemoveMirrorWithSecondaryError(VNXMirrorException):
+    error_code = 0x71058243
+
+
 @xmlapi_exception
 class VNXGeneralNasError(VNXException):
     error_code = 13690601492

@@ -18,6 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, instance_of, raises
+from storops.vnx.resource.mirror_view import VNXMirrorViewList
 
 from storops.exception import VNXRemoveHbaNotFoundError, VNXUserNameInUseError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
@@ -253,3 +254,15 @@ class VNXSystemTest(TestCase):
             self.vnx.create_block_user('b', 'b', role=VNXUserRoleEnum.OPERATOR)
 
         assert_that(f, raises(VNXUserNameInUseError, 'failed'))
+
+    @patch_cli()
+    def test_get_mirror_view(self):
+        mv_list = self.vnx.get_mirror_view()
+        assert_that(mv_list, instance_of(VNXMirrorViewList))
+        assert_that(len(mv_list), equal_to(4))
+
+    @patch_cli()
+    def test_create_mirror_view(self):
+        lun = VNXLun(245)
+        mv = self.vnx.create_mirror_view('mv0', lun)
+        assert_that(mv.state, equal_to('Active'))

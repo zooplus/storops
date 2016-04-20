@@ -24,6 +24,7 @@ import storops.vnx.resource.block_pool
 from storops.vnx.resource.migration import VNXMigrationSession
 import storops.vnx.resource.sg
 import storops.vnx.resource.cg
+import storops.vnx.resource.mirror_view
 from storops.vnx.resource.snap import VNXSnap, VNXSnapList
 
 __author__ = 'Cedric Zhuang'
@@ -305,3 +306,21 @@ class VNXLun(VNXCliResource):
 
     def disable_dedup(self):
         self._update_dedup_state(False)
+
+    def create_mirror_view(self, name):
+        clz = storops.vnx.resource.mirror_view.VNXMirrorView
+        return clz.create(self._cli, name, self)
+
+    def get_mirror_view(self, as_src=None, as_tgt=None):
+        src_lun = None
+        tgt_lun = None
+        if as_src is None and as_tgt is None:
+            src_lun = self
+            tgt_lun = self
+        if as_src:
+            src_lun = self
+        if as_tgt:
+            tgt_lun = self
+
+        clz = storops.vnx.resource.mirror_view.VNXMirrorViewList
+        return clz(self._cli, src_lun=src_lun, tgt_lun=tgt_lun)

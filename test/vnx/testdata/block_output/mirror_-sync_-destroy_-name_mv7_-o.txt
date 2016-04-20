@@ -1,0 +1,1 @@
+Attempt to destroy a mirror which still has at least one secondary image (0x71058243)

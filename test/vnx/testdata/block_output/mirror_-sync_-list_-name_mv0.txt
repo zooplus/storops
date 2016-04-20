@@ -1,0 +1,31 @@
+MirrorView Name:  mv0
+MirrorView Description:
+MirrorView UID:  50:06:01:60:B6:E0:1C:F4:3A:00:00:00:00:00:00:00
+Logical Unit Numbers:  245
+Remote Mirror Status:  Mirrored
+MirrorView State:  Active
+MirrorView Faulted:  NO
+MirrorView Transitioning:  NO
+Quiesce Threshold:  60
+Minimum number of images required:  0
+Image Size:  2097152
+Image Count:  2
+Write Intent Log Used:  YES
+Images:
+Image UID:  50:06:01:60:B6:E0:1C:F4
+Is Image Primary:  YES
+Logical Unit UID:  60:06:01:60:13:00:3E:00:0D:B3:91:10:A2:06:E6:11
+Image Condition:  Primary Image
+Preferred SP:  A
+
+Image UID:  50:06:01:60:88:60:05:FE
+Is Image Primary:  NO
+Logical Unit UID:  60:06:01:60:08:20:33:00:9B:8F:A0:8F:CF:06:E6:11
+Image State:  Synchronized
+Image Condition:  Normal
+Recovery Policy:  Automatic
+Preferred SP:  A
+Synchronization Rate:  High
+Image Faulted:  NO
+Image Transitioning:  NO
+Synchronizing Progress(%):  100

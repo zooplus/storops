@@ -430,7 +430,7 @@ VNXMirrorView:
       converter: to_bool
     - label: "Images:"
       converter: VNXMirrorViewImageList
-      end_pattern: "Recovery Policy:"
+      end_pattern: "[Recovery Policy:|\\Z]"
     - label: "Recovery Policy:"
       converter: to_mirror_view_recovery_policy
     - label: "Preferred SP:"
@@ -453,8 +453,14 @@ VNXMirrorViewImage:
       key: uid
     - label: "Is Image Primary:"
       converter: to_bool
+      key: is_primary
     - label: "Logical Unit UID:"
+    - label: "Image State:"
+      key: state
+      converter: VNXMirrorImageState
     - label: "Image Condition:"
+      key: condition
+      converter: VNXMirrorImageCondition
     - label: "Preferred SP:"
       converter: to_sp_enum
 

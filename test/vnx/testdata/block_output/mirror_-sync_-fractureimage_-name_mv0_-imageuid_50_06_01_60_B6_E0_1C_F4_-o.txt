@@ -1,0 +1,5 @@
+Fracturing sync mirror image failed. Cannot fracture the image because of
+- This was a primary image. OR
+- The image was already admin fractured. OR
+- The image is not in-sync or consistent. OR
+- The image is participating in a group.
