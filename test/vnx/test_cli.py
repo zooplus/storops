@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, contains_string, equal_to, calling, raises
 
 from test.vnx.cli_mock import patch_cli, extract_command, MockCli
-from storops.exception import VNXSystemDownError
+from storops.exception import VNXSystemDownError, VNXCredentialError
 from storops.vnx.block_cli import CliClient
 from storops.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
     VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType, VNXUserRoleEnum
@@ -65,7 +65,7 @@ class CliClientTest(TestCase):
             client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)
             client.get_agent()
 
-        assert_that(f, raises(ValueError, 'missing'))
+        assert_that(f, raises(VNXCredentialError, 'missing'))
 
     @patch_cli()
     def test_set_credential(self):
@@ -73,7 +73,7 @@ class CliClientTest(TestCase):
         try:
             client.get_agent()
             self.fail('should have throw exception')
-        except ValueError:
+        except VNXCredentialError:
             pass
         client.set_credential(password='a')
         output = client.get_lun(lun_id=0)

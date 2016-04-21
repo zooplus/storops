@@ -20,8 +20,10 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, none, instance_of, raises
 from storops.vnx.resource.mirror_view import VNXMirrorViewList
 
-from storops.exception import VNXDeleteHbaNotFoundError, VNXUserNameInUseError
+from storops.exception import VNXDeleteHbaNotFoundError, VNXCredentialError, \
+    VNXUserNameInUseError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
+from storops.vnx.resource.vnx_domain import VNXDomainMemberList
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
@@ -266,3 +268,14 @@ class VNXSystemTest(TestCase):
         lun = VNXLun(245)
         mv = self.vnx.create_mirror_view('mv0', lun)
         assert_that(mv.state, equal_to('Active'))
+
+    @patch_cli(output='credential_error.txt')
+    def test_credential_error(self):
+        def f():
+            return VNXSystem('10.244.211.30', heartbeat_interval=0).spa_ip
+
+        assert_that(f, raises(VNXCredentialError, 'invalid username'))
+
+    @patch_cli()
+    def test_domain_properties(self):
+        assert_that(self.vnx.domain, instance_of(VNXDomainMemberList))

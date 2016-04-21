@@ -17,8 +17,9 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that
+from hamcrest import equal_to, assert_that, raises
 
+from storops.exception import VNXCredentialError
 from test.vnx.cli_mock import patch_cli
 from storops.vnx.navi_command import NaviCommand
 
@@ -61,3 +62,9 @@ class NaviCommandTest(TestCase):
     def test_security_level_low(self):
         cmd = NaviCommand()
         assert_that(cmd.get_security_level('naviseccli'), equal_to('low'))
+
+    def test_error_credentials(self):
+        cmd = NaviCommand('a')
+        assert_that(cmd.is_credential_valid, equal_to(True))
+        assert_that(cmd.get_credentials, raises(VNXCredentialError, 'missing'))
+        assert_that(cmd.is_credential_valid, equal_to(False))

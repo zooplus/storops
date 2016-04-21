@@ -23,7 +23,7 @@ from storops.vnx.resource.port import VNXStorageGroupHBAList
 from test.vnx.cli_mock import patch_cli, t_cli
 from storops.exception import VNXStorageGroupError, \
     VNXStorageGroupNameInUseError, VNXDetachAluNotFoundError, \
-    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXAluNumberInUseError
+    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXHluNumberInUseError
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.sg import VNXStorageGroupList, VNXStorageGroup
@@ -168,7 +168,7 @@ class VNXStorageGroupTest(TestCase):
             sg = self.test_sg()
             sg.attach_alu(13, retry_limit=2)
 
-        assert_that(f, raises(VNXAluNumberInUseError,
+        assert_that(f, raises(VNXHluNumberInUseError,
                               'LUN Number already in use'))
 
     @patch_cli()

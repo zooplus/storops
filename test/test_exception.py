@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, raises
 
 from storops.exception import StoropsException, check_error, \
-    VNXSpNotAvailableError
+    VNXSpNotAvailableError, VNXNotSupportedError
 
 __author__ = 'Cedric Zhuang'
 
@@ -64,3 +64,17 @@ class ExceptionTest(TestCase):
         out = 'The specified source LUN is not currently migrating.'
         # no exception, not checking a `VNXLunNotMigratingError`
         check_error(out, VNXSpNotAvailableError)
+
+    def test_check_error_found_in_multiple_errors(self):
+        def f():
+            out = ("A network error occurred while trying to connect: "
+                   "'10.244.211.39'.\n"
+                   "Message : Error occurred because of time out")
+            check_error(out, VNXNotSupportedError, VNXSpNotAvailableError)
+
+        assert_that(f, raises(VNXSpNotAvailableError))
+
+    def test_check_error_not_found_in_multiple_errors(self):
+        out = 'The specified source LUN is not currently migrating.'
+        # no exception, not checking a `VNXLunNotMigratingError`
+        check_error(out, VNXNotSupportedError, VNXSpNotAvailableError)

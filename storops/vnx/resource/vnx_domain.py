@@ -107,9 +107,7 @@ class VNXDomainMemberList(VNXCliResourceList):
         return VNXDomainMember
 
     def _get_raw_resource(self):
-        raise NotImplementedError('cli does not support list domain member'
-                                  'of a specified node.  '
-                                  'please use VNXDomainNode instead.')
+        return self._cli.get_domain()
 
 
 class VNXDomainMember(VNXCliResource):
@@ -124,6 +122,11 @@ class VNXDomainMember(VNXCliResource):
     @property
     def is_master(self):
         return 'Master' in self.ip_address
+
+    def _get_raw_resource(self):
+        raise NotImplementedError('cli does not support list domain member '
+                                  'of a specified node.  '
+                                  'please use VNXDomainNode instead.')
 
 
 class VNXNetworkAdmin(VNXCliResource):

@@ -212,16 +212,16 @@ def raise_if_err(out, msg=None, default=None):
         raise ex_clz(msg)
 
 
-def check_error(out, ex_clz):
+def check_error(out, *ex_clz_list):
     """ check whether this cli output contains the specified exception
 
     :param out: output of naviseccli
-    :param ex_clz: exception class to check
+    :param ex_clz_list: exception class to check
     :return: nothing, raise `ex_clz` if match
     """
     try:
         raise_if_err(out)
-    except ex_clz:
+    except ex_clz_list:
         raise
     except StoropsException:
         # swallow other errors
@@ -461,7 +461,7 @@ class VNXAluNotFoundError(VNXAttachAluError):
 
 
 @cli_exception
-class VNXAluNumberInUseError(VNXAttachAluError):
+class VNXHluNumberInUseError(VNXAttachAluError):
     error_message = 'Requested Host LUN Number already in use'
 
 
@@ -677,6 +677,11 @@ class VNXPingNodeSuccess(VNXPingNodeError):
 
 class VNXSecurityException(VNXException):
     pass
+
+
+@cli_exception
+class VNXCredentialError(VNXSecurityException):
+    error_message = 'invalid username, password and/or scope.'
 
 
 @cli_exception

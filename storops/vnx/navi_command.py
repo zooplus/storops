@@ -23,7 +23,7 @@ from subprocess import Popen, PIPE
 
 import time
 
-from storops.exception import NaviseccliNotAvailableError
+import storops.exception as ex
 from storops.lib.common import int_var, text_var, synchronized, cache
 
 __author__ = 'Cedric Zhuang'
@@ -40,6 +40,7 @@ class NaviCommand(object):
         self._sec_file = sec_file
         self._timeout = timeout
         self._customized_cli = naviseccli
+        self._is_credential_valid = True
 
     MAX_TIMEOUT = 1800
     MIN_TIMEOUT = 3
@@ -54,6 +55,7 @@ class NaviCommand(object):
             self._scope = scope
         if sec_file is not None:
             self._sec_file = sec_file
+        self._is_credential_valid = True
 
     @property
     def timeout(self):
@@ -70,6 +72,10 @@ class NaviCommand(object):
                 ret = 3
         return ret
 
+    @property
+    def is_credential_valid(self):
+        return self._is_credential_valid
+
     def get_credentials(self):
         if self._username is None and self._password is None:
             # use security file
@@ -78,7 +84,8 @@ class NaviCommand(object):
             else:
                 ret = []
         elif self._username is None or self._password is None:
-            raise ValueError('username or password missing.')
+            self._is_credential_valid = False
+            raise ex.VNXCredentialError('username or password missing.')
         else:
             ret = ['-user', self._username,
                    '-password', self._password,
@@ -125,7 +132,7 @@ class NaviCommand(object):
         try:
             p = Popen(cmd, stdout=PIPE, stderr=PIPE)
         except OSError:
-            raise NaviseccliNotAvailableError()
+            raise ex.NaviseccliNotAvailableError()
         output = p.stdout.read()
         p.wait()
         rc = p.returncode

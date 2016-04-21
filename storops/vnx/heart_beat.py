@@ -183,7 +183,7 @@ class NodeHeartBeat(NaviCommand):
         return self._interval
 
     def _run(self):
-        while self.interval > 0:
+        while self.interval > 0 and self.is_credential_valid:
             self.heart_beat()
             sleep(self.interval)
         self._heartbeat_thread = None
@@ -210,15 +210,22 @@ class NodeHeartBeat(NaviCommand):
     def execute_cmd(self, ip, cmd, raise_on_rc=None, check_rc=False):
         self.update_by_ip(ip, working=True)
         start = time()
+        if not self.is_credential_valid:
+            raise ex.VNXCredentialError(
+                'cannot authenticate with user {}.'.format(self._username))
         out = self.execute_naviseccli(cmd, raise_on_rc, check_rc)
         try:
-            ex.check_error(out, ex.VNXSpNotAvailableError)
+            ex.check_error(out, ex.VNXSpNotAvailableError,
+                           ex.VNXCredentialError)
             available = True
             latency = time() - start
         except ex.VNXSpNotAvailableError:
             log.exception('{} is not available.  detail: {}'.format(ip, out))
             available = False
             latency = None
+        except ex.VNXCredentialError:
+            self._is_credential_valid = False
+            raise
 
         self.update_by_ip(ip, available, False, latency)
         self.command_count += 1

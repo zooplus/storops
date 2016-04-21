@@ -229,7 +229,7 @@ class VNXStorageGroup(VNXCliResource):
         def _update():
             self.update()
 
-        @retry(on_error=ex.VNXAluNumberInUseError, on_retry=_update,
+        @retry(on_error=ex.VNXHluNumberInUseError, on_retry=_update,
                limit=retry_limit)
         def _do(alu_id):
             hlu = self._get_hlu_to_add(alu_id)
