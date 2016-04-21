@@ -119,12 +119,8 @@ class NaviCommand(object):
     @classmethod
     def execute_naviseccli(cls, cmd,
                            raise_on_rc=None, check_rc=False):
-        def _log_command():
-            cmd_str = ' '.join(cmd)
-            log.debug('call command: {}'.format(cmd_str))
-
         cmd = list(map(six.text_type, cmd))
-        _log_command()
+        cls._log_command(cmd)
         start = time.time()
         try:
             p = Popen(cmd, stdout=PIPE, stderr=PIPE)
@@ -133,9 +129,7 @@ class NaviCommand(object):
         output = p.stdout.read()
         p.wait()
         rc = p.returncode
-        log.debug('time consumed (s): {}\n'
-                  'return code: {}\n'
-                  'output:\n{}'.format(time.time() - start, rc, output))
+        cls._log_output(output, rc, start)
         if rc is not None:
             if rc == raise_on_rc or (check_rc and rc != 0):
                 raise ValueError('raise error on return code "{}".'
@@ -143,6 +137,19 @@ class NaviCommand(object):
         if isinstance(output, bytes):
             output = output.decode("utf-8")
         return output.strip()
+
+    @classmethod
+    def _log_command(cls, cmd):
+        log.debug('call command: {}'.format(' '.join(cmd)))
+
+    @classmethod
+    def _log_output(cls, output, rc, start):
+        if log.isEnabledFor(logging.DEBUG):
+            output = output.replace('\r\n', '\n')
+            dt = time.time() - start
+            log.debug('time consumed (s): {}\n'
+                      'return code: {}\n'
+                      'output:\n{}'.format(dt, rc, output))
 
     @classmethod
     def get_security_level(cls, binary):

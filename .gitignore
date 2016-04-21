@@ -20,3 +20,4 @@ clover.xml
 htmlcov/
 .coverage
 .coverage.*
+logs/
