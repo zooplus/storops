@@ -460,7 +460,6 @@ VNXMirrorViewImage:
       converter: VNXMirrorImageState
     - label: "Image Condition:"
       key: condition
-      converter: VNXMirrorImageCondition
     - label: "Preferred SP:"
       converter: to_sp_enum
 

@@ -124,6 +124,10 @@ class VNXMirrorView(VNXCliResource):
         return ret
 
     @property
+    def is_primary(self):
+        return self.remote_mirror_status == 'Mirrored'
+
+    @property
     def primary_image_id(self):
         return self.primary_image.uid
 

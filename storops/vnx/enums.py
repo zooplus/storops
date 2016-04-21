@@ -315,13 +315,3 @@ class VNXMirrorImageState(VNXEnum):
     INCOMPLETE = 'Incomplete'
     LOCAL_ONLY = 'Local Only'
     EMPTY = 'Empty'
-
-
-class VNXMirrorImageCondition(VNXEnum):
-    PRIMARY = 'Primary Image'
-    NORMAL = 'Normal'
-    INITIALIZING = 'Initializing'
-    UPDATING = 'Updating'
-    ADMIN_FRACTURED = 'Admin Fractured'
-    SYSTEM_FRACTURED = 'System Fractured'
-    WAITING_ON_ADMIN = 'Waiting on Admin'
