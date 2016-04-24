@@ -207,13 +207,13 @@ class NodeHeartBeat(NaviCommand):
             # there is no loop check
             self._heartbeat_thread = daemon(self._run)
 
-    def execute_cmd(self, ip, cmd, raise_on_rc=None, check_rc=False):
+    def execute_cmd(self, ip, cmd):
         self.update_by_ip(ip, working=True)
         start = time()
         if not self.is_credential_valid:
             raise ex.VNXCredentialError(
                 'cannot authenticate with user {}.'.format(self._username))
-        out = self.execute_naviseccli(cmd, raise_on_rc, check_rc)
+        out = self.execute_naviseccli(cmd)
         try:
             ex.check_error(out, ex.VNXSpNotAvailableError,
                            ex.VNXCredentialError)

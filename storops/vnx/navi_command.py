@@ -124,39 +124,35 @@ class NaviCommand(object):
         return [binary, '-h', ip] + self.get_credentials()
 
     @classmethod
-    def execute_naviseccli(cls, cmd,
-                           raise_on_rc=None, check_rc=False):
+    def execute_naviseccli(cls, cmd):
         cmd = list(map(six.text_type, cmd))
         cls._log_command(cmd)
         start = time.time()
         try:
-            p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            p = Popen(cmd, bufsize=-1, stdout=PIPE, stderr=PIPE)
         except OSError:
             raise ex.NaviseccliNotAvailableError()
         output = p.stdout.read()
-        p.wait()
-        rc = p.returncode
-        cls._log_output(output, rc, start)
-        if rc is not None:
-            if rc == raise_on_rc or (check_rc and rc != 0):
-                raise ValueError('raise error on return code "{}".'
-                                 .format(rc))
+        cls._log_output(output, start)
         if isinstance(output, bytes):
             output = output.decode("utf-8")
         return output.strip()
 
     @classmethod
     def _log_command(cls, cmd):
-        log.debug('call command: {}'.format(' '.join(cmd)))
+        cmd_cpy = cmd[:]
+        # shadow password
+        if len(cmd_cpy) >= 7 and cmd_cpy[5] == '-password':
+            cmd_cpy[6] = '***'
+        log.info('call command: {}'.format(' '.join(cmd_cpy)))
 
     @classmethod
-    def _log_output(cls, output, rc, start):
+    def _log_output(cls, output, start):
         if log.isEnabledFor(logging.DEBUG):
             output = output.replace('\r\n', '\n')
             dt = time.time() - start
             log.debug('time consumed (s): {}\n'
-                      'return code: {}\n'
-                      'output:\n{}'.format(dt, rc, output))
+                      'output:\n{}'.format(dt, output))
 
     @classmethod
     def get_security_level(cls, binary):

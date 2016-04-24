@@ -16,11 +16,17 @@
 from __future__ import unicode_literals
 
 import codecs
+import json
 import logging
+import os
 
 from os.path import dirname, abspath, join, exists, basename
 
-__author__ = 'Jay Xu'
+import filelock
+
+from storops.lib.common import instance_cache
+
+__author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +42,7 @@ def read_test_file(folder, name):
     else:
         with codecs.open(p, 'r', 'utf-8') as f:
             if basename(p) not in ('index.xml', 'index.json'):
-                log.debug('read mock file: %s', p)
+                log.info('read mock file: %s', p)
             ret = f.read()
 
     return ret
@@ -83,3 +89,76 @@ class ConnectorMock(object):
 
     def get_folder(self, inputs):
         raise NotImplementedError('mock data folder not specified.')
+
+
+class PersistedDict(object):
+    def __init__(self, name=None, default=None):
+        if name is None:
+            name = self.__hash__()
+        self._name = name
+        self._default = default
+
+    @property
+    def lock_file_name(self):
+        return '{}.lck'.format(self._name)
+
+    @property
+    @instance_cache
+    def data_file_name(self):
+        return '{}.json'.format(self._name)
+
+    @property
+    @instance_cache
+    def lock(self):
+        return filelock.FileLock(self.lock_file_name)
+
+    @property
+    def dict(self):
+        if os.path.exists(self.data_file_name):
+            with open(self.data_file_name) as f:
+                try:
+                    ret = json.load(f)
+                except ValueError:
+                    ret = {}
+        else:
+            ret = {}
+        return ret
+
+    def __setitem__(self, key, value):
+        with self.lock.acquire():
+            data = self.dict
+            data[key] = value
+            with open(self.data_file_name, 'w') as f:
+                if log.isEnabledFor(level=logging.DEBUG):
+                    s = json.dumps(data, indent=4, sort_keys=True)
+                    log.debug('set dict: {}\n{}'
+                              .format(self.data_file_name, s))
+                json.dump(data, f, indent=4, sort_keys=True)
+
+    def __getitem__(self, item):
+        with self.lock.acquire():
+            d = self.dict
+            if item in d:
+                ret = d[item]
+            elif self._default:
+                if callable(self._default):
+                    ret = self._default()
+                else:
+                    ret = self._default
+            else:
+                ret = d[item]
+        return ret
+
+    def __len__(self):
+        return len(self.dict)
+
+    def clear(self):
+        with self.lock.acquire():
+            with open(self.data_file_name, 'w') as f:
+                json.dump({}, f)
+
+    def destroy(self):
+        s = json.dumps(self.dict, indent=4, sort_keys=True)
+        log.debug('destroy dict {}: \n{}'.format(self.data_file_name, s))
+        if os.path.exists(self.data_file_name):
+            os.remove(self.data_file_name)

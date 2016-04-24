@@ -294,7 +294,7 @@ class VNXLunPropertiesTest(TestCase):
         assert_that(parsed.total_capacity_gb, equal_to(1.0))
         assert_that(parsed.is_thin_lun, equal_to(True))
         assert_that(parsed.is_compressed, equal_to(False))
-        assert_that(parsed.is_dedup, equal_to(False))
+        assert_that(parsed.deduplication_state, equal_to('Off'))
         assert_that(parsed.tiering_policy, equal_to('No Movement'))
         assert_that(parsed.initial_tier, equal_to('Optimize Pool'))
         assert_that(parsed.state, equal_to('Ready'))

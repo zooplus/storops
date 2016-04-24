@@ -15,14 +15,17 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from retryz import retry
+
+from storops.exception import VNXDiskUsedError
 from storops.vnx.resource.mirror_view import VNXMirrorView
 
-from storops.vnx.enums import VNXPortType, VNXSPEnum
+from storops.vnx.enums import VNXPortType, VNXPoolRaidType, VNXSPEnum
 from storops.lib.common import daemon, instance_cache
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from storops.vnx.resource.cg import VNXConsistencyGroup
-from storops.vnx.resource.disk import VNXDisk
+from storops.vnx.resource.disk import VNXDisk, VNXDiskList
 from storops.vnx.resource.security import VNXBlockUser
 from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
     VNXNetworkAdmin, VNXDomainNodeList, VNXStorageProcessor
@@ -219,7 +222,10 @@ class VNXSystem(VNXCliResource):
         pool_feature = VNXPoolFeature(self._cli)
         pool_feature.poll = self.poll
         disks = pool_feature.available_disks
-        disks.poll = self.poll
+        if disks:
+            disks.poll = self.poll
+        else:
+            disks = VNXDiskList(cli=self._cli, disk_indices='N/A')
         return disks
 
     def delete_disk(self, disk_index):
@@ -238,8 +244,22 @@ class VNXSystem(VNXCliResource):
     def delete_rg(self, rg_id):
         self._delete_resource(VNXRaidGroup(rg_id, self._cli))
 
-    def create_pool(self, name, disks, raid_type=None):
-        return VNXPool.create(self._cli, name, disks, raid_type)
+    def create_pool(self, name, disks=None, raid_type=None):
+        @retry(on_error=VNXDiskUsedError)
+        def create_with_default_disks():
+            _disks = self.get_available_disks()
+            disk_count = VNXPoolRaidType.parse(raid_type).min_disk_requirement
+            _disks.same_disks(disk_count)
+            return VNXPool.create(self._cli, name, _disks, raid_type)
+
+        if raid_type is None:
+            raid_type = VNXPoolRaidType.RAID5
+        if disks is None:
+            ret = create_with_default_disks()
+        else:
+            ret = VNXPool.create(self._cli, name, disks, raid_type)
+
+        return ret
 
     def _delete_resource(self, resource):
         resource.poll = self.poll

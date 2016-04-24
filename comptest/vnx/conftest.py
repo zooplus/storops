@@ -17,28 +17,37 @@ from __future__ import unicode_literals
 
 import logging
 
-import filelock
+import pytest
 
-from comptest.utils import setup_log
-from storops import VNXSystem, UnitySystem, cache
+from comptest.vnx import VNXGeneralFixtureManager
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-@cache
-def t_vnx():
-    _lock = filelock.FileLock('init_t_vnx.lck')
-    with _lock.acquire():
-        vnx = VNXSystem('10.244.211.30', 'sysadmin', 'sysadmin')
-        log.debug('initialize vnx system: {}'.format(vnx.existed))
-    return vnx
+@pytest.fixture(scope="session", autouse=True)
+def gf(request):
+    """ General fixture for most cases
 
+        Details including:
+            vnx  - reference to the system.
+            pool - A RAID5 pool with 3 disks created on the fly.
+            lun  - A LUN created in the pool.
+            snap - A snap created upon the LUN.
+    :param request:
+    :return:
+    """
+    manager = None
 
-@cache
-def t_unity():
-    return UnitySystem('10.244.223.66', 'admin', 'Password123!')
+    def fin():
+        log.info('tear down general fixture.')
+        if manager:
+            manager.clean_up()
 
+    request.addfinalizer(fin)
 
-setup_log()
+    log.info('setup general fixture.')
+    manager = VNXGeneralFixtureManager()
+
+    return manager

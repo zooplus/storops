@@ -270,9 +270,27 @@ class VNXRaidType(VNXEnum):
 
 
 class VNXPoolRaidType(VNXEnum):
+    RAID0 = 'r_0'
+    RAID1 = 'r_1'
     RAID5 = 'r_5'
     RAID6 = 'r_6'
     RAID10 = 'r_10'
+
+    @property
+    def min_disk_requirement(self):
+        if self is self.RAID0:
+            ret = 2
+        elif self is self.RAID1:
+            ret = 2
+        elif self is self.RAID5:
+            ret = 3
+        elif self is self.RAID6:
+            ret = 4
+        elif self is self.RAID10:
+            ret = 4
+        else:
+            raise ValueError('invalid VNXPoolRaidType supplied.')
+        return ret
 
 
 class VNXAccessLevel(VNXEnum):

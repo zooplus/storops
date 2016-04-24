@@ -15,6 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.lib.converter import to_bool
+
 from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
@@ -136,6 +138,14 @@ class VNXLun(VNXCliResource):
             pass
         return ret
 
+    @property
+    def is_dedup(self):
+        return to_bool(self.deduplication_state)
+
+    @is_dedup.setter
+    def is_dedup(self, value):
+        self._update_dedup_state(value)
+
     @staticmethod
     def get(cli, lun_id=None, name=None, lun_type=None, lun_ids=None,
             poll=True):
@@ -228,6 +238,12 @@ class VNXLun(VNXCliResource):
             obj = cg
         obj.delete_member(self)
 
+    def clear_smp(self, force=False):
+        smp_list = self.snapshot_mount_points
+        if smp_list:
+            for smp in self.snapshot_mount_points:
+                smp.delete(force=force)
+
     def delete(self, delete_snapshots=False, force_detach=False,
                detach_from_sg=False, detach_from_cg=False, force=False):
         if force:
@@ -235,6 +251,7 @@ class VNXLun(VNXCliResource):
             force_detach = True
             detach_from_sg = True
             detach_from_cg = True
+            self.clear_smp(force)
 
         if detach_from_sg:
             self.detach_from_sg()
@@ -272,9 +289,6 @@ class VNXLun(VNXCliResource):
             else:
                 self.disable_compression()
             return
-        elif key == 'is_dedup':
-            self._update_dedup_state(value)
-            return
         super(VNXLun, self).__setattr__(key, value)
 
     def enable_compression(self, rate=None, ignore_thresholds=None):
@@ -297,9 +311,7 @@ class VNXLun(VNXCliResource):
         out = self._cli.modify_lun(lun_id=self._lun_id,
                                    lun_name=self._name,
                                    dedup=tgt_state, poll=self.poll)
-        ex.raise_if_err(out, 'failed to set dedup state to {} for {}.'
-                        .format(tgt_state, self.get_id(self)),
-                        default=ex.VNXDedupError)
+        ex.raise_if_err(out, default=ex.VNXDedupError)
 
     def enable_dedup(self):
         self._update_dedup_state(True)

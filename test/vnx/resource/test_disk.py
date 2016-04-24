@@ -79,6 +79,26 @@ class VNXDiskListTest(TestCase):
         assert_that(len(disks), equal_to(180))
 
     @patch_cli()
-    def test_filter(self):
+    def test_index_filter(self):
         disks = VNXDiskList(t_cli(), ['0_0_C8', '4_0_D0', '4_0_E8'])
         assert_that(len(disks), equal_to(3))
+
+    @patch_cli()
+    def test_multiple_filters(self):
+        disks = VNXDiskList(t_cli())
+        disks.set_drive_type('NL SAS')
+        assert_that(len(disks), equal_to(42))
+        disks.set_capacity(2817564)
+        assert_that(len(disks), equal_to(40))
+
+    @patch_cli()
+    def test_get_same_disks_available(self):
+        disks = VNXDiskList(t_cli(), ['0_0_C8', '4_0_D0', '4_0_E8'])
+        disks.same_disks(2)
+        assert_that(len(disks), equal_to(2))
+
+    @patch_cli()
+    def test_get_same_disks_not_available(self):
+        disks = VNXDiskList(t_cli(), ['0_0_C8', '4_0_D0', '4_0_E8'])
+        disks.same_disks(3)
+        assert_that(len(disks), equal_to(0))

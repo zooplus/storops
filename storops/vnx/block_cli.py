@@ -84,13 +84,15 @@ def duel_command(f):
 
 class CliClient(object):
     def __init__(self, ip=None,
-                 username=None, password=None, scope=0,
+                 username=None, password=None, scope=None,
                  sec_file=None,
                  timeout=None,
                  heartbeat_interval=None,
                  naviseccli=None):
         if heartbeat_interval is None:
             heartbeat_interval = 60
+        if scope is None:
+            scope = 0
         self._heart_beat = NodeHeartBeat(
             username=username,
             password=password,
@@ -780,27 +782,21 @@ class CliClient(object):
         return self._heart_beat.get_alive_sp_ip()
 
     @retry(on_error=ex.VNXSPDownError)
-    def execute(self, params, raise_on_rc=None, check_rc=False, ip=None):
+    def execute(self, params, ip=None):
         if params is not None and len(params) > 0:
             if ip is None:
                 ip = self.ip
             cmd = self._heart_beat.get_cmd_prefix(ip) + params
-            output = self._heart_beat.execute_cmd(ip,
-                                                  cmd,
-                                                  raise_on_rc,
-                                                  check_rc)
+            output = self._heart_beat.execute_cmd(ip, cmd)
         else:
             log.info('no command to execute.  return empty.')
             output = ''
         return output
 
-    def execute_dual(self, params, raise_on_rc=None, check_rc=False):
+    def execute_dual(self, params):
         def do(sp_ip):
             cmd_to_exec = self._heart_beat.get_cmd_prefix(sp_ip) + params
-            return self._heart_beat.execute_cmd(sp_ip,
-                                                cmd_to_exec,
-                                                raise_on_rc,
-                                                check_rc)
+            return self._heart_beat.execute_cmd(sp_ip, cmd_to_exec)
 
         ip_list = self._heart_beat.get_all_alive_sps_ip()
         if not self._heart_beat.is_all_sps_alive():

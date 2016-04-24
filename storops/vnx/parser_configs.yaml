@@ -296,8 +296,7 @@ VNXLun:
       converter: to_bool
     - label: "Deduplication State:"
       option: -dedupState
-      key: is_dedup
-      converter: to_bool
+    - label: "Deduplication Status:"
     - label: "Initial Tier:"
       option: -initialTier
     - label: "Tiering Policy:"

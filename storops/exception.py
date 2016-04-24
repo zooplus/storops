@@ -591,6 +591,11 @@ class VNXLunExtendError(VNXLunError):
 
 
 @cli_exception
+class VNXNotReadyExpandError(VNXLunExtendError):
+    error_code = 0x712d8d33
+
+
+@cli_exception
 class VNXLunExpandSizeError(VNXLunExtendError):
     error_code = 0x712d8e04
 
@@ -631,6 +636,12 @@ class VNXCompressionAlreadyEnabledError(VNXCompressionError):
 
 class VNXDedupError(VNXLunError):
     pass
+
+
+@cli_exception
+class VNXDedupAlreadyEnabled(VNXDedupError):
+    error_message = ['Deduplication is already enabled',
+                     'the deduplication state of LUN is enabled or enabling.']
 
 
 class VNXConsistencyGroupError(VNXException):
@@ -719,12 +730,37 @@ class VNXCreatePoolError(VNXPoolError):
     pass
 
 
+@cli_exception
+class VNXPoolNameInUseError(VNXCreatePoolError):
+    error_message = ['0x712d8501', 'Pool name is already used']
+
+
+@cli_exception
+class VNXDiskUsedError(VNXCreatePoolError):
+    error_code = 0x76008304
+
+
 class VNXModifyPoolError(VNXPoolError):
     pass
 
 
 class VNXDeletePoolError(VNXPoolError):
     pass
+
+
+@cli_exception
+class VNXPoolDestroyingError(VNXDeletePoolError):
+    error_message = 'the Storage Pool because it is Destroying'
+
+
+@cli_exception
+class VNXPoolNotFoundError(VNXPoolError):
+    error_message = ['The (Storagepool) may not exist',
+                     'was not found in any provider']
+
+
+class VNXNotEnoughDiskAvailableError(VNXPoolError):
+    message = 'not enough disk for pool creation.'
 
 
 class VNXMirrorException(VNXException):

@@ -147,19 +147,20 @@ class Resource(JsonPrinter):
     def _get_properties(self, dec=0):
         props = {'hash': self.__hash__()}
 
-        prop_names = list(self.property_names())
-        prop_names.append('existed')
-        for name in prop_names:
-            try:
-                value = getattr(self, name)
-                if isinstance(value, JsonPrinter):
-                    value = value.get_dict_repr(dec - 1)
-                elif isinstance(value, (datetime, timedelta)):
-                    value = str(value)
-                props[name] = value
-            except AttributeError:
-                # skip not available attributes
-                continue
+        if dec >= 0:
+            prop_names = list(self.property_names())
+            prop_names.append('existed')
+            for name in prop_names:
+                try:
+                    value = getattr(self, name)
+                    if isinstance(value, JsonPrinter):
+                        value = value.get_dict_repr(dec - 1)
+                    elif isinstance(value, (datetime, timedelta)):
+                        value = str(value)
+                    props[name] = value
+                except AttributeError:
+                    # skip not available attributes
+                    continue
         return props
 
     @property
@@ -227,6 +228,13 @@ class ResourceList(Resource):
                 self._list.append(item)
         return self
 
+    def _apply_filter(self):
+        result = []
+        for item in self:
+            if self._filter(item):
+                result.append(item)
+        self._list = result
+
     def _filter(self, _):
         return True
 
@@ -248,7 +256,7 @@ class ResourceList(Resource):
         raise NotImplementedError(
             'should return the class ref of the resource in the list.')
 
-    def get_dict_repr(self, dec=0):
+    def get_dict_repr(self, dec=1):
         items = [item.get_dict_repr(dec - 1) for item in self.list]
         return {self.__class__.__name__: items}
 

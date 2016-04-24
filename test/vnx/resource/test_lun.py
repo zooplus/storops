@@ -29,7 +29,7 @@ from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXLunNameInUseError, VNXTargetNotReadyError, \
     VNXCreateSnapResourceNotFoundError, VNXLunInStorageGroupError, \
     VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
-    VNXDetachSnapLunTypeError
+    VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate, VNXSPEnum
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -105,6 +105,13 @@ class VNXLunTest(TestCase):
         assert_that(l.extreme_performance, equal_to(1.96))
         assert_that(l.performance, equal_to(5.68))
         assert_that(l.capacity, equal_to(92.37))
+
+    @patch_cli()
+    def test_lun_state_properties(self):
+        lun = VNXLun(lun_id=7, cli=t_cli())
+        assert_that(lun.deduplication_state, equal_to('Off'))
+        assert_that(lun.deduplication_status, equal_to('OK(0x0)'))
+        assert_that(lun.is_dedup, equal_to(False))
 
     @patch_cli()
     def test_lun_status(self):
@@ -302,10 +309,12 @@ class VNXLunTest(TestCase):
         lun = VNXLun(name='l1', cli=t_cli())
         m2 = lun.create_mount_point(name='m2')
         assert_that(lun.snapshot_mount_points, instance_of(VNXLunList))
+        assert_that(str(lun), contains_string('"VNXLunList": ['))
         for smp in lun.snapshot_mount_points:
             assert_that(smp, instance_of(VNXLun))
-            assert_that(smp.primary_lun, instance_of(VNXLun))
-            assert_that(smp.primary_lun._get_name(), equal_to('l1'))
+            pl = smp.primary_lun
+            assert_that(pl, instance_of(VNXLun))
+            assert_that(pl._get_name(), equal_to('l1'))
         assert_that(m2.attached_snapshot, none())
 
     @patch_cli()
@@ -477,6 +486,22 @@ class VNXLunTest(TestCase):
         assert_that(set_property, raises(VNXDedupError, 'it is migrating'))
 
     @patch_cli()
+    def test_dedup_already_enabled(self):
+        def f():
+            l2 = VNXLun(name='l2', cli=t_cli())
+            l2.enable_dedup()
+
+        assert_that(f, raises(VNXDedupAlreadyEnabled, 'already enabled'))
+
+    @patch_cli()
+    def test_dedup_enabling(self):
+        def f():
+            l2 = VNXLun(name='l3', cli=t_cli())
+            l2.enable_dedup()
+
+        assert_that(f, raises(VNXDedupAlreadyEnabled, 'or enabling'))
+
+    @patch_cli()
     def test_disable_dedup(self):
         def method_call():
             l1 = VNXLun(name='l1', cli=t_cli())
@@ -513,6 +538,12 @@ class VNXLunTest(TestCase):
 
         assert_that(f, raises(VNXLunInConsistencyGroupError,
                               'member of a consistency group'))
+
+    @patch_cli()
+    def test_delete_lun_has_smp(self):
+        l = VNXLun(lun_id=196, cli=t_cli())
+        # no error raised
+        l.delete(force=True)
 
     @patch_cli()
     def test_create_snap(self):
@@ -571,4 +602,4 @@ class VNXLunListTest(TestCase):
     def test_get_lun_list(self):
         lun_list = VNXLunList(t_cli())
         assert_that(lun_list, instance_of(VNXLunList))
-        assert_that(len(lun_list), equal_to(182))
+        assert_that(len(lun_list), equal_to(183))

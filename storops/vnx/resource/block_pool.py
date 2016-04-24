@@ -15,6 +15,12 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.vnx.enums import VNXProvisionEnum
+
+from storops.exception import VNXNotEnoughDiskAvailableError, \
+    VNXLunNotFoundError, VNXDeleteLunError
+from storops.vnx.resource.disk import VNXDiskList
+
 from storops.lib.common import instance_cache
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
 import storops.vnx.resource.lun
@@ -79,11 +85,29 @@ class VNXPool(VNXCliResource):
 
     @staticmethod
     def create(cli, name, disks, raid_type=None, ):
+        if isinstance(disks, VNXDiskList):
+            disks = sorted(disks.index)
+        if not disks:
+            raise VNXNotEnoughDiskAvailableError()
         ret = cli.create_pool(name, disks, raid_type)
         ex.raise_if_err(ret, default=ex.VNXCreatePoolError)
         return VNXPool(name=name, cli=cli)
 
-    def delete(self):
+    def clear(self):
+        lun_clz = storops.vnx.resource.lun.VNXLun
+        if self.luns:
+            for lun in self.luns:
+                lun_id = lun_clz.get_id(lun)
+                lun = lun_clz(lun_id=lun_id, cli=self._cli)
+                try:
+                    lun.delete(force=True)
+                except (VNXLunNotFoundError, VNXDeleteLunError):
+                    # ignore delete error
+                    pass
+
+    def delete(self, force=False):
+        if force:
+            self.clear()
         ret = self._cli.delete_pool(poll=self.poll, **self._get_name_or_id())
         ex.raise_if_err(ret, default=ex.VNXDeletePoolError)
 
@@ -119,7 +143,12 @@ class VNXPool(VNXCliResource):
         ex.raise_if_err(ret, 'error creating lun.',
                         default=ex.VNXCreateLunError)
         lun_clz = storops.vnx.resource.lun.VNXLun
-        return lun_clz(lun_id, lun_name, self._cli)
+        ret = lun_clz(lun_id, lun_name, self._cli)
+
+        if provision == VNXProvisionEnum.COMPRESSED:
+            ret.enable_compression()
+            ret.update()
+        return ret
 
     @staticmethod
     def delete_lun(lun, delete_snapshots=False, force_detach=False):

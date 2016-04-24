@@ -124,7 +124,7 @@ class VNXSystemTest(TestCase):
     @patch_cli()
     def test_available_disks(self):
         disks = self.vnx.get_available_disks()
-        assert_that(len(disks), equal_to(2))
+        assert_that(len(disks), equal_to(5))
         for disk in disks:
             assert_that(disk, instance_of(VNXDisk))
             assert_that(disk.existed, equal_to(True))
@@ -294,3 +294,9 @@ class VNXSystemTest(TestCase):
         assert_that(self.vnx.spb, instance_of(VNXStorageProcessor))
         assert_that(self.vnx.spb.name, equal_to('B'))
         assert_that(self.vnx.spb.signature, equal_to(4022287))
+
+    @patch_cli()
+    def test_create_pool(self):
+        pool = self.vnx.create_pool('Pool4File')
+        assert_that(pool.existed, equal_to(True))
+        assert_that(pool.name, equal_to('Pool4File'))

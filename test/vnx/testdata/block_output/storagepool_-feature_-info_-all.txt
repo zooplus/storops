@@ -15,5 +15,8 @@ Number of Disks used in Pools:  15
 Available Disks:
 Bus 0 Enclosure 0 Disk B8
 Bus 0 Enclosure 0 Disk B9
+Bus 1 Enclosure 0  Disk E9
+Bus 1 Enclosure 0  Disk E10
+Bus 1 Enclosure 0  Disk E11
 Background Operation State:  None
 Background Rate:  Medium

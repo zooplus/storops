@@ -16,7 +16,6 @@
 from __future__ import unicode_literals
 
 import logging
-from unittest import TestCase
 
 from hamcrest import assert_that, not_none, greater_than, equal_to
 
@@ -29,17 +28,13 @@ log = logging.getLogger(__name__)
 vnx = t_vnx()
 
 
-class VNXSystemCompTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        log.info('start VNXSystem comp test.')
+def test_domain():
+    assert_that(vnx.spa_ip, not_none())
+    assert_that(vnx.spb_ip, not_none())
+    assert_that(vnx.control_station_ip, not_none())
 
-    def test_domain(self):
-        assert_that(vnx.spa_ip, not_none())
-        assert_that(vnx.spb_ip, not_none())
-        assert_that(vnx.control_station_ip, not_none())
 
-    def test_feature_list(self):
-        feature = vnx.get_pool_feature()
-        assert_that(feature.existed, equal_to(True))
-        assert_that(len(feature.available_disks), greater_than(0))
+def test_feature_list():
+    feature = vnx.get_pool_feature()
+    assert_that(feature.existed, equal_to(True))
+    assert_that(len(feature.available_disks), greater_than(0))
