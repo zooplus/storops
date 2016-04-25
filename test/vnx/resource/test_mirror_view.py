@@ -135,24 +135,24 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f, raises(VNXObjectNotFound, 'not found'))
 
     @patch_cli()
-    def test_delete_image_not_found(self):
+    def test_remove_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
-            mv.delete_image('50:06:01:60:88:60:05:FF')
+            mv.remove_image('50:06:01:60:88:60:05:FF')
 
         assert_that(f, raises(VNXMirrorImageNotFoundError, 'not found'))
 
     @patch_cli()
-    def test_delete_image_success(self):
+    def test_remove_image_success(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         # no error raised
-        mv.delete_image()
+        mv.remove_image()
 
     @patch_cli()
-    def test_delete_image_no_secondary_image(self):
+    def test_remove_image_no_secondary_image(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv1')
-            mv.delete_image()
+            mv.remove_image()
 
         assert_that(f,
                     raises(VNXMirrorImageNotFoundError, 'no secondary'))
