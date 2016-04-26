@@ -21,12 +21,41 @@ import re
 from past.builtins import filter
 
 from storops.exception import VNXObjectNotFound
+from storops.lib.converter import to_datetime
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.resource import VNXCliResourceList, VNXCliResource
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
+
+
+class VNXStorageProcessor(VNXCliResource):
+    def __init__(self, cli, sp, ip):
+        super(VNXStorageProcessor, self).__init__()
+        self._cli = cli
+        self._sp = sp
+        self._ip = ip
+
+    @property
+    def enum(self):
+        return self._sp
+
+    @property
+    def timestamp(self):
+        return to_datetime('{} {}'.format(self.system_date, self.system_time))
+
+    def _get_raw_resource(self):
+        sps = self._cli.get_sp().split('SP B')
+        out = ''
+        if sps:
+            if self._sp is VNXSPEnum.SP_A:
+                out = sps[0]
+            elif len(sps) > 1:
+                out = sps[1]
+
+        control_out = self._cli.execute(['getcontrol'], ip=self._ip)
+        return 'SP {}\n{}\n{}'.format(self._sp.index.upper(), control_out, out)
 
 
 class VNXDomainNodeList(VNXCliResourceList):

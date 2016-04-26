@@ -202,6 +202,9 @@ class VNXSPEnumTest(TestCase):
     def test_get_sp_index(self):
         assert_that(VNXSPEnum.get_sp_index('spa'), equal_to('a'))
 
+    def test_sp_value(self):
+        assert_that(VNXSPEnum.SP_B.value, equal_to('SP B'))
+
     def test_index(self):
         assert_that(VNXSPEnum.SP_A.index, equal_to('a'))
         assert_that(VNXSPEnum.SP_B.index, equal_to('b'))

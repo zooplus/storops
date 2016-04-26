@@ -17,15 +17,61 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, contains_string, is_not, raises
+from hamcrest import assert_that, equal_to, contains_string, is_not, raises, \
+    none
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from storops.exception import VNXObjectNotFound
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.resource.vnx_domain import VNXDomainNodeList, \
-    VNXNetworkAdmin
+    VNXNetworkAdmin, VNXStorageProcessor
 
 __author__ = 'Cedric Zhuang'
+
+
+class VNXStorageProcessTest(TestCase):
+    @patch_cli()
+    def test_sp_properties(self):
+        sp = VNXStorageProcessor(t_cli(), VNXSPEnum.SP_A, '1.1.1.2')
+        assert_that(sp.cabinet, equal_to('DPE9'))
+        assert_that(sp.signature, equal_to(4022290))
+        assert_that(sp.name, equal_to('A'))
+        assert_that(sp.enum, equal_to(VNXSPEnum.SP_A))
+
+        sp = VNXStorageProcessor(t_cli(), VNXSPEnum.SP_B, '1.1.1.3')
+        assert_that(sp.cabinet, equal_to('DPE9'))
+        assert_that(sp.signature, equal_to(4022287))
+        assert_that(sp.name, equal_to('B'))
+        assert_that(sp.revision, equal_to('05.33.008.3.297'))
+        assert_that(sp.serial, equal_to('FCNJT152200015'))
+        assert_that(sp.memory_size, equal_to(32768))
+        assert_that(sp.enum, equal_to(VNXSPEnum.SP_B))
+        assert_that(sp.statistics_logging, equal_to(True))
+        assert_that(sp.system_fault_led, equal_to(False))
+        assert_that(sp.read_cache_enabled, equal_to(True))
+        assert_that(sp.write_cache_enabled, equal_to(True))
+        assert_that(sp.max_requests, none())
+        assert_that(sp.average_requests, none())
+        assert_that(sp.hard_errors, none())
+        assert_that(sp.total_reads, equal_to(7978))
+        assert_that(sp.total_writes, equal_to(6364257))
+        assert_that(sp.prct_busy, equal_to(1.91))
+        assert_that(sp.prct_idle, equal_to(98.0))
+        assert_that(str(sp.timestamp), equal_to('2016-04-26 09:59:16'))
+        assert_that(sp.day_of_the_week, equal_to('Tuesday'))
+        assert_that(sp.read_requests, equal_to(7978))
+        assert_that(sp.write_requests, equal_to(6364257))
+        assert_that(sp.blocks_read, equal_to(262334))
+        assert_that(sp.blocks_written, equal_to(198312227))
+        assert_that(sp.sum_queue_lengths_by_arrivals, equal_to(8059572))
+        assert_that(sp.arrivals_to_non_zero_queue, equal_to(1321389))
+        assert_that(sp.hw_flush_on, equal_to(False))
+        assert_that(sp.idle_flush_on, equal_to(False))
+        assert_that(sp.lw_flush_off, equal_to(False))
+        assert_that(sp.write_cache_flushes, equal_to(468636))
+        assert_that(sp.write_cache_blocks_flushed, equal_to(477297069))
+        assert_that(sp.controller_busy_ticks, equal_to(46703))
+        assert_that(sp.controller_idle_ticks, equal_to(2394689))
 
 
 class VNXDomainNodeListTest(TestCase):

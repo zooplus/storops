@@ -169,6 +169,10 @@ class CliClient(object):
         return 'port -list -sp -all'
 
     @command
+    def get_sp(self):
+        return 'getsp'
+
+    @command
     def get_connection_port(self, sp=None, port_id=None, vport_id=None):
         cmd = 'connection -getport -all'.split()
         if sp is not None:
@@ -776,9 +780,10 @@ class CliClient(object):
         return self._heart_beat.get_alive_sp_ip()
 
     @retry(on_error=ex.VNXSPDownError)
-    def execute(self, params, raise_on_rc=None, check_rc=False):
+    def execute(self, params, raise_on_rc=None, check_rc=False, ip=None):
         if params is not None and len(params) > 0:
-            ip = self.ip
+            if ip is None:
+                ip = self.ip
             cmd = self._heart_beat.get_cmd_prefix(ip) + params
             output = self._heart_beat.execute_cmd(ip,
                                                   cmd,

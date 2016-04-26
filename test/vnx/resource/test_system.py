@@ -23,7 +23,8 @@ from storops.vnx.resource.mirror_view import VNXMirrorViewList
 from storops.exception import VNXDeleteHbaNotFoundError, VNXCredentialError, \
     VNXUserNameInUseError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
-from storops.vnx.resource.vnx_domain import VNXDomainMemberList
+from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
+    VNXStorageProcessor
 
 from test.vnx.cli_mock import patch_cli, t_vnx
 from test.vnx.resource.verifiers import verify_pool_0
@@ -283,3 +284,13 @@ class VNXSystemTest(TestCase):
     @patch_cli()
     def test_alive_sp_ip(self):
         assert_that(self.vnx.alive_sp_ip, equal_to('10.244.211.30'))
+
+    @patch_cli()
+    def test_get_sp(self):
+        assert_that(len(self.vnx.get_sp()), equal_to(2))
+        assert_that(self.vnx.spa, instance_of(VNXStorageProcessor))
+        assert_that(self.vnx.spa.name, equal_to('A'))
+        assert_that(self.vnx.spa.signature, equal_to(4022290))
+        assert_that(self.vnx.spb, instance_of(VNXStorageProcessor))
+        assert_that(self.vnx.spb.name, equal_to('B'))
+        assert_that(self.vnx.spb.signature, equal_to(4022287))

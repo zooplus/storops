@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from storops.vnx.resource.mirror_view import VNXMirrorView
 
-from storops.vnx.enums import VNXPortType
+from storops.vnx.enums import VNXPortType, VNXSPEnum
 from storops.lib.common import daemon, instance_cache
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
@@ -25,7 +25,7 @@ from storops.vnx.resource.cg import VNXConsistencyGroup
 from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.security import VNXBlockUser
 from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
-    VNXNetworkAdmin, VNXDomainNodeList
+    VNXNetworkAdmin, VNXDomainNodeList, VNXStorageProcessor
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.migration import VNXMigrationSession
 from storops.vnx.resource.ndu import VNXNdu, VNXNduList
@@ -105,6 +105,19 @@ class VNXSystem(VNXCliResource):
     @instance_cache
     def spa_ip(self):
         return VNXNetworkAdmin.get_spa_ip(self._cli)
+
+    @property
+    @instance_cache
+    def spa(self):
+        return VNXStorageProcessor(self._cli, VNXSPEnum.SP_A, self.spa_ip)
+
+    @property
+    @instance_cache
+    def spb(self):
+        return VNXStorageProcessor(self._cli, VNXSPEnum.SP_B, self.spb_ip)
+
+    def get_sp(self):
+        return [self.spa, self.spb]
 
     @property
     @instance_cache
