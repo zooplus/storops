@@ -313,6 +313,72 @@ VNXLun:
       converter: ids_to_lun_list
     - label: "Primary LUN:"
       converter: name_to_lun
+    - label: "Read Requests:"
+      converter: to_int
+    - label: "Read Requests SP A:"
+      converter: to_int
+    - label: "Read Requests SP B:"
+      converter: to_int
+    - label: "Write Requests:"
+      converter: to_int
+    - label: "Write Requests SP A:"
+      converter: to_int
+    - label: "Write Requests SP B:"
+      converter: to_int
+    - label: "Blocks Read:"
+      converter: to_int
+    - label: "Blocks Read SP A:"
+      converter: to_int
+    - label: "Blocks Read SP B:"
+      converter: to_int
+    - label: "Blocks Written:"
+      converter: to_int
+    - label: "Blocks Written SP A:"
+      converter: to_int
+    - label: "Blocks Written SP B:"
+      converter: to_int
+    - label: "Busy Ticks:"
+      converter: to_int
+    - label: "Busy Ticks SP A:"
+      converter: to_int
+    - label: "Busy Ticks SP B:"
+      converter: to_int
+    - label: "Idle Ticks:"
+      converter: to_int
+    - label: "Idle Ticks SP A:"
+      converter: to_int
+    - label: "Idle Ticks SP B:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests SP A:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests SP B:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals SP A:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals SP B:"
+      converter: to_int
+    - label: "Implicit Trespasses:"
+      converter: to_int
+    - label: "Implicit Trespasses SP A:"
+      converter: to_int
+    - label: "Implicit Trespasses SP B:"
+      converter: to_int
+    - label: "Explicit Trespasses:"
+      converter: to_int
+    - label: "Explicit Trespasses SP A:"
+      converter: to_int
+    - label: "Explicit Trespasses SP B:"
+      converter: to_int
+    - label: "Extreme Performance:"
+      converter: to_float
+    - label: "Performance:"
+      converter: to_float
+    - label: "Capacity:"
+      converter: to_float
 
 
 VNXSPPort:

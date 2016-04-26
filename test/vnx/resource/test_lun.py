@@ -31,7 +31,7 @@ from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
     VNXDetachSnapLunTypeError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
-    VNXCompressionRate
+    VNXCompressionRate, VNXSPEnum
 from storops.vnx.resource.lun import VNXLun, VNXLunList
 from storops.vnx.resource.snap import VNXSnap
 
@@ -42,6 +42,69 @@ class VNXLunTest(TestCase):
     @staticmethod
     def get_lun():
         return VNXLun(lun_id=2, cli=t_cli())
+
+    @patch_cli()
+    def test_lun_properties(self):
+        wwn = '60:06:01:60:12:60:3D:00:95:63:38:87:9D:69:E5:11'
+        l = VNXLun(lun_id=3, cli=t_cli())
+        assert_that(l.state, equal_to('Ready'))
+        assert_that(l.wwn, equal_to(wwn))
+        assert_that(l.status, equal_to('OK(0x0)'))
+        assert_that(l.operation, equal_to('None'))
+        assert_that(l.total_capacity_gb, equal_to(500.0))
+        assert_that(l.current_owner, equal_to(VNXSPEnum.SP_A))
+        assert_that(l.default_owner, equal_to(VNXSPEnum.SP_A))
+        assert_that(l.attached_snapshot, none())
+        assert_that(l.lun_id, equal_to(3))
+        assert_that(l.name, equal_to('File_CS0_21132_0_d7'))
+        assert_that(l.pool_name, equal_to('Pool4File'))
+        assert_that(l.is_thin_lun, equal_to(True))
+        assert_that(l.is_compressed, equal_to(False))
+        assert_that(l.is_dedup, equal_to(False))
+        assert_that(l.initial_tier, equal_to('Optimize Pool'))
+        assert_that(l.tiering_policy, none())
+        assert_that(l.is_private, equal_to(False))
+        assert_that(l.user_capacity_gbs, equal_to(500.0))
+        assert_that(l.consumed_capacity_gbs, equal_to(512.249))
+        assert_that(l.snapshot_mount_points, none())
+        assert_that(l.primary_lun, none())
+
+    @patch_cli()
+    def test_lun_perf_counters(self):
+        l = VNXLun(lun_id=3, cli=t_cli())
+        assert_that(l.read_requests, equal_to(1))
+        assert_that(l.read_requests_sp_a, equal_to(2))
+        assert_that(l.read_requests_sp_b, equal_to(3))
+        assert_that(l.write_requests, equal_to(4))
+        assert_that(l.write_requests_sp_a, equal_to(5))
+        assert_that(l.write_requests_sp_b, equal_to(6))
+        assert_that(l.blocks_read, equal_to(7))
+        assert_that(l.blocks_read_sp_a, equal_to(8))
+        assert_that(l.blocks_read_sp_b, equal_to(9))
+        assert_that(l.blocks_written, equal_to(10))
+        assert_that(l.blocks_written_sp_a, equal_to(11))
+        assert_that(l.blocks_written_sp_b, equal_to(12))
+        assert_that(l.busy_ticks, equal_to(13))
+        assert_that(l.busy_ticks_sp_a, equal_to(14))
+        assert_that(l.busy_ticks_sp_b, equal_to(15))
+        assert_that(l.idle_ticks, equal_to(16))
+        assert_that(l.idle_ticks_sp_a, equal_to(17))
+        assert_that(l.idle_ticks_sp_b, equal_to(18))
+        assert_that(l.sum_of_outstanding_requests, equal_to(19))
+        assert_that(l.sum_of_outstanding_requests_sp_a, equal_to(20))
+        assert_that(l.sum_of_outstanding_requests_sp_b, equal_to(21))
+        assert_that(l.non_zero_request_count_arrivals, equal_to(22))
+        assert_that(l.non_zero_request_count_arrivals_sp_a, equal_to(23))
+        assert_that(l.non_zero_request_count_arrivals_sp_b, equal_to(24))
+        assert_that(l.implicit_trespasses, equal_to(25))
+        assert_that(l.implicit_trespasses_sp_a, equal_to(26))
+        assert_that(l.implicit_trespasses_sp_b, equal_to(27))
+        assert_that(l.explicit_trespasses, equal_to(28))
+        assert_that(l.explicit_trespasses_sp_a, equal_to(29))
+        assert_that(l.explicit_trespasses_sp_b, equal_to(30))
+        assert_that(l.extreme_performance, equal_to(1.96))
+        assert_that(l.performance, equal_to(5.68))
+        assert_that(l.capacity, equal_to(92.37))
 
     @patch_cli()
     def test_lun_status(self):
