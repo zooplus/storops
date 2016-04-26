@@ -90,7 +90,11 @@ class VNXConsistencyGroup(VNXCliResource):
     def has_member(self, lun):
         clz = storops.vnx.resource.lun.VNXLun
         lun_id = clz.get_id(lun)
-        return lun_id in self.lun_list
+        if self.lun_list:
+            ret = lun_id in self.lun_list.lun_id
+        else:
+            ret = False
+        return ret
 
     def create_snap(self, name, allow_rw=None, auto_delete=None):
         return VNXSnap.create(self._cli, self._get_name(), name, allow_rw,

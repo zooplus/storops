@@ -149,7 +149,7 @@ VNXConsistencyGroup:
       is_index: True
     - label: "Member LUN ID(s):"
       key: lun_list
-      converter: to_int_arr
+      converter: ids_to_lun_list
     - label: "State:"
 
 

@@ -48,7 +48,7 @@ class VNXConsistencyGroupTest(TestCase):
     def test_properties(self):
         cg = VNXConsistencyGroup(name="test_cg", cli=t_cli())
         assert_that(cg.name, equal_to('test_cg'))
-        assert_that(cg.lun_list, equal_to([1, 3]))
+        assert_that(cg.lun_list.lun_id, only_contains(1, 3))
         assert_that(cg.state, equal_to('Ready'))
         assert_that(cg.existed, equal_to(True))
 
