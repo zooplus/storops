@@ -177,3 +177,11 @@ class FileSystemTest(unittest.TestCase):
             fs.extend(1024 * 2)
 
         assert_that(f, raises(VNXBackendError, 'not valid'))
+
+    @patch_post()
+    def test_create_fs_snap(self):
+        fs = VNXFileSystem(cli=t_nas(), fs_id=222)
+        snap = fs.create_snap('test', pool=61)
+        assert_that(snap.name, equal_to('test'))
+        assert_that(snap.fs_id, equal_to(222))
+        assert_that(snap.existed, equal_to(True))

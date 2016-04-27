@@ -16,6 +16,9 @@
 from __future__ import unicode_literals
 
 import logging
+
+import storops.vnx.resource.nfs_share
+
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXPortType
 from storops.vnx.resource import VNXCliResourceList, VNXResource
@@ -130,6 +133,10 @@ class VNXMoverRef(VNXResource):
 
         return conn_id
 
+    def create_nfs_share(self, path, ro=False, host_config=None):
+        share_clz = storops.vnx.resource.nfs_share.VNXNfsShare
+        return share_clz.create(self._cli, self, path, ro, host_config)
+
 
 class VNXMoverList(VNXCliResourceList):
     @classmethod
@@ -142,6 +149,14 @@ class VNXMoverList(VNXCliResourceList):
 
 class VNXMover(VNXMoverRef):
     _full_prop = True
+
+    @staticmethod
+    def get(cli, name=None, mover_id=None):
+        if name is not None or mover_id is not None:
+            ret = VNXMover(name=name, mover_id=mover_id, cli=cli)
+        else:
+            ret = VNXMoverList(cli=cli)
+        return ret
 
     @property
     def interfaces(self):

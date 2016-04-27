@@ -23,9 +23,7 @@ from hamcrest import equal_to
 
 from test.vnx.nas_mock import t_nas, patch_post
 from storops.exception import VNXBackendError
-from storops.vnx.resource.cifs_server import VNXCifsServerList, \
-    VNXCifsServer, \
-    CifsDomain
+from storops.vnx.resource.cifs_server import VNXCifsServer, CifsDomain
 
 __author__ = 'Jay Xu'
 
@@ -35,25 +33,25 @@ class VNXCifsServerTest(unittest.TestCase):
 
     @patch_post()
     def test_get_all(self):
-        cifs_list = VNXCifsServerList(t_nas())
+        cifs_list = VNXCifsServer.get(t_nas())
         assert_that(len(cifs_list), greater_than_or_equal_to(1))
         cifs = next(cifs for cifs in cifs_list if cifs.name == 'CIFS')
         self.verify_pie_cifs(cifs)
 
     @patch_post()
     def test_get_all_by_mover(self):
-        cifs_list = VNXCifsServerList(t_nas(), 1)
+        cifs_list = VNXCifsServer.get(t_nas(), mover_id=1)
         cifs = next(cifs for cifs in cifs_list if cifs.name == 'CIFS')
         self.verify_pie_cifs(cifs)
 
     @patch_post()
     def test_get_all_by_mover_not_found(self):
-        cifs_list = VNXCifsServerList(t_nas(), 1, True)
+        cifs_list = VNXCifsServer.get(t_nas(), mover_id=1, is_vdm=True)
         assert_that(len(cifs_list), equal_to(0))
 
     @patch_post()
     def test_get_by_name(self):
-        cifs = VNXCifsServer('CIFS', t_nas())
+        cifs = VNXCifsServer.get(t_nas(), 'CIFS')
         self.verify_pie_cifs(cifs)
 
     @patch_post()

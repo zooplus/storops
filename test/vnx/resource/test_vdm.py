@@ -23,7 +23,7 @@ from test.vnx.nas_mock import t_nas, patch_nas
 from storops.vnx.enums import VNXShareType
 from storops.exception import VNXBackendError, VNXInvalidMoverID, \
     VNXMoverInterfaceNotAttachedError, VNXMoverInterfaceNotExistsError
-from storops.vnx.resource.vdm import VNXVdmList, VNXVdm
+from storops.vnx.resource.vdm import VNXVdm
 
 __author__ = 'Jay Xu'
 
@@ -31,14 +31,14 @@ __author__ = 'Jay Xu'
 class VNXVdmTest(unittest.TestCase):
     @patch_nas()
     def test_get_all(self):
-        vdm_list = VNXVdmList(t_nas())
+        vdm_list = VNXVdm.get(t_nas())
         assert_that(len(vdm_list), greater_than_or_equal_to(1))
         dm = next(dm for dm in vdm_list if dm.vdm_id == 2)
         self.verify_vdm_2(dm)
 
     @patch_nas()
     def test_get_by_id_invalid(self):
-        dm = VNXVdm(vdm_id=1, cli=t_nas())
+        dm = VNXVdm.get(vdm_id=1, cli=t_nas())
         assert_that(dm.existed, equal_to(False))
 
     @patch_nas()
@@ -48,7 +48,7 @@ class VNXVdmTest(unittest.TestCase):
 
     @patch_nas()
     def test_get_by_name(self):
-        dm = VNXVdm(name='VDM_ESA', cli=t_nas())
+        dm = VNXVdm.get(name='VDM_ESA', cli=t_nas())
         self.verify_vdm_2(dm)
 
     @patch_nas()

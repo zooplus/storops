@@ -21,7 +21,7 @@ from hamcrest import assert_that, equal_to, raises, has_item
 
 from test.vnx.nas_mock import t_nas, patch_nas
 from storops.exception import VNXGeneralNasError
-from storops.vnx.resource.cifs_share import VNXCifsShareList, VNXCifsShare
+from storops.vnx.resource.cifs_share import VNXCifsShare
 from storops.vnx.resource.fs import VNXFileSystem
 from storops.vnx.resource.mover import VNXMover
 
@@ -33,7 +33,7 @@ class VNXCifsShareTest(unittest.TestCase):
 
     @patch_nas()
     def test_get_all(self):
-        shares = VNXCifsShareList(cli=t_nas())
+        shares = VNXCifsShare.get(cli=t_nas())
         assert_that(len(shares), equal_to(16))
         share = next(s for s in shares if s.name == 'zhuanc_cifs_100g')
         self.verify_share_zhuanc(share)
@@ -52,7 +52,7 @@ class VNXCifsShareTest(unittest.TestCase):
     @patch_nas()
     def test_get_by_mover(self):
         mover = self.get_mover_1()
-        shares = VNXCifsShareList(cli=t_nas(), mover=mover)
+        shares = VNXCifsShare.get(cli=t_nas(), mover=mover)
         for share in shares:
             assert_that(share.mover.get_mover_id(),
                         equal_to(mover.get_mover_id()))
@@ -64,20 +64,21 @@ class VNXCifsShareTest(unittest.TestCase):
 
     @patch_nas()
     def test_get_by_share_name(self):
-        shares = VNXCifsShareList(cli=t_nas(), share_name='zhuanc_cifs_100g')
+        shares = VNXCifsShare.get(cli=t_nas(), name='zhuanc_cifs_100g')
         assert_that(len(shares), equal_to(1))
         self.verify_share_zhuanc(shares[0])
 
     @patch_nas()
     def test_get_cifs_share(self):
         mover = self.get_mover_1()
-        share = VNXCifsShare(name='zhuanc_cifs_100g', mover=mover, cli=t_nas())
+        share = VNXCifsShare.get(name='zhuanc_cifs_100g', mover=mover,
+                                 cli=t_nas())
         self.verify_share_zhuanc(share)
 
     @patch_nas()
     def test_get_not_found(self):
         mover = self.get_mover_1()
-        cifs = VNXCifsShare(name='not_exists', mover=mover, cli=t_nas())
+        cifs = VNXCifsShare.get(name='not_exists', mover=mover, cli=t_nas())
         assert_that(cifs.existed, equal_to(False))
 
     @patch_nas()

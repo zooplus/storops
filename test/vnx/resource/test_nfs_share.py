@@ -23,8 +23,7 @@ from hamcrest import equal_to
 from test.vnx.nas_mock import t_nas, patch_nas
 from storops.exception import VNXBackendError
 from storops.vnx.resource.mover import VNXMover
-from storops.vnx.resource.nfs_share import VNXNfsShareList, NfsHostConfig, \
-    VNXNfsShare
+from storops.vnx.resource.nfs_share import NfsHostConfig, VNXNfsShare
 
 __author__ = 'Jay Xu'
 
@@ -32,7 +31,7 @@ __author__ = 'Jay Xu'
 class VNXNfsShareTest(unittest.TestCase):
     @patch_nas()
     def test_get_all_share(self):
-        shares = VNXNfsShareList(t_nas())
+        shares = VNXNfsShare.get(t_nas())
         assert_that(len(shares), equal_to(26))
         share = next(s for s in shares if s.path == '/EEE')
         self.verify_share_eee(share)
@@ -40,7 +39,7 @@ class VNXNfsShareTest(unittest.TestCase):
     @patch_nas()
     def test_get_share_by_path(self):
         path = '/EEE'
-        shares = VNXNfsShareList(t_nas(), path=path)
+        shares = VNXNfsShare.get(t_nas(), path=path)
         assert_that(len(shares), equal_to(1))
         share = next(s for s in shares if s.path == path)
         self.verify_share_eee(share)
@@ -48,7 +47,7 @@ class VNXNfsShareTest(unittest.TestCase):
     @patch_nas()
     def test_get_share_by_mover_id(self):
         mover = self.get_mover_1()
-        shares = VNXNfsShareList(t_nas(), mover=mover)
+        shares = VNXNfsShare.get(t_nas(), mover=mover)
         assert_that(len(shares), equal_to(24))
         share = next(s for s in shares if s.path == '/EEE')
         self.verify_share_eee(share)
@@ -145,7 +144,7 @@ class VNXNfsShareTest(unittest.TestCase):
     @patch_nas()
     def test_mover_property(self):
         mover = self.get_mover_1()
-        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        share = VNXNfsShare.get(cli=t_nas(), mover=mover, path='/EEE')
         mover = share.mover
         assert_that(mover.existed, equal_to(True))
         assert_that(mover.role, equal_to('primary'))
@@ -153,7 +152,7 @@ class VNXNfsShareTest(unittest.TestCase):
     @patch_nas()
     def test_fs_property(self):
         mover = self.get_mover_1()
-        share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
+        share = VNXNfsShare.get(cli=t_nas(), mover=mover, path='/EEE')
         fs = share.fs
         assert_that(fs.existed, equal_to(True))
         assert_that(fs.fs_id, equal_to(243))

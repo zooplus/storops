@@ -21,7 +21,7 @@ from hamcrest import assert_that, equal_to, none, only_contains, raises
 from test.vnx.nas_mock import t_nas, patch_post, patch_nas
 from storops.vnx.enums import VNXPortType
 from storops.exception import VNXBackendError, VNXGeneralNasError
-from storops.vnx.resource.mover import VNXMoverList, VNXMover, \
+from storops.vnx.resource.mover import VNXMover, \
     VNXMoverRefList, VNXMoverRef, VNXMoverHost, VNXMoverHostList
 
 __author__ = 'Jay Xu'
@@ -79,7 +79,7 @@ class VNXMoverRefTest(unittest.TestCase):
 
     @patch_post()
     def test_create_dns(self):
-        dm = VNXMover(mover_id=1, cli=t_nas())
+        dm = VNXMover.get(mover_id=1, cli=t_nas())
         resp = dm.create_dns('tt', '1.1.1.1')
         assert_that(resp.is_ok(), equal_to(True))
 
@@ -147,15 +147,24 @@ class VNXMoverRefTest(unittest.TestCase):
 
 class VNXMoverTest(unittest.TestCase):
     @patch_post()
+    def test_create_nfs_share(self):
+        dm = VNXMover(mover_id=1, cli=t_nas())
+        share = dm.create_nfs_share(path='/EEE')
+        assert_that(share.path, equal_to('/EEE'))
+        assert_that(share.mover_id, equal_to(1))
+        assert_that(share.existed, equal_to(True))
+        assert_that(share.fs_id, equal_to(243))
+
+    @patch_post()
     def test_get_all(self):
-        movers = VNXMoverList(t_nas())
+        movers = VNXMover.get(t_nas())
         assert_that(len(movers), equal_to(2))
         mover1 = next(dm for dm in movers if dm.mover_id == 1)
         self.verify_dm_1(mover1)
 
     @patch_post()
     def test_get(self):
-        mover1 = VNXMover(mover_id=1, cli=t_nas())
+        mover1 = VNXMover.get(mover_id=1, cli=t_nas())
         self.verify_dm_1(mover1)
 
     @staticmethod

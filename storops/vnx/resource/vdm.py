@@ -62,6 +62,14 @@ class VNXVdm(VNXResource):
     def get_mover_id(self):
         return self.get_vdm_id()
 
+    @staticmethod
+    def get(cli, name=None, vdm_id=None):
+        if name is not None or vdm_id is not None:
+            ret = VNXVdm(name=name, vdm_id=vdm_id, cli=cli)
+        else:
+            ret = VNXVdmList(cli)
+        return ret
+
     @property
     def is_vdm(self):
         return True

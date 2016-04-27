@@ -52,7 +52,7 @@ def read_requirements(filename):
 
 
 def get_description():
-    return "VNX Python API."
+    return "Python API for VNX and Unity."
 
 
 def get_long_description():
@@ -80,7 +80,7 @@ setup(
         "Natural Language :: English",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Topic :: Utilities",
         "License :: OSI Approved :: Apache Software License",
     ],

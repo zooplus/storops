@@ -894,6 +894,10 @@ class VNXMoverInterfaceNameInUseError(VNXMoverInterfaceError):
     error_code = 13421840550
 
 
+class VNXFileCredentialError(VNXCredentialError):
+    message = 'credential error for VNX control station.'
+
+
 class VNXNasCommandNoError(VNXException):
     """ Nas command returns something even if command success.
 

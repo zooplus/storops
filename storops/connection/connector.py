@@ -95,21 +95,50 @@ class UnityWbemConnector(object):
         self.conn = WBEMConnection(host, (user, password), namespace)
 
     def ei(self, clz_name):
+        """ enumerate instance
+
+        :param clz_name: CIM class name
+        :return: instances of the class
+        """
         return self.conn.EnumerateInstances(clz_name, self.ns)
 
     def gi(self, obj_name):
+        """ get instance
+
+        :param obj_name: instance name
+        :return: instance
+        """
         return self.conn.GetInstance(obj_name)
 
     def im(self, method_name, instance_name, **kwargs):
+        """ invoke method
+
+        :param method_name: method name
+        :param instance_name: instance name
+        :param kwargs: method parameters
+        :return: method return
+        """
         return self.conn.InvokeMethod(
             method_name, instance_name, kwargs.items())
 
     def ai(self, from_inst_name, assoc_clz, result_clz):
+        """ associators
+
+        :param from_inst_name: from instance
+        :param assoc_clz: the associate class
+        :param result_clz: the result class
+        :return: associated instances
+        """
         return self.conn.Associators(from_inst_name,
                                      AssocClass=assoc_clz,
                                      ResultClass=result_clz)
 
     def ei_first(self, clz_name):
+        """ enumerate first.
+
+        :param clz_name: class to enumerate
+        :return: first instance of the enumerate result
+        """
         instances = self.ei(clz_name)
         if len(instances) > 0:
             ret = instances[0]
@@ -118,9 +147,20 @@ class UnityWbemConnector(object):
         return ret
 
     def ref(self, obj_name, result_clz):
+        """ reference
+
+        :param obj_name: instance name
+        :param result_clz: result class name
+        :return: result instances
+        """
         return self.conn.References(obj_name, ResultClass=result_clz)
 
     def di(self, obj_name):
+        """ delete instance
+
+        :param obj_name: instance name
+        :return: operation result
+        """
         return self.conn.DeleteInstance(obj_name)
 
 

@@ -120,6 +120,14 @@ class VNXNfsShare(VNXResource):
             raise ValueError('path for the nfs share is not specified')
         return self._cli.get_nfs_export(mover_id, self._path)
 
+    @staticmethod
+    def get(cli, mover=None, path=None):
+        if mover is not None and path is not None:
+            ret = VNXNfsShare(mover=mover, path=path, cli=cli)
+        else:
+            ret = VNXNfsShareList(cli=cli, mover=mover, path=path)
+        return ret
+
     @property
     def mover(self):
         if self._mover is not None:

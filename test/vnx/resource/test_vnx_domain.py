@@ -106,7 +106,7 @@ class VNXDomainNodeListTest(TestCase):
     @patch_cli()
     def test_get_cs_ip(self):
         assert_that(VNXDomainNodeList.get_cs_ip('APM00153042305', t_cli()),
-                    equal_to('192.168.1.93'))
+                    equal_to('10.244.211.32'))
 
 
 class VNXDomainMemberListTest(TestCase):

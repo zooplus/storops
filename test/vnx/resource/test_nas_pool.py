@@ -20,7 +20,7 @@ import unittest
 from hamcrest import assert_that, equal_to, has_items
 
 from test.vnx.nas_mock import t_nas, patch_post
-from storops.vnx.resource.nas_pool import VNXNasPool, VNXNasPoolList
+from storops.vnx.resource.nas_pool import VNXNasPool
 
 __author__ = 'Jay Xu'
 
@@ -28,17 +28,17 @@ __author__ = 'Jay Xu'
 class VNXNasPoolTest(unittest.TestCase):
     @patch_post()
     def test_get_all(self):
-        pool_list = VNXNasPoolList(cli=t_nas())
+        pool_list = VNXNasPool.get(cli=t_nas())
         assert_that(len(pool_list), equal_to(6))
 
     @patch_post()
     def test_get_by_name(self):
-        pool = VNXNasPool(name='vnx-sg_test', cli=t_nas())
+        pool = VNXNasPool.get(name='vnx-sg_test', cli=t_nas())
         self.verify_pool_vnx_sg_test(pool)
 
     @patch_post()
     def test_get_by_pool_id(self):
-        pool = VNXNasPool(pool_id=63, cli=t_nas())
+        pool = VNXNasPool.get(pool_id=63, cli=t_nas())
         self.verify_pool_vnx_sg_test(pool)
 
     @patch_post()

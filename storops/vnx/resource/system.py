@@ -18,10 +18,18 @@ from __future__ import unicode_literals
 from retryz import retry
 
 from storops.exception import VNXDiskUsedError
-from storops.vnx.resource.mirror_view import VNXMirrorView
-
-from storops.vnx.enums import VNXPortType, VNXPoolRaidType, VNXSPEnum
 from storops.lib.common import daemon, instance_cache
+from storops.vnx.resource.nfs_share import VNXNfsShare
+from storops.vnx.resource.fs_snap import VNXFsSnap
+from storops.vnx.resource.mover import VNXMover
+from storops.vnx.resource.vdm import VNXVdm
+from storops.vnx.resource.cifs_share import VNXCifsShare
+from storops.vnx.resource.cifs_server import VNXCifsServer
+from storops.vnx.resource.nas_pool import VNXNasPool
+from storops.vnx.nas_client import VNXNasClient
+from storops.vnx.resource.fs import VNXFileSystem
+from storops.vnx.resource.mirror_view import VNXMirrorView
+from storops.vnx.enums import VNXPortType, VNXPoolRaidType, VNXSPEnum
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from storops.vnx.resource.cg import VNXConsistencyGroup
@@ -53,7 +61,8 @@ class VNXSystem(VNXCliResource):
                  username=None, password=None, scope=0, sec_file=None,
                  timeout=None,
                  heartbeat_interval=None,
-                 naviseccli=None):
+                 naviseccli=None,
+                 file_username=None, file_password=None):
         """ initialize a `VNXSystem` instance
 
         The `VNXSystem` instance act as a entry point for all
@@ -68,20 +77,52 @@ class VNXSystem(VNXCliResource):
         :param heartbeat_interval: heartbeat interval used to check the
         alive of sp.  Set to 0 if heart beat is not required.
         :param naviseccli: binary location of naviseccli in your host.
+        :param file_username: username for control station login, default to
+        username
+        :param file_password: password for control station login, default to
+        password
         :return: vnx system instance
         """
         super(VNXSystem, self).__init__()
-        self._cli = CliClient(ip,
-                              username, password, scope,
-                              sec_file,
-                              timeout,
-                              heartbeat_interval=heartbeat_interval,
-                              naviseccli=naviseccli)
+        self._ip = ip
+        self._username = username
+        self._password = password
+        self._scope = scope
+        self._sec_file = sec_file
+        self._timeout = timeout
+        self._hb_interval = heartbeat_interval
+        self._naviseccli = naviseccli
 
-        self._ndu_list = VNXNduList(self._cli)
-        self._ndu_list.with_no_poll()
+        self._file_username = file_username
+        self._file_password = file_password
+
+        self._cli = self._init_block_cli()
+
         if heartbeat_interval:
             daemon(self.update_nodes_ip)
+
+    def _init_block_cli(self):
+        return CliClient(
+            self._ip,
+            self._username, self._password, self._scope, self._sec_file,
+            self._timeout, heartbeat_interval=self._hb_interval,
+            naviseccli=self._naviseccli)
+
+    def _init_file_cli(self):
+        return VNXNasClient(self.control_station_ip,
+                            self._file_username,
+                            self._file_password)
+
+    @property
+    @instance_cache
+    def _file_cli(self):
+        return self._init_file_cli()
+
+    @property
+    def _ndu_list(self):
+        ret = VNXNduList(self._cli)
+        ret.with_no_poll()
+        return ret
 
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
@@ -315,6 +356,43 @@ class VNXSystem(VNXCliResource):
 
     def create_mirror_view(self, name, src_lun):
         return VNXMirrorView.create(self._cli, name, src_lun)
+
+    def get_file_system(self, name=None, fs_id=None):
+        return VNXFileSystem.get(cli=self._file_cli, name=name, fs_id=fs_id)
+
+    def get_nas_pool(self, name=None, pool_id=None):
+        return VNXNasPool.get(cli=self._file_cli, name=name, pool_id=pool_id)
+
+    def get_cifs_server(self, name=None, mover_id=None, is_vdm=None):
+        return VNXCifsServer.get(cli=self._file_cli, name=name,
+                                 mover_id=mover_id, is_vdm=is_vdm)
+
+    def create_cifs_server(self, name, mover_id=None, is_vdm=False,
+                           workgroup=None, domain=None,
+                           interfaces=None, alias_name=None,
+                           local_admin_password=None):
+        return VNXCifsServer.create(
+            cli=self._file_cli, name=name, mover_id=mover_id, is_vdm=is_vdm,
+            workgroup=workgroup, domain=domain, interfaces=interfaces,
+            alias_name=alias_name, local_admin_password=local_admin_password)
+
+    def get_cifs_share(self, name=None, mover=None, server_name=None):
+        return VNXCifsShare.get(
+            self._file_cli, name=name, mover=mover, server_name=server_name)
+
+    def get_file_system_snap(self, name=None, snap_id=None):
+        return VNXFsSnap.get(cli=self._file_cli, name=name, snap_id=snap_id)
+
+    def get_mover(self, name=None, mover_id=None, is_vdm=False):
+        if is_vdm:
+            ret = VNXVdm.get(cli=self._file_cli, name=name, vdm_id=mover_id)
+        else:
+            ret = VNXMover.get(cli=self._file_cli, name=name,
+                               mover_id=mover_id)
+        return ret
+
+    def get_nfs_share(self, mover=None, path=None):
+        return VNXNfsShare.get(cli=self._file_cli, mover=mover, path=path)
 
     def __del__(self):
         del self._cli

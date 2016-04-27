@@ -25,7 +25,8 @@ from retryz import retry
 
 from storops.connection import connector
 from storops.exception import VNXBackendError, VNXLockRequiredException, \
-    VNXObjectNotFound, VNXInvalidMoverID, VNXException, get_xmlapi_exception
+    VNXObjectNotFound, VNXInvalidMoverID, VNXException, get_xmlapi_exception, \
+    VNXFileCredentialError
 from storops.lib.common import Enum, check_int
 from storops.lib.converter import to_int, to_hex
 from storops.vnx.nas_cmd import NasCommand
@@ -360,8 +361,14 @@ class XmlStatus(Enum):
 
 class NasXmlResponse(object):
     def __init__(self, resp, parser=None):
+        self._check_credential_error(resp)
         resp = self._parse_resp(parser, resp)
         self._dict = resp
+
+    @staticmethod
+    def _check_credential_error(resp):
+        if 'Session timeout. Relogin and try this operation again.' in resp:
+            raise VNXFileCredentialError()
 
     @staticmethod
     def _parse_resp(parser, resp):

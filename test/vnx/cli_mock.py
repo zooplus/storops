@@ -50,7 +50,9 @@ def t_vnx():
 
     :return: test vnx instance
     """
-    return VNXSystem('10.244.211.30', heartbeat_interval=0)
+    return VNXSystem('10.244.211.30', heartbeat_interval=0,
+                     file_username='nasadmin',
+                     file_password='nasadmin')
 
 
 class MockCli(ConnectorMock):
