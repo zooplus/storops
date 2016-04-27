@@ -54,6 +54,10 @@ class NodeHeartBeatTest(TestCase):
         hb.add('cs', None)
         assert_that(hb.is_available('cs'), equal_to(False))
 
+    def test_remove_extra_quotes(self):
+        info = NodeInfo('spa', '  \'"1.1.1.1" \'   ')
+        assert_that(info.ip, equal_to('1.1.1.1'))
+
     @patch_cli()
     def test_get_alive_sp_ip(self):
         hb = NodeHeartBeat(interval=0)
@@ -167,6 +171,14 @@ class NodeHeartBeatTest(TestCase):
         except VNXCredentialError:
             pass
         assert_that(hb.is_credential_valid, equal_to(False))
+
+    @patch_cli(output='ip_error.txt')
+    def test_execute_cmd_ip_error(self):
+        def f():
+            hb = self.get_test_hb()
+            hb.execute_cmd('abc', ['naviseccli', '-h', 'abc', 'getagent'])
+
+        assert_that(f, raises(VNXCredentialError, 'not connect to'))
 
     @patch_cli(output='credential_error.txt')
     def test_credential_error_no_heart_beat(self):

@@ -681,7 +681,8 @@ class VNXSecurityException(VNXException):
 
 @cli_exception
 class VNXCredentialError(VNXSecurityException):
-    error_message = 'invalid username, password and/or scope.'
+    error_message = ['invalid username, password and/or scope.',
+                     'Could not connect to the specified host']
 
 
 @cli_exception

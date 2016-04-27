@@ -112,6 +112,10 @@ class VNXSystem(VNXCliResource):
         return VNXNetworkAdmin.get_spb_ip(self._cli)
 
     @property
+    def alive_sp_ip(self):
+        return self.heartbeat.get_alive_sp_ip()
+
+    @property
     @instance_cache
     def control_station_ip(self):
         return self._get_cs_ip()

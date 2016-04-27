@@ -42,7 +42,7 @@ class NodeInfo(object):
         :return:
         """
         self.name = VNXSPEnum.parse(name)
-        self.ip = ip
+        self.ip = ip.strip('\'" ')
         if available is None:
             available = True
         self._available = available

@@ -279,3 +279,7 @@ class VNXSystemTest(TestCase):
     @patch_cli()
     def test_domain_properties(self):
         assert_that(self.vnx.domain, instance_of(VNXDomainMemberList))
+
+    @patch_cli()
+    def test_alive_sp_ip(self):
+        assert_that(self.vnx.alive_sp_ip, equal_to('10.244.211.30'))
