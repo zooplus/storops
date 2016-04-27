@@ -143,3 +143,8 @@ class VNXConsistencyGroupTest(TestCase):
             cg.create_snap('cg1_snap')
 
         assert_that(f, raises(VNXSnapNameInUseError, 'already in use'))
+
+    @patch_cli()
+    def test_cg_empty_member_property(self):
+        cg = VNXConsistencyGroup(name='cg0', cli=t_cli())
+        assert_that(len(cg.lun_list), equal_to(0))

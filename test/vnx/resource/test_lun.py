@@ -66,7 +66,7 @@ class VNXLunTest(TestCase):
         assert_that(l.is_private, equal_to(False))
         assert_that(l.user_capacity_gbs, equal_to(500.0))
         assert_that(l.consumed_capacity_gbs, equal_to(512.249))
-        assert_that(l.snapshot_mount_points, none())
+        assert_that(len(l.snapshot_mount_points), equal_to(0))
         assert_that(l.primary_lun, none())
 
     @patch_cli()

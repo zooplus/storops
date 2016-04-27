@@ -67,9 +67,9 @@ class ConverterTest(TestCase):
 
     def test_ids_to_lun_list_empty(self):
         lun_list = converter.ids_to_lun_list('')
-        assert_that(lun_list, none())
+        assert_that(len(lun_list), equal_to(0))
         lun_list = converter.ids_to_lun_list(None)
-        assert_that(lun_list, none())
+        assert_that(len(lun_list), equal_to(0))
 
     @patch_cli()
     def test_indices_to_disk_list_normal(self):
@@ -81,4 +81,4 @@ class ConverterTest(TestCase):
 
     def test_indices_to_disk_list_empty(self):
         disks = converter.indices_to_disk_list('')
-        assert_that(disks, none())
+        assert_that(len(disks), equal_to(0))

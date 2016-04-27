@@ -229,3 +229,4 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.ports), equal_to(0))
         assert_that(len(sg.fc_ports), equal_to(0))
         assert_that(len(sg.iscsi_ports), equal_to(0))
+        assert_that(len(sg.hba_sp_pairs), equal_to(0))
