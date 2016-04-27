@@ -93,15 +93,15 @@ class VNXLun(VNXCliResource):
         return pool.create_lun(lun_name, size_gb, lun_id, provision,
                                tier, ignore_thresholds)
 
-    def create_mount_point(self, mount_point_id=None, mount_point_name=None):
+    def create_mount_point(self, _id=None, name=None):
         lun_id = self.get_id(self)
-        self._cli.create_mount_point(primary_lun_id=lun_id,
-                                     mount_point_name=mount_point_name,
-                                     mount_point_id=mount_point_id,
-                                     poll=self.poll)
-        return VNXLun(lun_id=mount_point_id,
-                      name=mount_point_name,
-                      cli=self._cli)
+        out = self._cli.create_mount_point(
+            primary_lun_id=lun_id,
+            mount_point_name=name,
+            mount_point_id=_id,
+            poll=self.poll)
+        ex.raise_if_err(out, default=ex.VNXCreateMpError)
+        return VNXLun(lun_id=_id, name=name, cli=self._cli)
 
     @property
     def tier(self):

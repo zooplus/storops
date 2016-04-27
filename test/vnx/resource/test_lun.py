@@ -235,9 +235,9 @@ class VNXLunTest(TestCase):
                               'not a snapshot mount point'))
 
     @patch_cli()
-    def test_create_mount_point(self):
+    def test_create_mount_point_success(self):
         lun = VNXLun(name='l1', cli=t_cli())
-        m2 = lun.create_mount_point(mount_point_name='m2')
+        m2 = lun.create_mount_point(name='m2')
         assert_that(lun.snapshot_mount_points, instance_of(VNXLunList))
         for smp in lun.snapshot_mount_points:
             assert_that(smp, instance_of(VNXLun))
@@ -248,13 +248,21 @@ class VNXLunTest(TestCase):
     @patch_cli()
     def test_mount_point_properties(self):
         lun = VNXLun(name='l1', cli=t_cli())
-        m1 = lun.create_mount_point(mount_point_name='m1')
+        m1 = lun.create_mount_point(name='m1')
         assert_that(m1.name, equal_to('m1'))
         assert_that(m1.lun_id, equal_to(4057))
         s1 = m1.attached_snapshot
         assert_that(s1, instance_of(VNXSnap))
         assert_that(s1._cli, equal_to(t_cli()))
         assert_that(s1._get_name(), equal_to('s1'))
+
+    @patch_cli()
+    def test_create_mount_point_name_in_use(self):
+        def f():
+            lun = VNXLun(name='l1', cli=t_cli())
+            lun.create_mount_point(name='m3')
+
+        assert_that(f, raises(VNXLunNameInUseError, 'already in use'))
 
     @patch_cli()
     def test_attach_snap(self):

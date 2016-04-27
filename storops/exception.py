@@ -582,6 +582,10 @@ class VNXModifyLunError(VNXLunError):
     pass
 
 
+class VNXCreateMpError(VNXLunError):
+    pass
+
+
 class VNXLunExtendError(VNXLunError):
     pass
 
