@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from emc_pywbem import CIMInstanceName
+from pywbem import CIMInstanceName
 
 from storops.exception import UnityCimResourceNotFoundError
 from storops.lib.common import instance_cache

@@ -123,7 +123,7 @@ class UnityCifsShareTest(TestCase):
         user = UnityCifsShare.get_user(cli=t_rest(),
                                        name=r'win2012.dev\hyperv')
         assert_that(user['name'], equal_to(r'win2012.dev\hyperv'))
-        assert_that(user['userID'],
+        assert_that(user['userID'].strip(),
                     equal_to('S-1-5-15-be80fa7-8ddad211-d49ba5f9-467'))
 
     @patch_cim(mock_map={'EMC_VNXe_UserContactLeaf.xml': 'not_found.xml'})

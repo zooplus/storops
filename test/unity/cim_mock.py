@@ -180,7 +180,7 @@ class MockCimConnection(ConnectorMock):
                 '</INSTANCENAME>'.format(clz_name, key_name, key_value))
 
     def mock_request(self, url, data, creds, headers=None, ca_certs=None,
-                     verify=False, timeout=None):
+                     verify=False, timeout=None, *args, **kwargs):
 
         req = ("<mock request {{"
                "url: {}, "
@@ -188,13 +188,17 @@ class MockCimConnection(ConnectorMock):
                "headers: {}, "
                "ca_certs: {}, "
                "verify: {}, "
-               "timeout: {}}}"
+               "timeout: {},"
+               "args: {},"
+               "kwargs: {}}}"
                .format(url,
                        creds,
                        headers,
                        ca_certs,
                        verify,
-                       timeout))
+                       timeout,
+                       args,
+                       kwargs))
         log.debug(req)
         log.debug('request data: \n{}'.format(data))
         return self.get_mock_output([url, data])
@@ -205,7 +209,7 @@ def patch_cim(output=None, mock_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='emc_pywbem.cim_http.wbem_request',
+        @patch(target='pywbem.cim_operations.wbem_request',
                new=conn.mock_request)
         def func_wrapper(*args, **kwargs):
             return func(*args, **kwargs)
