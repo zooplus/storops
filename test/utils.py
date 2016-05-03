@@ -22,7 +22,7 @@ import os
 
 from os.path import dirname, abspath, join, exists, basename
 
-import filelock
+import fasteners
 
 from storops.lib.common import instance_cache
 
@@ -110,7 +110,7 @@ class PersistedDict(object):
     @property
     @instance_cache
     def lock(self):
-        return filelock.FileLock(self.lock_file_name)
+        return fasteners.InterProcessLock(self.lock_file_name)
 
     @property
     def dict(self):
@@ -125,7 +125,7 @@ class PersistedDict(object):
         return ret
 
     def __setitem__(self, key, value):
-        with self.lock.acquire():
+        with self.lock:
             data = self.dict
             data[key] = value
             with open(self.data_file_name, 'w') as f:
@@ -136,7 +136,7 @@ class PersistedDict(object):
                 json.dump(data, f, indent=4, sort_keys=True)
 
     def __getitem__(self, item):
-        with self.lock.acquire():
+        with self.lock:
             d = self.dict
             if item in d:
                 ret = d[item]
@@ -153,7 +153,7 @@ class PersistedDict(object):
         return len(self.dict)
 
     def clear(self):
-        with self.lock.acquire():
+        with self.lock:
             with open(self.data_file_name, 'w') as f:
                 json.dump({}, f)
 

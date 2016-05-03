@@ -1,5 +1,6 @@
 # Binaries
 *.pyc
+*.lck
 .tox/
 .env/
 build/

@@ -324,6 +324,11 @@ class UnityNasServerNameUsedError(UnityException):
 
 
 @rest_exception
+class UnityNasServerHasFsError(UnityException):
+    error_code = 108011564
+
+
+@rest_exception
 class UnitySmbNameInUseError(UnityException):
     error_code = 108011873
 

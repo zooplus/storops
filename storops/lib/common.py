@@ -28,7 +28,7 @@ import time
 
 import sys
 from retryz import retry
-from threading import Lock, Thread
+import threading
 
 import storops.exception
 
@@ -238,7 +238,7 @@ def _cache_holder():
 
 
 def _cache_lock_holder():
-    return defaultdict(lambda: Lock())
+    return defaultdict(lambda: threading.Lock())
 
 
 class Cache(object):
@@ -443,7 +443,7 @@ def check_text(value):
 def daemon(func_ref, *args, **kwargs):
     if not callable(func_ref):
         raise ValueError('background only accept callable inputs.')
-    t = Thread(target=func_ref, args=args, kwargs=kwargs)
+    t = threading.Thread(target=func_ref, args=args, kwargs=kwargs)
     t.setDaemon(True)
     t.start()
     return t
@@ -500,8 +500,12 @@ def log_enter_exit(func):
     return inner
 
 
+def _init_lock():
+    return threading.Lock()
+
+
 class SynchronizedDecorator(object):
-    lock_map_lock = Lock()
+    lock_map_lock = _init_lock()
     lock_map = {}
 
     @classmethod
@@ -524,7 +528,7 @@ class SynchronizedDecorator(object):
             if key not in cls.lock_map:
                 with cls.lock_map_lock:
                     if key not in cls.lock_map:
-                        cls.lock_map[key] = Lock()
+                        cls.lock_map[key] = _init_lock()
             return cls.lock_map[key]
 
         def wrap(f):

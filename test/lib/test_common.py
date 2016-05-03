@@ -312,7 +312,7 @@ class LockDemo(object):
 
 
 class SynchronizedTest(TestCase):
-    def test_synchronize(self):
+    def test_synchronize_simple(self):
         demo = LockDemo()
         pool = ThreadPool(2)
         pool.imap(demo.bar, range(2))

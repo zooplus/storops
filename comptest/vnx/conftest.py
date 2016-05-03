@@ -17,6 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
+import fasteners
 import pytest
 
 from comptest.vnx import VNXGeneralFixtureManager
@@ -27,8 +28,8 @@ log = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def gf(request):
-    """ General fixture for most cases
+def vnx_gf(request):
+    """ General fixture for most vnx cases
 
         Details including:
             vnx  - reference to the system.
@@ -38,7 +39,13 @@ def gf(request):
     :param request:
     :return:
     """
-    manager = None
+
+    @fasteners.interprocess_locked('vnx_gf.lck')
+    def _setup():
+        log.info('setup general fixture.')
+        return VNXGeneralFixtureManager()
+
+    manager = _setup()
 
     def fin():
         log.info('tear down general fixture.')
@@ -46,8 +53,4 @@ def gf(request):
             manager.clean_up()
 
     request.addfinalizer(fin)
-
-    log.info('setup general fixture.')
-    manager = VNXGeneralFixtureManager()
-
     return manager

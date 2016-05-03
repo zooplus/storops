@@ -29,18 +29,18 @@ __author__ = 'Cedric Zhuang'
 vnx = t_vnx()
 
 
-def test_create_thick_lun(gf):
-    assert_that(gf.lun.existed, equal_to(True))
-    assert_that(gf.lun.provision, equal_to(VNXProvisionEnum.THICK))
-    assert_that(gf.lun.tier, equal_to(VNXTieringEnum.HIGH_AUTO))
+def test_create_thick_lun(vnx_gf):
+    assert_that(vnx_gf.lun.existed, equal_to(True))
+    assert_that(vnx_gf.lun.provision, equal_to(VNXProvisionEnum.THICK))
+    assert_that(vnx_gf.lun.tier, equal_to(VNXTieringEnum.HIGH_AUTO))
 
 
 @pytest.mark.skipif(not vnx.is_auto_tiering_enabled(),
                     reason='auto tiering not available')
-def test_create_typed_lun(gf):
-    lun_name = gf.add_lun_name()
-    lun = gf.pool.create_lun(lun_name, provision=VNXProvisionEnum.THIN,
-                             tier=VNXTieringEnum.NO_MOVE)
+def test_create_typed_lun(vnx_gf):
+    lun_name = vnx_gf.add_lun_name()
+    lun = vnx_gf.pool.create_lun(lun_name, provision=VNXProvisionEnum.THIN,
+                                 tier=VNXTieringEnum.NO_MOVE)
     assert_that(lun.existed, equal_to(True))
     assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
     assert_that(lun.tier, equal_to(VNXTieringEnum.NO_MOVE))
@@ -48,9 +48,9 @@ def test_create_typed_lun(gf):
 
 @pytest.mark.skipif(not vnx.is_compression_enabled(),
                     reason='compression not available')
-def test_create_compression_lun(gf):
-    lun_name = gf.add_lun_name()
-    lun = gf.pool.create_lun(
+def test_create_compression_lun(vnx_gf):
+    lun_name = vnx_gf.add_lun_name()
+    lun = vnx_gf.pool.create_lun(
         lun_name, provision=VNXProvisionEnum.COMPRESSED)
     assert_that(lun.existed, equal_to(True))
     assert_that(lun.provision, equal_to(VNXProvisionEnum.COMPRESSED))
@@ -58,9 +58,9 @@ def test_create_compression_lun(gf):
 
 @pytest.mark.skipif(not vnx.is_dedup_enabled(),
                     reason='dedup feature not available')
-def test_dedup_lun(gf):
-    lun_name = gf.add_lun_name()
-    lun = gf.pool.create_lun(
+def test_dedup_lun(vnx_gf):
+    lun_name = vnx_gf.add_lun_name()
+    lun = vnx_gf.pool.create_lun(
         lun_name, provision=VNXProvisionEnum.DEDUPED)
     assert_that(lun.existed, equal_to(True))
 
@@ -72,23 +72,23 @@ def test_dedup_lun(gf):
 
 @pytest.mark.skipif(not vnx.is_snap_enabled(),
                     reason='snap feature not available')
-def test_create_smp(gf):
-    smp_name = gf.add_lun_name()
-    smp = gf.lun.create_mount_point(name=smp_name)
+def test_create_smp(vnx_gf):
+    smp_name = vnx_gf.add_lun_name()
+    smp = vnx_gf.lun.create_mount_point(name=smp_name)
     assert_that(smp.existed, equal_to(True))
-    assert_that(smp.primary_lun.name, equal_to(gf.lun.name))
+    assert_that(smp.primary_lun.name, equal_to(vnx_gf.lun.name))
 
 
 def _extend_retry_err(ex):
     return isinstance(ex, (VNXLunPreparingError, VNXNotReadyExpandError))
 
 
-def test_extend_lun(gf):
+def test_extend_lun(vnx_gf):
     @retry(on_error=_extend_retry_err, wait=7)
     def do_expand():
         lun.expand(2)
 
-    lun = gf.pool.create_lun(gf.add_lun_name())
+    lun = vnx_gf.pool.create_lun(vnx_gf.add_lun_name())
     assert_that(lun.user_capacity_gbs, equal_to(1.0))
     do_expand()
 

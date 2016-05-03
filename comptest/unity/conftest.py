@@ -17,30 +17,38 @@ from __future__ import unicode_literals
 
 import logging
 
-import fasteners as fasteners
+import fasteners
+import pytest
 
-from comptest.utils import setup_log
-from storops import VNXSystem, UnitySystem, cache
+from comptest.unity import UnityGeneralFixtureManager
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-@fasteners.interprocess_locked('t_vnx.lck')
-@cache
-def t_vnx():
-    vnx = VNXSystem('10.244.211.30', 'sysadmin', 'sysadmin')
-    log.debug('initialize vnx system: {}'.format(vnx))
-    return vnx
+@pytest.fixture(scope="session", autouse=True)
+def unity_gf(request):
+    """ General fixture for most unity cases
 
+    Details including:
+        unity - reference to the unity system
+        pool  - storage pool
+    :param request:
+    :return:
+    """
 
-@fasteners.interprocess_locked('t_unity.lck')
-@cache
-def t_unity():
-    unity = UnitySystem('10.244.223.61', 'admin', 'Password123!')
-    log.debug('initialize unity system: {}'.format(unity))
-    return unity
+    @fasteners.interprocess_locked('unity_gf.lck')
+    def _setup():
+        log.info('setup general fixture.')
+        return UnityGeneralFixtureManager()
 
+    manager = _setup()
 
-setup_log()
+    def fin():
+        log.info('tear down general fixture.')
+        if manager:
+            manager.clean_up()
+
+    request.addfinalizer(fin)
+    return manager

@@ -15,32 +15,21 @@
 #    under the License.
 from __future__ import unicode_literals
 
-import logging
-
-import fasteners as fasteners
-
-from comptest.utils import setup_log
-from storops import VNXSystem, UnitySystem, cache
+from hamcrest import assert_that, equal_to
 
 __author__ = 'Cedric Zhuang'
 
-log = logging.getLogger(__name__)
+
+def test_create_fs_success(unity_gf):
+    server = unity_gf.nas_server
+    name = unity_gf.add_fs_name()
+    fs = unity_gf.pool.create_filesystem(
+        server, name, 3 * 1024 ** 3)
+    assert_that(fs.existed, equal_to(True))
 
 
-@fasteners.interprocess_locked('t_vnx.lck')
-@cache
-def t_vnx():
-    vnx = VNXSystem('10.244.211.30', 'sysadmin', 'sysadmin')
-    log.debug('initialize vnx system: {}'.format(vnx))
-    return vnx
-
-
-@fasteners.interprocess_locked('t_unity.lck')
-@cache
-def t_unity():
-    unity = UnitySystem('10.244.223.61', 'admin', 'Password123!')
-    log.debug('initialize unity system: {}'.format(unity))
-    return unity
-
-
-setup_log()
+def test_create_delete_snapshot(unity_gf):
+    fs = unity_gf.nfs_share.filesystem
+    snap = fs.create_snap()
+    assert_that(snap.existed, equal_to(True))
+    snap.delete()

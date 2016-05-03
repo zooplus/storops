@@ -15,32 +15,14 @@
 #    under the License.
 from __future__ import unicode_literals
 
-import logging
-
-import fasteners as fasteners
-
-from comptest.utils import setup_log
-from storops import VNXSystem, UnitySystem, cache
+from hamcrest import assert_that, equal_to
 
 __author__ = 'Cedric Zhuang'
 
-log = logging.getLogger(__name__)
+
+def test_check_cifs_share_exists(unity_gf):
+    assert_that(unity_gf.cifs_share.existed, equal_to(True))
 
 
-@fasteners.interprocess_locked('t_vnx.lck')
-@cache
-def t_vnx():
-    vnx = VNXSystem('10.244.211.30', 'sysadmin', 'sysadmin')
-    log.debug('initialize vnx system: {}'.format(vnx))
-    return vnx
-
-
-@fasteners.interprocess_locked('t_unity.lck')
-@cache
-def t_unity():
-    unity = UnitySystem('10.244.223.61', 'admin', 'Password123!')
-    log.debug('initialize unity system: {}'.format(unity))
-    return unity
-
-
-setup_log()
+def test_check_nfs_share_exists(unity_gf):
+    assert_that(unity_gf.nfs_share.existed, equal_to(True))
