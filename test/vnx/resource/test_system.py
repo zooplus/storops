@@ -190,16 +190,14 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_iscsi_port_filtered_type_not_match(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=8,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(0))
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=8,
+                                       vport_id=0)
+        assert_that(port, none())
 
     @patch_cli()
     def test_get_iscsi_port_filtered_type_match(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=5,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(1))
-        port = ports[0]
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=5,
+                                       vport_id=0)
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(5))
         assert_that(port.vport_id, equal_to(0))
@@ -214,9 +212,9 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_iscsi_port_filtered_no_vport(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(0))
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10,
+                                       vport_id=0)
+        assert_that(port, none())
 
     @patch_cli()
     def test_get_iscsi_port_filtered_by_vport(self):
@@ -234,10 +232,8 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_fcoe_port_filtered_to_single(self):
-        ports = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_A, port_id=6,
-                                       vport_id=0)
-        assert_that(len(ports), equal_to(1))
-        port = ports[0]
+        port = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_A, port_id=6,
+                                      vport_id=0)
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(6))
         assert_that(port.vport_id, equal_to(0))
