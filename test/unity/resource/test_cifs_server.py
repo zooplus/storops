@@ -107,16 +107,16 @@ class UnityCifsServerTest(TestCase):
         assert_that(f, raises(UnityNetBiosNameExistedError, 'already exists'))
 
     @patch_rest()
-    def test_remove_cifs3(self):
+    def test_delete_cifs3(self):
         server = UnityCifsServer(_id='cifs_3', cli=t_rest())
-        resp = server.remove(skip_domain_unjoin=True)
+        resp = server.delete(skip_domain_unjoin=True)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             server = UnityCifsServer(_id='cifs_10', cli=t_rest())
-            server.remove()
+            server.delete()
 
         assert_that(f, raises(UnityResourceNotFoundError))
 

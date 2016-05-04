@@ -84,13 +84,15 @@ def duel_command(f):
 
 class CliClient(object):
     def __init__(self, ip=None,
-                 username=None, password=None, scope=0,
+                 username=None, password=None, scope=None,
                  sec_file=None,
                  timeout=None,
                  heartbeat_interval=None,
                  naviseccli=None):
         if heartbeat_interval is None:
             heartbeat_interval = 60
+        if scope is None:
+            scope = 0
         self._heart_beat = NodeHeartBeat(
             username=username,
             password=password,
@@ -167,6 +169,10 @@ class CliClient(object):
     @command
     def get_sp_port(self):
         return 'port -list -sp -all'
+
+    @command
+    def get_sp(self):
+        return 'getsp'
 
     @command
     def get_connection_port(self, sp=None, port_id=None, vport_id=None):
@@ -350,15 +356,15 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_pool_lun(self,
+    def delete_pool_lun(self,
                         lun_id=None,
                         lun_name=None,
-                        remove_snapshots=False,
+                        delete_snapshots=False,
                         force_detach=False):
         cmd = 'lun -destroy'.split()
         cmd += self._get_lun_opt(lun_id, lun_name)
 
-        if remove_snapshots:
+        if delete_snapshots:
             cmd.append('-destroySnapshots')
 
         if force_detach:
@@ -420,7 +426,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def sg_remove_hlu(self, sg_name, hlu_id):
+    def sg_delete_hlu(self, sg_name, hlu_id):
         cmd = ['storagegroup', '-removehlu']
         cmd += int_var('-hlu', hlu_id)
         cmd += text_var('-gname', sg_name)
@@ -459,11 +465,11 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_hba(self, hba_uid):
+    def delete_hba(self, hba_uid):
         return ['port', '-removeHBA', '-hbauid', hba_uid, '-o']
 
     @command
-    def remove_sg(self, sg_name):
+    def delete_sg(self, sg_name):
         cmd = ['storagegroup', '-destroy']
         cmd += text_var('-gname', sg_name)
         cmd.append('-o')
@@ -522,7 +528,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_snap(self, snap_name):
+    def delete_snap(self, snap_name):
         cmd = ['snap', '-destroy']
         cmd += text_var('-id', snap_name)
         cmd.append('-o')
@@ -562,7 +568,7 @@ class CliClient(object):
         return self._cg_member_op(name, '-addmember', members)
 
     @command
-    def remove_cg_member(self, name, *members):
+    def delete_cg_member(self, name, *members):
         return self._cg_member_op(name, '-rmmember', members)
 
     @command
@@ -570,7 +576,7 @@ class CliClient(object):
         return self._cg_member_op(name, '-replmember', members)
 
     @command
-    def remove_cg(self, name):
+    def delete_cg(self, name):
         cmd = 'snap -group -destroy'.split()
         cmd += text_var('-id', name)
         return cmd
@@ -591,7 +597,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_mirror_view(self, name):
+    def delete_mirror_view(self, name):
         cmd = 'mirror -sync -destroy'.split()
         cmd += text_var('-name', name)
         cmd.append('-o')
@@ -618,7 +624,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_mirror_view_image(self, name, image_id):
+    def delete_mirror_view_image(self, name, image_id):
         return self._mirror_view_image_op(
             '-removeimage', name, image_id)
 
@@ -678,7 +684,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_rg(self, rg_id):
+    def delete_rg(self, rg_id):
         cmd = ['removerg']
         cmd += int_var(None, rg_id)
         return cmd
@@ -693,7 +699,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_pool(self, name=None, pool_id=None):
+    def delete_pool(self, name=None, pool_id=None):
         cmd = ['storagepool', '-destroy']
         cmd += self._get_id_name_opt(pool_id, name)
         cmd.append('-o')
@@ -714,7 +720,7 @@ class CliClient(object):
         return 'networkadmin -get -sp {} -all'.format(sp).split()
 
     @duel_command
-    def remove_disk(self, disk_index):
+    def delete_disk(self, disk_index):
         return 'cru_on_off -messner {} 0'.format(disk_index).split()
 
     @duel_command
@@ -761,7 +767,7 @@ class CliClient(object):
         return cmd
 
     @command
-    def remove_user(self, name, scope=None):
+    def delete_user(self, name, scope=None):
         if scope is None:
             scope = VNXUserScopeEnum.GLOBAL
 
@@ -776,26 +782,21 @@ class CliClient(object):
         return self._heart_beat.get_alive_sp_ip()
 
     @retry(on_error=ex.VNXSPDownError)
-    def execute(self, params, raise_on_rc=None, check_rc=False):
+    def execute(self, params, ip=None):
         if params is not None and len(params) > 0:
-            ip = self.ip
+            if ip is None:
+                ip = self.ip
             cmd = self._heart_beat.get_cmd_prefix(ip) + params
-            output = self._heart_beat.execute_cmd(ip,
-                                                  cmd,
-                                                  raise_on_rc,
-                                                  check_rc)
+            output = self._heart_beat.execute_cmd(ip, cmd)
         else:
             log.info('no command to execute.  return empty.')
             output = ''
         return output
 
-    def execute_dual(self, params, raise_on_rc=None, check_rc=False):
+    def execute_dual(self, params):
         def do(sp_ip):
             cmd_to_exec = self._heart_beat.get_cmd_prefix(sp_ip) + params
-            return self._heart_beat.execute_cmd(sp_ip,
-                                                cmd_to_exec,
-                                                raise_on_rc,
-                                                check_rc)
+            return self._heart_beat.execute_cmd(sp_ip, cmd_to_exec)
 
         ip_list = self._heart_beat.get_all_alive_sps_ip()
         if not self._heart_beat.is_all_sps_alive():

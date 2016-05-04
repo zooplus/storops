@@ -61,7 +61,7 @@ class UnityNfsHostConfig(object):
         return ret
 
     @classmethod
-    def _remove(cls, left, right):
+    def _delete(cls, left, right):
         if left is None:
             ret = None
         elif right is None:
@@ -74,32 +74,32 @@ class UnityNfsHostConfig(object):
         return ret
 
     def allow_root(self, *hosts):
-        self.remove_access(*hosts)
+        self.delete_access(*hosts)
         self.root = self._add(self.root, hosts)
         return self
 
     def allow_ro(self, *hosts):
-        self.remove_access(*hosts)
+        self.delete_access(*hosts)
         self.ro = self._add(self.ro, hosts)
         self.root = self._add(self.root, hosts)
         return self
 
     def allow_rw(self, *hosts):
-        self.remove_access(*hosts)
+        self.delete_access(*hosts)
         self.rw = self._add(self.rw, hosts)
         self.root = self._add(self.root, hosts)
         return self
 
     def deny_access(self, *hosts):
-        self.remove_access(*hosts)
+        self.delete_access(*hosts)
         self.no_access = self._add(self.no_access, hosts)
         return self
 
-    def remove_access(self, *hosts):
-        self.rw = self._remove(self.rw, hosts)
-        self.ro = self._remove(self.ro, hosts)
-        self.no_access = self._remove(self.no_access, hosts)
-        self.root = self._remove(self.root, hosts)
+    def delete_access(self, *hosts):
+        self.rw = self._delete(self.rw, hosts)
+        self.ro = self._delete(self.ro, hosts)
+        self.no_access = self._delete(self.no_access, hosts)
+        self.root = self._delete(self.root, hosts)
         return self
 
     def clear_all(self):
@@ -147,9 +147,9 @@ class UnityNfsShare(UnityResource):
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
 
-    def remove(self, async=False):
+    def delete(self, async=False):
         if self.type == NFSTypeEnum.NFS_SNAPSHOT:
-            resp = super(UnityNfsShare, self).remove(async=async)
+            resp = super(UnityNfsShare, self).delete(async=async)
         else:
             fs = self.filesystem.verify()
             sr = fs.storage_resource
@@ -197,9 +197,9 @@ class UnityNfsShare(UnityResource):
         config = self.host_config.deny_access(*hosts)
         return self.modify(host_config=config)
 
-    def remove_access(self, hosts):
+    def delete_access(self, hosts):
         hosts = self._get_hosts(hosts)
-        config = self.host_config.remove_access(*hosts)
+        config = self.host_config.delete_access(*hosts)
         return self.modify(host_config=config)
 
     def clear_access(self):

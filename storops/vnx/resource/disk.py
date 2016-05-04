@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 import re
+from collections import Counter
 
 from storops.lib.common import check_text
 from storops.vnx.resource import VNXCliResource, VNXCliResourceList
@@ -82,28 +83,82 @@ class VNXDisk(VNXCliResource):
             ret = VNXDisk(index, cli)
         return ret
 
-    def remove(self):
-        return self._cli.remove_disk(self._index, poll=self.poll)
+    def delete(self):
+        return self._cli.delete_disk(self._index, poll=self.poll)
 
     def install(self):
         return self._cli.install_disk(self._index, poll=self.poll)
 
 
 class VNXDiskList(VNXCliResourceList):
-    def __init__(self, cli=None, disk_indices=None):
+    def __init__(self, cli=None, disk_indices=None, drive_type=None,
+                 capacity=None):
         super(VNXDiskList, self).__init__(cli)
         if disk_indices is not None:
-            self._disk_indices = [index.lower() for index in disk_indices
-                                  if index is not None]
+            self._disk_indices = self._normalize_indices(disk_indices)
         else:
             self._disk_indices = None
+        self._drive_type = drive_type
+        self._capacity = capacity
+
+    @staticmethod
+    def _normalize_indices(indices):
+        return [index.lower() for index in indices if index is not None]
+
+    def set_indices(self, disk_indices):
+        self._disk_indices = self._normalize_indices(disk_indices)
+        self._apply_filter()
+
+    def set_drive_type(self, drive_type):
+        self._drive_type = drive_type
+        self._apply_filter()
+
+    def set_capacity(self, capacity):
+        self._capacity = capacity
+        self._apply_filter()
 
     def _filter(self, disk):
+        ret = True
         if self._disk_indices:
             index = disk.index
-            ret = index and index.lower() in self._disk_indices
+            ret &= index and index.lower() in self._disk_indices
+        if self._drive_type:
+            if disk.drive_type is None:
+                ret = False
+            else:
+                ret &= disk.drive_type.lower() == self._drive_type.lower()
+        if self._capacity:
+            if disk.capacity is None:
+                ret = False
+            else:
+                ret &= disk.capacity == self._capacity
+        return ret
+
+    def same_disks(self, count=2):
+        """ filter self to the required number of disks with same size and type
+
+        Select the disks with the same type and same size.  If not
+        enough disks available, set self to empty.
+
+        :param count: number of disks to retrieve
+        :return: disk list
+        """
+        ret = self
+        if len(self) > 0:
+            type_counter = Counter(self.drive_type)
+            drive_type, counts = type_counter.most_common()[0]
+            self.set_drive_type(drive_type)
+
+        if len(self) > 0:
+            size_counter = Counter(self.capacity)
+            size, counts = size_counter.most_common()[0]
+            self.set_capacity(size)
+
+        if len(self) >= count:
+            indices = self.index[:count]
+            self.set_indices(indices)
         else:
-            ret = True
+            self.set_indices('N/A')
         return ret
 
     @classmethod

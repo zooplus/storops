@@ -53,7 +53,7 @@ def ids_to_lun_list(id_list_str):
     if ids:
         ret = VNXLunList(lun_ids=ids)
     else:
-        ret = None
+        ret = tuple()
     return ret
 
 
@@ -62,5 +62,5 @@ def indices_to_disk_list(disk_indices_str):
     if disk_indices:
         ret = VNXDiskList(disk_indices=disk_indices)
     else:
-        ret = None
+        ret = tuple()
     return ret

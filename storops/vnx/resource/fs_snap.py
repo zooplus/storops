@@ -49,6 +49,14 @@ class VNXFsSnap(VNXResource):
             raise ValueError('snap name should be specified.')
         return ret
 
+    @staticmethod
+    def get(cli=None, name=None, snap_id=None):
+        if name is not None or snap_id is not None:
+            ret = VNXFsSnap(name=name, snap_id=snap_id, cli=cli)
+        else:
+            ret = VNXFsSnapList(cli=cli)
+        return ret
+
     def get_snap_id(self):
         if self._snap_id is not None:
             ret = self._snap_id
@@ -71,5 +79,5 @@ class VNXFsSnap(VNXResource):
         resp.raise_if_err()
         return VNXFsSnap(name=name, cli=cli)
 
-    def remove(self):
-        return self._cli.remove_snap(self.get_snap_id())
+    def delete(self):
+        return self._cli.delete_snap(self.get_snap_id())

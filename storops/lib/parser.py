@@ -54,14 +54,14 @@ class PropMapper(object):
             self._key = self.camel_case_to_under_score(self.label).lower()
         return self._key
 
-    to_remove = re.compile('[\(\)]')
+    to_delete = re.compile('[\(\)]')
     p0 = re.compile(r"[A-Za-z0-9']+")
     p1 = re.compile(r"([^_])([A-Z]s[a-z]+|[A-Z][a-z]{2})")
     p2 = re.compile(r'([a-z0-9])([A-Z])')
 
     @classmethod
     def camel_case_to_under_score(cls, value, delimiter='_'):
-        value = re.sub(cls.to_remove, '', value)
+        value = re.sub(cls.to_delete, '', value)
         value = '_'.join(re.findall(cls.p0, value))
         s1 = re.sub(cls.p1, r'\1_\2', value)
         ret = re.sub(cls.p2, r'\1_\2', s1).lower()
@@ -114,28 +114,37 @@ class PropDescriptor(PropMapper):
     def convert(self, value):
         c = self.converter
         if c is not None:
-            if _is_parser(c):
+            if self.is_parser():
                 value = c.parse_all(value)
-            elif self.is_resource_clazz(c):
+            elif self.is_resource_clazz():
                 value = c().update(value)
-            elif self.is_enum(c) or self.is_enum_list(c):
+            elif self.is_enum() or self.is_enum_list():
                 value = c.parse(value)
             elif callable(c):
                 value = c(value)
         return value
 
-    @classmethod
-    def is_resource_clazz(cls, c):
+    def is_resource_list_clazz(self):
+        rsc_list_clz = storops.lib.resource.ResourceList
+        c = self.converter
+        return inspect.isclass(c) and issubclass(c, rsc_list_clz)
+
+    def is_resource_clazz(self):
         rsc_clz = storops.lib.resource.Resource
+        c = self.converter
         return inspect.isclass(c) and issubclass(c, rsc_clz)
 
-    @classmethod
-    def is_enum(cls, c):
+    def is_enum(self):
+        c = self.converter
         return inspect.isclass(c) and issubclass(c, Enum)
 
-    @classmethod
-    def is_enum_list(cls, c):
+    def is_enum_list(self):
+        c = self.converter
         return inspect.isclass(c) and issubclass(c, EnumList)
+
+    def is_parser(self):
+        c = self.converter
+        return isinstance(c, type) and issubclass(c, OutputParser)
 
     @property
     def end_pattern(self):
@@ -219,8 +228,11 @@ class OutputParser(object):
     def has_property_key(self, key):
         return key.upper() in self._property_map
 
+    def get_property(self, key):
+        return self._property_map.get(key.upper(), None)
+
     def get_property_label(self, key):
-        prop = self._property_map.get(key.upper(), None)
+        prop = self.get_property(key)
         if prop:
             ret = prop.label
         else:
@@ -290,10 +302,6 @@ class OutputParser(object):
         else:
             ret = super(OutputParser, self).__getattribute__(item)
         return ret
-
-
-def _is_parser(c):
-    return isinstance(c, type) and issubclass(c, OutputParser)
 
 
 class ParserConfigFactory(object):

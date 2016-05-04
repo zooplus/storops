@@ -66,9 +66,9 @@ class UnitySnapTest(TestCase):
         assert_that(sos.name, equal_to('snap_over_snap'))
 
     @patch_rest()
-    def test_remove_snap(self):
+    def test_delete_snap(self):
         snap = UnitySnap(_id='171798691885', cli=t_rest())
-        resp = snap.remove()
+        resp = snap.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()

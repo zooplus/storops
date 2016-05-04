@@ -18,14 +18,15 @@ from __future__ import unicode_literals
 from setuptools import setup, find_packages
 import io
 import os
+import re
 
 __author__ = 'Cedric Zhuang'
 
-__version__ = '0.1.18'
-
 
 def version():
-    return __version__
+    desc = get_long_description()
+    ret = re.findall(r'VERSION: (.*)', desc)[0]
+    return ret.strip()
 
 
 def here(filename=None):
@@ -51,17 +52,12 @@ def read_requirements(filename):
 
 
 def get_description():
-    return "VNX Python API."
+    return "Python API for VNX and Unity."
 
 
 def get_long_description():
-    filename = 'README.md'
-    try:
-        import pypandoc
-        ret = pypandoc.convert(filename, 'rst')
-    except ImportError:
-        ret = read(filename)
-    return ret
+    filename = 'README.rst'
+    return read(filename)
 
 
 setup(
@@ -84,7 +80,7 @@ setup(
         "Natural Language :: English",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Topic :: Utilities",
         "License :: OSI Approved :: Apache Software License",
     ],

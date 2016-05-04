@@ -50,7 +50,9 @@ def t_vnx():
 
     :return: test vnx instance
     """
-    return VNXSystem('10.244.211.30', heartbeat_interval=0)
+    return VNXSystem('10.244.211.30', heartbeat_interval=0,
+                     file_username='nasadmin',
+                     file_password='nasadmin')
 
 
 class MockCli(ConnectorMock):
@@ -64,13 +66,13 @@ class MockCli(ConnectorMock):
 
     escaped_pattern = re.compile(r"[\\/:]")
 
-    flags_to_remove = {
+    flags_to_delete = {
         '-t': 2
     }
 
     @classmethod
     def get_filename(cls, params):
-        def remove_flag(arr, flag, flag_length=1):
+        def delete_flag(arr, flag, flag_length=1):
             if flag in arr:
                 i = arr.index(flag)
                 if i > 0:
@@ -79,10 +81,10 @@ class MockCli(ConnectorMock):
                     arr = arr[flag_length:]
             return arr
 
-        def remove_cli_binary(p):
+        def delete_cli_binary(p):
             return p[1:]
 
-        def remove_confidential(p):
+        def delete_confidential(p):
             if p[0] == '-h':
                 p = p[2:]
             if p[0] == '-user':
@@ -93,11 +95,11 @@ class MockCli(ConnectorMock):
                 p = p[2:]
             return p
 
-        params = remove_cli_binary(params)
-        params = remove_confidential(params)
+        params = delete_cli_binary(params)
+        params = delete_confidential(params)
 
-        for k, v in cls.flags_to_remove.items():
-            params = remove_flag(params, k, v)
+        for k, v in cls.flags_to_delete.items():
+            params = delete_flag(params, k, v)
         name = '_'.join(map(six.text_type, params))
         name = re.sub(cls.escaped_pattern, '_', name)
         return '{}.txt'.format(name)

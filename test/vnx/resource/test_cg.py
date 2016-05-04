@@ -48,7 +48,7 @@ class VNXConsistencyGroupTest(TestCase):
     def test_properties(self):
         cg = VNXConsistencyGroup(name="test_cg", cli=t_cli())
         assert_that(cg.name, equal_to('test_cg'))
-        assert_that(cg.lun_list, equal_to([1, 3]))
+        assert_that(cg.lun_list.lun_id, only_contains(1, 3))
         assert_that(cg.state, equal_to('Ready'))
         assert_that(cg.existed, equal_to(True))
 
@@ -121,10 +121,10 @@ class VNXConsistencyGroupTest(TestCase):
                               'already in use'))
 
     @patch_cli()
-    def test_remove_cg_not_exists(self):
+    def test_delete_cg_not_exists(self):
         def f():
             cg = VNXConsistencyGroup(cli=t_cli(), name='cg0')
-            cg.remove()
+            cg.delete()
 
         assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
 
@@ -143,3 +143,8 @@ class VNXConsistencyGroupTest(TestCase):
             cg.create_snap('cg1_snap')
 
         assert_that(f, raises(VNXSnapNameInUseError, 'already in use'))
+
+    @patch_cli()
+    def test_cg_empty_member_property(self):
+        cg = VNXConsistencyGroup(name='cg0', cli=t_cli())
+        assert_that(len(cg.lun_list), equal_to(0))

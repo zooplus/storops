@@ -15,6 +15,8 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from storops.lib.converter import to_bool
+
 from storops.lib.common import check_int
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
@@ -93,15 +95,15 @@ class VNXLun(VNXCliResource):
         return pool.create_lun(lun_name, size_gb, lun_id, provision,
                                tier, ignore_thresholds)
 
-    def create_mount_point(self, mount_point_id=None, mount_point_name=None):
+    def create_mount_point(self, _id=None, name=None):
         lun_id = self.get_id(self)
-        self._cli.create_mount_point(primary_lun_id=lun_id,
-                                     mount_point_name=mount_point_name,
-                                     mount_point_id=mount_point_id,
-                                     poll=self.poll)
-        return VNXLun(lun_id=mount_point_id,
-                      name=mount_point_name,
-                      cli=self._cli)
+        out = self._cli.create_mount_point(
+            primary_lun_id=lun_id,
+            mount_point_name=name,
+            mount_point_id=_id,
+            poll=self.poll)
+        ex.raise_if_err(out, default=ex.VNXCreateMpError)
+        return VNXLun(lun_id=_id, name=name, cli=self._cli)
 
     @property
     def tier(self):
@@ -135,6 +137,14 @@ class VNXLun(VNXCliResource):
         except AttributeError:
             pass
         return ret
+
+    @property
+    def is_dedup(self):
+        return to_bool(self.deduplication_state)
+
+    @is_dedup.setter
+    def is_dedup(self, value):
+        self._update_dedup_state(value)
 
     @staticmethod
     def get(cli, lun_id=None, name=None, lun_type=None, lun_ids=None,
@@ -170,8 +180,8 @@ class VNXLun(VNXCliResource):
             ret = VNXSnapList(self._cli, res=self.get_id(self))
         return ret
 
-    def remove_snap(self, name):
-        VNXSnap(name, self._cli).remove()
+    def delete_snap(self, name):
+        VNXSnap(name, self._cli).delete()
 
     def migrate(self, tgt, rate=VNXMigrationRate.HIGH):
         tgt_id = self.get_id(tgt)
@@ -226,15 +236,22 @@ class VNXLun(VNXCliResource):
             obj = clz(cli=self._cli)
         else:
             obj = cg
-        obj.remove_member(self)
+        obj.delete_member(self)
 
-    def remove(self, remove_snapshots=False, force_detach=False,
+    def clear_smp(self, force=False):
+        smp_list = self.snapshot_mount_points
+        if smp_list:
+            for smp in self.snapshot_mount_points:
+                smp.delete(force=force)
+
+    def delete(self, delete_snapshots=False, force_detach=False,
                detach_from_sg=False, detach_from_cg=False, force=False):
         if force:
-            remove_snapshots = True
+            delete_snapshots = True
             force_detach = True
             detach_from_sg = True
             detach_from_cg = True
+            self.clear_smp(force)
 
         if detach_from_sg:
             self.detach_from_sg()
@@ -243,14 +260,14 @@ class VNXLun(VNXCliResource):
             self.detach_from_cg()
 
         name = self._get_name()
-        out = self._cli.remove_pool_lun(self._lun_id,
+        out = self._cli.delete_pool_lun(self._lun_id,
                                         name,
-                                        remove_snapshots=remove_snapshots,
+                                        delete_snapshots=delete_snapshots,
                                         force_detach=force_detach,
                                         poll=self.poll)
 
         ex.raise_if_err(out, 'failed to remove lun {}'.format(name),
-                        default=ex.VNXRemoveLunError)
+                        default=ex.VNXDeleteLunError)
 
     def rename(self, new_name):
         if new_name is not None and self._name != new_name:
@@ -271,9 +288,6 @@ class VNXLun(VNXCliResource):
                 self.enable_compression()
             else:
                 self.disable_compression()
-            return
-        elif key == 'is_dedup':
-            self._update_dedup_state(value)
             return
         super(VNXLun, self).__setattr__(key, value)
 
@@ -297,9 +311,7 @@ class VNXLun(VNXCliResource):
         out = self._cli.modify_lun(lun_id=self._lun_id,
                                    lun_name=self._name,
                                    dedup=tgt_state, poll=self.poll)
-        ex.raise_if_err(out, 'failed to set dedup state to {} for {}.'
-                        .format(tgt_state, self.get_id(self)),
-                        default=ex.VNXDedupError)
+        ex.raise_if_err(out, default=ex.VNXDedupError)
 
     def enable_dedup(self):
         self._update_dedup_state(True)

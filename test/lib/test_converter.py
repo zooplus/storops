@@ -143,6 +143,18 @@ class ConverterTest(TestCase):
         ret = converter.to_int('Disabled')
         assert_that(ret, none())
 
+    def test_to_float_normal(self):
+        ret = converter.to_float('12.34')
+        assert_that(ret, equal_to(12.34))
+
+    def test_to_float_percent(self):
+        ret = converter.to_float('12.34%')
+        assert_that(ret, equal_to(12.34))
+
+    def test_to_float_invalid(self):
+        ret = converter.to_float('12.34.56')
+        assert_that(ret, none())
+
     def test_to_hex(self):
         ret = converter.to_hex(13691781134)
         assert_that(ret, equal_to('0x33018000e'))

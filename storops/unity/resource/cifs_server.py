@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from emc_pywbem import CIMInstanceName
+from pywbem import CIMInstanceName
 
 from storops.exception import UnityCimResourceNotFoundError
 from storops.lib.common import instance_cache
@@ -73,7 +73,7 @@ class UnityCifsServer(resource.UnityResource):
         return clz.create(self._cli, name=name, fs=fs,
                           path=path, cifs_server=self)
 
-    def remove(self, skip_domain_unjoin=None, username=None,
+    def delete(self, skip_domain_unjoin=None, username=None,
                password=None, async=False):
         resp = self._cli.delete(self.resource_class,
                                 self.get_id(),

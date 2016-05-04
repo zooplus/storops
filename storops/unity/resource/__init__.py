@@ -53,7 +53,7 @@ class UnityResource(Resource):
             raise NoIndexException('id is not available for this resource.')
         return ret
 
-    def remove(self, async=False):
+    def delete(self, async=False):
         resp = self._cli.delete(self.resource_class, self.get_id(),
                                 async=async)
         resp.raise_if_err()

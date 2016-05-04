@@ -25,7 +25,7 @@ from storops import exception
 from storops.exception import VNXFsNotFoundError, VNXException, raise_if_err
 from storops.vnx.enums import VNXProvisionEnum, \
     VNXTieringEnum, VNXSPEnum, VNXRaidType, \
-    VNXMigrationRate, VNXPortType
+    VNXMigrationRate, VNXPortType, VNXPoolRaidType
 from storops.vnx.nas_client import NasXmlResponse
 from test.vnx.nas_mock import MockXmlPost
 
@@ -202,6 +202,9 @@ class VNXSPEnumTest(TestCase):
     def test_get_sp_index(self):
         assert_that(VNXSPEnum.get_sp_index('spa'), equal_to('a'))
 
+    def test_sp_value(self):
+        assert_that(VNXSPEnum.SP_B.value, equal_to('SP B'))
+
     def test_index(self):
         assert_that(VNXSPEnum.SP_A.index, equal_to('a'))
         assert_that(VNXSPEnum.SP_B.index, equal_to('b'))
@@ -210,6 +213,9 @@ class VNXSPEnumTest(TestCase):
 class VNXRaidTypeTest(TestCase):
     def test_from_str(self):
         assert_that(VNXRaidType.from_str('r5'), equal_to(VNXRaidType.RAID5))
+
+    def test_disk_requirement(self):
+        assert_that(VNXPoolRaidType.RAID5.min_disk_requirement, equal_to(3))
 
 
 class VNXMigrationRateTest(TestCase):

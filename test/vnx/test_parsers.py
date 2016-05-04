@@ -18,8 +18,7 @@ from __future__ import unicode_literals
 import logging
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, not_none, none, raises, \
-    only_contains
+from hamcrest import equal_to, assert_that, not_none, none, raises
 
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.parsers import VNXCliParser, VNXPropDescriptor, \
@@ -230,12 +229,10 @@ class VNXConsistencyGroupParserTest(TestCase):
         cgs = parser.parse_all(output)
         cg = next(c for c in cgs if c.name == 'test cg name')
         assert_that(cg, not_none())
-        assert_that(cg.lun_list, only_contains(1, 3))
         assert_that(cg.state, equal_to('Ready'))
 
         cg = next(c for c in cgs if c.name == 'another cg')
         assert_that(cg, not_none())
-        assert_that(cg.lun_list, only_contains(23, 24))
         assert_that(cg.state, equal_to('Offline'))
 
 
@@ -297,7 +294,7 @@ class VNXLunPropertiesTest(TestCase):
         assert_that(parsed.total_capacity_gb, equal_to(1.0))
         assert_that(parsed.is_thin_lun, equal_to(True))
         assert_that(parsed.is_compressed, equal_to(False))
-        assert_that(parsed.is_dedup, equal_to(False))
+        assert_that(parsed.deduplication_state, equal_to('Off'))
         assert_that(parsed.tiering_policy, equal_to('No Movement'))
         assert_that(parsed.initial_tier, equal_to('Optimize Pool'))
         assert_that(parsed.state, equal_to('Ready'))

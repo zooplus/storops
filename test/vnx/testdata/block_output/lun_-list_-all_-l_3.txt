@@ -1,5 +1,5 @@
 
-LOGICAL UNIT NUMBER 0
+LOGICAL UNIT NUMBER 3
 Name:  File_CS0_21132_0_d7
 UID:  60:06:01:60:12:60:3D:00:95:63:38:87:9D:69:E5:11
 Current Owner:  SP A
@@ -38,36 +38,36 @@ Current Operation State:  N/A
 Current Operation Status:  N/A
 Current Operation Percent Completed:  0
 Statistics Logging Current Time:  11/30/15 15:41:37
-Read Requests:  33765
-Read Requests SP A:  33765
-Read Requests SP B:  0
-Write Requests:  343237
-Write Requests SP A:  343237
-Write Requests SP B:  0
-Blocks Read:  2084891
-Blocks Read SP A:  2084891
-Blocks Read SP B:  0
-Blocks Written:  9602628
-Blocks Written SP A:  9602628
-Blocks Written SP B:  0
-Busy Ticks:  14799509
-Busy Ticks SP A:  14798457
-Busy Ticks SP B:  1052
-Idle Ticks:  3143576186
-Idle Ticks SP A:  1562976003
-Idle Ticks SP B:  1580600183
-Sum of Outstanding Requests:  1718001
-Sum of Outstanding Requests SP A:  1718001
-Sum of Outstanding Requests SP B:  0
-Non-Zero Request Count Arrivals:  141715
-Non-Zero Request Count Arrivals SP A:  141715
-Non-Zero Request Count Arrivals SP B:  0
-Implicit Trespasses:  0
-Implicit Trespasses SP A:  0
-Implicit Trespasses SP B:  0
-Explicit Trespasses:  0
-Explicit Trespasses SP A:  0
-Explicit Trespasses SP B:  0
+Read Requests:  1
+Read Requests SP A:  2
+Read Requests SP B:  3
+Write Requests:  4
+Write Requests SP A:  5
+Write Requests SP B:  6
+Blocks Read:  7
+Blocks Read SP A:  8
+Blocks Read SP B:  9
+Blocks Written:  10
+Blocks Written SP A:  11
+Blocks Written SP B:  12
+Busy Ticks:  13
+Busy Ticks SP A:  14
+Busy Ticks SP B:  15
+Idle Ticks:  16
+Idle Ticks SP A:  17
+Idle Ticks SP B:  18
+Sum of Outstanding Requests:  19
+Sum of Outstanding Requests SP A:  20
+Sum of Outstanding Requests SP B:  21
+Non-Zero Request Count Arrivals:  22
+Non-Zero Request Count Arrivals SP A:  23
+Non-Zero Request Count Arrivals SP B:  24
+Implicit Trespasses:  25
+Implicit Trespasses SP A:  26
+Implicit Trespasses SP B:  27
+Explicit Trespasses:  28
+Explicit Trespasses SP A:  29
+Explicit Trespasses SP B:  30
 Is Pool LUN:  Yes
 Is Thin LUN:  Yes
 Is Private:  No

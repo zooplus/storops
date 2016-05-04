@@ -42,6 +42,14 @@ class VNXNasPool(VNXResource):
         self._pool_id = pool_id
         self._cli = cli
 
+    @classmethod
+    def get(cls, cli, name=None, pool_id=None):
+        if name is not None or pool_id is not None:
+            ret = VNXNasPool(name=name, pool_id=pool_id, cli=cli)
+        else:
+            ret = VNXNasPoolList(cli=cli)
+        return ret
+
     def get_pool_id(self):
         if self._pool_id is not None:
             ret = self._pool_id

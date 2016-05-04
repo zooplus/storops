@@ -212,16 +212,16 @@ def raise_if_err(out, msg=None, default=None):
         raise ex_clz(msg)
 
 
-def check_error(out, ex_clz):
+def check_error(out, *ex_clz_list):
     """ check whether this cli output contains the specified exception
 
     :param out: output of naviseccli
-    :param ex_clz: exception class to check
+    :param ex_clz_list: exception class to check
     :return: nothing, raise `ex_clz` if match
     """
     try:
         raise_if_err(out)
-    except ex_clz:
+    except ex_clz_list:
         raise
     except StoropsException:
         # swallow other errors
@@ -275,7 +275,7 @@ class UnityAddCifsAceError(UnityCimException):
     message = 'failed to add ace for cifs share.'
 
 
-class UnityRemoveCifsAceError(UnityCimException):
+class UnityDeleteCifsAceError(UnityCimException):
     message = 'failed to remove ace for cifs share.'
 
 
@@ -461,7 +461,7 @@ class VNXAluNotFoundError(VNXAttachAluError):
 
 
 @cli_exception
-class VNXAluNumberInUseError(VNXAttachAluError):
+class VNXHluNumberInUseError(VNXAttachAluError):
     error_message = 'Requested Host LUN Number already in use'
 
 
@@ -510,7 +510,7 @@ class VNXModifySnapError(VNXSnapError):
 
 
 @cli_exception
-class VNXRemoveAttachedSnapError(VNXSnapError):
+class VNXDeleteAttachedSnapError(VNXSnapError):
     error_code = 0x716d8003
 
 
@@ -556,7 +556,7 @@ class VNXCreateSnapResourceNotFoundError(VNXSnapError):
     error_message = 'The specified resource does not exist.'
 
 
-class VNXRemoveSnapError(VNXSnapError):
+class VNXDeleteSnapError(VNXSnapError):
     pass
 
 
@@ -582,8 +582,17 @@ class VNXModifyLunError(VNXLunError):
     pass
 
 
+class VNXCreateMpError(VNXLunError):
+    pass
+
+
 class VNXLunExtendError(VNXLunError):
     pass
+
+
+@cli_exception
+class VNXNotReadyExpandError(VNXLunExtendError):
+    error_code = 0x712d8d33
 
 
 @cli_exception
@@ -601,18 +610,18 @@ class VNXLunNotFoundError(VNXLunError):
     error_message = 'Could not retrieve the specified (pool lun).'
 
 
-class VNXRemoveLunError(VNXLunError):
+class VNXDeleteLunError(VNXLunError):
     pass
 
 
 @cli_exception
-class VNXLunInStorageGroupError(VNXRemoveLunError):
+class VNXLunInStorageGroupError(VNXDeleteLunError):
     error_message = ('contained in a Storage Group',
                      'LUN mapping still exists')
 
 
 @cli_exception
-class VNXLunInConsistencyGroupError(VNXRemoveLunError):
+class VNXLunInConsistencyGroupError(VNXDeleteLunError):
     error_code = 0x716d8025
 
 
@@ -627,6 +636,12 @@ class VNXCompressionAlreadyEnabledError(VNXCompressionError):
 
 class VNXDedupError(VNXLunError):
     pass
+
+
+@cli_exception
+class VNXDedupAlreadyEnabled(VNXDedupError):
+    error_message = ['Deduplication is already enabled',
+                     'the deduplication state of LUN is enabled or enabling.']
 
 
 class VNXConsistencyGroupError(VNXException):
@@ -652,12 +667,12 @@ class VNXConsistencyGroupIsDeletingError(VNXConsistencyGroupError):
     error_code = 0x712d8801
 
 
-class VNXRemoveHbaError(VNXException):
+class VNXDeleteHbaError(VNXException):
     pass
 
 
 @cli_exception
-class VNXRemoveHbaNotFoundError(VNXException):
+class VNXDeleteHbaNotFoundError(VNXException):
     error_message = 'The HBA UID specified is not known by the array'
 
 
@@ -680,6 +695,12 @@ class VNXSecurityException(VNXException):
 
 
 @cli_exception
+class VNXCredentialError(VNXSecurityException):
+    error_message = ['invalid username, password and/or scope.',
+                     'Could not connect to the specified host']
+
+
+@cli_exception
 class VNXUserNameInUseError(VNXSecurityException):
     error_message = 'The specified user already exists.'
 
@@ -697,7 +718,7 @@ class VNXCreateRaidGroupError(VNXRaidGroupError):
     pass
 
 
-class VNXRemoveRaidGroupError(VNXRaidGroupError):
+class VNXDeleteRaidGroupError(VNXRaidGroupError):
     pass
 
 
@@ -709,12 +730,37 @@ class VNXCreatePoolError(VNXPoolError):
     pass
 
 
+@cli_exception
+class VNXPoolNameInUseError(VNXCreatePoolError):
+    error_message = ['0x712d8501', 'Pool name is already used']
+
+
+@cli_exception
+class VNXDiskUsedError(VNXCreatePoolError):
+    error_code = 0x76008304
+
+
 class VNXModifyPoolError(VNXPoolError):
     pass
 
 
-class VNXRemovePoolError(VNXPoolError):
+class VNXDeletePoolError(VNXPoolError):
     pass
+
+
+@cli_exception
+class VNXPoolDestroyingError(VNXDeletePoolError):
+    error_message = 'the Storage Pool because it is Destroying'
+
+
+@cli_exception
+class VNXPoolNotFoundError(VNXPoolError):
+    error_message = ['The (Storagepool) may not exist',
+                     'was not found in any provider']
+
+
+class VNXNotEnoughDiskAvailableError(VNXPoolError):
+    message = 'not enough disk for pool creation.'
 
 
 class VNXMirrorException(VNXException):
@@ -773,7 +819,7 @@ class VNXMirrorNotFoundError(VNXMirrorException):
 
 
 @cli_exception
-class VNXRemoveMirrorWithSecondaryError(VNXMirrorException):
+class VNXDeleteMirrorWithSecondaryError(VNXMirrorException):
     error_code = 0x71058243
 
 
@@ -846,6 +892,10 @@ class VNXMoverInterfaceExistedError(VNXMoverInterfaceError):
 @xmlapi_exception
 class VNXMoverInterfaceNameInUseError(VNXMoverInterfaceError):
     error_code = 13421840550
+
+
+class VNXFileCredentialError(VNXCredentialError):
+    message = 'credential error for VNX control station.'
 
 
 class VNXNasCommandNoError(VNXException):

@@ -22,7 +22,7 @@ from hamcrest import assert_that, equal_to, raises
 from test.vnx.nas_mock import t_nas, patch_post
 
 from storops.exception import VNXFsSnapNameInUseError
-from storops.vnx.resource.fs_snap import VNXFsSnapList, VNXFsSnap
+from storops.vnx.resource.fs_snap import VNXFsSnap
 
 __author__ = 'Jay Xu'
 
@@ -40,13 +40,13 @@ class VXNFsSnapTest(unittest.TestCase):
 
     @patch_post()
     def test_get_all(self):
-        snap_list = VNXFsSnapList(t_nas())
+        snap_list = VNXFsSnap.get(t_nas())
         snap = next(snap for snap in snap_list if snap.snap_id == 230)
         self.verify_snap_230(snap)
 
     @patch_post()
     def test_get_by_name(self):
-        snap = VNXFsSnap(name='ESA', cli=t_nas())
+        snap = VNXFsSnap.get(name='ESA', cli=t_nas())
         self.verify_snap_230(snap)
 
     @patch_post()
@@ -56,7 +56,7 @@ class VXNFsSnapTest(unittest.TestCase):
 
     @patch_post()
     def test_get_by_id_not_found(self):
-        snap = VNXFsSnap(snap_id=111, cli=t_nas())
+        snap = VNXFsSnap.get(snap_id=111, cli=t_nas())
         assert_that(snap.existed, equal_to(False))
 
     @patch_post()
@@ -79,7 +79,7 @@ class VXNFsSnapTest(unittest.TestCase):
         assert_that(f, raises(VNXFsSnapNameInUseError, 'already in use'))
 
     @patch_post()
-    def test_remove(self):
+    def test_delete(self):
         snap = VNXFsSnap(name='test', cli=t_nas())
-        resp = snap.remove()
+        resp = snap.delete()
         assert_that(resp.is_ok(), equal_to(True))

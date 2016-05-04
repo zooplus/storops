@@ -52,12 +52,70 @@ VNXStorageProcessor:
       is_index: True
       is_regex: True
       key: name
+    - label: "Cabinet:"
+    - label: "Signature For The SP:"
+      key: signature
+      converter: to_int
     - label: "Revision Number For the SP:"
       key: revision
     - label: "Serial Number For The SP:"
       key: serial
     - label: "Memory Size For The SP:"
       key: memory_size
+      converter: to_int
+    - label: "System Fault LED:"
+      converter: to_bool
+    - label: "Statistics Logging:"
+      converter: to_bool
+    - label: "SP Read Cache State"
+      key: read_cache_enabled
+      converter: to_bool
+    - label: "SP Write Cache State"
+      key: write_cache_enabled
+      converter: to_bool
+    - label: "Max Requests:"
+      converter: to_int
+    - label: "Average Requests:"
+      converter: to_int
+    - label: "Hard errors:"
+      converter: to_int
+    - label: "Total Reads:"
+      converter: to_int
+    - label: "Total Writes:"
+      converter: to_int
+    - label: "Prct Busy:"
+      converter: to_float
+    - label: "Prct Idle:"
+      converter: to_float
+    - label: "System Date:"
+    - label: "Day of the week:"
+    - label: "System Time:"
+    - label: "Read_requests:"
+      converter: to_int
+    - label: "Write_requests:"
+      converter: to_int
+    - label: "Blocks_read:"
+      converter: to_int
+    - label: "Blocks_written:"
+      converter: to_int
+    - label: "Sum_queue_lengths_by_arrivals:"
+      converter: to_int
+    - label: "Arrivals_to_non_zero_queue:"
+      converter: to_int
+    - label: "Hw_flush_on:"
+      converter: to_bool
+    - label: "Idle_flush_on:"
+      converter: to_bool
+    - label: "Lw_flush_off:"
+      converter: to_bool
+    - label: "Write_cache_flushes:"
+      converter: to_int
+    - label: "Write_cache_blocks_flushed:"
+      converter: to_int
+    - label: "Controller busy ticks:"
+      converter: to_int
+    - label: "Controller idle ticks:"
+      converter: to_int
 
 
 VNXNetworkAdmin:
@@ -149,7 +207,7 @@ VNXConsistencyGroup:
       is_index: True
     - label: "Member LUN ID(s):"
       key: lun_list
-      converter: to_int_arr
+      converter: ids_to_lun_list
     - label: "State:"
 
 
@@ -238,8 +296,7 @@ VNXLun:
       converter: to_bool
     - label: "Deduplication State:"
       option: -dedupState
-      key: is_dedup
-      converter: to_bool
+    - label: "Deduplication Status:"
     - label: "Initial Tier:"
       option: -initialTier
     - label: "Tiering Policy:"
@@ -255,6 +312,72 @@ VNXLun:
       converter: ids_to_lun_list
     - label: "Primary LUN:"
       converter: name_to_lun
+    - label: "Read Requests:"
+      converter: to_int
+    - label: "Read Requests SP A:"
+      converter: to_int
+    - label: "Read Requests SP B:"
+      converter: to_int
+    - label: "Write Requests:"
+      converter: to_int
+    - label: "Write Requests SP A:"
+      converter: to_int
+    - label: "Write Requests SP B:"
+      converter: to_int
+    - label: "Blocks Read:"
+      converter: to_int
+    - label: "Blocks Read SP A:"
+      converter: to_int
+    - label: "Blocks Read SP B:"
+      converter: to_int
+    - label: "Blocks Written:"
+      converter: to_int
+    - label: "Blocks Written SP A:"
+      converter: to_int
+    - label: "Blocks Written SP B:"
+      converter: to_int
+    - label: "Busy Ticks:"
+      converter: to_int
+    - label: "Busy Ticks SP A:"
+      converter: to_int
+    - label: "Busy Ticks SP B:"
+      converter: to_int
+    - label: "Idle Ticks:"
+      converter: to_int
+    - label: "Idle Ticks SP A:"
+      converter: to_int
+    - label: "Idle Ticks SP B:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests SP A:"
+      converter: to_int
+    - label: "Sum of Outstanding Requests SP B:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals SP A:"
+      converter: to_int
+    - label: "Non-Zero Request Count Arrivals SP B:"
+      converter: to_int
+    - label: "Implicit Trespasses:"
+      converter: to_int
+    - label: "Implicit Trespasses SP A:"
+      converter: to_int
+    - label: "Implicit Trespasses SP B:"
+      converter: to_int
+    - label: "Explicit Trespasses:"
+      converter: to_int
+    - label: "Explicit Trespasses SP A:"
+      converter: to_int
+    - label: "Explicit Trespasses SP B:"
+      converter: to_int
+    - label: "Extreme Performance:"
+      converter: to_float
+    - label: "Performance:"
+      converter: to_float
+    - label: "Capacity:"
+      converter: to_float
 
 
 VNXSPPort:
@@ -460,7 +583,6 @@ VNXMirrorViewImage:
       converter: VNXMirrorImageState
     - label: "Image Condition:"
       key: condition
-      converter: VNXMirrorImageCondition
     - label: "Preferred SP:"
       converter: to_sp_enum
 

@@ -100,6 +100,8 @@ def to_str_arr(int_arr):
 def to_float(value):
     ret = None
     if value is not None:
+        if value.endswith('%'):
+            value = value[:-1]
         try:
             ret = float(value)
         except ValueError:

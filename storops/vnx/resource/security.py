@@ -41,8 +41,8 @@ class VNXBlockUser(VNXCliResource):
         raise_if_err(out, default=VNXSecurityException)
         return VNXBlockUser(name=name, cli=cli)
 
-    def remove(self):
-        out = self._cli.remove_user(name=self._get_name(), scope=self.scope)
+    def delete(self):
+        out = self._cli.delete_user(name=self._get_name(), scope=self.scope)
         raise_if_err(out, default=VNXSecurityException)
 
     def _get_raw_resource(self):

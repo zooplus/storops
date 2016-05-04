@@ -16,6 +16,9 @@
 from __future__ import unicode_literals
 
 import logging
+
+import storops.vnx.resource.nfs_share
+
 from storops.lib.common import check_int
 from storops.vnx.enums import VNXPortType
 from storops.vnx.resource import VNXCliResourceList, VNXResource
@@ -87,8 +90,8 @@ class VNXMoverRef(VNXResource):
         resp.raise_if_err()
         return resp
 
-    def remove_dns(self, domain_name):
-        resp = self._cli.remove_dns_domain(self.get_mover_id(), domain_name)
+    def delete_dns(self, domain_name):
+        resp = self._cli.delete_dns_domain(self.get_mover_id(), domain_name)
         resp.raise_if_err()
         return resp
 
@@ -130,6 +133,10 @@ class VNXMoverRef(VNXResource):
 
         return conn_id
 
+    def create_nfs_share(self, path, ro=False, host_config=None):
+        share_clz = storops.vnx.resource.nfs_share.VNXNfsShare
+        return share_clz.create(self._cli, self, path, ro, host_config)
+
 
 class VNXMoverList(VNXCliResourceList):
     @classmethod
@@ -142,6 +149,14 @@ class VNXMoverList(VNXCliResourceList):
 
 class VNXMover(VNXMoverRef):
     _full_prop = True
+
+    @staticmethod
+    def get(cli, name=None, mover_id=None):
+        if name is not None or mover_id is not None:
+            ret = VNXMover(name=name, mover_id=mover_id, cli=cli)
+        else:
+            ret = VNXMoverList(cli=cli)
+        return ret
 
     @property
     def interfaces(self):
@@ -161,9 +176,9 @@ class VNXMover(VNXMoverRef):
         resp.raise_if_err()
         return VNXMoverInterface(mover=self, cli=self._cli, ip=ip)
 
-    def remove_interface(self, ip):
+    def delete_interface(self, ip):
         interface = next(i for i in self.interfaces if i.ip_addr == ip)
-        return interface.remove()
+        return interface.delete()
 
 
 class VNXMoverInterfaceList(VNXCliResourceList):
@@ -192,9 +207,9 @@ class VNXMoverInterface(VNXResource):
             ret = self.ip_addr
         return ret
 
-    def remove(self):
+    def delete(self):
         mover_id = self._mover.get_mover_id()
-        resp = self._cli.remove_mover_interface(mover_id, self.get_ip())
+        resp = self._cli.delete_mover_interface(mover_id, self.get_ip())
         resp.raise_if_err()
         return resp
 

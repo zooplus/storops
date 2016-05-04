@@ -25,13 +25,12 @@ from storops.exception import VNXMirrorLunNotAvailableError, \
     VNXMirrorImageNotFoundError, VNXMirrorFractureImageError, \
     VNXMirrorSyncImageError, VNXMirrorPromoteNonLocalImageError, \
     VNXMirrorPromotePrimaryError, VNXMirrorFeatureNotAvailableError, \
-    VNXMirrorNotFoundError, VNXRemoveMirrorWithSecondaryError, \
+    VNXMirrorNotFoundError, VNXDeleteMirrorWithSecondaryError, \
     VNXObjectNotFound
 from test.vnx.cli_mock import patch_cli
 from test.vnx.cli_mock import t_cli
 from storops.vnx.enums import VNXMirrorViewRecoveryPolicy, \
-    VNXMirrorViewSyncRate, VNXSPEnum, VNXMirrorImageCondition, \
-    VNXMirrorImageState
+    VNXMirrorViewSyncRate, VNXSPEnum, VNXMirrorImageState
 from storops.vnx.resource.mirror_view import VNXMirrorView, \
     VNXMirrorViewImage
 
@@ -79,10 +78,12 @@ class VNXMirrorViewTest(TestCase):
         assert_that(mv.remote_mirror_status, equal_to('Secondary Copy'))
         assert_that(mv.faulted, equal_to(False))
         assert_that(mv.transitioning, equal_to(False))
+        assert_that(mv.is_primary, equal_to(False))
 
     @patch_cli()
     def test_image_properties(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
+        assert_that(mv.is_primary, equal_to(True))
         assert_that(mv.primary_image.is_primary, equal_to(True))
         assert_that(mv.secondary_image.is_primary, equal_to(False))
 
@@ -223,33 +224,33 @@ class VNXMirrorViewTest(TestCase):
     def test_mirror_view_feature_not_installed(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv9')
-            mv.remove()
+            mv.delete()
 
         assert_that(f, raises(VNXMirrorFeatureNotAvailableError,
                               'not installed'))
 
     @patch_cli()
-    def test_remove_mirror_not_found_error(self):
+    def test_delete_mirror_not_found_error(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv8')
-            mv.remove()
+            mv.delete()
 
         assert_that(f, raises(VNXMirrorNotFoundError, 'not found'))
 
     @patch_cli()
-    def test_remove_mirror_has_secondary(self):
+    def test_delete_mirror_has_secondary(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv7')
-            mv.remove()
+            mv.delete()
 
-        assert_that(f, raises(VNXRemoveMirrorWithSecondaryError,
+        assert_that(f, raises(VNXDeleteMirrorWithSecondaryError,
                               'at least one secondary'))
 
     @patch_cli()
-    def test_force_remove_mirror_has_secondary(self):
+    def test_force_delete_mirror_has_secondary(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         # no error raised
-        mv.remove(force=True)
+        mv.delete(force=True)
 
 
 class VNXMirrorViewImageTest(TestCase):
@@ -262,6 +263,6 @@ class VNXMirrorViewImageTest(TestCase):
         assert_that(image.is_primary, equal_to(True))
         assert_that(image.logical_unit_uid, equal_to(
             '60:06:01:60:41:C4:3D:00:6E:1C:50:9D:05:95:E5:11'))
-        assert_that(image.condition, equal_to(VNXMirrorImageCondition.PRIMARY))
+        assert_that(image.condition, equal_to('Primary Image'))
         assert_that(image.state, none())
         assert_that(image.preferred_sp, equal_to(VNXSPEnum.SP_A))

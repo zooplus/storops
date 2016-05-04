@@ -54,7 +54,7 @@ class MockXmlPost(ConnectorMock):
         # get two levels after Request
         node = etree.fromstring(body.encode('utf-8'))
         while len(ret) < 3:
-            tag = cls.remove_ns(node.tag)
+            tag = cls.delete_ns(node.tag)
             if tag in skipped_nodes:
                 pass
             else:
@@ -69,7 +69,7 @@ class MockXmlPost(ConnectorMock):
         return self.get_mock_output(body)
 
     @staticmethod
-    def remove_ns(tag):
+    def delete_ns(tag):
         if '}' in tag:
             tag = tag[tag.index('}') + 1:]
         return tag
@@ -122,7 +122,7 @@ def patch_post(output=None, mock_map=None):
 class MockSsh(MockCli):
     base_folder = os.path.join('vnx', 'testdata', 'ssh_output')
 
-    flags_to_remove = {'NAS_DB=/nas': 1}
+    flags_to_delete = {'NAS_DB=/nas': 1}
 
     def mock_execute(self, command, timeout=None, check_exit_code=True):
         if len(command) > 2:

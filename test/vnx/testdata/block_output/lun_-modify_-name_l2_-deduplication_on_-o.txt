@@ -1,0 +1,2 @@
+failed to set dedup state to True for 1.  detail:
+Could not set properties:(Deduplication: SP A: Deduplication is already enabled for the LUN. (0x716a840f)).

@@ -1,0 +1,1 @@
+Unable to create the Storage Pool because the specified name is already in use.  Please retry the operation using a unique Storage Pool name. (0x712d8501)

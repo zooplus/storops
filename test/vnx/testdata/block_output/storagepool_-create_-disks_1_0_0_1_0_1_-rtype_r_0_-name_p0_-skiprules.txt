@@ -1,0 +1,1 @@
+Pool name is already used.

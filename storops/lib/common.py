@@ -45,7 +45,7 @@ class JsonPrinter(object):
         return {self.__class__.__name__: props}
 
     def json(self, indent=None):
-        return json.dumps(self.get_dict_repr(), indent=indent)
+        return json.dumps(self.get_dict_repr(), indent=indent, sort_keys=True)
 
     def __repr__(self):
         return self.json(indent=4)

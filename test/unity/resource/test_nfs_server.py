@@ -62,15 +62,15 @@ class UnityNfsServerTest(TestCase):
         assert_that(f, raises(UnityNfsAlreadyEnabledError, 'already enabled'))
 
     @patch_rest()
-    def test_remove_success(self):
+    def test_delete_success(self):
         server = UnityNfsServer(_id='nfs_3', cli=t_rest())
-        resp = server.remove()
+        resp = server.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             server = UnityNfsServer(_id='nfs_5', cli=t_rest())
-            server.remove()
+            server.delete()
 
         assert_that(f, raises(UnityResourceNotFoundError))

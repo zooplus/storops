@@ -70,13 +70,22 @@ class VNXCifsShare(VNXResource):
 
     def _get_raw_resource(self):
         if self._mover is None:
-            raise ValueError('mover not specified for this share.')
+            raise ValueError('mover is not specified for this share.')
 
         return self._cli.get_cifs_share(
             share_name=self._name,
             server_name=None,
             mover_id=self._mover.get_mover_id(),
             is_vdm=self._mover.is_vdm)
+
+    @staticmethod
+    def get(cli, name=None, mover=None, server_name=None):
+        if name is not None and mover is not None:
+            ret = VNXCifsShare(name, mover, cli)
+        else:
+            ret = VNXCifsShareList(
+                cli, server_name=server_name, share_name=name, mover=mover)
+        return ret
 
     @staticmethod
     def create(cli, fs, server_name, mover, path=None):
@@ -101,10 +110,10 @@ class VNXCifsShare(VNXResource):
             ret = VNXMover(mover_id=self.mover_id, cli=self._cli)
         return ret
 
-    def remove(self, *server_names):
+    def delete(self, *server_names):
         if not server_names:
             server_names = self.cifs_server_names
-        resp = self._cli.remove_cifs_share(
+        resp = self._cli.delete_cifs_share(
             self._get_name(), self.mover.get_mover_id(), server_names,
             self.mover.is_vdm)
         resp.raise_if_err()

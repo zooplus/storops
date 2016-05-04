@@ -1,0 +1,6 @@
+Name:  cg0
+Description:
+Allow auto delete:  Yes
+Member LUN ID(s):  None
+State:  Ready
+Status:  OK(0x0)

@@ -25,6 +25,7 @@ from storops.lib.common import check_int
 import storops.vnx.resource.mover
 import storops.vnx.resource.nas_pool
 from storops.vnx.resource import VNXResource, VNXCliResourceList
+from storops.vnx.resource.fs_snap import VNXFsSnap
 
 __author__ = 'Jay Xu'
 
@@ -98,8 +99,13 @@ class VNXFileSystem(VNXResource):
         resp.raise_if_err()
         return VNXFileSystem(name, cli=cli)
 
-    def remove(self):
-        resp = self._cli.remove_filesystem(self.get_fs_id())
+    def create_snap(self, name, pool=None):
+        if pool is None and self.pools:
+            pool = self.pools[0]
+        return VNXFsSnap.create(cli=self._cli, name=name, fs=self, pool=pool)
+
+    def delete(self):
+        resp = self._cli.delete_filesystem(self.get_fs_id())
         resp.raise_if_err()
         return resp
 

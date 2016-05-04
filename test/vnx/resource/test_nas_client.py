@@ -21,7 +21,7 @@ from hamcrest import assert_that, equal_to, raises, contains_string, \
     only_contains
 
 from storops.exception import VNXObjectNotFound, \
-    VNXInvalidMoverID
+    VNXInvalidMoverID, VNXFileCredentialError
 from storops.vnx.nas_client import NasXmlResponse, XmlStatus
 from test.vnx.nas_mock import MockXmlPost
 
@@ -40,6 +40,12 @@ class NasXmlResponseTest(TestCase):
     def test_is_ok(self):
         resp = self.fs_not_found
         assert_that(resp.is_ok(), equal_to(False))
+
+    def test_credential_error(self):
+        def f():
+            NasXmlResponse(MockXmlPost.read_file('credential_error.html'))
+
+        assert_that(f, raises(VNXFileCredentialError, 'credential error'))
 
     def test_has_error_code(self):
         resp = self.fs_not_found

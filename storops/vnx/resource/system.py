@@ -15,17 +15,28 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.vnx.resource.mirror_view import VNXMirrorView
+from retryz import retry
 
-from storops.vnx.enums import VNXPortType
+from storops.exception import VNXDiskUsedError
 from storops.lib.common import daemon, instance_cache
+from storops.vnx.resource.nfs_share import VNXNfsShare
+from storops.vnx.resource.fs_snap import VNXFsSnap
+from storops.vnx.resource.mover import VNXMover
+from storops.vnx.resource.vdm import VNXVdm
+from storops.vnx.resource.cifs_share import VNXCifsShare
+from storops.vnx.resource.cifs_server import VNXCifsServer
+from storops.vnx.resource.nas_pool import VNXNasPool
+from storops.vnx.nas_client import VNXNasClient
+from storops.vnx.resource.fs import VNXFileSystem
+from storops.vnx.resource.mirror_view import VNXMirrorView
+from storops.vnx.enums import VNXPortType, VNXPoolRaidType, VNXSPEnum
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.block_pool import VNXPool, VNXPoolFeature
 from storops.vnx.resource.cg import VNXConsistencyGroup
-from storops.vnx.resource.disk import VNXDisk
+from storops.vnx.resource.disk import VNXDisk, VNXDiskList
 from storops.vnx.resource.security import VNXBlockUser
 from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
-    VNXNetworkAdmin, VNXDomainNodeList
+    VNXNetworkAdmin, VNXDomainNodeList, VNXStorageProcessor
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.migration import VNXMigrationSession
 from storops.vnx.resource.ndu import VNXNdu, VNXNduList
@@ -50,7 +61,8 @@ class VNXSystem(VNXCliResource):
                  username=None, password=None, scope=0, sec_file=None,
                  timeout=None,
                  heartbeat_interval=None,
-                 naviseccli=None):
+                 naviseccli=None,
+                 file_username=None, file_password=None):
         """ initialize a `VNXSystem` instance
 
         The `VNXSystem` instance act as a entry point for all
@@ -65,20 +77,52 @@ class VNXSystem(VNXCliResource):
         :param heartbeat_interval: heartbeat interval used to check the
         alive of sp.  Set to 0 if heart beat is not required.
         :param naviseccli: binary location of naviseccli in your host.
+        :param file_username: username for control station login, default to
+        username
+        :param file_password: password for control station login, default to
+        password
         :return: vnx system instance
         """
         super(VNXSystem, self).__init__()
-        self._cli = CliClient(ip,
-                              username, password, scope,
-                              sec_file,
-                              timeout,
-                              heartbeat_interval=heartbeat_interval,
-                              naviseccli=naviseccli)
+        self._ip = ip
+        self._username = username
+        self._password = password
+        self._scope = scope
+        self._sec_file = sec_file
+        self._timeout = timeout
+        self._hb_interval = heartbeat_interval
+        self._naviseccli = naviseccli
 
-        self._ndu_list = VNXNduList(self._cli)
-        self._ndu_list.with_no_poll()
+        self._file_username = file_username
+        self._file_password = file_password
+
+        self._cli = self._init_block_cli()
+
         if heartbeat_interval:
             daemon(self.update_nodes_ip)
+
+    def _init_block_cli(self):
+        return CliClient(
+            self._ip,
+            self._username, self._password, self._scope, self._sec_file,
+            self._timeout, heartbeat_interval=self._hb_interval,
+            naviseccli=self._naviseccli)
+
+    def _init_file_cli(self):
+        return VNXNasClient(self.control_station_ip,
+                            self._file_username,
+                            self._file_password)
+
+    @property
+    @instance_cache
+    def _file_cli(self):
+        return self._init_file_cli()
+
+    @property
+    def _ndu_list(self):
+        ret = VNXNduList(self._cli)
+        ret.with_no_poll()
+        return ret
 
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
@@ -108,8 +152,25 @@ class VNXSystem(VNXCliResource):
 
     @property
     @instance_cache
+    def spa(self):
+        return VNXStorageProcessor(self._cli, VNXSPEnum.SP_A, self.spa_ip)
+
+    @property
+    @instance_cache
+    def spb(self):
+        return VNXStorageProcessor(self._cli, VNXSPEnum.SP_B, self.spb_ip)
+
+    def get_sp(self):
+        return [self.spa, self.spb]
+
+    @property
+    @instance_cache
     def spb_ip(self):
         return VNXNetworkAdmin.get_spb_ip(self._cli)
+
+    @property
+    def alive_sp_ip(self):
+        return self.heartbeat.get_alive_sp_ip()
 
     @property
     @instance_cache
@@ -179,21 +240,21 @@ class VNXSystem(VNXCliResource):
                                      vport_id=vport_id,
                                      port_type=VNXPortType.FCOE)
 
-    def remove_snap(self, name):
-        self._remove_resource(VNXSnap(name, self._cli))
+    def delete_snap(self, name):
+        self._delete_resource(VNXSnap(name, self._cli))
 
     def create_sg(self, name):
         return VNXStorageGroup.create(name, self._cli)
 
-    def remove_sg(self, name):
-        self._remove_resource(VNXStorageGroup(name, self._cli))
+    def delete_sg(self, name):
+        self._delete_resource(VNXStorageGroup(name, self._cli))
 
     def create_cg(self, name, members=None):
         return VNXConsistencyGroup.create(self._cli, name=name,
                                           members=members)
 
-    def remove_cg(self, name):
-        self._remove_resource(VNXConsistencyGroup(name, self._cli))
+    def delete_cg(self, name):
+        self._delete_resource(VNXConsistencyGroup(name, self._cli))
 
     def get_disk(self, disk_index=None):
         return VNXDisk.get(self._cli, disk_index)
@@ -202,11 +263,14 @@ class VNXSystem(VNXCliResource):
         pool_feature = VNXPoolFeature(self._cli)
         pool_feature.poll = self.poll
         disks = pool_feature.available_disks
-        disks.poll = self.poll
+        if disks:
+            disks.poll = self.poll
+        else:
+            disks = VNXDiskList(cli=self._cli, disk_indices='N/A')
         return disks
 
-    def remove_disk(self, disk_index):
-        self._remove_resource(VNXDisk(disk_index, self._cli))
+    def delete_disk(self, disk_index):
+        self._delete_resource(VNXDisk(disk_index, self._cli))
 
     def install_disk(self, disk_index):
         disk = VNXDisk(disk_index, self._cli)
@@ -218,18 +282,32 @@ class VNXSystem(VNXCliResource):
     def create_rg(self, rg_id, disks, raid_type=None):
         return VNXRaidGroup.create(self._cli, rg_id, disks, raid_type)
 
-    def remove_rg(self, rg_id):
-        self._remove_resource(VNXRaidGroup(rg_id, self._cli))
+    def delete_rg(self, rg_id):
+        self._delete_resource(VNXRaidGroup(rg_id, self._cli))
 
-    def create_pool(self, name, disks, raid_type=None):
-        return VNXPool.create(self._cli, name, disks, raid_type)
+    def create_pool(self, name, disks=None, raid_type=None):
+        @retry(on_error=VNXDiskUsedError)
+        def create_with_default_disks():
+            _disks = self.get_available_disks()
+            disk_count = VNXPoolRaidType.parse(raid_type).min_disk_requirement
+            _disks.same_disks(disk_count)
+            return VNXPool.create(self._cli, name, _disks, raid_type)
 
-    def _remove_resource(self, resource):
+        if raid_type is None:
+            raid_type = VNXPoolRaidType.RAID5
+        if disks is None:
+            ret = create_with_default_disks()
+        else:
+            ret = VNXPool.create(self._cli, name, disks, raid_type)
+
+        return ret
+
+    def _delete_resource(self, resource):
         resource.poll = self.poll
-        resource.remove()
+        resource.delete()
 
-    def remove_pool(self, name=None, pool_id=None):
-        self._remove_resource(VNXPool(pool_id, name, self._cli))
+    def delete_pool(self, name=None, pool_id=None):
+        self._delete_resource(VNXPool(pool_id, name, self._cli))
 
     def stop_heart_beat(self):
         self._cli.heartbeat.stop()
@@ -264,8 +342,8 @@ class VNXSystem(VNXCliResource):
     def is_fast_cache_enabled(self):
         return self._ndu_list.is_fast_cache_enabled()
 
-    def remove_hba(self, hba_uid):
-        return VNXSPPort.remove_hba(self._cli, hba_uid)
+    def delete_hba(self, hba_uid):
+        return VNXSPPort.delete_hba(self._cli, hba_uid)
 
     def get_block_user(self, name=None):
         return VNXBlockUser.get(cli=self._cli, name=name)
@@ -278,6 +356,43 @@ class VNXSystem(VNXCliResource):
 
     def create_mirror_view(self, name, src_lun):
         return VNXMirrorView.create(self._cli, name, src_lun)
+
+    def get_file_system(self, name=None, fs_id=None):
+        return VNXFileSystem.get(cli=self._file_cli, name=name, fs_id=fs_id)
+
+    def get_nas_pool(self, name=None, pool_id=None):
+        return VNXNasPool.get(cli=self._file_cli, name=name, pool_id=pool_id)
+
+    def get_cifs_server(self, name=None, mover_id=None, is_vdm=None):
+        return VNXCifsServer.get(cli=self._file_cli, name=name,
+                                 mover_id=mover_id, is_vdm=is_vdm)
+
+    def create_cifs_server(self, name, mover_id=None, is_vdm=False,
+                           workgroup=None, domain=None,
+                           interfaces=None, alias_name=None,
+                           local_admin_password=None):
+        return VNXCifsServer.create(
+            cli=self._file_cli, name=name, mover_id=mover_id, is_vdm=is_vdm,
+            workgroup=workgroup, domain=domain, interfaces=interfaces,
+            alias_name=alias_name, local_admin_password=local_admin_password)
+
+    def get_cifs_share(self, name=None, mover=None, server_name=None):
+        return VNXCifsShare.get(
+            self._file_cli, name=name, mover=mover, server_name=server_name)
+
+    def get_file_system_snap(self, name=None, snap_id=None):
+        return VNXFsSnap.get(cli=self._file_cli, name=name, snap_id=snap_id)
+
+    def get_mover(self, name=None, mover_id=None, is_vdm=False):
+        if is_vdm:
+            ret = VNXVdm.get(cli=self._file_cli, name=name, vdm_id=mover_id)
+        else:
+            ret = VNXMover.get(cli=self._file_cli, name=name,
+                               mover_id=mover_id)
+        return ret
+
+    def get_nfs_share(self, mover=None, path=None):
+        return VNXNfsShare.get(cli=self._file_cli, mover=mover, path=path)
 
     def __del__(self):
         del self._cli

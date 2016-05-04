@@ -27,6 +27,14 @@ class VNXResource(Resource):
     def _get_parser(cls):
         return get_vnx_parser(cls.__name__)
 
+    def _get_value_by_key(self, item):
+        ret = super(VNXResource, self)._get_value_by_key(item)
+        if ret is None and self._get_parser() is not None:
+            prop = self._get_parser().get_property(item)
+            if prop and prop.is_resource_list_clazz():
+                ret = tuple()
+        return ret
+
 
 class _WithPoll(object):
     def __init__(self, r):

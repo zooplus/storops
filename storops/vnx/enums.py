@@ -52,7 +52,7 @@ class VNXSPEnum(VNXEnum):
 
     @classmethod
     @cache
-    def get_to_remove(cls):
+    def get_to_delete(cls):
         return re.compile('[_. ]')
 
     @classmethod
@@ -62,7 +62,7 @@ class VNXSPEnum(VNXEnum):
 
     @classmethod
     def _normalize(cls, value):
-        ret = re.sub(cls.get_to_remove(), '', value)
+        ret = re.sub(cls.get_to_delete(), '', value)
         if ret is None:
             pass
         elif ret.endswith('a') and not ret.endswith('rra'):
@@ -270,9 +270,27 @@ class VNXRaidType(VNXEnum):
 
 
 class VNXPoolRaidType(VNXEnum):
+    RAID0 = 'r_0'
+    RAID1 = 'r_1'
     RAID5 = 'r_5'
     RAID6 = 'r_6'
     RAID10 = 'r_10'
+
+    @property
+    def min_disk_requirement(self):
+        if self is self.RAID0:
+            ret = 2
+        elif self is self.RAID1:
+            ret = 2
+        elif self is self.RAID5:
+            ret = 3
+        elif self is self.RAID6:
+            ret = 4
+        elif self is self.RAID10:
+            ret = 4
+        else:
+            raise ValueError('invalid VNXPoolRaidType supplied.')
+        return ret
 
 
 class VNXAccessLevel(VNXEnum):
@@ -315,13 +333,3 @@ class VNXMirrorImageState(VNXEnum):
     INCOMPLETE = 'Incomplete'
     LOCAL_ONLY = 'Local Only'
     EMPTY = 'Empty'
-
-
-class VNXMirrorImageCondition(VNXEnum):
-    PRIMARY = 'Primary Image'
-    NORMAL = 'Normal'
-    INITIALIZING = 'Initializing'
-    UPDATING = 'Updating'
-    ADMIN_FRACTURED = 'Admin Fractured'
-    SYSTEM_FRACTURED = 'System Fractured'
-    WAITING_ON_ADMIN = 'Waiting on Admin'

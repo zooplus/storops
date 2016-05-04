@@ -1,0 +1,10 @@
+Could not connect to the specified host abc
+  Usage:
+    [-User <username>] [-Password <password>]
+    [-Scope <0 - global; 1 - local; 2 - LDAP>]
+    [-Address <IPAddress | NetworkName> | -h <IPAddress | NetworkName>]
+    [-Port <portnumber>] [-Timeout <timeout> | -t <timeout>]
+    [-AddUserSecurity | -RemoveUserSecurity | -DeleteSecurityEntry]
+    [-Parse | -p] [-NoPoll | -np] [-cmdtime]
+    [-Xml] [-f <filename>] [-Help] CMD <Optional Arguments>
+    [security -certificate]

@@ -20,7 +20,7 @@ from unittest import TestCase
 from hamcrest import assert_that, contains_string, equal_to, calling, raises
 
 from test.vnx.cli_mock import patch_cli, extract_command, MockCli
-from storops.exception import VNXSystemDownError
+from storops.exception import VNXSystemDownError, VNXCredentialError
 from storops.vnx.block_cli import CliClient
 from storops.vnx.enums import VNXTieringEnum, VNXProvisionEnum, \
     VNXSPEnum, VNXMigrationRate, VNXLunType, VNXRaidType, VNXUserRoleEnum
@@ -65,7 +65,7 @@ class CliClientTest(TestCase):
             client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)
             client.get_agent()
 
-        assert_that(f, raises(ValueError, 'missing'))
+        assert_that(f, raises(VNXCredentialError, 'missing'))
 
     @patch_cli()
     def test_set_credential(self):
@@ -73,7 +73,7 @@ class CliClientTest(TestCase):
         try:
             client.get_agent()
             self.fail('should have throw exception')
-        except ValueError:
+        except VNXCredentialError:
             pass
         client.set_credential(password='a')
         output = client.get_lun(lun_id=0)
@@ -309,20 +309,20 @@ class CliClientTest(TestCase):
         assert_that(f, raises(ValueError, 'not supported tiering type'))
 
     @extract_command
-    def test_remove_pool_lun(self):
-        cmd = self.client.remove_pool_lun(lun_id=0)
+    def test_delete_pool_lun(self):
+        cmd = self.client.delete_pool_lun(lun_id=0)
         assert_that(cmd, equal_to('lun -destroy -l 0 -o'))
 
     @extract_command
-    def test_remove_pool_lun_advanced(self):
-        cmd = self.client.remove_pool_lun(lun_name='LUN0',
-                                          remove_snapshots=True,
+    def test_delete_pool_lun_advanced(self):
+        cmd = self.client.delete_pool_lun(lun_name='LUN0',
+                                          delete_snapshots=True,
                                           force_detach=True)
         assert_that(cmd, equal_to('lun -destroy -name LUN0 '
                                   '-destroySnapshots -forceDetach -o'))
 
-    def test_remove_pool_lun_value_error(self):
-        assert_that(calling(self.client.remove_pool_lun),
+    def test_delete_pool_lun_value_error(self):
+        assert_that(calling(self.client.delete_pool_lun),
                     raises(ValueError, 'lun_id, lun_name'))
 
     @extract_command
@@ -331,8 +331,8 @@ class CliClientTest(TestCase):
         assert_that(cmd, equal_to('storagegroup -create -gname testsg'))
 
     @extract_command
-    def test_remove_sg(self):
-        cmd = self.client.remove_sg('testsg')
+    def test_delete_sg(self):
+        cmd = self.client.delete_sg('testsg')
         assert_that(cmd, equal_to('storagegroup -destroy -gname testsg -o'))
 
     @extract_command
@@ -352,8 +352,8 @@ class CliClientTest(TestCase):
             'storagegroup -addhlu -hlu 11 -alu 22 -gname sg0 -o'))
 
     @extract_command
-    def test_sg_remove_hlu(self):
-        cmd = self.client.sg_remove_hlu('sg0', 11)
+    def test_sg_delete_hlu(self):
+        cmd = self.client.sg_delete_hlu('sg0', 11)
         assert_that(cmd,
                     equal_to('storagegroup -removehlu -hlu 11 -gname sg0 -o'))
 
@@ -389,8 +389,8 @@ class CliClientTest(TestCase):
         assert_that(f, raises(ValueError, 'not a valid sp name'))
 
     @extract_command
-    def test_remove_hba(self):
-        cmd = self.client.remove_hba('iqn.1998-01.com.vmware:h1')
+    def test_delete_hba(self):
+        cmd = self.client.delete_hba('iqn.1998-01.com.vmware:h1')
         assert_that(cmd, equal_to('port -removeHBA -hbauid '
                                   'iqn.1998-01.com.vmware:h1 -o'))
 
@@ -408,8 +408,8 @@ class CliClientTest(TestCase):
                                   '-allowAutoDelete yes'))
 
     @extract_command
-    def test_remove_snap(self):
-        cmd = self.client.remove_snap('snap0')
+    def test_delete_snap(self):
+        cmd = self.client.delete_snap('snap0')
         assert_that(cmd, equal_to('snap -destroy -id snap0 -o'))
 
     @extract_command
@@ -520,8 +520,8 @@ class CliClientTest(TestCase):
                                   '-allowSnapAutoDelete no -res 0,2,4'))
 
     @extract_command
-    def test_remove_cg(self):
-        cmd = self.client.remove_cg('cg1')
+    def test_delete_cg(self):
+        cmd = self.client.delete_cg('cg1')
         assert_that(cmd, equal_to('snap -group -destroy -id cg1'))
 
     @extract_command
@@ -534,8 +534,8 @@ class CliClientTest(TestCase):
         assert_that(out, equal_to(''))
 
     @extract_command
-    def test_remove_cg_member(self):
-        cmd = self.client.remove_cg_member('cg1', 2, 4)
+    def test_delete_cg_member(self):
+        cmd = self.client.delete_cg_member('cg1', 2, 4)
         assert_that(cmd, equal_to('snap -group -rmmember -id cg1 -res 2,4'))
 
     @extract_command
@@ -608,8 +608,8 @@ class CliClientTest(TestCase):
                              '-lun 23 -usewriteintentlog -o'))
 
     @extract_command
-    def test_remove_mirror_view(self):
-        cmd = self.client.remove_mirror_view('mv')
+    def test_delete_mirror_view(self):
+        cmd = self.client.delete_mirror_view('mv')
         assert_that(cmd, equal_to('mirror -sync -destroy -name mv -o'))
 
     @extract_command
@@ -621,8 +621,8 @@ class CliClientTest(TestCase):
                              '-recoverypolicy auto -syncrate high'))
 
     @extract_command
-    def test_remove_mirror_view_image(self):
-        cmd = self.client.remove_mirror_view_image('mv', '10:20:30')
+    def test_delete_mirror_view_image(self):
+        cmd = self.client.delete_mirror_view_image('mv', '10:20:30')
         assert_that(cmd,
                     equal_to('mirror -sync -removeimage -name mv '
                              '-imageuid 10:20:30 -o'))
@@ -675,8 +675,8 @@ class CliClientTest(TestCase):
         assert_that(cmd, equal_to('getdisk 4_0_E8'))
 
     @extract_command
-    def test_remove_disk(self):
-        cmd = self.client.remove_disk('0_0_1')
+    def test_delete_disk(self):
+        cmd = self.client.delete_disk('0_0_1')
         assert_that(cmd, equal_to('cru_on_off -messner 0_0_1 0'))
 
     @extract_command
@@ -702,8 +702,8 @@ class CliClientTest(TestCase):
             'createrg 11 1_0_0 1_0_1 1_0_3 -raidtype r5 -o'))
 
     @extract_command
-    def test_remove_rg(self):
-        cmd = self.client.remove_rg(11)
+    def test_delete_rg(self):
+        cmd = self.client.delete_rg(11)
         assert_that(cmd, equal_to('removerg 11'))
 
     @extract_command
@@ -713,8 +713,8 @@ class CliClientTest(TestCase):
                                   '-rtype r_5 -name p1 -skiprules'))
 
     @extract_command
-    def test_remove_pool(self):
-        cmd = self.client.remove_pool(name='p1')
+    def test_delete_pool(self):
+        cmd = self.client.delete_pool(name='p1')
         assert_that(cmd, equal_to('storagepool -destroy -name p1 -o'))
 
     @extract_command
@@ -744,6 +744,6 @@ class CliClientTest(TestCase):
                                   '-scope global -role operator -o'))
 
     @extract_command
-    def test_remove_user(self):
-        cmd = self.client.remove_user('s')
+    def test_delete_user(self):
+        cmd = self.client.delete_user('s')
         assert_that(cmd, equal_to('security -rmuser -user s -scope global -o'))

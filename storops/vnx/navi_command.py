@@ -23,7 +23,7 @@ from subprocess import Popen, PIPE
 
 import time
 
-from storops.exception import NaviseccliNotAvailableError
+import storops.exception as ex
 from storops.lib.common import int_var, text_var, synchronized, cache
 
 __author__ = 'Cedric Zhuang'
@@ -40,6 +40,7 @@ class NaviCommand(object):
         self._sec_file = sec_file
         self._timeout = timeout
         self._customized_cli = naviseccli
+        self._is_credential_valid = True
 
     MAX_TIMEOUT = 1800
     MIN_TIMEOUT = 3
@@ -54,6 +55,7 @@ class NaviCommand(object):
             self._scope = scope
         if sec_file is not None:
             self._sec_file = sec_file
+        self._is_credential_valid = True
 
     @property
     def timeout(self):
@@ -70,6 +72,10 @@ class NaviCommand(object):
                 ret = 3
         return ret
 
+    @property
+    def is_credential_valid(self):
+        return self._is_credential_valid
+
     def get_credentials(self):
         if self._username is None and self._password is None:
             # use security file
@@ -78,7 +84,8 @@ class NaviCommand(object):
             else:
                 ret = []
         elif self._username is None or self._password is None:
-            raise ValueError('username or password missing.')
+            self._is_credential_valid = False
+            raise ex.VNXCredentialError('username or password missing.')
         else:
             ret = ['-user', self._username,
                    '-password', self._password,
@@ -117,32 +124,35 @@ class NaviCommand(object):
         return [binary, '-h', ip] + self.get_credentials()
 
     @classmethod
-    def execute_naviseccli(cls, cmd,
-                           raise_on_rc=None, check_rc=False):
-        def _log_command():
-            cmd_str = ' '.join(cmd)
-            log.debug('call command: {}'.format(cmd_str))
-
+    def execute_naviseccli(cls, cmd):
         cmd = list(map(six.text_type, cmd))
-        _log_command()
+        cls._log_command(cmd)
         start = time.time()
         try:
-            p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            p = Popen(cmd, bufsize=-1, stdout=PIPE, stderr=PIPE)
         except OSError:
-            raise NaviseccliNotAvailableError()
+            raise ex.NaviseccliNotAvailableError()
         output = p.stdout.read()
-        p.wait()
-        rc = p.returncode
-        log.debug('time consumed (s): {}\n'
-                  'return code: {}\n'
-                  'output:\n{}'.format(time.time() - start, rc, output))
-        if rc is not None:
-            if rc == raise_on_rc or (check_rc and rc != 0):
-                raise ValueError('raise error on return code "{}".'
-                                 .format(rc))
+        cls._log_output(output, start)
         if isinstance(output, bytes):
             output = output.decode("utf-8")
         return output.strip()
+
+    @classmethod
+    def _log_command(cls, cmd):
+        cmd_cpy = cmd[:]
+        # shadow password
+        if len(cmd_cpy) >= 7 and cmd_cpy[5] == '-password':
+            cmd_cpy[6] = '***'
+        log.info('call command: {}'.format(' '.join(cmd_cpy)))
+
+    @classmethod
+    def _log_output(cls, output, start):
+        if log.isEnabledFor(logging.DEBUG):
+            output = output.replace('\r\n', '\n')
+            dt = time.time() - start
+            log.debug('time consumed (s): {}\n'
+                      'output:\n{}'.format(dt, output))
 
     @classmethod
     def get_security_level(cls, binary):

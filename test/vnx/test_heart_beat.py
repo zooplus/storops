@@ -23,7 +23,7 @@ from hamcrest import assert_that, equal_to, ends_with, contains_string, \
     has_items
 
 from test.vnx.cli_mock import patch_cli
-from storops.exception import VNXSystemDownError
+from storops.exception import VNXSystemDownError, VNXCredentialError
 from storops.vnx.heart_beat import NodeInfo, NodeHeartBeat
 
 __author__ = 'Cedric Zhuang'
@@ -53,6 +53,10 @@ class NodeHeartBeatTest(TestCase):
         hb.add('spa', '1.1.1.1')
         hb.add('cs', None)
         assert_that(hb.is_available('cs'), equal_to(False))
+
+    def test_remove_extra_quotes(self):
+        info = NodeInfo('spa', '  \'"1.1.1.1" \'   ')
+        assert_that(info.ip, equal_to('1.1.1.1'))
 
     @patch_cli()
     def test_get_alive_sp_ip(self):
@@ -156,6 +160,37 @@ class NodeHeartBeatTest(TestCase):
         hb = self.get_test_hb()
         assert_that(hb.get_all_alive_sps_ip(),
                     has_items('1.1.1.1', '1.1.1.2'))
+
+    @patch_cli(output='credential_error.txt')
+    def test_execute_cmd_credential_error(self):
+        hb = self.get_test_hb()
+        try:
+            hb.execute_cmd(
+                '1.1.1.1',
+                ['naviseccli', '-h', '1.1.1.1', 'getagent'])
+        except VNXCredentialError:
+            pass
+        assert_that(hb.is_credential_valid, equal_to(False))
+
+    @patch_cli(output='ip_error.txt')
+    def test_execute_cmd_ip_error(self):
+        def f():
+            hb = self.get_test_hb()
+            hb.execute_cmd('abc', ['naviseccli', '-h', 'abc', 'getagent'])
+
+        assert_that(f, raises(VNXCredentialError, 'not connect to'))
+
+    @patch_cli(output='credential_error.txt')
+    def test_credential_error_no_heart_beat(self):
+        hb = NodeHeartBeat(interval=0.01)
+        hb.add('spa', '1.1.1.1')
+        hb.add('spb', '1.1.1.2')
+        assert_that(hb.is_available('spa'), equal_to(True))
+        assert_that(hb.is_available('spb'), equal_to(True))
+        time.sleep(0.1)
+        assert_that(hb.command_count, less_than_or_equal_to(2))
+        assert_that(hb.command_count, less_than_or_equal_to(2))
+        hb.stop()
 
 
 class NodeInfoTest(TestCase):

@@ -124,6 +124,10 @@ class VNXMirrorView(VNXCliResource):
         return ret
 
     @property
+    def is_primary(self):
+        return self.remote_mirror_status == 'Mirrored'
+
+    @property
     def primary_image_id(self):
         return self.primary_image.uid
 
@@ -140,7 +144,7 @@ class VNXMirrorView(VNXCliResource):
             image_id = self.secondary_image_id
 
         image_id = self._get_image_id(image_id)
-        out = self._cli.remove_mirror_view_image(self._get_name(), image_id,
+        out = self._cli.delete_mirror_view_image(self._get_name(), image_id,
                                                  poll=self.poll)
         raise_if_err(out, default=VNXMirrorException)
 
@@ -171,12 +175,12 @@ class VNXMirrorView(VNXCliResource):
                                                   poll=self.poll)
         raise_if_err(out, default=VNXMirrorException)
 
-    def remove(self, force=False):
+    def delete(self, force=False):
         if force:
             if self.secondary_image:
                 self.remove_image()
 
-        out = self._cli.remove_mirror_view(self._get_name())
+        out = self._cli.delete_mirror_view(self._get_name())
         raise_if_err(out, default=VNXMirrorException)
 
 

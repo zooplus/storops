@@ -79,7 +79,7 @@ class NasXmlBuilder(builder.ElementMaker):
             ret = self.Vdm(vdm=str(mover_id))
         return ret
 
-    def remove_filesystem(self, fs_id):
+    def delete_filesystem(self, fs_id):
         body = self.DeleteFileSystem(fileSystem=str(fs_id))
         return self.task_package(body)
 
@@ -132,7 +132,7 @@ class NasXmlBuilder(builder.ElementMaker):
             name=name)
         return self.task_package(body)
 
-    def remove_snap(self, snap_id, force=False):
+    def delete_snap(self, snap_id, force=False):
         body = self.DeleteCheckpoint(checkpoint=str(snap_id),
                                      force=str(force).lower())
         return self.task_package(body)
@@ -242,7 +242,7 @@ class NasXmlBuilder(builder.ElementMaker):
         body = self.CifsServerQueryParams(*params, **kwargs)
         return self.query_package(body)
 
-    def remove_cifs_server(self, name, mover_id, is_vdm=False):
+    def delete_cifs_server(self, name, mover_id, is_vdm=False):
         body = self.DeleteCifsServer(
             mover=str(mover_id),
             moverIdIsVdm=converter.boolean_to_str(is_vdm),
@@ -257,7 +257,7 @@ class NasXmlBuilder(builder.ElementMaker):
             protocol=protocol)
         return self.task_package(body)
 
-    def remove_dns_domain(self, mover_id, name):
+    def delete_dns_domain(self, mover_id, name):
         body = self.DeleteMoverDnsDomain(
             mover=str(mover_id),
             name=name)
@@ -284,7 +284,7 @@ class NasXmlBuilder(builder.ElementMaker):
             path=path)
         return self.task_package(body)
 
-    def remove_fs_mp(self, path, mover_id, is_vdm=False):
+    def delete_fs_mp(self, path, mover_id, is_vdm=False):
         body = self.DeleteMount(
             mover=str(mover_id),
             moverIdIsVdm=converter.boolean_to_str(is_vdm),
@@ -317,7 +317,7 @@ class NasXmlBuilder(builder.ElementMaker):
             vlanid=str(vlan_id))
         return self.task_package(body)
 
-    def remove_mover_interface(self, mover_id, ip):
+    def delete_mover_interface(self, mover_id, ip):
         body = self.DeleteMoverInterface(
             ipAddress=ip,
             mover=str(mover_id))
@@ -329,7 +329,7 @@ class NasXmlBuilder(builder.ElementMaker):
             params['storagePool'] = str(pool_id)
         return self.task_package(self.NewVdm(**params))
 
-    def remove_vdm(self, vdm_id):
+    def delete_vdm(self, vdm_id):
         return self.task_package(self.DeleteVdm(vdm=str(vdm_id)))
 
     def get_vdm(self, vdm_id=None):
@@ -356,7 +356,7 @@ class NasXmlBuilder(builder.ElementMaker):
                                  *param)
         return self.task_package(body)
 
-    def remove_nfs_export(self, mover_id, path):
+    def delete_nfs_export(self, mover_id, path):
         body = self.DeleteNfsExport(mover=str(mover_id), path=path)
         return self.task_package(body)
 
@@ -401,7 +401,7 @@ class NasXmlBuilder(builder.ElementMaker):
         body = self.CifsShareQueryParams(*argv, **kwargs)
         return self.query_package(body)
 
-    def remove_cifs_share(self, name, mover_id, server_names, is_vdm=False):
+    def delete_cifs_share(self, name, mover_id, server_names, is_vdm=False):
         body = self.DeleteCifsShare(
             self.list_element('CifsServers', server_names),
             mover=str(mover_id),

@@ -83,16 +83,16 @@ class UnityFileInterfaceTest(TestCase):
         assert_that(f, raises(UnityIpAddressUsedError, 'already in use'))
 
     @patch_rest()
-    def test_remove_success(self):
+    def test_delete_success(self):
         fi = UnityFileInterface(_id='if_20', cli=t_rest())
-        resp = fi.remove()
+        resp = fi.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
             fi = UnityFileInterface(_id='if_25', cli=t_rest())
-            fi.remove()
+            fi.delete()
 
         assert_that(f, raises(UnityResourceNotFoundError, 'does not exist'))
 

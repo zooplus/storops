@@ -59,8 +59,8 @@ class UnityFileDnsServerTest(TestCase):
         assert_that(dns.addresses, only_contains('2.2.2.2', '3.3.3.3'))
 
     @patch_rest()
-    def test_remove_not_found(self):
+    def test_delete_not_found(self):
         def f():
-            UnityFileDnsServer.get(t_rest(), 'dns_30').remove()
+            UnityFileDnsServer.get(t_rest(), 'dns_30').delete()
 
         assert_that(f, raises(UnityResourceNotFoundError, 'does not exist'))

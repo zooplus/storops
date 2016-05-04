@@ -58,6 +58,14 @@ class VNXCifsServer(VNXResource):
         return self._cli.get_cifs_server(name=self._name)
 
     @staticmethod
+    def get(cli, name=None, mover_id=None, is_vdm=False):
+        if name is not None:
+            ret = VNXCifsServer(name=name, cli=cli)
+        else:
+            ret = VNXCifsServerList(cli=cli, mover_id=mover_id, is_vdm=is_vdm)
+        return ret
+
+    @staticmethod
     def create(cli, name, mover_id=None, is_vdm=False,
                workgroup=None, domain=None,
                interfaces=None, alias_name=None,
@@ -78,11 +86,11 @@ class VNXCifsServer(VNXResource):
         resp.raise_if_err()
         return VNXCifsServer(name=name, cli=cli)
 
-    def remove(self, mover_id=None, is_vdm=False):
+    def delete(self, mover_id=None, is_vdm=False):
         if mover_id is None:
             mover_id = self.mover_id
             is_vdm = self.is_vdm
-        resp = self._cli.remove_cifs_server(self._get_name(), mover_id, is_vdm)
+        resp = self._cli.delete_cifs_server(self._get_name(), mover_id, is_vdm)
         resp.raise_if_err()
         return resp
 

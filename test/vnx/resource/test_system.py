@@ -15,15 +15,27 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import logging
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, instance_of, raises
+from storops.vnx.resource.mover import VNXMoverList
+
+from storops.vnx.resource.vdm import VNXVdmList
+
+from storops.vnx.resource.cifs_server import CifsDomain
+
+from storops.lib.common import instance_cache
 from storops.vnx.resource.mirror_view import VNXMirrorViewList
 
-from storops.exception import VNXRemoveHbaNotFoundError, VNXUserNameInUseError
+from storops.exception import VNXDeleteHbaNotFoundError, VNXCredentialError, \
+    VNXUserNameInUseError, VNXBackendError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
+from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
+    VNXStorageProcessor
 
 from test.vnx.cli_mock import patch_cli, t_vnx
+from test.vnx.nas_mock import patch_post
 from test.vnx.resource.verifiers import verify_pool_0
 from storops import VNXSystem
 from storops.vnx.enums import VNXLunType, VNXPortType, VNXSPEnum, \
@@ -32,6 +44,8 @@ from storops.vnx.resource.disk import VNXDisk
 from storops.vnx.resource.lun import VNXLun
 
 __author__ = 'Cedric Zhuang'
+
+log = logging.getLogger(__name__)
 
 
 class VNXSystemTest(TestCase):
@@ -63,7 +77,7 @@ class VNXSystemTest(TestCase):
         vnx = VNXSystem('10.244.211.30', heartbeat_interval=0)
         assert_that(vnx.spa_ip, equal_to('192.168.1.52'))
         assert_that(vnx.spb_ip, equal_to('192.168.1.53'))
-        assert_that(vnx.control_station_ip, equal_to('192.168.1.93'))
+        assert_that(vnx.control_station_ip, equal_to('10.244.211.32'))
 
     @patch_cli()
     def test_get_snap(self):
@@ -121,7 +135,7 @@ class VNXSystemTest(TestCase):
     @patch_cli()
     def test_available_disks(self):
         disks = self.vnx.get_available_disks()
-        assert_that(len(disks), equal_to(2))
+        assert_that(len(disks), equal_to(5))
         for disk in disks:
             assert_that(disk, instance_of(VNXDisk))
             assert_that(disk.existed, equal_to(True))
@@ -176,16 +190,14 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_iscsi_port_filtered_type_not_match(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=8,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(0))
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=8,
+                                       vport_id=0)
+        assert_that(port, none())
 
     @patch_cli()
     def test_get_iscsi_port_filtered_type_match(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=5,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(1))
-        port = ports[0]
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_A, port_id=5,
+                                       vport_id=0)
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(5))
         assert_that(port.vport_id, equal_to(0))
@@ -200,9 +212,9 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_iscsi_port_filtered_no_vport(self):
-        ports = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10,
-                                        vport_id=0)
-        assert_that(len(ports), equal_to(0))
+        port = self.vnx.get_iscsi_port(sp=VNXSPEnum.SP_B, port_id=10,
+                                       vport_id=0)
+        assert_that(port, none())
 
     @patch_cli()
     def test_get_iscsi_port_filtered_by_vport(self):
@@ -220,10 +232,8 @@ class VNXSystemTest(TestCase):
 
     @patch_cli()
     def test_get_fcoe_port_filtered_to_single(self):
-        ports = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_A, port_id=6,
-                                       vport_id=0)
-        assert_that(len(ports), equal_to(1))
-        port = ports[0]
+        port = self.vnx.get_fcoe_port(sp=VNXSPEnum.SP_A, port_id=6,
+                                      vport_id=0)
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(6))
         assert_that(port.vport_id, equal_to(0))
@@ -236,12 +246,12 @@ class VNXSystemTest(TestCase):
         assert_that(len(ports), equal_to(2))
 
     @patch_cli()
-    def test_remove_hba_already_removed(self):
+    def test_delete_hba_already_removed(self):
         def f():
             uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:01'
-            self.vnx.remove_hba(uid)
+            self.vnx.delete_hba(uid)
 
-        assert_that(f, raises(VNXRemoveHbaNotFoundError))
+        assert_that(f, raises(VNXDeleteHbaNotFoundError))
 
     @patch_cli()
     def test_get_block_users(self):
@@ -266,3 +276,87 @@ class VNXSystemTest(TestCase):
         lun = VNXLun(245)
         mv = self.vnx.create_mirror_view('mv0', lun)
         assert_that(mv.state, equal_to('Active'))
+
+    @patch_cli(output='credential_error.txt')
+    def test_credential_error(self):
+        def f():
+            return VNXSystem('10.244.211.30', heartbeat_interval=0).spa_ip
+
+        assert_that(f, raises(VNXCredentialError, 'invalid username'))
+
+    @property
+    @patch_cli()
+    @instance_cache
+    def vnx_file(self):
+        log.info('init file mock connection: {}.'.format(self.vnx._file_cli))
+        log.info('mock cs ip: {}.'.format(self.vnx.control_station_ip))
+        return self.vnx
+
+    @patch_post()
+    def test_get_file_system(self):
+        assert_that(len(self.vnx_file.get_file_system()), equal_to(25))
+
+    @patch_post()
+    def test_get_nas_pool(self):
+        assert_that(len(self.vnx_file.get_nas_pool()), equal_to(6))
+
+    @patch_post()
+    def test_get_cifs_server(self):
+        assert_that(len(self.vnx_file.get_cifs_server()), equal_to(4))
+
+    @patch_post()
+    def test_create_cifs_server(self):
+        def f():
+            domain = CifsDomain('test.dev')
+            self.vnx_file.create_cifs_server('test', 1, domain=domain)
+
+        assert_that(f, raises(VNXBackendError, 'default NT server'))
+
+    @patch_post()
+    def test_get_cifs_share(self):
+        assert_that(len(self.vnx_file.get_cifs_share()), equal_to(16))
+
+    @patch_post()
+    def test_get_physical_data_mover(self):
+        dm_list = self.vnx_file.get_mover()
+        assert_that(dm_list, instance_of(VNXMoverList))
+        assert_that(len(dm_list), equal_to(2))
+
+    @patch_post()
+    def test_get_vdm(self):
+        vdm_list = self.vnx_file.get_mover(is_vdm=True)
+        assert_that(vdm_list, instance_of(VNXVdmList))
+        assert_that(len(vdm_list), equal_to(2))
+
+    @patch_post()
+    def test_file_system_snap(self):
+        snap = self.vnx_file.get_file_system_snap()
+        assert_that(len(snap), equal_to(2))
+
+    @patch_post()
+    def test_get_nfs_share(self):
+        assert_that(len(self.vnx_file.get_nfs_share()), equal_to(26))
+
+    @patch_cli()
+    def test_domain_properties(self):
+        assert_that(self.vnx.domain, instance_of(VNXDomainMemberList))
+
+    @patch_cli()
+    def test_alive_sp_ip(self):
+        assert_that(self.vnx.alive_sp_ip, equal_to('10.244.211.30'))
+
+    @patch_cli()
+    def test_get_sp(self):
+        assert_that(len(self.vnx.get_sp()), equal_to(2))
+        assert_that(self.vnx.spa, instance_of(VNXStorageProcessor))
+        assert_that(self.vnx.spa.name, equal_to('A'))
+        assert_that(self.vnx.spa.signature, equal_to(4022290))
+        assert_that(self.vnx.spb, instance_of(VNXStorageProcessor))
+        assert_that(self.vnx.spb.name, equal_to('B'))
+        assert_that(self.vnx.spb.signature, equal_to(4022287))
+
+    @patch_cli()
+    def test_create_pool(self):
+        pool = self.vnx.create_pool('Pool4File')
+        assert_that(pool.existed, equal_to(True))
+        assert_that(pool.name, equal_to('Pool4File'))

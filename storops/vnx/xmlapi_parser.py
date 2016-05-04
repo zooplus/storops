@@ -42,7 +42,7 @@ class XMLAPIParser(object):
         self.stack = []
 
     @staticmethod
-    def _remove_ns(tag):
+    def _delete_ns(tag):
         i = tag.find('}')
         if i >= 0:
             tag = tag[i + 1:]
@@ -62,7 +62,7 @@ class XMLAPIParser(object):
         context = etree.iterparse(six.BytesIO(xml.encode('utf-8')),
                                   events=events, encoding='utf-8')
         for action, elem in context:
-            self.tag = self._remove_ns(elem.tag)
+            self.tag = self._delete_ns(elem.tag)
 
             func = self._get_func(action, self.tag)
             self.track_stack(action, elem)
@@ -133,7 +133,7 @@ class XMLAPIParser(object):
     def _parent_tag(self):
         if len(self.stack) >= 2:
             parent = self.stack[-2]
-            ret = self._remove_ns(parent.tag)
+            ret = self._delete_ns(parent.tag)
         else:
             ret = None
         return ret

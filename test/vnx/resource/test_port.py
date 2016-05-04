@@ -22,7 +22,7 @@ from hamcrest import assert_that, raises, equal_to, has_item, none, is_not, \
 
 from storops.exception import VNXInvalidCliParamError, \
     VNXPortNotInitializedError, VNXInitiatorExistedError, \
-    VNXRemoveHbaNotFoundError, VNXPingNodeTimeOutError
+    VNXDeleteHbaNotFoundError, VNXPingNodeTimeOutError
 from test.vnx.cli_mock import patch_cli, t_cli
 from test.vnx.resource.fakes import STORAGE_GROUP_HBA
 from storops.vnx.enums import VNXSPEnum, VNXPortType
@@ -209,18 +209,18 @@ class VNXConnectionPortTest(TestCase):
         assert_that(len(ports), equal_to(0))
 
     @patch_cli()
-    def test_remove_fc_hba_success(self):
+    def test_delete_fc_hba_success(self):
         uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00'
         # no error raised
-        VNXSPPort.remove_hba(t_cli(), uid)
+        VNXSPPort.delete_hba(t_cli(), uid)
 
     @patch_cli()
-    def test_remove_hba_already_removed(self):
+    def test_delete_hba_already_removed(self):
         def f():
             uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:01'
-            VNXSPPort.remove_hba(t_cli(), uid)
+            VNXSPPort.delete_hba(t_cli(), uid)
 
-        assert_that(f, raises(VNXRemoveHbaNotFoundError))
+        assert_that(f, raises(VNXDeleteHbaNotFoundError))
 
     @patch_cli()
     def test_ping_node_timeout(self):
@@ -302,20 +302,20 @@ class VNXStorageGroupHBATest(TestCase):
     @patch_cli()
     def test_set_path_with_fcoe_port_success(self):
         uid = 'iqn.1992-04.com.abc:a.b.c'
-        ports = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
-                                      vport_id=0, cli=t_cli())
+        port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                     vport_id=0, cli=t_cli())
         sg = VNXStorageGroup(cli=t_cli(), name='sg0')
         # no error raised
-        sg.connect_hba(ports[0], uid, 'host0')
+        sg.connect_hba(port, uid, 'host0')
 
     @patch_cli()
     def test_set_path_with_fcoe_already_existed(self):
         def f():
             uid = 'iqn.1992-04.com.abc:a.b.d'
-            ports = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
-                                          vport_id=0, cli=t_cli())
+            port = VNXConnectionPort.get(sp=VNXSPEnum.SP_A, port_id=8,
+                                         vport_id=0, cli=t_cli())
             sg = VNXStorageGroup(cli=t_cli(), name='sg0')
-            sg.set_path(ports[0], uid, 'host0')
+            sg.set_path(port, uid, 'host0')
 
         assert_that(f, raises(VNXInitiatorExistedError))
 

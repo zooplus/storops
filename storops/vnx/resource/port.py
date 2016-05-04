@@ -139,8 +139,8 @@ class VNXSPPort(VNXPort):
         return ret
 
     @classmethod
-    def remove_hba(cls, cli, hba_uid):
-        out = cli.remove_hba(hba_uid)
+    def delete_hba(cls, cli, hba_uid):
+        out = cli.delete_hba(hba_uid)
         raise_if_err(out)
 
 
@@ -289,9 +289,7 @@ class VNXConnectionPort(VNXPort):
         if sp is not None and port_id is not None and vport_id is not None:
             ret = VNXConnectionPort(sp, port_id, vport_id, cli)
             if port_type is not None and ret.type != port_type:
-                ret = []
-            else:
-                ret = [ret]
+                ret = None
         else:
             ret = VNXConnectionPortList(cli, sp, port_id, vport_id, port_type,
                                         has_ip)
