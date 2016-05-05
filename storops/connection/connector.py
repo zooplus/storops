@@ -21,7 +21,7 @@ import pipes
 
 import functools
 import paramiko
-from pywbem import WBEMConnection
+from pywbemReq import WBEMConnection
 from paramiko import ssh_exception
 import six
 from storops.connection import client
