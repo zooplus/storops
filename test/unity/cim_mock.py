@@ -209,7 +209,7 @@ def patch_cim(output=None, mock_map=None):
 
     def decorator(func):
         @functools.wraps(func)
-        @patch(target='pywbem.cim_operations.wbem_request',
+        @patch(target='pywbemReq.cim_http.wbem_request',
                new=conn.mock_request)
         def func_wrapper(*args, **kwargs):
             return func(*args, **kwargs)

@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from pywbem import CIMInstance, CIMInstanceName, Uint16, CIMError
+from pywbemReq import CIMInstance, CIMInstanceName, Uint16, CIMError
 
 import storops.unity.resource.cifs_server
 import storops.unity.resource.filesystem
