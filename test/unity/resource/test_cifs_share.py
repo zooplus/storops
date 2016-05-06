@@ -233,6 +233,10 @@ class UnityCifsShareTest(TestCase):
     def test_get_ace_list(self):
         share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
         access_list = share.get_ace_list()
+        s1 = 'S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4'
+        s2 = 'S-1-5-15-be80fa7-8ddad211-d49ba5f9-467'
+        assert_that(access_list[ACEAccessLevelEnum.FULL],
+                    only_contains(s1, s2))
         assert_that(len(access_list[ACEAccessLevelEnum.FULL]), equal_to(2))
         assert_that(len(access_list[ACEAccessLevelEnum.READ]), equal_to(0))
         assert_that(len(access_list[ACEAccessLevelEnum.WRITE]), equal_to(0))
@@ -242,6 +246,12 @@ class UnityCifsShareTest(TestCase):
         share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
         export_service = share.cim_export_service
         assert_that(export_service['SystemName'], equal_to('cifs_2'))
+
+    @patch_cim()
+    def test_cim_clear_access_success(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_8')
+        sids = share.clear_access()
+        assert_that(len(sids), equal_to(2))
 
 
 class UnityAclUserTest(TestCase):
