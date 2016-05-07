@@ -224,3 +224,27 @@ def boolean_to_str(value, true_str='true', false_str='false'):
     else:
         ret = false_str
     return ret
+
+
+def url_to_host(url):
+    """convert a url to a host (ip or domain)
+
+    :param url: url string
+    :returns: host
+    """
+
+    m = re.match(r"^https?://(.*)$", url, re.IGNORECASE)
+    if m:
+        url = m.group(1)
+
+    m = url.find('/')
+    if m >= 0:
+        url = url[0:m]
+
+    m = re.search(r':([0-9]+)$', url)
+    if m:
+        ret = url[0:m.start(0)]
+    else:
+        ret = url
+
+    return ret

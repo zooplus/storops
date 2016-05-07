@@ -171,3 +171,38 @@ class ConverterTest(TestCase):
     def test_to_time_delta_zero(self):
         ret = converter.to_time_delta("00:00:00.000")
         assert_that(str(ret), equal_to('0:00:00'))
+
+    def test_url_to_host(self):
+        url = 'http://www.abc.com:5050/page.xml'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('www.abc.com'))
+
+    def test_url_to_host_ssl(self):
+        url = 'https://10.0.0.1:4443/page/my.html?filter=name'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('10.0.0.1'))
+
+    def test_url_to_host_ipv6(self):
+        url = 'https://[2001:db8:a0b:12f0::1%eth0]:21/my.txt'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('[2001:db8:a0b:12f0::1%eth0]'))
+
+    def test_url_to_host_default_port(self):
+        url = 'https://2001:db8:a0b:12f0::1-eth0/my.txt'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('2001:db8:a0b:12f0::1-eth0'))
+
+    def test_url_to_host_default_protocol(self):
+        url = '10.0.0.1/my.txt'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('10.0.0.1'))
+
+    def test_url_to_host_port(self):
+        url = '10.0.0.1:90'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('10.0.0.1'))
+
+    def test_url_to_host_suffix(self):
+        url = '10.0.0.1/32'
+        ret = converter.url_to_host(url)
+        assert_that(ret, equal_to('10.0.0.1'))

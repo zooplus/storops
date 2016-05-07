@@ -19,6 +19,7 @@ import logging
 
 import six
 
+from storops.lib import converter
 from storops.unity.enums import HostTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
@@ -56,15 +57,16 @@ class UnityHost(UnityResource):
     def get_host(cls, cli, _id, force_create=False):
         if isinstance(_id, six.string_types) and ('.' in _id or ':' in _id):
             # it looks like an ip address, find or create the host
-            ports = UnityHostIpPortList(cli=cli, address=_id)
+            address = converter.url_to_host(_id)
+            ports = UnityHostIpPortList(cli=cli, address=address)
             if len(ports) == 1:
                 ret = ports[0].host
             elif force_create:
                 log.info('cannot find an existing host with ip {}.  '
                          'create a new host "{}" to attach it.'
-                         .format(_id, _id))
-                host = cls.create(cli, _id)
-                host.add_ip_port(_id)
+                         .format(address, address))
+                host = cls.create(cli, address)
+                host.add_ip_port(address)
                 ret = host
             else:
                 ret = None
@@ -91,6 +93,14 @@ class UnityHost(UnityResource):
             log.info('ip {} not found under host {}.'
                      .format(address, self.name))
         return resp
+
+    @property
+    def ip_list(self):
+        if self.host_ip_ports:
+            ret = [port.address for port in self.host_ip_ports]
+        else:
+            ret = []
+        return ret
 
 
 class UnityHostList(UnityResourceList):
