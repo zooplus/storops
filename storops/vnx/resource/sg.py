@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 import logging
+import random
 from threading import Lock
 
 from retryz import retry
@@ -32,7 +33,7 @@ log = logging.getLogger(__name__)
 
 
 class VNXStorageGroup(VNXCliResource):
-    def __init__(self, name=None, cli=None):
+    def __init__(self, name=None, cli=None, shuffle_hlu=True):
         super(VNXStorageGroup, self).__init__()
         self._cli = cli
         self._name = name
@@ -41,6 +42,8 @@ class VNXStorageGroup(VNXCliResource):
         self._hba_port_list = []
         self._conn = None
         self._hlu_lock = Lock()
+
+        self.shuffle_hlu = shuffle_hlu
 
     def _get_raw_resource(self):
         return self._cli.get_sg(name=self._name, poll=self.poll)
@@ -214,7 +217,10 @@ class VNXStorageGroup(VNXCliResource):
             if len(remain) == 0:
                 raise ex.VNXNoHluAvailableError(
                     'no hlu number available for attach.')
-            ret = remain.pop()
+            if self.shuffle_hlu:
+                ret = random.sample(remain, 1)[0]
+            else:
+                ret = remain.pop()
             self.get_alu_hlu_map()[alu] = ret
         return ret
 
@@ -235,12 +241,28 @@ class VNXStorageGroup(VNXCliResource):
             hlu = self._get_hlu_to_add(alu_id)
             out = self._cli.sg_add_hlu(self._get_name(), hlu, alu_id,
                                        poll=self.poll)
-            ex.raise_if_err(out, default=ex.VNXAttachAluError)
+            try:
+                ex.raise_if_err(out, default=ex.VNXAttachAluError)
+            except ex.VNXAluAlreadyAttachedError:
+                # alu no in the alu-hlu map cache but attach failed with
+                # already attached, that means the cache is out dated
+                self.update()
+                raise
+            except ex.VNXAttachAluError:
+                # other attach error, remove hlu id from the cache
+                self._delete_alu(alu_id)
+                raise
+
             return hlu
 
         lun_clz = storops.vnx.resource.lun.VNXLun
         alu = lun_clz.get_id(lun)
-        return _do(alu)
+        if self.has_alu(alu):
+            # found alu in the alu-hlu map cache, meaning already attached
+            raise ex.VNXAluAlreadyAttachedError()
+        else:
+            ret = _do(alu)
+        return ret
 
     def detach_alu(self, lun):
         alu = storops.vnx.resource.lun.VNXLun.get_id(lun)

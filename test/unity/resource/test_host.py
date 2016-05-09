@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, instance_of, raises
+from hamcrest import equal_to, assert_that, instance_of, raises, only_contains
 
 from storops.exception import UnityHostIpInUseError, UnityResourceNotFoundError
 from storops.unity.enums import HostTypeEnum, HostManageEnum, HostPortTypeEnum
@@ -58,6 +58,16 @@ class UnityHotTest(TestCase):
     def test_get_all(self):
         hosts = UnityHostList(cli=t_rest())
         assert_that(len(hosts), equal_to(6))
+
+    @patch_rest()
+    def test_get_host_with_ip(self):
+        host = UnityHost.get_host(t_rest(), '10.244.209.90')
+        assert_that(host.ip_list, only_contains('10.244.209.90'))
+
+    @patch_rest()
+    def test_get_host_ip_with_mask(self):
+        host = UnityHost.get_host(t_rest(), '10.244.209.90/32')
+        assert_that(host.ip_list, only_contains('10.244.209.90'))
 
     @patch_rest()
     def test_create_simple_host(self):

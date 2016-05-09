@@ -35,7 +35,7 @@ from storops.unity.resource import UnityResource, UnityResourceList, \
 
 __author__ = 'Jay Xu'
 
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class UnityCifsShare(UnityResource):
@@ -150,9 +150,10 @@ class UnityCifsShare(UnityResource):
             raise ValueError('username not specified.')
         return r'{}\{}'.format(domain, user)
 
-    def delete_ace(self, domain=None, user=None):
-        name = self._get_domain_user_name(domain, user)
-        sid = self.get_user_sids(self._cli, name)
+    def delete_ace(self, domain=None, user=None, sid=None):
+        if sid is None:
+            name = self._get_domain_user_name(domain, user)
+            sid = self.get_user_sids(self._cli, name)
         obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
         for obj in obj_list:
             try:
@@ -164,6 +165,23 @@ class UnityCifsShare(UnityResource):
                 pass
         else:
             raise UnityAceNotFoundError()
+        return ret
+
+    def clear_access(self):
+        """ clear all ace entries of the share
+
+        :return: sid list of ace entries removed successfully
+        """
+        access_entries = self.get_ace_list()
+        ret = []
+        for sid_list in access_entries.values():
+            for sid in sid_list:
+                try:
+                    resp = self.delete_ace(sid=sid)
+                    if resp.is_ok():
+                        ret.append(sid)
+                except UnityAceNotFoundError:
+                    log.info('sid {} not found in access entries.'.format(sid))
         return ret
 
     def add_ace_rest(self, domain, user, access_level=None):

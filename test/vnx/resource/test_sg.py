@@ -17,7 +17,8 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, has_item, raises, instance_of
+from hamcrest import assert_that, equal_to, has_item, raises, instance_of, \
+    none, is_not
 
 from storops.vnx.resource.port import VNXStorageGroupHBAList
 from test.vnx.cli_mock import patch_cli, t_cli
@@ -39,7 +40,9 @@ class VNXStorageGroupListTest(TestCase):
 
 class VNXStorageGroupTest(TestCase):
     def test_sg(self, name='server7'):
-        return VNXStorageGroup(name=name, cli=t_cli())
+        sg = VNXStorageGroup(name=name, cli=t_cli())
+        sg.shuffle_hlu = False
+        return sg
 
     @patch_cli()
     def test_properties(self):
@@ -146,21 +149,39 @@ class VNXStorageGroupTest(TestCase):
 
     @patch_cli()
     def test_attach_alu_already_attached(self):
+        sg = self.test_sg()
+
         def f():
-            sg = self.test_sg()
             sg.attach_alu(123)
 
         assert_that(f, raises(VNXAluAlreadyAttachedError,
                               'already been added'))
+        assert_that(sg.get_hlu(123), none())
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
     @patch_cli()
     def test_attach_alu_not_found(self):
+        sg = self.test_sg()
+
         def f():
-            sg = self.test_sg()
             sg.attach_alu(124)
 
         assert_that(f, raises(VNXAluNotFoundError,
                               'not a bound ALU number'))
+        assert_that(sg.get_hlu(124), none())
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+
+    @patch_cli()
+    def test_attach_alu_already_attached_found_in_cache(self):
+        sg = self.test_sg()
+        assert_that(sg.get_hlu(10), equal_to(153))
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+        try:
+            sg.attach_alu(10)
+            self.fail('should have raised exception.')
+        except VNXAluAlreadyAttachedError:
+            assert_that(sg.get_hlu(10), equal_to(153))
+            assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
     @patch_cli()
     def test_attach_alu_hlu_in_use_retry(self):
@@ -230,3 +251,25 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.fc_ports), equal_to(0))
         assert_that(len(sg.iscsi_ports), equal_to(0))
         assert_that(len(sg.hba_sp_pairs), equal_to(0))
+
+    @patch_cli()
+    def test_get_hlu_to_add_no_shuffle(self):
+        sg = self.test_sg()
+        sg.shuffle_hlu = False
+        assert_that(sg._get_hlu_to_add(12), equal_to(1))
+        sg._delete_alu(12)
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+        assert_that(sg._get_hlu_to_add(12), equal_to(1))
+        sg._delete_alu(12)
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+
+    @patch_cli()
+    def test_get_hlu_to_add_shuffle(self):
+        sg = VNXStorageGroup.get(t_cli(), 'server7')
+        first = sg._get_hlu_to_add(12)
+        sg._delete_alu(12)
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+        second = sg._get_hlu_to_add(12)
+        assert_that(first, is_not(equal_to(second)))
+        sg._delete_alu(12)
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
