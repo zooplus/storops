@@ -25,6 +25,8 @@ from os.path import join, dirname, abspath
 import errno
 from time import sleep
 
+from retryz import retry
+
 from test.utils import PersistedDict
 
 __author__ = 'Cedric Zhuang'
@@ -127,6 +129,11 @@ class ResourceManager(object):
         self._names[rsc_type] = names
         return name
 
+    @retry(on_error=ValueError, wait=5, limit=20)
+    def until_existed(self, obj):
+        if not obj.existed:
+            raise ValueError
+
     ######################
     # has_xxx_name methods
     def has_snap_name(self, name=None):
@@ -150,6 +157,9 @@ class ResourceManager(object):
     def has_nfs_share_name(self, name=None):
         return self.has_name('nfs_share', name)
 
+    def has_sg_name(self, name=None):
+        return self.has_name('sg', name)
+
     ######################
     # add_xxx_name methods
     def add_snap_name(self, name=None):
@@ -172,3 +182,6 @@ class ResourceManager(object):
 
     def add_nfs_share_name(self, name=None):
         return self.add_name('nfs_share', name)
+
+    def add_sg_name(self, name=None):
+        return self.add_name('sg', name)

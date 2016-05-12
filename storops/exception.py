@@ -518,6 +518,16 @@ class VNXStorageGroupNameInUseError(VNXCreateStorageGroupError):
     error_message = 'Storage Group name already in use'
 
 
+class VNXDeleteStorageGroupError(VNXStorageGroupError):
+    pass
+
+
+@cli_exception
+class VNXStorageGroupNotFoundError(VNXStorageGroupError):
+    error_message = ('The group name or UID does not match any '
+                     'storage groups for this array')
+
+
 class VNXNoHluAvailableError(VNXStorageGroupError):
     pass
 
@@ -856,6 +866,21 @@ class VNXMirrorNotFoundError(VNXMirrorException):
 @cli_exception
 class VNXDeleteMirrorWithSecondaryError(VNXMirrorException):
     error_code = 0x71058243
+
+
+class VNXPortError(VNXException):
+    pass
+
+
+@cli_exception
+class VNXGateWayError(VNXException):
+    error_message = ('The gateway is not on the subnet defined '
+                     'by the IP address and netmask.')
+
+
+@cli_exception
+class VNXVirtualPortNotFoundError(VNXPortError):
+    error_message = 'Request failed. Specified virtual port not found.'
 
 
 @xmlapi_exception

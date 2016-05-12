@@ -39,6 +39,16 @@ class VNXTestResourceManager(ResourceManager):
         while self.has_snap_name():
             self._pop_name('snap')
 
+        while self.has_name('sg'):
+            name = None
+            try:
+                name = self._pop_name('sg')
+                sg = self.vnx.get_sg(name=name)
+                if sg.existed:
+                    sg.delete(disconnect_host=True)
+            except ex.VNXStorageGroupNotFoundError:
+                log.exception('delete sg {} failed.'.format(name))
+
         while self.has_name('lun'):
             name = None
             try:
@@ -47,7 +57,7 @@ class VNXTestResourceManager(ResourceManager):
                 if lun.existed:
                     lun.delete(force=True)
             except (ex.VNXLunNotFoundError, ex.VNXDeleteLunError, IndexError):
-                log.exception('remove lun {} failed.'.format(name))
+                log.exception('delete lun {} failed.'.format(name))
 
         while self.has_name('pool'):
             name = None
@@ -58,7 +68,7 @@ class VNXTestResourceManager(ResourceManager):
                     pool.delete(force=True)
             except (ex.VNXPoolNotFoundError, ex.VNXPoolDestroyingError,
                     IndexError):
-                log.exception('remove pool {} failed.'.format(name))
+                log.exception('delete pool {} failed.'.format(name))
 
         self._names.destroy()
 
@@ -67,15 +77,38 @@ class VNXGeneralFixtureManager(VNXTestResourceManager):
     def __init__(self):
         clz_name = self.__class__.__name__
         log.debug('start {} setup.'.format(clz_name))
-        # noinspection PyBroadException
         try:
             super(VNXGeneralFixtureManager, self).__init__('general')
             self.vnx = t_vnx()
             self.pool = self._create_pool()
             self.lun = self._create_lun()
             self.snap = self._create_snap()
-        except Exception:
+            self.sg = self._create_sg()
+        except ex.StoropsException:
             log.exception('failed to initialize {}'.format(clz_name))
+            raise
+
+    def select_port(self):
+        ports = self.vnx.get_iscsi_port()
+        for port in ports:
+            if port.ip_address is None:
+                break
+        else:
+            raise ValueError('no available iSCSI port found.')
+        return port.sp, port.port_id
+
+    def _create_sg(self):
+        name = 'general_sg'
+        if not self.has_sg_name(name):
+            try:
+                ret = self.vnx.create_sg(name)
+            except ex.VNXStorageGroupNameInUseError:
+                ret = self.vnx.get_sg(name=name)
+            self.add_sg_name(name)
+        else:
+            ret = self.vnx.get_sg(name=name)
+        ret.shuffle_hlu = False
+        return ret
 
     def _create_snap(self):
         name = 'general_snap'
