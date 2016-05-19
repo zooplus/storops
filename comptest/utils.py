@@ -131,7 +131,14 @@ class ResourceManager(object):
 
     @retry(on_error=ValueError, wait=5, limit=20)
     def until_existed(self, obj):
+        obj.update()
         if not obj.existed:
+            raise ValueError
+
+    @retry(on_error=ValueError, wait=5, limit=20)
+    def until_not_existed(self, obj):
+        obj.update()
+        if obj.existed:
             raise ValueError
 
     ######################
@@ -147,6 +154,9 @@ class ResourceManager(object):
 
     def has_fs_name(self, name=None):
         return self.has_name('fs', name)
+
+    def has_cg_name(self, name=None):
+        return self.has_name('cg', name)
 
     def has_nas_server_name(self, name=None):
         return self.has_name('nas_server', name)
@@ -185,3 +195,6 @@ class ResourceManager(object):
 
     def add_sg_name(self, name=None):
         return self.add_name('sg', name)
+
+    def add_cg_name(self, name=None):
+        return self.add_name('cg', name)

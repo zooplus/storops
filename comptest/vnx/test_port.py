@@ -25,22 +25,17 @@ def test_create_delete_iscsi_ip(vnx_gf):
 
     port = vnx_gf.vnx.get_iscsi_port(sp, port_id)[0]
 
+    # create ip
     port1 = port.config_ip('5.5.5.5', '255.255.255.0', '5.5.5.1', 1, 1)
-    port2 = port.config_ip('6.6.6.6', '255.255.255.0', '6.6.6.1', 2, 2)
-
     vnx_gf.until_existed(port1)
-    vnx_gf.until_existed(port2)
 
     assert_that(port1.ip_address, equal_to('5.5.5.5'))
     assert_that(port1.subnet_mask, equal_to('255.255.255.0'))
     assert_that(port1.gateway_address, equal_to('5.5.5.1'))
 
-    assert_that(port2.ip_address, equal_to('6.6.6.6'))
-    assert_that(port2.subnet_mask, equal_to('255.255.255.0'))
-    assert_that(port2.gateway_address, equal_to('6.6.6.1'))
-
-    port.delete_ip(1)
-    port2.delete_ip()
+    # delete ip
+    port1.delete_ip()
+    vnx_gf.until_not_existed(port1)
 
     port = vnx_gf.vnx.get_iscsi_port(sp, port_id)[0]
     assert_that(port.ip_address, none())

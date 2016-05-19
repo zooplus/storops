@@ -17,10 +17,10 @@ from __future__ import unicode_literals
 
 import logging
 
-import fasteners
 import pytest
 
 from comptest.unity import UnityGeneralFixtureManager
+from storops.lib.common import inter_process_locked
 
 __author__ = 'Cedric Zhuang'
 
@@ -38,7 +38,7 @@ def unity_gf(request):
     :return:
     """
 
-    @fasteners.interprocess_locked('unity_gf.lck')
+    @inter_process_locked('unity_gf.lck')
     def _setup():
         log.info('setup general fixture.')
         return UnityGeneralFixtureManager()

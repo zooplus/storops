@@ -24,7 +24,7 @@ from os.path import dirname, abspath, join, exists, basename
 
 import fasteners
 
-from storops.lib.common import instance_cache
+from storops.lib.common import instance_cache, get_lock_file
 
 __author__ = 'Cedric Zhuang'
 
@@ -100,7 +100,7 @@ class PersistedDict(object):
 
     @property
     def lock_file_name(self):
-        return '{}.lck'.format(self._name)
+        return get_lock_file('{}.lck'.format(self._name))
 
     @property
     @instance_cache

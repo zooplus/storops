@@ -210,6 +210,11 @@ class VNXConnectionPortTest(TestCase):
         assert_that(len(ports), equal_to(0))
 
     @patch_cli()
+    def test_get_port_with_vport_not_found(self):
+        port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_B, 10, 0)
+        assert_that(port.existed, equal_to(False))
+
+    @patch_cli()
     def test_delete_fc_hba_success(self):
         uid = '00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00'
         # no error raised

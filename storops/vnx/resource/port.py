@@ -296,6 +296,10 @@ class VNXConnectionPort(VNXPort):
             ret = VNXPortType.FCOE
         return ret
 
+    @property
+    def existed(self):
+        return self.wwn is not None
+
     def _get_raw_resource(self):
         return self._cli.get_connection_port(
             sp=self._sp, port_id=self._port_id, vport_id=self._vport_id,

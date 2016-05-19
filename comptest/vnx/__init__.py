@@ -36,29 +36,14 @@ class VNXTestResourceManager(ResourceManager):
     def clean_up(self):
         super(VNXTestResourceManager, self).clean_up()
 
-        while self.has_snap_name():
-            self._pop_name('snap')
+        self._clean_up_snap()
+        self._clean_up_cg()
+        self._clean_up_sg()
+        self._clean_up_lun()
+        self._clean_up_pool()
+        self._names.destroy()
 
-        while self.has_name('sg'):
-            name = None
-            try:
-                name = self._pop_name('sg')
-                sg = self.vnx.get_sg(name=name)
-                if sg.existed:
-                    sg.delete(disconnect_host=True)
-            except ex.VNXStorageGroupNotFoundError:
-                log.exception('delete sg {} failed.'.format(name))
-
-        while self.has_name('lun'):
-            name = None
-            try:
-                name = self._pop_name('lun')
-                lun = self.vnx.get_lun(name=name)
-                if lun.existed:
-                    lun.delete(force=True)
-            except (ex.VNXLunNotFoundError, ex.VNXDeleteLunError, IndexError):
-                log.exception('delete lun {} failed.'.format(name))
-
+    def _clean_up_pool(self):
         while self.has_name('pool'):
             name = None
             try:
@@ -70,7 +55,42 @@ class VNXTestResourceManager(ResourceManager):
                     IndexError):
                 log.exception('delete pool {} failed.'.format(name))
 
-        self._names.destroy()
+    def _clean_up_lun(self):
+        while self.has_name('lun'):
+            name = None
+            try:
+                name = self._pop_name('lun')
+                lun = self.vnx.get_lun(name=name)
+                if lun.existed:
+                    lun.delete(force=True)
+            except (ex.VNXLunNotFoundError, ex.VNXDeleteLunError, IndexError):
+                log.exception('delete lun {} failed.'.format(name))
+
+    def _clean_up_sg(self):
+        while self.has_name('sg'):
+            name = None
+            try:
+                name = self._pop_name('sg')
+                sg = self.vnx.get_sg(name=name)
+                if sg.existed:
+                    sg.delete(disconnect_host=True)
+            except ex.VNXStorageGroupNotFoundError:
+                log.exception('delete sg {} failed.'.format(name))
+
+    def _clean_up_cg(self):
+        while self.has_name('cg'):
+            name = None
+            try:
+                name = self._pop_name('cg')
+                cg = self.vnx.get_cg(name=name)
+                if cg.existed:
+                    cg.delete()
+            except ex.VNXConsistencyGroupNotFoundError:
+                log.exception('delete cg {} failed.'.format(name))
+
+    def _clean_up_snap(self):
+        while self.has_snap_name():
+            self._pop_name('snap')
 
 
 class VNXGeneralFixtureManager(VNXTestResourceManager):
@@ -80,6 +100,7 @@ class VNXGeneralFixtureManager(VNXTestResourceManager):
         try:
             super(VNXGeneralFixtureManager, self).__init__('general')
             self.vnx = t_vnx()
+            self.cg = self._create_cg()
             self.pool = self._create_pool()
             self.lun = self._create_lun()
             self.snap = self._create_snap()
@@ -96,6 +117,18 @@ class VNXGeneralFixtureManager(VNXTestResourceManager):
         else:
             raise ValueError('no available iSCSI port found.')
         return port.sp, port.port_id
+
+    def _create_cg(self):
+        name = 'general_cg'
+        if not self.has_cg_name(name):
+            try:
+                ret = self.vnx.create_cg(name)
+            except ex.VNXConsistencyGroupNameInUseError:
+                ret = self.vnx.get_cg(name)
+            self.add_cg_name(name)
+        else:
+            ret = self.vnx.get_cg(name)
+        return ret
 
     def _create_sg(self):
         name = 'general_sg'

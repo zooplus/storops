@@ -20,12 +20,14 @@ from multiprocessing.pool import ThreadPool
 from time import sleep
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, close_to, only_contains, raises
+from hamcrest import assert_that, equal_to, close_to, only_contains, raises, \
+    contains_string
 
 from storops.exception import EnumValueNotFoundError
 from storops.lib.common import Dict, Enum, WeightedAverage, \
     synchronized, cache, text_var, int_var, enum_var, \
-    yes_no_var, instance_cache, Cache, JsonPrinter, clear_instance_cache
+    yes_no_var, instance_cache, Cache, JsonPrinter, clear_instance_cache, \
+    get_lock_file
 from storops.vnx.enums import VNXRaidType
 
 log = logging.getLogger(__name__)
@@ -377,3 +379,10 @@ class JsonPrinterTest(TestCase):
     def test_str_delete_null(self):
         j = JsonPrinterDemo()
         assert_that(str(j), equal_to('{"JsonPrinterDemo": {"a": 1}}'))
+
+
+class CommonTest(TestCase):
+    def test_get_lock_file(self):
+        name = get_lock_file('a.lock')
+        assert_that(name, contains_string('.storops'))
+        assert_that(name, contains_string('a.lock'))

@@ -17,7 +17,10 @@ from __future__ import unicode_literals
 
 import json
 import logging
+from os import path, makedirs
 import types
+
+import errno
 from enum import Enum as _Enum
 from collections import defaultdict
 from functools import partial
@@ -27,6 +30,8 @@ import six
 import time
 
 import sys
+
+from fasteners import process_lock
 from retryz import retry
 import threading
 
@@ -602,3 +607,23 @@ def get_clz_from_module(module_name, clz_name):
 
 def is_valid(value):
     return value is not None and value != 'N/A' and len(value) > 0
+
+
+def get_local_folder():
+    return path.join(path.expanduser('~'), '.storops')
+
+
+def get_lock_file(name):
+    lock_folder = path.join(get_local_folder(), 'file_lock')
+    if not path.exists(lock_folder):
+        try:
+            makedirs(lock_folder)
+        except OSError as e:
+            # ignore existed error
+            if e.errno != errno.EEXIST:
+                raise
+    return path.join(lock_folder, name)
+
+
+def inter_process_locked(name):
+    return process_lock.interprocess_locked(get_lock_file(name))

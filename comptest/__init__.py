@@ -17,17 +17,16 @@ from __future__ import unicode_literals
 
 import logging
 
-import fasteners as fasteners
-
 from comptest.utils import setup_log
 from storops import VNXSystem, UnitySystem, cache
+from storops.lib.common import inter_process_locked
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-@fasteners.interprocess_locked('t_vnx.lck')
+@inter_process_locked('t_vnx.lck')
 @cache
 def t_vnx():
     vnx = VNXSystem('10.244.211.30', 'sysadmin', 'sysadmin')
@@ -35,7 +34,7 @@ def t_vnx():
     return vnx
 
 
-@fasteners.interprocess_locked('t_unity.lck')
+@inter_process_locked('t_unity.lck')
 @cache
 def t_unity():
     unity = UnitySystem('10.244.223.61', 'admin', 'Password123!')
