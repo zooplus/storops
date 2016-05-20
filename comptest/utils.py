@@ -129,17 +129,20 @@ class ResourceManager(object):
         self._names[rsc_type] = names
         return name
 
+    @staticmethod
     @retry(on_error=ValueError, wait=5, limit=20)
-    def until_existed(self, obj):
+    def until(obj, checker):
         obj.update()
-        if not obj.existed:
+        if not checker(obj):
             raise ValueError
 
-    @retry(on_error=ValueError, wait=5, limit=20)
-    def until_not_existed(self, obj):
-        obj.update()
-        if obj.existed:
-            raise ValueError
+    @classmethod
+    def until_existed(cls, obj):
+        return cls.until(obj, lambda x: x.existed)
+
+    @classmethod
+    def until_not_existed(cls, obj):
+        return cls.until(obj, lambda x: not x.existed)
 
     ######################
     # has_xxx_name methods

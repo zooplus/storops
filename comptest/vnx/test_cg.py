@@ -15,9 +15,13 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import pytest
+from comptest import t_vnx
 from hamcrest import assert_that, equal_to
 
 __author__ = 'Cedric Zhuang'
+
+vnx = t_vnx()
 
 
 def _create_cg_with_member(vnx_gf):
@@ -67,6 +71,8 @@ def test_update_cg_member(vnx_gf):
     assert_that(cg.has_member(lun), equal_to(True))
 
 
+@pytest.mark.skipif(not vnx.is_snap_enabled(),
+                    reason='snap feature not available')
 def test_create_delete_cg_snapshot(vnx_gf):
     cg = _create_cg_with_member(vnx_gf)
 

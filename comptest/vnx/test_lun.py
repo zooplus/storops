@@ -38,9 +38,7 @@ def test_create_thick_lun(vnx_gf):
 @pytest.mark.skipif(not vnx.is_auto_tiering_enabled(),
                     reason='auto tiering not available')
 def test_create_typed_lun(vnx_gf):
-    lun_name = vnx_gf.add_lun_name()
-    lun = vnx_gf.pool.create_lun(lun_name, provision=VNXProvisionEnum.THIN,
-                                 tier=VNXTieringEnum.NO_MOVE)
+    lun = _create_test_lun(vnx_gf, tier=VNXTieringEnum.NO_MOVE)
     assert_that(lun.existed, equal_to(True))
     assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
     assert_that(lun.tier, equal_to(VNXTieringEnum.NO_MOVE))
@@ -49,19 +47,32 @@ def test_create_typed_lun(vnx_gf):
 @pytest.mark.skipif(not vnx.is_compression_enabled(),
                     reason='compression not available')
 def test_create_compression_lun(vnx_gf):
-    lun_name = vnx_gf.add_lun_name()
-    lun = vnx_gf.pool.create_lun(
-        lun_name, provision=VNXProvisionEnum.COMPRESSED)
+    lun = _create_test_lun(vnx_gf, provision=VNXProvisionEnum.COMPRESSED)
     assert_that(lun.existed, equal_to(True))
     assert_that(lun.provision, equal_to(VNXProvisionEnum.COMPRESSED))
 
 
+@pytest.mark.skipif(not vnx.is_compression_enabled(),
+                    reason='compression not available')
+def test_enable_disable_compression(vnx_gf):
+    lun = _create_test_lun(vnx_gf)
+    assert_that(lun.existed, equal_to(True))
+
+    # enable compression
+    lun.enable_compression()
+    lun.update()
+    assert_that(lun.provision, equal_to(VNXProvisionEnum.COMPRESSED))
+
+    # disable compression
+    lun.disable_compression()
+    lun.update()
+    assert_that(lun.provision, equal_to(VNXProvisionEnum.THIN))
+
+
 @pytest.mark.skipif(not vnx.is_dedup_enabled(),
                     reason='dedup feature not available')
-def test_dedup_lun(vnx_gf):
-    lun_name = vnx_gf.add_lun_name()
-    lun = vnx_gf.pool.create_lun(
-        lun_name, provision=VNXProvisionEnum.DEDUPED)
+def test_create_dedup_lun(vnx_gf):
+    lun = _create_test_lun(vnx_gf, provision=VNXProvisionEnum.DEDUPED)
     assert_that(lun.existed, equal_to(True))
 
     def f():
@@ -88,7 +99,7 @@ def test_extend_lun(vnx_gf):
     def do_expand():
         lun.expand(2)
 
-    lun = vnx_gf.pool.create_lun(vnx_gf.add_lun_name())
+    lun = _create_test_lun(vnx_gf)
     assert_that(lun.user_capacity_gbs, equal_to(1.0))
     do_expand()
 
@@ -96,3 +107,37 @@ def test_extend_lun(vnx_gf):
         lun.expand(1)
 
     assert_that(f, raises(VNXLunExtendError))
+
+
+@pytest.mark.skipif(not vnx.is_auto_tiering_enabled(),
+                    reason='auto tiering feature not available')
+def test_update_tiering_value(vnx_gf):
+    lun = vnx_gf.lun
+    lun.tier = VNXTieringEnum.NO_MOVE
+    lun.update()
+    assert_that(lun.tier, equal_to(VNXTieringEnum.NO_MOVE))
+
+
+def test_migration_success(vnx_gf):
+    src = _create_test_lun(vnx_gf)
+    tgt = _create_test_lun(vnx_gf)
+
+    vnx_gf.until(src, lambda x: x.state == 'Ready')
+    vnx_gf.until(tgt, lambda x: x.state == 'Ready')
+
+    src.migrate(tgt)
+    ms = vnx_gf.vnx.get_migration_session(src_lun=src)
+    vnx_gf.until_not_existed(ms)
+
+    tgt.update()
+    assert_that(tgt.existed, equal_to(False))
+    src.update()
+    assert_that(src.existed, equal_to(True))
+
+
+def _create_test_lun(vnx_gf, provision=None, tier=None):
+    if provision is None:
+        provision = VNXProvisionEnum.THIN
+    lun_name = vnx_gf.add_lun_name()
+    lun = vnx_gf.pool.create_lun(lun_name, provision=provision, tier=tier)
+    return lun

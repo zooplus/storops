@@ -29,7 +29,7 @@ from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXLunNameInUseError, VNXTargetNotReadyError, \
     VNXCreateSnapResourceNotFoundError, VNXLunInStorageGroupError, \
     VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
-    VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled
+    VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled, EnumValueNotFoundError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate, VNXSPEnum
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -163,7 +163,7 @@ class VNXLunTest(TestCase):
             lun = VNXLun()
             lun.tier = 'invalid'
 
-        assert_that(f, raises(AttributeError))
+        assert_that(f, raises(EnumValueNotFoundError))
 
     def test_lun_tier_highest_available(self):
         lun = VNXLun()
