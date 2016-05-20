@@ -373,6 +373,10 @@ class UnityFileSystemNameAlreadyExisted(UnityException):
     error_code = 108008464
 
 
+class UnityCreateSnapError(UnityException):
+    pass
+
+
 @rest_exception
 class UnitySnapNameInUseError(UnityException):
     error_code = (1903001605, 1903132675)
@@ -391,6 +395,11 @@ class UnityHostIpInUseError(UnityException):
 @rest_exception
 class UnityAclUserNotFoundError(UnityException):
     error_code = 100663499
+
+
+@rest_exception
+class UnityFileSystemSizeTooSmallError(UnityException):
+    error_code = 108008449
 
 
 class UnityImportCifsUserError(UnityException):

@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import pytest
 from hamcrest import assert_that, equal_to, only_contains
 
 from storops import FileInterfaceRoleEnum
@@ -22,8 +23,23 @@ from storops import FileInterfaceRoleEnum
 __author__ = 'Cedric Zhuang'
 
 
-def test_check_nas_server_exists(unity_gf):
+def test_check_nas_server_create_success(unity_gf):
     assert_that(unity_gf.nas_server.existed, equal_to(True))
+
+
+def test_check_cifs_server_create_success(unity_gf):
+    assert_that(unity_gf.nas_server.get_cifs_server().existed, equal_to(True))
+
+
+def test_check_nfs_server_create_success(unity_gf):
+    nfs_servers = unity_gf.unity.get_nfs_server()
+    for nfs_server in nfs_servers:
+        nas_server = nfs_server.nas_server
+        if nas_server and nas_server.id == unity_gf.nas_server.id:
+            break
+    else:
+        pytest.fail('cannot find the nfs server for nas server: {}'
+                    .format(unity_gf.nas_server))
 
 
 def test_create_delete_file_interface(unity_gf):

@@ -24,5 +24,55 @@ def test_check_cifs_share_exists(unity_gf):
     assert_that(unity_gf.cifs_share.existed, equal_to(True))
 
 
+def test_create_delete_cifs_share_snapshot(unity_gf):
+    # create snap
+    snap = unity_gf.cifs_share.create_snap(unity_gf.add_snap_name())
+    assert_that(unity_gf.cifs_share.storage_resource.id,
+                equal_to(snap.storage_resource.id))
+
+    # delete snap
+    resp = snap.delete()
+    snap.update()
+    assert_that(resp.is_ok(), equal_to(True))
+    assert_that(snap.existed, equal_to(False))
+
+
 def test_check_nfs_share_exists(unity_gf):
     assert_that(unity_gf.nfs_share.existed, equal_to(True))
+
+
+def test_create_delete_nfs_share_snapshot(unity_gf):
+    # create snap
+    snap = unity_gf.nfs_share.create_snap(unity_gf.add_snap_name())
+    assert_that(unity_gf.nfs_share.storage_resource.id,
+                equal_to(snap.storage_resource.id))
+
+    # delete snap
+    resp = snap.delete()
+    snap.update()
+    assert_that(resp.is_ok(), equal_to(True))
+    assert_that(snap.existed, equal_to(False))
+
+
+def test_create_snap_based_nfs_share_and_snap(unity_gf):
+    snap = unity_gf.nfs_share.create_snap(unity_gf.add_snap_name())
+
+    # create snap based share
+    nfs_share = snap.create_nfs_share(name=snap.name)
+    assert_that(nfs_share.existed, equal_to(True))
+
+    # create snap of snap based share
+    share_snap = nfs_share.create_snap(unity_gf.add_snap_name())
+    assert_that(share_snap.existed, equal_to(True))
+
+
+def test_create_snap_based_cifs_share_and_snap(unity_gf):
+    snap = unity_gf.cifs_share.create_snap(unity_gf.add_snap_name())
+
+    # create snap based share
+    cifs_share = snap.create_cifs_share(name=snap.name)
+    assert_that(cifs_share.existed, equal_to(True))
+
+    # create snap of snap based share
+    share_snap = cifs_share.create_snap(unity_gf.add_snap_name())
+    assert_that(share_snap.existed, equal_to(True))

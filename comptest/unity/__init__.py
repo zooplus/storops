@@ -36,12 +36,26 @@ class UnityTestResourceManager(ResourceManager):
     def clean_up(self):
         super(UnityTestResourceManager, self).clean_up()
 
-        while self.has_cifs_share_name():
-            self._pop_name('cifs_share')
+        self._clean_up_snap()
+        self._clean_up_cifs_share()
+        self._clean_up_nfs_share()
+        self._clean_up_fs()
+        self._clean_up_nas_server()
 
-        while self.has_nfs_share_name():
-            self._pop_name('nfs_share')
+        self._names.destroy()
 
+    def _clean_up_nas_server(self):
+        while self.has_nas_server_name():
+            name = None
+            try:
+                name = self._pop_name('nas_server')
+                server = self.unity.get_nas_server(name=name)
+                if server.existed:
+                    self._delete_nas_server(server)
+            except ex.UnityResourceNotFoundError:
+                log.exception('remove nas server {} failed.'.format(name))
+
+    def _clean_up_fs(self):
         while self.has_fs_name():
             name = None
             try:
@@ -53,17 +67,17 @@ class UnityTestResourceManager(ResourceManager):
             except ex.UnityResourceNotFoundError:
                 log.exception('remove fs {} failed.'.format(name))
 
-        while self.has_nas_server_name():
-            name = None
-            try:
-                name = self._pop_name('nas_server')
-                server = self.unity.get_nas_server(name=name)
-                if server.existed:
-                    self._delete_nas_server(server)
-            except ex.UnityResourceNotFoundError:
-                log.exception('remove nas server {} failed.'.format(name))
+    def _clean_up_nfs_share(self):
+        while self.has_nfs_share_name():
+            self._pop_name('nfs_share')
 
-        self._names.destroy()
+    def _clean_up_cifs_share(self):
+        while self.has_cifs_share_name():
+            self._pop_name('cifs_share')
+
+    def _clean_up_snap(self):
+        while self.has_snap_name():
+            self._pop_name('snap')
 
     @retry(on_error=ex.UnityNasServerHasFsError, wait=7)
     def _delete_nas_server(self, server):
