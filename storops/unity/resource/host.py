@@ -19,8 +19,10 @@ import logging
 
 import six
 
+from storops.exception import UnityHostInitiatorUnknownType, \
+    UnityHostInitiatorNotFoundError
 from storops.lib import converter
-from storops.unity.enums import HostTypeEnum
+from storops.unity.enums import HostTypeEnum, HostInitiatorTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
 
@@ -74,6 +76,33 @@ class UnityHost(UnityResource):
             ret = cls.get(cli=cli, _id=_id)
         return ret
 
+    def add_initiator(self, name, type, **kwargs):
+        initiator = UnityHostInitiator.create(self._cli, name,
+                                              self, type, **kwargs)
+        initiator.modify(self)
+        return initiator.update()
+
+    def delete_initiator(self, name):
+        initiators = []
+        if self.fc_host_initiators:
+            initiators += self.fc_host_initiators
+        if self.iscsi_host_initiators:
+            initiators += self.iscsi_host_initiators
+        for item in initiators:
+            if item.initiator_id == name:
+                # remove from the host initiator list first,
+                # otherwise delete initiator will not work
+                item.modify(None)
+                resp = item.delete()
+                resp.raise_if_err()
+                break
+        else:
+            resp = None
+            raise UnityHostInitiatorNotFoundError(
+                'name {} not found under host {}.'.format(name, self.name))
+
+        return resp
+
     def add_ip_port(self, address, netmask=None, v6_prefix_length=None,
                     is_ignored=None):
         return UnityHostIpPort.create(self._cli,
@@ -120,7 +149,52 @@ class UnityHostContainerList(UnityResourceList):
 
 
 class UnityHostInitiator(UnityResource):
-    pass
+    @classmethod
+    def create(cls, cli, name, host, type, is_ignored=None,
+               chap_user=None, chap_secret=None, chap_secret_type=None):
+
+        if type == HostInitiatorTypeEnum.ISCSI:
+            resp = cli.post(cls().resource_class,
+                            host=host,
+                            initiatorType=type,
+                            initiatorWWNorIqn=name,
+                            chapUser=chap_user,
+                            chapSecret=chap_secret,
+                            chapSecretType=chap_secret_type,
+                            isIgnored=is_ignored)
+        elif type == HostInitiatorTypeEnum.FC:
+            resp = cli.post(cls().resource_class,
+                            host=host,
+                            initiatorType=type,
+                            initiatorWWNorIqn=name,
+                            isIgnored=is_ignored)
+        else:
+            raise UnityHostInitiatorUnknownType(
+                '{} parameter is unknown type'.format(type))
+
+        resp.raise_if_err()
+        return cls(_id=resp.resource_id, cli=cli)
+
+    def modify(self, host, is_ignored=None, chap_user=None,
+               chap_secret=None, chap_secret_type=None):
+        req_body = {'host': host}
+
+        if is_ignored is not None:
+            req_body['isIgnored'] = is_ignored
+
+        if self.type == HostInitiatorTypeEnum.ISCSI:
+            if chap_user is not None:
+                req_body['chapUser'] = chap_user
+            if chap_secret is not None:
+                req_body['chapSecret'] = chap_secret
+            if chap_secret_type is not None:
+                req_body['chapSecretType'] = chap_secret_type
+        # end if
+
+        resp = self._cli.modify(self.resource_class,
+                                self.get_id(), **req_body)
+        resp.raise_if_err()
+        return resp
 
 
 class UnityHostInitiatorList(UnityResourceList):
