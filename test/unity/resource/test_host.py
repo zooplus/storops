@@ -116,7 +116,8 @@ class UnityHotTest(TestCase):
         initiator = host.add_initiator(wwn, HostInitiatorTypeEnum.FC)
         assert_that(initiator, instance_of(UnityHostInitiator))
         assert_that(initiator.existed, equal_to(True))
-        assert_that(host.fc_host_initiators, instance_of(UnityHostInitiatorList))
+        assert_that(host.fc_host_initiators,
+                    instance_of(UnityHostInitiatorList))
 
     @patch_rest()
     def test_delete_initiator(self):
@@ -129,6 +130,7 @@ class UnityHotTest(TestCase):
     def test_delete_initiator_not_found(self):
         host = UnityHost(cli=t_rest(), _id='Host_1')
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:99:99:99:99"
+
         def f():
             host.delete_initiator(wwn)
         assert_that(f, raises(UnityHostInitiatorNotFoundError))
@@ -191,7 +193,8 @@ class UnityHostInitiatorTest(TestCase):
         assert_that(initiator.node_wwn, equal_to("50:00:14:40:47:B0:0C:44"))
         assert_that(initiator.port_wwn, equal_to("50:00:14:42:D0:0C:44:10"))
         assert_that(initiator.paths, instance_of(UnityHostInitiatorPathList))
-        assert_that(initiator.source_type, equal_to(HostInitiatorSourceTypeEnum.OPEN_NATIVE))
+        assert_that(initiator.source_type,
+                    equal_to(HostInitiatorSourceTypeEnum.OPEN_NATIVE))
 
     @patch_rest()
     def test_iscsi_initiator_properties(self):
@@ -208,14 +211,16 @@ class UnityHostInitiatorTest(TestCase):
         assert_that(initiator.is_chap_secret_enabled, equal_to(True))
         assert_that(initiator.paths, instance_of(UnityHostInitiatorPathList))
         assert_that(initiator.chap_user_name, equal_to(iqn))
-        assert_that(initiator.iscsi_type, equal_to(HostInitiatorIscsiTypeEnum.SOFTWARE))
+        assert_that(initiator.iscsi_type,
+                    equal_to(HostInitiatorIscsiTypeEnum.SOFTWARE))
         assert_that(initiator.is_bound, equal_to(False))
-        assert_that(initiator.source_type, equal_to(HostInitiatorSourceTypeEnum.DELL))
+        assert_that(initiator.source_type,
+                    equal_to(HostInitiatorSourceTypeEnum.DELL))
 
     @patch_rest()
     def test_fc_initiator_create(self):
         host = UnityHost(cli=t_rest(), _id='Host_9')
-        type= HostInitiatorTypeEnum.FC
+        type = HostInitiatorTypeEnum.FC
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
         initiator = UnityHostInitiator.create(t_rest(), wwn, host, type)
         assert_that(initiator, instance_of(UnityHostInitiator))
@@ -224,7 +229,7 @@ class UnityHostInitiatorTest(TestCase):
     @patch_rest()
     def test_iscsi_initiator_create(self):
         host = UnityHost(cli=t_rest(), _id='Host_9')
-        type= HostInitiatorTypeEnum.ISCSI
+        type = HostInitiatorTypeEnum.ISCSI
         iqn = "iqn.1993-08.org.debian:01:a4f95ed14d65"
         initiator = UnityHostInitiator.create(t_rest(), iqn, host, type)
         assert_that(initiator, instance_of(UnityHostInitiator))
@@ -245,4 +250,3 @@ class UnityHostInitiatorTest(TestCase):
         initiator = UnityHostInitiator(cli=t_rest(), _id='HostInitiator_2')
         resp = initiator.delete()
         assert_that(resp.is_ok(), equal_to(True))
-

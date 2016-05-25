@@ -130,9 +130,8 @@ class UnitySystemTest(TestCase):
     def test_create_lun_with_muitl_property(self):
         unity = t_unity()
         pool = unity.get_pool(_id='pool_1')
-        sp = unity.get_sp(_id='spb')
-        lun = unity.create_lun("openstack_lun", pool, 100*1024**3, is_thin=True,
-                               description="Hello World",
+        lun = unity.create_lun("openstack_lun", pool, 100*1024**3,
+                               description="Hello World", is_thin=True,
                                is_repl_dst=True,
                                tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(lun, instance_of(UnityLun))

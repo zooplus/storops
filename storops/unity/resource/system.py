@@ -19,7 +19,7 @@ import logging
 
 from storops.lib.common import instance_cache
 from storops.unity.client import UnityClient
-from storops.unity.enums import UnityEnum, NodeEnum
+from storops.unity.enums import UnityEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnitySingletonResource
 from storops.unity.resource.cifs_server import UnityCifsServerList

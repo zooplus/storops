@@ -21,7 +21,6 @@ from storops.unity.resource import UnityResource, UnityResourceList
 import storops.unity.resource.pool
 from storops.unity.enums import TieringPolicyEnum, NodeEnum, HostLUNAccessEnum
 from storops.unity.resource.storage_resource import UnityStorageResource
-from storops.unity.resource.sp import UnityStorageProcessor
 
 
 __author__ = 'Jay Xu'
@@ -52,15 +51,18 @@ class UnityLun(UnityResource):
             description = "Please specify Lun description"
 
         # TODO:iolimit_policy adn snap_schedule
+        #'snapScheduleParameters': {
+        #   'isSnapSchedulePaused': False
+        #}
+        #'ioLimitParameters': {
+        #    'ioLimitPolicy': iolimit_policy
+        #}
         req_body = {
             'name': name,
             'description': description,
             'replicationParameters': {
                 'isReplicationDestination': is_repl_dst
             },
-            #'snapScheduleParameters': {
-            #   'isSnapSchedulePaused': False
-            #},
             'lunParameters': {
                 'pool': pool,
                 'isThinEnabled': is_thin,
@@ -69,9 +71,6 @@ class UnityLun(UnityResource):
                     'tieringPolicy': tiering_policy
                 },
                 'defaultNode': spNode,
-                #'ioLimitParameters': {
-                #    'ioLimitPolicy': iolimit_policy
-                #}
             }
         }
 
@@ -148,8 +147,13 @@ class UnityLun(UnityResource):
     def delete(self, async=False, force_snap_delete=False,
                force_vvol_delete=False):
         sr = self.storage_resource
-        resp = self._cli.delete(sr.resource_class,
-                                self.get_id(), async=async)
+        if not self.existed or sr is None:
+            raise UnityResourceNotFoundError(
+                'cannot find lun {}.'.format(self.get_id()))
+        resp = self._cli.delete(sr.resource_class, self.get_id(),
+                                forceSnapDeletion=force_snap_delete,
+                                forceVvolDeletion=force_vvol_delete,
+                                async=async)
         resp.raise_if_err()
         return resp
 

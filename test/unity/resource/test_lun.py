@@ -61,11 +61,12 @@ class UnityLunTest(TestCase):
     def test_lun_modify_host_access(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
-        host_access = [{'host':host, 'accessMask': HostLUNAccessEnum.BOTH}]
+        host_access = [{'host': host, 'accessMask': HostLUNAccessEnum.BOTH}]
         lun.modify(host_access=host_access)
         lun.update()
         assert_that(lun.host_access[0].host, equal_to(host))
-        assert_that(lun.host_access[0].access_mask, equal_to(HostLUNAccessEnum.BOTH))
+        assert_that(lun.host_access[0].access_mask,
+                    equal_to(HostLUNAccessEnum.BOTH))
 
     @patch_rest()
     def test_lun_modify_sp(self):
@@ -78,7 +79,7 @@ class UnityLunTest(TestCase):
     @patch_rest()
     def test_lun_delete(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
-        resp=lun.delete()
+        resp = lun.delete(force_snap_delete=True, force_vvol_delete=True)
         lun.update()
         assert_that(resp.is_ok(), equal_to(True))
         assert_that(resp.job.existed, equal_to(False))
