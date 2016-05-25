@@ -153,7 +153,6 @@ class UnityLun(UnityResource):
 
     def attach_to(self, host, max_retires=3,
                   access_mask=HostLUNAccessEnum.PRODUCTION):
-
         # TODO: max_retires to retry
         host_access = [{'host': host, 'accessMask': access_mask}]
         # If this lun has been attached to other host, don't overwrite it.
@@ -163,7 +162,6 @@ class UnityLun(UnityResource):
                             in self.host_access if host.id != item.host.id]
 
         resp = self.modify(host_access=host_access)
-        self.update()
         return resp
 
     def detach_from(self, host, max_retires=3):
@@ -176,7 +174,6 @@ class UnityLun(UnityResource):
             'accessMask': item.access_mask} for item
                 in self.host_access if host.id != item.host.id]
         resp = self.modify(host_access=new_access)
-        self.update()
         return resp
 
 

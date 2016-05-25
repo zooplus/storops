@@ -85,10 +85,17 @@ class UnityLunTest(TestCase):
         assert_that(resp.job.existed, equal_to(False))
 
     @patch_rest()
-    def test_lun_attch_to_host(self):
+    def test_lun_attch_to_new_host(self):
+        host = UnityHost(_id="Host_10", cli=t_rest())
+        lun = UnityLun(_id='sv_4', cli=t_rest())
+        resp = lun.attach_to(host, access_mask=HostLUNAccessEnum.BOTH)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_lun_attch_to_same_host(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
-        resp = lun.attach_to(host, HostLUNAccessEnum.BOTH)
+        resp = lun.attach_to(host, access_mask=HostLUNAccessEnum.BOTH)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()

@@ -434,13 +434,35 @@
     "body": {
       "lunParameters": {
         "hostAccess": [
-          {  
+          {
+              "host": {
+                  "id": "Host_10"
+              },
+              "accessMask": 3
+          },
+          {
               "host": {
                   "id": "Host_1"
-              }, 
+              },
               "accessMask": 3
           }
-        ] 
+        ]
+      }
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+        "hostAccess": [
+          {
+              "host": {
+                  "id": "Host_1"
+              },
+              "accessMask": 3
+          }
+        ]
       }
     },
     "response":"empty.json"
