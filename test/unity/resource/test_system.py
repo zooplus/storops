@@ -110,7 +110,7 @@ class UnitySystemTest(TestCase):
     def test_create_lun(self):
         unity = t_unity()
         pool = unity.get_pool(_id='pool_1')
-        lun = unity.create_lun("openstack_lun", pool, 100*1024**3)
+        lun = unity.create_lun("openstack_lun", pool, 100)
         assert_that(lun, instance_of(UnityLun))
         assert_that(lun.existed, equal_to(True))
         assert_that(lun.size_total, equal_to(100*1024**3))
@@ -120,7 +120,7 @@ class UnitySystemTest(TestCase):
         unity = t_unity()
         pool = unity.get_pool(_id='pool_1')
         sp = unity.get_sp(_id='spb')
-        lun = unity.create_lun("openstack_lun", pool, 100*1024**3, sp=sp)
+        lun = unity.create_lun("openstack_lun", pool, 100, sp=sp)
         assert_that(lun, instance_of(UnityLun))
         assert_that(lun.existed, equal_to(True))
         assert_that(lun.size_total, equal_to(100*1024**3))
@@ -130,7 +130,7 @@ class UnitySystemTest(TestCase):
     def test_create_lun_with_muitl_property(self):
         unity = t_unity()
         pool = unity.get_pool(_id='pool_1')
-        lun = unity.create_lun("openstack_lun", pool, 100*1024**3,
+        lun = unity.create_lun("openstack_lun", pool, 100,
                                description="Hello World", is_thin=True,
                                is_repl_dst=True,
                                tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)

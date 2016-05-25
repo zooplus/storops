@@ -76,9 +76,56 @@ class UnityHost(UnityResource):
             ret = cls.get(cli=cli, _id=_id)
         return ret
 
-    def add_initiator(self, name, type, **kwargs):
-        initiator = UnityHostInitiator.create(self._cli, name,
-                                              self, type, **kwargs)
+    def detach_hlu(self, lun):
+        return lun.detach_from(self)
+
+    def has_hlu(self, lun):
+        if not self.host_luns or not lun:
+            return False
+
+        has = False
+        for host_lun in self.host_luns:
+            if host_lun.lun is not None:
+                if host_lun.lun.id == lun.id:
+                    has = True
+                    break
+
+        return has
+
+    def get_hlu(self, lun):
+        if not self.host_luns or not lun:
+            return None
+
+        for host_lun in self.host_luns:
+            if host_lun.lun is not None:
+                if host_lun.lun.id == lun.id:
+                    hlu = host_lun.hlu
+                    break
+        else:
+            log.debug('Lun {} is not attached to host {}'
+                      .format(lun.name, self.name))
+            # TODO: raise UnityLunNotAttach?
+            hlu = None
+        return hlu
+
+    def add_initiator(self, name, type, force_create=True, **kwargs):
+        initiators = UnityHostInitiatorList.get(cli=self._cli,
+                                                initiator_id=name)
+
+        # Even if no initiators are found, the initiators object still contain
+        # one fake initiator.
+        initiator = initiators.first_item
+        if not initiator.existed:
+            if force_create:
+                initiator = UnityHostInitiator.create(self._cli, name,
+                                                      self, type, **kwargs)
+            else:
+                raise UnityHostInitiatorNotFoundError(
+                    'name {} not found under host {}.'
+                    .format(name, self.name))
+        else:
+            log.debug('Initiator {} is existed in unity system.'.format(name))
+
         initiator.modify(self)
         return initiator.update()
 

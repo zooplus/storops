@@ -37,6 +37,10 @@
       "response": "initiator_2.json"
     },
     {
+      "url": "/api/types/hostInitiator/instances?compact=True&fields=chapUserName,health,id,initiatorId,instanceId,isBound,isChapSecretEnabled,isIgnored,iscsiType,name,nodeWWN,operationalStatus,parentHost,paths,portWWN,sourceType,type&filter=initiatorId eq \"50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99\"",
+      "response": "not_found.json"
+    },
+    {
       "url": "/api/types/hostInitiator/instances?compact=True&fields=chapUserName,health,id,initiatorId,instanceId,isBound,isChapSecretEnabled,isIgnored,iscsiType,name,nodeWWN,operationalStatus,parentHost,paths,portWWN,sourceType,type&filter=initiatorId eq \"iqn.1993-08.org.debian:01:a4f95ed14d65\"",
       "response": "initiator_3.json"
     },
@@ -48,6 +52,17 @@
           },
           "initiatorType": 1,
           "initiatorWWNorIqn": "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        },
+        "response": "create_fc_initiator.json"
+    },
+    {
+      "url": "/api/types/hostInitiator/instances?compact=True",
+        "body":  {
+          "host": {
+              "id": "Host_9"
+          },
+          "initiatorType": 1,
+          "initiatorWWNorIqn": "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
         },
         "response": "create_fc_initiator.json"
     },
@@ -94,6 +109,6 @@
     {
       "url": "/api/instances/hostInitiator/HostInitiator_2?compact=True",
       "response": "empty.json"
-    }    
+    }
   ]
 }

@@ -25,9 +25,11 @@ from storops.unity.enums import HostTypeEnum, HostManageEnum, \
     HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
     HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
 from storops.unity.resource.health import UnityHealth
+from storops.unity.resource.lun import UnityLun
 from storops.unity.resource.host import UnityHost, UnityHostContainer, \
     UnityHostInitiator, UnityHostInitiatorList, UnityHostIpPortList, \
-    UnityHostList, UnityHostIpPort, UnityHostInitiatorPathList
+    UnityHostList, UnityHostIpPort, UnityHostInitiatorPathList, \
+    UnityHostLunList
 from storops.unity.resource.vmware import UnityDataStoreList, UnityVmList
 from test.unity.rest_mock import t_rest, patch_rest
 
@@ -61,7 +63,7 @@ class UnityHotTest(TestCase):
     @patch_rest()
     def test_get_all(self):
         hosts = UnityHostList(cli=t_rest())
-        assert_that(len(hosts), equal_to(6))
+        assert_that(len(hosts), equal_to(7))
 
     @patch_rest()
     def test_get_host_with_ip(self):
@@ -120,6 +122,28 @@ class UnityHotTest(TestCase):
                     instance_of(UnityHostInitiatorList))
 
     @patch_rest()
+    def test_add_not_exist_initiator_with_force(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
+        initiator = host.add_initiator(wwn, HostInitiatorTypeEnum.FC,
+                                       force_create=True)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(host.fc_host_initiators,
+                    instance_of(UnityHostInitiatorList))
+
+    @patch_rest()
+    def test_add_initiator_not_exist(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
+
+        def f():
+            host.add_initiator(wwn, HostInitiatorTypeEnum.FC,
+                               force_create=False)
+
+        assert_that(f, raises(UnityHostInitiatorNotFoundError))
+
+    @patch_rest()
     def test_delete_initiator(self):
         host = UnityHost(cli=t_rest(), _id='Host_1')
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
@@ -134,6 +158,48 @@ class UnityHotTest(TestCase):
         def f():
             host.delete_initiator(wwn)
         assert_that(f, raises(UnityHostInitiatorNotFoundError))
+
+    @patch_rest()
+    def test_host_lun(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        assert_that(host.host_luns, instance_of(UnityHostLunList))
+        assert_that(len(host.host_luns), equal_to(1))
+
+    @patch_rest()
+    def test_has_hlu_true(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun1 = UnityLun(cli=t_rest(), _id="sv_2")
+        has = host.has_hlu(lun1)
+        assert_that(has, equal_to(True))
+
+    @patch_rest()
+    def test_has_hlu_false(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun2 = UnityLun(cli=t_rest(), _id="sv_3")
+        has = host.has_hlu(lun2)
+        assert_that(has, equal_to(False))
+
+    @patch_rest()
+    def test_get_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        host_lun = UnityHostLunList.get(_id="Host_10_sv_2_prod", cli=t_rest())
+        hlu = host.get_hlu(lun)
+        assert_that(hlu, equal_to(host_lun.hlu))
+
+    @patch_rest()
+    def test_detach_hlu_without_host_access(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        resp = host.detach_hlu(lun)
+        assert_that(resp, equal_to(None))
+
+    @patch_rest()
+    def test_detach_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_4")
+        resp = host.detach_hlu(lun)
+        assert_that(resp.is_ok(), equal_to(True))
 
 
 class UnityHostIpPortTest(TestCase):

@@ -21,7 +21,7 @@ from storops.unity.resource import UnityResource, UnityResourceList
 import storops.unity.resource.pool
 from storops.unity.enums import TieringPolicyEnum, NodeEnum, HostLUNAccessEnum
 from storops.unity.resource.storage_resource import UnityStorageResource
-
+from storops.exception import UnityResourceNotFoundError
 
 __author__ = 'Jay Xu'
 
@@ -51,12 +51,6 @@ class UnityLun(UnityResource):
             description = "Please specify Lun description"
 
         # TODO:iolimit_policy adn snap_schedule
-        #'snapScheduleParameters': {
-        #   'isSnapSchedulePaused': False
-        #}
-        #'ioLimitParameters': {
-        #    'ioLimitPolicy': iolimit_policy
-        #}
         req_body = {
             'name': name,
             'description': description,
@@ -157,9 +151,11 @@ class UnityLun(UnityResource):
         resp.raise_if_err()
         return resp
 
-    def attach_to(self, host, access_mask=HostLUNAccessEnum.PRODUCTION):
-        host_access = [{'host': host, 'accessMask': access_mask}]
+    def attach_to(self, host, max_retires=3,
+                  access_mask=HostLUNAccessEnum.PRODUCTION):
 
+        # TODO: max_retires to retry
+        host_access = [{'host': host, 'accessMask': access_mask}]
         # If this lun has been attached to other host, don't overwrite it.
         if self.host_access:
             host_access += [{'host': item.host,
@@ -170,7 +166,8 @@ class UnityLun(UnityResource):
         self.update()
         return resp
 
-    def detach_from(self, host):
+    def detach_from(self, host, max_retires=3):
+        # TODO: max_retires to retry
         if self.host_access is None or not host:
             return None
 

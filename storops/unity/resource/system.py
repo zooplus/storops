@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 import logging
+import bitmath
 
 from storops.lib.common import instance_cache
 from storops.unity.client import UnityClient
@@ -75,13 +76,14 @@ class UnitySystem(UnitySingletonResource):
     def get_lun(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityLunList, _id=_id, name=name, **filters)
 
-    def create_lun(self, name, pool, size, sp=None, host_access=None,
+    def create_lun(self, name, pool, size_gb, sp=None, host_access=None,
                    is_thin=None, description=None, tiering_policy=None,
                    is_repl_dst=None, snap_schedule=None, iolimit_policy=None):
 
         if sp is None:
             sp = self.get_sp().first_item
 
+        size = int(bitmath.GiB(size_gb).to_Byte().value)
         return UnityLun.create(self._cli, name, pool, size, sp=sp,
                                host_access=host_access, is_thin=is_thin,
                                description=description,
