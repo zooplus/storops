@@ -74,7 +74,7 @@ class VNXTestResourceManager(ResourceManager):
                 sg = self.vnx.get_sg(name=name)
                 if sg.existed:
                     sg.delete(disconnect_host=True)
-            except ex.VNXStorageGroupNotFoundError:
+            except (ex.VNXStorageGroupNotFoundError, IndexError):
                 log.exception('delete sg {} failed.'.format(name))
 
     def _clean_up_cg(self):
@@ -85,7 +85,7 @@ class VNXTestResourceManager(ResourceManager):
                 cg = self.vnx.get_cg(name=name)
                 if cg.existed:
                     cg.delete()
-            except ex.VNXConsistencyGroupNotFoundError:
+            except (ex.VNXConsistencyGroupNotFoundError, IndexError):
                 log.exception('delete cg {} failed.'.format(name))
 
     def _clean_up_snap(self):
@@ -98,7 +98,7 @@ class VNXGeneralFixtureManager(VNXTestResourceManager):
         clz_name = self.__class__.__name__
         log.debug('start {} setup.'.format(clz_name))
         try:
-            super(VNXGeneralFixtureManager, self).__init__('general')
+            super(VNXGeneralFixtureManager, self).__init__('vg')
             self.vnx = t_vnx()
             self.cg = self._create_cg()
             self.pool = self._create_pool()

@@ -393,6 +393,11 @@ class UnityHostIpInUseError(UnityException):
 
 
 @rest_exception
+class UnitySmbServerLockedError(UnityException):
+    error_code = 108011909
+
+
+@rest_exception
 class UnityAclUserNotFoundError(UnityException):
     error_code = 100663499
 

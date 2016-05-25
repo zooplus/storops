@@ -105,7 +105,7 @@ class PersistedDict(object):
     @property
     @instance_cache
     def data_file_name(self):
-        return '{}.json'.format(self._name)
+        return abspath('{}.json'.format(self._name))
 
     @property
     @instance_cache
@@ -114,7 +114,7 @@ class PersistedDict(object):
 
     @property
     def dict(self):
-        if os.path.exists(self.data_file_name):
+        if exists(self.data_file_name):
             with open(self.data_file_name) as f:
                 try:
                     ret = json.load(f)
@@ -160,5 +160,5 @@ class PersistedDict(object):
     def destroy(self):
         s = json.dumps(self.dict, indent=4, sort_keys=True)
         log.debug('destroy dict {}: \n{}'.format(self.data_file_name, s))
-        if os.path.exists(self.data_file_name):
+        if exists(self.data_file_name):
             os.remove(self.data_file_name)

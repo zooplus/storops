@@ -125,8 +125,10 @@ class ResourceManager(object):
 
         if name is None:
             name = '{}_{}_{}'.format(self._name, rsc_type, n)
-        names.append(name)
-        self._names[rsc_type] = names
+
+        if name not in names:
+            names.append(name)
+            self._names[rsc_type] = names
         return name
 
     @staticmethod
@@ -167,6 +169,9 @@ class ResourceManager(object):
     def has_cifs_share_name(self, name=None):
         return self.has_name('cifs_share', name)
 
+    def has_cifs_server_name(self, name=None):
+        return self.has_name('cifs_server', name)
+
     def has_nfs_share_name(self, name=None):
         return self.has_name('nfs_share', name)
 
@@ -193,6 +198,9 @@ class ResourceManager(object):
     def add_cifs_share_name(self, name=None):
         return self.add_name('cifs_share', name)
 
+    def add_cifs_server_name(self, name=None):
+        return self.add_name('cifs_server', name)
+
     def add_nfs_share_name(self, name=None):
         return self.add_name('nfs_share', name)
 
@@ -201,3 +209,7 @@ class ResourceManager(object):
 
     def add_cg_name(self, name=None):
         return self.add_name('cg', name)
+
+
+def is_jenkins():
+    return 'jenkins' in os.path.abspath(__file__)

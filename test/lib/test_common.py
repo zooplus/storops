@@ -24,10 +24,8 @@ from hamcrest import assert_that, equal_to, close_to, only_contains, raises, \
     contains_string
 
 from storops.exception import EnumValueNotFoundError
-from storops.lib.common import Dict, Enum, WeightedAverage, \
-    synchronized, cache, text_var, int_var, enum_var, \
-    yes_no_var, instance_cache, Cache, JsonPrinter, clear_instance_cache, \
-    get_lock_file
+from storops.lib.common import Dict, Enum, WeightedAverage, synchronized, \
+    text_var, int_var, enum_var, yes_no_var, JsonPrinter, get_lock_file
 from storops.vnx.enums import VNXRaidType
 
 log = logging.getLogger(__name__)
@@ -142,117 +140,6 @@ class EnumTest(TestCase):
 
     def test_values(self):
         assert_that(SampleEnum.values(), only_contains('type a', 'type b'))
-
-
-class CacheA(object):
-    def __init__(self):
-        self.base = 0
-        pass
-
-    @cache
-    def do(self, a, b):
-        return a + b * 2 + self.base
-
-    @cache
-    def a(self):
-        return self.base
-
-    @cache
-    def add_base(self, a):
-        return a + self.base
-
-
-class CacheB(object):
-    def __init__(self):
-        self.base = 0
-        pass
-
-    @cache
-    def do(self, a, b):
-        return a + b
-
-    @cache
-    def b(self):
-        return CacheA().a()
-
-
-class SelfCacheA(object):
-    def __init__(self):
-        self.base = 0
-
-    @instance_cache
-    def add_base(self, a):
-        return a + self.base
-
-    @clear_instance_cache
-    def clear_cache(self):
-        pass
-
-
-class CacheTest(TestCase):
-    def setUp(self):
-        Cache.clear_cache()
-        self.a = CacheA()
-        self.b = CacheB()
-
-    def test_cache(self):
-        assert_that(self.a.do(2, 4), equal_to(10))
-        self.a.base = 1
-        assert_that(self.a.do(2, 4), equal_to(10))
-
-        assert_that(self.b.do(2, 4), equal_to(6))
-        self.b.base = 1
-        assert_that(self.b.do(2, 4), equal_to(6))
-
-    def test_cache_lock(self):
-        assert_that(CacheB().b(), equal_to(0))
-
-    def test_instance_cache_hit(self):
-        sa1 = SelfCacheA()
-        assert_that(sa1.add_base(1), equal_to(1))
-        sa1.base = 3
-        assert_that(sa1.add_base(1), equal_to(1))
-        assert_that(sa1.add_base(0), equal_to(3))
-
-    def test_instance_cache_on_instance(self):
-        sa1 = SelfCacheA()
-        sa1.base = 5
-        assert_that(sa1.add_base(1), equal_to(6))
-        sa2 = SelfCacheA()
-        assert_that(sa2.add_base(1), equal_to(1))
-
-    def test_global_cache_cleared(self):
-        self.a.base = 1
-        assert_that(self.a.add_base(2), equal_to(3))
-        self.a.base = 3
-        assert_that(self.a.add_base(2), equal_to(3))
-        Cache.clear_cache()
-        assert_that(self.a.add_base(2), equal_to(5))
-
-    def test_instance_cache_not_cleared(self):
-        sa = SelfCacheA()
-        sa.base = 1
-        assert_that(sa.add_base(2), equal_to(3))
-        sa.base = 3
-        assert_that(sa.add_base(2), equal_to(3))
-        Cache.clear_cache()
-        assert_that(sa.add_base(2), equal_to(3))
-
-    def test_clear_instance_cache_scope(self):
-        sa = SelfCacheA()
-        sa.base = 1
-        assert_that(sa.add_base(2), equal_to(3))
-        sb = SelfCacheA()
-        sb.base = 2
-        assert_that(sb.add_base(2), equal_to(4))
-        sa.base = 5
-        sb.base = 6
-        # cache hit
-        assert_that(sa.add_base(2), equal_to(3))
-        assert_that(sb.add_base(2), equal_to(4))
-        sa.clear_cache()
-        assert_that(sa.add_base(2), equal_to(7))
-        assert_that(sb.add_base(2), equal_to(4))
 
 
 class WeightedAverageTest(TestCase):

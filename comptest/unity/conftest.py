@@ -19,7 +19,8 @@ import logging
 
 import pytest
 
-from comptest.unity import UnityGeneralFixtureManager
+from comptest.unity import UnityGeneralFixture, UnityCifsShareFixture
+from comptest.utils import is_jenkins
 from storops.lib.common import inter_process_locked
 
 __author__ = 'Cedric Zhuang'
@@ -31,9 +32,6 @@ log = logging.getLogger(__name__)
 def unity_gf(request):
     """ General fixture for most unity cases
 
-    Details including:
-        unity - reference to the unity system
-        pool  - storage pool
     :param request:
     :return:
     """
@@ -41,14 +39,40 @@ def unity_gf(request):
     @inter_process_locked('unity_gf.lck')
     def _setup():
         log.info('setup general fixture.')
-        return UnityGeneralFixtureManager()
+        return UnityGeneralFixture()
 
-    manager = _setup()
+    fixture = _setup()
 
     def fin():
         log.info('tear down general fixture.')
-        if manager:
-            manager.clean_up()
+        if fixture:
+            fixture.clean_up()
 
     request.addfinalizer(fin)
-    return manager
+    return fixture
+
+
+@pytest.fixture(scope="session", autouse=True)
+def unity_cs(request):
+    """ General fixture for unity cifs share in domain
+
+    :param request:
+    :return:
+    """
+    if is_jenkins():
+        pytest.skip('do not run on CI, manual only.')
+
+    @inter_process_locked('unity_cs.lck')
+    def _setup():
+        log.info('setup cifs share fixture.')
+        return UnityCifsShareFixture()
+
+    fixture = _setup()
+
+    def fin():
+        log.info('tear down cifs share fixture.')
+        if fixture:
+            fixture.clean_up()
+
+    request.addfinalizer(fin)
+    return fixture

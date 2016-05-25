@@ -21,10 +21,9 @@ from hamcrest import assert_that, only_contains, instance_of, contains_string
 from hamcrest import equal_to
 from storops.unity.resource.host import UnityBlockHostAccessList, UnityHost
 
-from storops import UnitySystem, HostLUNAccessEnum
+from storops import UnitySystem
 from storops.unity.resource.lun import UnityLun, UnityLunList
 from storops.unity.resource.pool import UnityPool
-from storops.unity.resource.host import UnityHost
 from storops.unity.enums import HostLUNAccessEnum, NodeEnum
 from storops.unity.resource.storage_resource import UnityStorageResource
 from storops.unity.resource.sp import UnityStorageProcessor
