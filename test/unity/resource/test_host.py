@@ -20,7 +20,8 @@ from unittest import TestCase
 from hamcrest import equal_to, assert_that, instance_of, raises, only_contains
 
 from storops.exception import UnityHostIpInUseError, \
-    UnityResourceNotFoundError, UnityHostInitiatorNotFoundError
+    UnityResourceNotFoundError, UnityHostInitiatorNotFoundError, \
+    UnityHostInitiatorUnknownType
 from storops.unity.enums import HostTypeEnum, HostManageEnum, \
     HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
     HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
@@ -115,7 +116,7 @@ class UnityHotTest(TestCase):
     def test_add_initiator(self):
         host = UnityHost(cli=t_rest(), _id='Host_9')
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
-        initiator = host.add_initiator(wwn, HostInitiatorTypeEnum.FC)
+        initiator = host.add_initiator(wwn)
         assert_that(initiator, instance_of(UnityHostInitiator))
         assert_that(initiator.existed, equal_to(True))
         assert_that(host.fc_host_initiators,
@@ -125,8 +126,7 @@ class UnityHotTest(TestCase):
     def test_add_not_exist_initiator_with_force(self):
         host = UnityHost(cli=t_rest(), _id='Host_9')
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
-        initiator = host.add_initiator(wwn, HostInitiatorTypeEnum.FC,
-                                       force_create=True)
+        initiator = host.add_initiator(wwn, force_create=True)
         assert_that(initiator, instance_of(UnityHostInitiator))
         assert_that(initiator.existed, equal_to(True))
         assert_that(host.fc_host_initiators,
@@ -138,8 +138,7 @@ class UnityHotTest(TestCase):
         wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
 
         def f():
-            host.add_initiator(wwn, HostInitiatorTypeEnum.FC,
-                               force_create=False)
+            host.add_initiator(wwn, force_create=False)
 
         assert_that(f, raises(UnityHostInitiatorNotFoundError))
 
@@ -186,6 +185,13 @@ class UnityHotTest(TestCase):
         host_lun = UnityHostLunList.get(_id="Host_10_sv_2_prod", cli=t_rest())
         hlu = host.get_hlu(lun)
         assert_that(hlu, equal_to(host_lun.hlu))
+
+    @patch_rest()
+    def test_get_hlu_not_found(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_3")
+        hlu = host.get_hlu(lun)
+        assert_that(hlu, equal_to(None))
 
     @patch_rest()
     def test_detach_hlu_without_host_access(self):
@@ -300,6 +306,16 @@ class UnityHostInitiatorTest(TestCase):
         initiator = UnityHostInitiator.create(t_rest(), iqn, host, type)
         assert_that(initiator, instance_of(UnityHostInitiator))
         assert_that(initiator.initiator_id, equal_to(iqn))
+
+    @patch_rest()
+    def test_unknown_initiator_create(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        type = HostInitiatorTypeEnum.UNKNOWN
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed14d65"
+
+        def f():
+            UnityHostInitiator.create(t_rest(), iqn, host, type)
+        assert_that(f, raises(UnityHostInitiatorUnknownType))
 
     @patch_rest()
     def test_initiator_modify(self):

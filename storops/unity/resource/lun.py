@@ -22,6 +22,7 @@ import storops.unity.resource.pool
 from storops.unity.enums import TieringPolicyEnum, NodeEnum, HostLUNAccessEnum
 from storops.unity.resource.storage_resource import UnityStorageResource
 from storops.exception import UnityResourceNotFoundError
+from storops.unity.resource.sp import UnityStorageProcessor
 
 __author__ = 'Jay Xu'
 
@@ -33,44 +34,53 @@ class UnityLun(UnityResource):
     def create(cls, cli, name, pool, size, sp=None, host_access=None,
                is_thin=None, description=None, iolimit_policy=None,
                is_repl_dst=None, tiering_policy=None, snap_schedule=None):
-
         pool_clz = storops.unity.resource.pool.UnityPool
         pool = pool_clz.get(cli, pool)
-        TieringPolicyEnum.verify(tiering_policy)
 
-        if sp is None:
-            spNode = NodeEnum.SPA
+        req_body = self._compose_lun_parameter(
+            name=name, pool=pool, size=size, sp=sp, host_access=host_access,
+            is_thin=is_thin, description=description,
+            iolimit_policy=iolimit_policy, is_repl_dst=is_repl_dst,
+            tiering_policy=tiering_policy, snap_schedule=snap_schedule)
+        resp = cli.type_action(UnityStorageResource().resource_class,
+                               'createLun', **req_body)
+        resp.raise_if_err()
+        sr = UnityStorageResource(_id=resp.resource_id, cli=cli)
+        return sr.luns[0]
+
+    def _compose_lun_parameter(self, **kwargs):
+        sp = kwargs.get('sp')
+        if isinstance(sp, UnityStorageProcessor):
+            sp_node = sp.to_node_enum()
         else:
-            spNode = sp.to_node_enum()
-            NodeEnum.verify(spNode)
+            sp_node = None
 
-        if tiering_policy is None:
-            tiering_policy = TieringPolicyEnum.AUTOTIER
+        TieringPolicyEnum.verify(kwargs.get('tiering_policy'))
+        NodeEnum.verify(sp_node)
 
-        if description is None:
-            description = "Please specify Lun description"
+        req_body = {}
+        req_body['name'] = kwargs.get('name')
+        req_body['description'] = kwargs.get('description')
+        req_body['replicationParameters'] = {
+                'isReplicationDestination': kwargs.get('is_repl_dst')
+        }
 
-        # TODO:iolimit_policy adn snap_schedule
-        req_body = {
-            'name': name,
-            'description': description,
-            'replicationParameters': {
-                'isReplicationDestination': is_repl_dst
-            },
-            'lunParameters': {
-                'pool': pool,
-                'isThinEnabled': is_thin,
-                'size': size,
-                'fastVPParameters': {
-                    'tieringPolicy': tiering_policy
-                },
-                'defaultNode': spNode,
-            }
+        # TODO:iolimit_policy and snap_schedule
+        # Compose lun parameters
+        req_body['lunParameters'] = {}
+        req_body['lunParameters']['isThinEnabled'] = kwargs.get('is_thin')
+        req_body['lunParameters']['size'] = kwargs.get('size')
+        req_body['lunParameters']['pool'] = kwargs.get('pool')
+        req_body['lunParameters']['defaultNode'] = sp_node
+        req_body['lunParameters']['fastVPParameters'] = {
+                'tieringPolicy': kwargs.get('tiering_policy')
         }
 
         # compose host access parameters
+        host_access = kwargs.get('host_access')
         if host_access is not None:
             req_body['lunParameters']['hostAccess'] = []
+            # 'NoneType' object is not iterable
             for ha in host_access:
                 HostLUNAccessEnum.verify(ha['accessMask'])
                 req_body['lunParameters']['hostAccess'].append(
@@ -80,59 +90,18 @@ class UnityLun(UnityResource):
                     }
                 )
         # end if
-
-        resp = cli.type_action(UnityStorageResource().resource_class,
-                               'createLun',
-                               **req_body)
-        resp.raise_if_err()
-        sr = UnityStorageResource(_id=resp.resource_id, cli=cli)
-        return sr.luns[0]
+        return req_body
 
     def modify(self, name=None, size=None, host_access=None,
                description=None, is_thin=None, sp=None, iolimit_policy=None,
                is_repl_dst=None, tiering_policy=None, snap_schedule=None):
 
-        if sp is not None:
-            spNode = sp.to_node_enum()
-            NodeEnum.verify(spNode)
-
-        req_body = {}
-        if name is not None:
-            req_body['name'] = name
-        if description is not None:
-            req_body['description'] = description
-        if is_repl_dst is not None:
-            req_body['replicationParameters'] = {
-                    'isReplicationDestination': is_repl_dst
-            }
-
-        # TODO:iolimit_policy and snap_schedule
-        # Compose lun parameters
-        req_body['lunParameters'] = {}
-        if is_thin is not None:
-            req_body['lunParameters']['isThinEnabled'] = is_thin
-        if size is not None:
-            req_body['lunParameters']['size'] = size
-        if sp is not None:
-            req_body['lunParameters']['defaultNode'] = spNode
-        if tiering_policy is not None:
-            req_body['lunParameters']['fastVPParameters'] = {
-                    'tieringPolicy': tiering_policy
-                }
-
-        # compose host access parameters
-        if host_access is not None:
-            req_body['lunParameters']['hostAccess'] = []
-            for ha in host_access:
-                HostLUNAccessEnum.verify(ha['accessMask'])
-                req_body['lunParameters']['hostAccess'].append(
-                    {
-                        'host': ha['host'],
-                        'accessMask': ha['accessMask']
-                    }
-                )
-        # end if
-
+        req_body = self._compose_lun_parameter(
+            name=None, pool=None, size=size, sp=sp, host_access=host_access,
+            is_thin=is_thin, description=description,
+            iolimit_policy=iolimit_policy, is_repl_dst=is_repl_dst,
+            tiering_policy=tiering_policy, snap_schedule=snap_schedule
+        )
         resp = self._cli.action(UnityStorageResource().resource_class,
                                 self.get_id(), 'modifyLun', **req_body)
         resp.raise_if_err()

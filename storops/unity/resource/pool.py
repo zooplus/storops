@@ -16,10 +16,12 @@
 from __future__ import unicode_literals
 
 import logging
+import bitmath
 
 from storops.unity.resource import UnityResource, \
     UnityAttributeResource, UnityResourceList
 import storops.unity.resource.filesystem
+from storops.unity.resource.lun import UnityLun
 
 __author__ = 'Jay Xu'
 
@@ -37,6 +39,19 @@ class UnityPool(UnityResource):
                           proto=proto,
                           is_thin=is_thin,
                           tiering_policy=tiering_policy)
+
+    def create_lun(self, lun_name=None, size_gb=1, sp=None, host_access=None,
+                   is_thin=None, description=None, tiering_policy=None,
+                   is_repl_dst=None, snap_schedule=None, iolimit_policy=None):
+
+        size = int(bitmath.GiB(size_gb).to_Byte().value)
+        return UnityLun.create(self._cli, lun_name, self, size, sp=sp,
+                               host_access=host_access, is_thin=is_thin,
+                               description=description,
+                               is_repl_dst=is_repl_dst,
+                               tiering_policy=tiering_policy,
+                               snap_schedule=snap_schedule,
+                               iolimit_policy=iolimit_policy)
 
 
 class UnityPoolList(UnityResourceList):

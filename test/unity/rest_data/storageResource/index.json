@@ -433,21 +433,20 @@
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
       "lunParameters": {
-        "hostAccess": [
-          {
+          "fastVPParameters": {},
+          "hostAccess": [{
               "host": {
                   "id": "Host_10"
               },
               "accessMask": 3
-          },
-          {
+          }, {
               "host": {
                   "id": "Host_1"
               },
               "accessMask": 3
-          }
-        ]
-      }
+          }]
+      },
+      "replicationParameters": {}
     },
     "response":"empty.json"
   },
@@ -455,6 +454,7 @@
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
       "lunParameters": {
+        "fastVPParameters": {},
         "hostAccess": [
           {
               "host": {
@@ -463,7 +463,8 @@
               "accessMask": 3
           }
         ]
-      }
+      },
+      "replicationParameters": {}
     },
     "response":"empty.json"
   },
@@ -471,8 +472,10 @@
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
       "lunParameters": {
+        "fastVPParameters": {},
         "defaultNode": 1
-      }
+      },
+      "replicationParameters": {}
     },
     "response":"empty.json"
   },
@@ -480,11 +483,25 @@
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
         "lunParameters": {
+        "fastVPParameters": {},
             "hostAccess": []
-        }
+        },
+      "replicationParameters": {}
     },
     "response":"empty.json"
   },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "fastVPParameters": {},
+          "isThinEnabled": 1
+      },
+      "description": "Lun description",
+      "replicationParameters": {}
+    },
+    "response":"empty.json"
+  },  
   {
     "url": "/api/types/storageResource/action/createLun?compact=True",
     "body": {
@@ -498,7 +515,6 @@
           },
           "size": 107374182400
       },
-      "description": "Please specify Lun description",
       "name": "openstack_lun"
 
     },
@@ -517,7 +533,6 @@
           },
           "size": 107374182400
       },
-      "description": "Please specify Lun description",
       "name": "openstack_lun"
 
     },

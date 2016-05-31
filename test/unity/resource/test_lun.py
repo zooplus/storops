@@ -77,6 +77,15 @@ class UnityLunTest(TestCase):
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPB))
 
     @patch_rest()
+    def test_lun_modify_muitl_property_except_sp(self):
+        lun = UnityLun(_id='sv_4', cli=t_rest())
+        lun.modify(name="RestLun100", is_thin=True,
+                   description="Lun description")
+        lun.update()
+        assert_that(lun.name, equal_to('RestLun100'))
+        assert_that(lun.description, equal_to('Lun description'))
+
+    @patch_rest()
     def test_lun_delete(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.delete(force_snap_delete=True, force_vvol_delete=True)

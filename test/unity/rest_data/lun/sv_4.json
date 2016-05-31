@@ -21,7 +21,7 @@
             ]
         },
         "name": "RestLun100",
-        "description": "Please specify Lun description",
+        "description": "Lun description",
         "modificationTime": "2016-05-24T05:25:02.086Z",
         "sizeTotal": 1073741824,
         "sizeAllocated": 0,

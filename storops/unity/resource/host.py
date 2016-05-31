@@ -16,12 +16,13 @@
 from __future__ import unicode_literals
 
 import logging
-
+import re
 import six
 
 from storops.exception import UnityHostInitiatorUnknownType, \
     UnityHostInitiatorNotFoundError
 from storops.lib import converter
+from storops.lib.common import instance_cache
 from storops.unity.enums import HostTypeEnum, HostInitiatorTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
@@ -76,67 +77,66 @@ class UnityHost(UnityResource):
             ret = cls.get(cli=cli, _id=_id)
         return ret
 
+    @property
+    @instance_cache
+    def lun_ids(self):
+        host_luns = filter(lambda x: x.lun, self.host_luns)
+        return map(lambda x: x.lun.id, host_luns)
+
     def detach_hlu(self, lun):
         return lun.detach_from(self)
 
     def has_hlu(self, lun):
-        if not self.host_luns or not lun:
-            return False
-
-        has = False
-        for host_lun in self.host_luns:
-            if host_lun.lun is not None:
-                if host_lun.lun.id == lun.id:
-                    has = True
-                    break
-
-        return has
+        return lun.id in self.lun_ids
 
     def get_hlu(self, lun):
-        if not self.host_luns or not lun:
-            return None
-
-        for host_lun in self.host_luns:
-            if host_lun.lun is not None:
-                if host_lun.lun.id == lun.id:
-                    hlu = host_lun.hlu
-                    break
-        else:
-            log.debug('Lun {} is not attached to host {}'
+        host_luns = filter(lambda x: x.lun, self.host_luns)
+        which = filter(lambda x: x.lun.id == lun.id, host_luns)
+        if not which:
+            log.debug('lun {} is not attached to host {}'
                       .format(lun.name, self.name))
-            # TODO: raise UnityLunNotAttach?
-            hlu = None
-        return hlu
+            return None
+        return which[0].hlu
 
-    def add_initiator(self, name, type, force_create=True, **kwargs):
+    def add_initiator(self, uid, force_create=True, **kwargs):
         initiators = UnityHostInitiatorList.get(cli=self._cli,
-                                                initiator_id=name)
+                                                initiator_id=uid)
 
         # Even if no initiators are found, the initiators object still contain
         # one fake initiator.
         initiator = initiators.first_item
         if not initiator.existed:
+
+            # Set the ISCSI or FC type
+            if re.match("(\w{2}:){15}\w{2}", uid, re.I):
+                uid_type = HostInitiatorTypeEnum.FC
+            elif re.match("(iqn.\d{4}-\d{2}.\w+", uid, re.I):
+                # iqn.yyyy-mm.<reversed domain name>[:identifier] )
+                uid_type = HostInitiatorTypeEnum.ISCSI
+            else:
+                uid_type = HostInitiatorTypeEnum.UNKNOWN
+
             if force_create:
-                initiator = UnityHostInitiator.create(self._cli, name,
-                                                      self, type, **kwargs)
+                initiator = UnityHostInitiator.create(self._cli, uid,
+                                                      self, uid_type, **kwargs)
             else:
                 raise UnityHostInitiatorNotFoundError(
                     'name {} not found under host {}.'
-                    .format(name, self.name))
+                    .format(uid, self.name))
         else:
-            log.debug('Initiator {} is existed in unity system.'.format(name))
+            log.debug('initiator {} is existed in unity system.'.format(uid))
 
         initiator.modify(self)
         return initiator.update()
 
-    def delete_initiator(self, name):
+    def delete_initiator(self, uid):
         initiators = []
         if self.fc_host_initiators:
             initiators += self.fc_host_initiators
         if self.iscsi_host_initiators:
             initiators += self.iscsi_host_initiators
         for item in initiators:
-            if item.initiator_id == name:
+            if item.initiator_id == uid:
                 # remove from the host initiator list first,
                 # otherwise delete initiator will not work
                 item.modify(None)
@@ -146,7 +146,7 @@ class UnityHost(UnityResource):
         else:
             resp = None
             raise UnityHostInitiatorNotFoundError(
-                'name {} not found under host {}.'.format(name, self.name))
+                'name {} not found under host {}.'.format(uid, self.name))
 
         return resp
 
@@ -197,14 +197,14 @@ class UnityHostContainerList(UnityResourceList):
 
 class UnityHostInitiator(UnityResource):
     @classmethod
-    def create(cls, cli, name, host, type, is_ignored=None,
+    def create(cls, cli, uid, host, type, is_ignored=None,
                chap_user=None, chap_secret=None, chap_secret_type=None):
 
         if type == HostInitiatorTypeEnum.ISCSI:
             resp = cli.post(cls().resource_class,
                             host=host,
                             initiatorType=type,
-                            initiatorWWNorIqn=name,
+                            initiatorWWNorIqn=uid,
                             chapUser=chap_user,
                             chapSecret=chap_secret,
                             chapSecretType=chap_secret_type,
@@ -213,7 +213,7 @@ class UnityHostInitiator(UnityResource):
             resp = cli.post(cls().resource_class,
                             host=host,
                             initiatorType=type,
-                            initiatorWWNorIqn=name,
+                            initiatorWWNorIqn=uid,
                             isIgnored=is_ignored)
         else:
             raise UnityHostInitiatorUnknownType(
@@ -225,17 +225,12 @@ class UnityHostInitiator(UnityResource):
     def modify(self, host, is_ignored=None, chap_user=None,
                chap_secret=None, chap_secret_type=None):
         req_body = {'host': host}
-
-        if is_ignored is not None:
-            req_body['isIgnored'] = is_ignored
+        req_body['isIgnored'] = is_ignored
 
         if self.type == HostInitiatorTypeEnum.ISCSI:
-            if chap_user is not None:
-                req_body['chapUser'] = chap_user
-            if chap_secret is not None:
-                req_body['chapSecret'] = chap_secret
-            if chap_secret_type is not None:
-                req_body['chapSecretType'] = chap_secret_type
+            req_body['chapUser'] = chap_user
+            req_body['chapSecret'] = chap_secret
+            req_body['chapSecretType'] = chap_secret_type
         # end if
 
         resp = self._cli.modify(self.resource_class,

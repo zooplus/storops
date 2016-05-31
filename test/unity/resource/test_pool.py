@@ -24,6 +24,8 @@ from storops.unity.enums import RaidTypeEnum, FastVPStatusEnum, \
     RaidStripeWidthEnum, TierTypeEnum, PoolUnitTypeEnum, \
     FSSupportedProtocolEnum, TieringPolicyEnum
 from storops.unity.resource.pool import UnityPool, UnityPoolList
+from storops.unity.resource.lun import UnityLun
+from storops.unity.resource.sp import UnityStorageProcessor
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
@@ -143,3 +145,35 @@ class UnityPoolTest(TestCase):
             proto=FSSupportedProtocolEnum.CIFS,
             tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(fs.get_id(), equal_to('fs_12'))
+
+    @patch_rest()
+    def test_create_lun(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        lun = pool.create_lun("openstack_lun", 100)
+        assert_that(lun, instance_of(UnityLun))
+        assert_that(lun.existed, equal_to(True))
+        assert_that(lun.size_total, equal_to(100*1024**3))
+
+    @patch_rest()
+    def test_create_lun_on_spb(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        sp = UnityStorageProcessor(_id='spb', cli=t_rest())
+        lun = pool.create_lun("openstack_lun", 100, sp=sp)
+        assert_that(lun, instance_of(UnityLun))
+        assert_that(lun.existed, equal_to(True))
+        assert_that(lun.size_total, equal_to(100*1024**3))
+        assert_that(lun.default_node, equal_to(sp.to_node_enum()))
+
+    @patch_rest()
+    def test_create_lun_with_muitl_property(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        lun = pool.create_lun("openstack_lun", 100,
+                              description="Hello World", is_thin=True,
+                              is_repl_dst=True,
+                              tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
+        assert_that(lun, instance_of(UnityLun))
+        assert_that(lun.existed, equal_to(True))
+        assert_that(lun.is_thin_enabled, equal_to(True))
+        assert_that(lun.size_total, equal_to(100*1024**3))
+        assert_that(lun.tiering_policy,
+                    equal_to(TieringPolicyEnum.AUTOTIER_HIGH))
