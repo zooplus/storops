@@ -67,17 +67,16 @@ class UnityClientTest(unittest.TestCase):
                     'e': {'f': {'id': 'lun12'}},
                     'g': 'string', 'h': 0.2}
         assert_that(ret, equal_to(expected))
-        
-        
+
     @patch_rest()
-    def test_make_body_complex_1(self):
+    def test_make_body_blank(self):
         param = {}
         param['fastVPParameters'] = {
                 'tieringPolicy': None
         }
         ret = UnityClient.make_body(param)
         expected = {}
-        assert_that(ret, equal_to(expected))        
+        assert_that(ret, equal_to(expected))
 
     def test_make_body_nested_empty_dict(self):
         param = {

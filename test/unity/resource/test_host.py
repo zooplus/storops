@@ -21,7 +21,7 @@ from hamcrest import equal_to, assert_that, instance_of, raises, only_contains
 
 from storops.exception import UnityHostIpInUseError, \
     UnityResourceNotFoundError, UnityHostInitiatorNotFoundError, \
-    UnityHostInitiatorUnknownType
+    UnityHostInitiatorUnknownType, UnityAluAlreadyAttachedError
 from storops.unity.enums import HostTypeEnum, HostManageEnum, \
     HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
     HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
@@ -201,10 +201,33 @@ class UnityHotTest(TestCase):
         assert_that(resp, equal_to(None))
 
     @patch_rest()
+    def test_detach_attached_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        resp = host.detach_hlu(lun)
+        assert_that(resp, equal_to(None))
+
+    @patch_rest()
     def test_detach_hlu(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun = UnityLun(cli=t_rest(), _id="sv_4")
         resp = host.detach_hlu(lun)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_attach_attached_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+
+        def f():
+            host.attach_hlu(lun)
+        assert_that(f, raises(UnityAluAlreadyAttachedError))
+
+    @patch_rest()
+    def test_attach_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_4")
+        resp = host.attach_hlu(lun)
         assert_that(resp.is_ok(), equal_to(True))
 
 

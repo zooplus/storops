@@ -19,8 +19,8 @@ import logging
 import re
 import six
 
-from storops.exception import UnityHostInitiatorUnknownType, \
-    UnityHostInitiatorNotFoundError
+from retryz import retry
+from storops import exception as ex
 from storops.lib import converter
 from storops.lib.common import instance_cache
 from storops.unity.enums import HostTypeEnum, HostInitiatorTypeEnum
@@ -86,6 +86,32 @@ class UnityHost(UnityResource):
     def detach_hlu(self, lun):
         return lun.detach_from(self)
 
+    def attach_hlu(self, lun, max_retires=3):
+        def _update():
+            self.update()
+
+        @retry(on_error=ex.UnityHluNumberInUseError, on_retry=_update,
+               limit=max_retires)
+        def _do(lun):
+            try:
+                resp = lun.attach_to(self)
+            except ex.UnityAluAlreadyAttachedError:
+                self.update()
+                raise
+            except ex.UnityAttachAluError:
+                # other attach error, remove this lun if already attached
+                if self.has_hlu(lun):
+                    self.detach_hlu(lun)
+                raise
+            return resp
+
+        if self.has_hlu(lun):
+            raise ex.UnityAluAlreadyAttachedError()
+        else:
+            ret = _do(lun)
+
+        return ret
+
     def has_hlu(self, lun):
         return lun.id in self.lun_ids
 
@@ -120,7 +146,7 @@ class UnityHost(UnityResource):
                 initiator = UnityHostInitiator.create(self._cli, uid,
                                                       self, uid_type, **kwargs)
             else:
-                raise UnityHostInitiatorNotFoundError(
+                raise ex.UnityHostInitiatorNotFoundError(
                     'name {} not found under host {}.'
                     .format(uid, self.name))
         else:
@@ -145,7 +171,7 @@ class UnityHost(UnityResource):
                 break
         else:
             resp = None
-            raise UnityHostInitiatorNotFoundError(
+            raise ex.UnityHostInitiatorNotFoundError(
                 'name {} not found under host {}.'.format(uid, self.name))
 
         return resp
@@ -216,7 +242,7 @@ class UnityHostInitiator(UnityResource):
                             initiatorWWNorIqn=uid,
                             isIgnored=is_ignored)
         else:
-            raise UnityHostInitiatorUnknownType(
+            raise ex.UnityHostInitiatorUnknownType(
                 '{} parameter is unknown type'.format(type))
 
         resp.raise_if_err()

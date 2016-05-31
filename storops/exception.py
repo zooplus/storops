@@ -279,6 +279,29 @@ class UnityHostInitiatorUnknownType(UnityException):
     pass
 
 
+class UnityAttachAluError(UnityException):
+    pass
+
+
+@rest_exception
+class UnityAluAlreadyAttachedError(UnityAttachAluError):
+    error_message = 'Requested LUN has already been added to this host'
+
+
+@rest_exception
+class UnityHluNumberInUseError(UnityAttachAluError):
+    error_message = 'Requested Host LUN Number already in use'
+
+
+class UnityDetachAluError(UnityException):
+    pass
+
+
+@rest_exception
+class UnityDetachAluNotFoundError(UnityDetachAluError):
+    error_message = 'No such Host LUN in this host'
+
+
 class UnityAddCifsAceError(UnityCimException):
     message = 'failed to add ace for cifs share.'
 

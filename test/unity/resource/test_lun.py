@@ -77,6 +77,13 @@ class UnityLunTest(TestCase):
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPB))
 
     @patch_rest()
+    def test_lun_modify_none(self):
+        lun = UnityLun(_id='sv_4', cli=t_rest())
+        resp = lun.modify(host_access=None)
+        lun.update()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
     def test_lun_modify_muitl_property_except_sp(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         lun.modify(name="RestLun100", is_thin=True,
@@ -97,7 +104,7 @@ class UnityLunTest(TestCase):
     def test_lun_attch_to_new_host(self):
         host = UnityHost(_id="Host_10", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
-        resp = lun.attach_to(host, access_mask=HostLUNAccessEnum.BOTH)
+        resp = lun.attach_to(host)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()

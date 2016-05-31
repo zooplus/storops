@@ -37,9 +37,9 @@ class UnityLun(UnityResource):
         pool_clz = storops.unity.resource.pool.UnityPool
         pool = pool_clz.get(cli, pool)
 
-        req_body = self._compose_lun_parameter(
-            name=name, pool=pool, size=size, sp=sp, host_access=host_access,
-            is_thin=is_thin, description=description,
+        req_body = cls._compose_lun_parameter(
+            cli, name=name, pool=pool, size=size, sp=sp, is_thin=is_thin,
+            host_access=host_access, description=description,
             iolimit_policy=iolimit_policy, is_repl_dst=is_repl_dst,
             tiering_policy=tiering_policy, snap_schedule=snap_schedule)
         resp = cli.type_action(UnityStorageResource().resource_class,
@@ -48,7 +48,8 @@ class UnityLun(UnityResource):
         sr = UnityStorageResource(_id=resp.resource_id, cli=cli)
         return sr.luns[0]
 
-    def _compose_lun_parameter(self, **kwargs):
+    @staticmethod
+    def _compose_lun_parameter(cli, **kwargs):
         sp = kwargs.get('sp')
         if isinstance(sp, UnityStorageProcessor):
             sp_node = sp.to_node_enum()
@@ -58,38 +59,26 @@ class UnityLun(UnityResource):
         TieringPolicyEnum.verify(kwargs.get('tiering_policy'))
         NodeEnum.verify(sp_node)
 
-        req_body = {}
-        req_body['name'] = kwargs.get('name')
-        req_body['description'] = kwargs.get('description')
-        req_body['replicationParameters'] = {
-                'isReplicationDestination': kwargs.get('is_repl_dst')
-        }
-
         # TODO:iolimit_policy and snap_schedule
-        # Compose lun parameters
-        req_body['lunParameters'] = {}
-        req_body['lunParameters']['isThinEnabled'] = kwargs.get('is_thin')
-        req_body['lunParameters']['size'] = kwargs.get('size')
-        req_body['lunParameters']['pool'] = kwargs.get('pool')
-        req_body['lunParameters']['defaultNode'] = sp_node
-        req_body['lunParameters']['fastVPParameters'] = {
-                'tieringPolicy': kwargs.get('tiering_policy')
-        }
+        req_body = cli.make_body(
+            name=kwargs.get('name'),
+            description=kwargs.get('description'),
+            replicationParameters=cli.make_body(
+                isReplicationDestination=kwargs.get('is_repl_dst')
+            ),
+            lunParameters=cli.make_body(
+                isThinEnabled=kwargs.get('is_thin'),
+                size=kwargs.get('size'),
+                pool=kwargs.get('pool'),
+                defaultNode=sp_node,
+                # Empty host access can be used to wipe the host_access
+                hostAccess=cli.make_body(kwargs.get('host_access'),
+                                         allow_empty=True),
+                fastVPParameters=cli.make_body(
+                    tieringPolicy=kwargs.get('tiering_policy'))
+            )
+        )
 
-        # compose host access parameters
-        host_access = kwargs.get('host_access')
-        if host_access is not None:
-            req_body['lunParameters']['hostAccess'] = []
-            # 'NoneType' object is not iterable
-            for ha in host_access:
-                HostLUNAccessEnum.verify(ha['accessMask'])
-                req_body['lunParameters']['hostAccess'].append(
-                    {
-                        'host': ha['host'],
-                        'accessMask': ha['accessMask']
-                    }
-                )
-        # end if
         return req_body
 
     def modify(self, name=None, size=None, host_access=None,
@@ -97,8 +86,8 @@ class UnityLun(UnityResource):
                is_repl_dst=None, tiering_policy=None, snap_schedule=None):
 
         req_body = self._compose_lun_parameter(
-            name=None, pool=None, size=size, sp=sp, host_access=host_access,
-            is_thin=is_thin, description=description,
+            self._cli, name=None, pool=None, size=size, sp=sp,
+            host_access=host_access, is_thin=is_thin, description=description,
             iolimit_policy=iolimit_policy, is_repl_dst=is_repl_dst,
             tiering_policy=tiering_policy, snap_schedule=snap_schedule
         )
@@ -120,9 +109,7 @@ class UnityLun(UnityResource):
         resp.raise_if_err()
         return resp
 
-    def attach_to(self, host, max_retires=3,
-                  access_mask=HostLUNAccessEnum.PRODUCTION):
-        # TODO: max_retires to retry
+    def attach_to(self, host, access_mask=HostLUNAccessEnum.PRODUCTION):
         host_access = [{'host': host, 'accessMask': access_mask}]
         # If this lun has been attached to other host, don't overwrite it.
         if self.host_access:
@@ -131,10 +118,10 @@ class UnityLun(UnityResource):
                             in self.host_access if host.id != item.host.id]
 
         resp = self.modify(host_access=host_access)
+        resp.raise_if_err()
         return resp
 
-    def detach_from(self, host, max_retires=3):
-        # TODO: max_retires to retry
+    def detach_from(self, host):
         if self.host_access is None or not host:
             return None
 
@@ -143,6 +130,7 @@ class UnityLun(UnityResource):
             'accessMask': item.access_mask} for item
                 in self.host_access if host.id != item.host.id]
         resp = self.modify(host_access=new_access)
+        resp.raise_if_err()
         return resp
 
 

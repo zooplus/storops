@@ -30,17 +30,19 @@ from storops.unity.resource.filesystem import UnityFileSystemList
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.interface import UnityFileInterfaceList
 from storops.unity.resource.host import UnityHostInitiator, \
-    UnityHostInitiatorList
+    UnityHostInitiatorList, UnityHostList
 from storops.unity.resource.nas_server import UnityNasServer, \
     UnityNasServerList
 from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
-from storops.unity.resource.lun import UnityLun, UnityLunList
+from storops.unity.resource.lun import UnityLunList
 from storops.unity.resource.port import UnityIpPortList
 from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessor, \
     UnityStorageProcessorList
+from storops.unity.resource.port import UnityEthernetPortList, \
+    UnityIscsiPortalList
 from storops.unity.resource.system import UnitySystemList, UnitySystem, \
     UnityDpeList, UnityDpe, UnityVirusChecker, UnityVirusCheckerList, \
     UnityBasicSystemInfo, UnityBasicSystemInfoList
@@ -103,6 +105,25 @@ class UnitySystemTest(TestCase):
         lun_list = unity.get_lun()
         assert_that(lun_list, instance_of(UnityLunList))
         assert_that(len(lun_list), equal_to(5))
+
+    @patch_rest()
+    def test_get_portal_list(self):
+        unity = t_unity()
+        portals = unity.get_iscsi_portal()
+        assert_that(portals, instance_of(UnityIscsiPortalList))
+
+    @patch_rest()
+    def test_get_ethernet_list(self):
+        unity = t_unity()
+        ports = unity.get_ethernet_port()
+        assert_that(ports, instance_of(UnityEthernetPortList))
+
+    @patch_rest()
+    def test_get_host_list(self):
+        unity = t_unity()
+        hosts = unity.get_host()
+        assert_that(hosts, instance_of(UnityHostList))
+        assert_that(len(hosts), equal_to(7))
 
     @patch_rest()
     def test_get_initiators(self):
