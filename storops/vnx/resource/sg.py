@@ -74,8 +74,12 @@ class VNXStorageGroup(VNXCliResource):
         return hlu in self.used_hlu_numbers
 
     def has_alu(self, lun):
-        alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
-        return alu in self.used_alu_numbers
+        try:
+            alu = storops.vnx.resource.lun.VNXLun.get_id(lun)
+        except ValueError:
+            # lun not found, id is None
+            alu = None
+        return alu is not None and alu in self.used_alu_numbers
 
     def get_hlu(self, lun):
         alu = storops.vnx.resource.lun.VNXLun.get_id(lun)

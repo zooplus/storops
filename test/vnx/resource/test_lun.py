@@ -596,6 +596,14 @@ class VNXLunTest(TestCase):
                     equal_to(3))
         assert_that(len(l.get_mirror_view()), equal_to(3))
 
+    @patch_cli()
+    def test_force_delete_lun_not_found(self):
+        def f():
+            lun = VNXLun(name='y', cli=t_cli())
+            lun.delete(force=True)
+
+        assert_that(f, raises(VNXLunNotFoundError, 'may not exist'))
+
 
 class VNXLunListTest(TestCase):
     @patch_cli()
