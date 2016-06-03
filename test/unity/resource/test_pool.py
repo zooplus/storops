@@ -17,8 +17,9 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, instance_of
+from hamcrest import assert_that, equal_to, instance_of, raises
 
+from storops.exception import UnityLunNameInUseError
 from storops.unity.enums import RaidTypeEnum, FastVPStatusEnum, \
     FastVPRelocationRateEnum, PoolDataRelocationTypeEnum, \
     RaidStripeWidthEnum, TierTypeEnum, PoolUnitTypeEnum, \
@@ -149,31 +150,29 @@ class UnityPoolTest(TestCase):
     @patch_rest()
     def test_create_lun(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
-        lun = pool.create_lun("openstack_lun", 100)
+        lun = pool.create_lun("LunName", 100)
         assert_that(lun, instance_of(UnityLun))
-        assert_that(lun.existed, equal_to(True))
-        assert_that(lun.size_total, equal_to(100*1024**3))
+
+    @patch_rest()
+    def test_create_lun_with_same_name(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+
+        def f():
+            pool.create_lun("openstack_lun")
+        assert_that(f, raises(UnityLunNameInUseError))
 
     @patch_rest()
     def test_create_lun_on_spb(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         sp = UnityStorageProcessor(_id='spb', cli=t_rest())
-        lun = pool.create_lun("openstack_lun", 100, sp=sp)
+        lun = pool.create_lun("LunName", 100, sp=sp)
         assert_that(lun, instance_of(UnityLun))
-        assert_that(lun.existed, equal_to(True))
-        assert_that(lun.size_total, equal_to(100*1024**3))
-        assert_that(lun.default_node, equal_to(sp.to_node_enum()))
 
     @patch_rest()
     def test_create_lun_with_muitl_property(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
-        lun = pool.create_lun("openstack_lun", 100,
+        lun = pool.create_lun("LunName", 100,
                               description="Hello World", is_thin=True,
                               is_repl_dst=True,
                               tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(lun, instance_of(UnityLun))
-        assert_that(lun.existed, equal_to(True))
-        assert_that(lun.is_thin_enabled, equal_to(True))
-        assert_that(lun.size_total, equal_to(100*1024**3))
-        assert_that(lun.tiering_policy,
-                    equal_to(TieringPolicyEnum.AUTOTIER_HIGH))

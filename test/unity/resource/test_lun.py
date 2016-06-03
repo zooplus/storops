@@ -84,6 +84,13 @@ class UnityLunTest(TestCase):
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
+    def test_lun_modify_wipe_host_access(self):
+        lun = UnityLun(_id='sv_4', cli=t_rest())
+        resp = lun.modify(host_access=[])
+        lun.update()
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
     def test_lun_modify_muitl_property_except_sp(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         lun.modify(name="RestLun100", is_thin=True,

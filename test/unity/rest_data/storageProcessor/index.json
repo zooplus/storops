@@ -13,6 +13,10 @@
       "response": "spb.json"
     },
     {
+      "url": "/api/instances/storageProcessor/wrong?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber",
+      "response": "unknown.json"
+    },
+    {
       "url": "/api/types/storageProcessor/instances?compact=True&fields=biosFirmwareRevision,emcPartNumber,emcSerialNumber,health,id,instanceId,isRescueMode,manufacturer,memorySize,model,name,needsReplacement,operationalStatus,parent,parentDpe,postFirmwareRevision,sasExpanderVersion,slotNumber,vendorPartNumber,vendorSerialNumber",
       "response": "all.json"
     },

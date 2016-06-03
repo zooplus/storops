@@ -80,44 +80,52 @@ class UnityHost(UnityResource):
     @property
     @instance_cache
     def lun_ids(self):
+        if not self.host_luns:
+            return []
         host_luns = filter(lambda x: x.lun, self.host_luns)
         return map(lambda x: x.lun.id, host_luns)
 
-    def detach_hlu(self, lun):
+    def detach_alu(self, lun):
         return lun.detach_from(self)
 
-    def attach_hlu(self, lun, max_retires=3):
+    def attach_alu(self, lun, max_retires=3):
         def _update():
             self.update()
+            # if found attach, just exit the retry
+            if self.has_alu(lun):
+                raise ex.UnityAluAlreadyAttachedError()
 
-        @retry(on_error=ex.UnityHluNumberInUseError, on_retry=_update,
-               limit=max_retires)
+        @retry(on_error=ex.UnityAluAlreadyAttachedError,
+               on_retry=_update, limit=max_retires)
         def _do(lun):
             try:
-                resp = lun.attach_to(self)
-            except ex.UnityAluAlreadyAttachedError:
+                lun.attach_to(self)
                 self.update()
+                alu = self.get_hlu(lun)
+            except ex.UnityAttachAluExceedLimitError:
+                # The number of luns exceeds system limit
                 raise
-            except ex.UnityAttachAluError:
+            except ex.UnityException:
                 # other attach error, remove this lun if already attached
-                if self.has_hlu(lun):
-                    self.detach_hlu(lun)
-                raise
-            return resp
+                self.detach_alu(lun)
+                raise ex.UnityAttachAluError()
+            return alu
 
-        if self.has_hlu(lun):
+        if self.has_alu(lun):
             raise ex.UnityAluAlreadyAttachedError()
         else:
             ret = _do(lun)
 
         return ret
 
-    def has_hlu(self, lun):
+    def has_alu(self, lun):
         return lun.id in self.lun_ids
 
     def get_hlu(self, lun):
-        host_luns = filter(lambda x: x.lun, self.host_luns)
-        which = filter(lambda x: x.lun.id == lun.id, host_luns)
+        if not self.host_luns:
+            return None
+        host_luns = [item for item in self.host_luns if item.lun]
+        which = [item for item in host_luns if item.lun.id == lun.id]
         if not which:
             log.debug('lun {} is not attached to host {}'
                       .format(lun.name, self.name))

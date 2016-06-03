@@ -71,13 +71,16 @@ class UnityLun(UnityResource):
                 size=kwargs.get('size'),
                 pool=kwargs.get('pool'),
                 defaultNode=sp_node,
-                # Empty host access can be used to wipe the host_access
-                hostAccess=cli.make_body(kwargs.get('host_access'),
-                                         allow_empty=True),
                 fastVPParameters=cli.make_body(
-                    tieringPolicy=kwargs.get('tiering_policy'))
+                    tieringPolicy=kwargs.get('tiering_policy')),
             )
         )
+
+        # Empty host access can be used to wipe the host_access
+        if 'lunParameters' not in req_body:
+            req_body['lunParameters'] = {}
+        req_body['lunParameters']['hostAccess'] = cli.make_body(
+            kwargs.get('host_access'), allow_empty=True)
 
         return req_body
 

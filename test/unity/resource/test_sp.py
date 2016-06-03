@@ -56,6 +56,10 @@ class UnityStorageProcessorTest(TestCase):
     def test_sp_to_node_enum(self):
         sp = UnityStorageProcessor(_id='spa', cli=t_rest())
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPA))
+        sp = UnityStorageProcessor(_id='spb', cli=t_rest())
+        assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPB))
+        sp = UnityStorageProcessor(_id='wrong', cli=t_rest())
+        assert_that(sp.to_node_enum(), equal_to(NodeEnum.UNKNOWN))
 
     @patch_rest()
     def test_get_all_and_property_query(self):

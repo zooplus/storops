@@ -283,23 +283,22 @@ class UnityAttachAluError(UnityException):
     pass
 
 
-@rest_exception
-class UnityAluAlreadyAttachedError(UnityAttachAluError):
-    error_message = 'Requested LUN has already been added to this host'
+class UnityHostNameInUseError(UnityException):
+    pass
 
 
-@rest_exception
-class UnityHluNumberInUseError(UnityAttachAluError):
-    error_message = 'Requested Host LUN Number already in use'
-
-
-class UnityDetachAluError(UnityException):
+class UnityLunNameInUseError(UnityException):
     pass
 
 
 @rest_exception
-class UnityDetachAluNotFoundError(UnityDetachAluError):
-    error_message = 'No such Host LUN in this host'
+class UnityAttachAluExceedLimitError(UnityAttachAluError):
+    error_code = 108008750
+    message = "Numbers of LUNs exceeds system limit"
+
+
+class UnityAluAlreadyAttachedError(UnityAttachAluError):
+    message = 'Requested LUN has already been added to this host'
 
 
 class UnityAddCifsAceError(UnityCimException):

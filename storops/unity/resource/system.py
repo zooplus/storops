@@ -17,6 +17,7 @@ from __future__ import unicode_literals
 
 import logging
 
+from storops import exception as ex
 from storops.lib.common import instance_cache
 from storops.unity.client import UnityClient
 from storops.unity.enums import UnityEnum
@@ -35,7 +36,8 @@ from storops.unity.resource.pool import UnityPoolList
 from storops.unity.resource.port import UnityIpPortList
 from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessorList
-from storops.unity.resource.host import UnityHostList, UnityHostInitiatorList
+from storops.unity.resource.host import UnityHost, UnityHostList, \
+    UnityHostInitiatorList
 from storops.unity.resource.port import UnityEthernetPortList, \
     UnityIscsiPortalList
 
@@ -68,6 +70,17 @@ class UnitySystem(UnitySingletonResource):
     def get_host(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityHostList, _id=_id,
                                    name=name, **filters)
+
+    def create_host(self, name, host_type=None, desc=None, os=None):
+        try:
+            host = self.get_host(name=name)
+            if host and host.existed:
+                raise ex.UnityHostNameInUseError()
+        except ex.UnityResourceNotFoundError:
+            host = UnityHost.create(self._cli, name, host_type=None,
+                                    desc=None, os=None)
+
+        return host
 
     def get_initiator(self, _id=None, **filters):
         return self._get_unity_rsc(UnityHostInitiatorList, _id=_id, **filters)

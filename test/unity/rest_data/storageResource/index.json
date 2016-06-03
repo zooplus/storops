@@ -430,6 +430,20 @@
       "response": "empty.json"
     },
   {
+    "url": "/api/instances/storageResource/sv_2/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "hostAccess": [{
+              "host": {
+                  "id": "Host_11"
+              },
+              "accessMask": 1
+          }]
+      }
+    },
+    "response":"exceed_system_limit.json"
+  },
+  {
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
       "lunParameters": {
@@ -485,6 +499,13 @@
   {
     "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
     "body": {
+        "lunParameters": {}
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
       "lunParameters": {
           "isThinEnabled": 1
       },
@@ -501,7 +522,7 @@
           },
           "size": 107374182400
       },
-      "name": "openstack_lun"
+      "name": "LunName"
     },
     "response":"create_lun_sv2.json"
   },
@@ -515,7 +536,7 @@
           },
           "size": 107374182400
       },
-      "name": "openstack_lun"
+      "name": "LunName"
     },
     "response":"create_lun_sv2.json"
   },
@@ -536,7 +557,7 @@
         "isReplicationDestination": 1
       },
       "description": "Hello World",
-      "name": "openstack_lun"
+      "name": "LunName"
     },
     "response":"create_lun_sv2.json"
   },

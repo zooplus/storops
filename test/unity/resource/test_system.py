@@ -20,7 +20,8 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, instance_of, only_contains, \
     raises, contains_string
 
-from storops.exception import UnityResourceNotFoundError
+from storops.exception import UnityResourceNotFoundError, \
+    UnityHostNameInUseError
 from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum, HealthEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
 from storops.unity.resource.cifs_share import UnityCifsShareList, \
@@ -30,7 +31,7 @@ from storops.unity.resource.filesystem import UnityFileSystemList
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.interface import UnityFileInterfaceList
 from storops.unity.resource.host import UnityHostInitiator, \
-    UnityHostInitiatorList, UnityHostList
+    UnityHostInitiatorList, UnityHost, UnityHostList
 from storops.unity.resource.nas_server import UnityNasServer, \
     UnityNasServerList
 from storops.unity.resource.nfs_server import UnityNfsServerList
@@ -105,6 +106,21 @@ class UnitySystemTest(TestCase):
         lun_list = unity.get_lun()
         assert_that(lun_list, instance_of(UnityLunList))
         assert_that(len(lun_list), equal_to(5))
+
+    @patch_rest()
+    def test_create_host(self):
+        unity = t_unity()
+        host = unity.create_host("Hello")
+        assert_that(host, instance_of(UnityHost))
+
+    @patch_rest()
+    def test_create_host_existed(self):
+        unity = t_unity()
+
+        def f():
+            # the 'flocker-3' is the Host_10 name
+            unity.create_host("flocker-3")
+        assert_that(f, raises(UnityHostNameInUseError))
 
     @patch_rest()
     def test_get_portal_list(self):

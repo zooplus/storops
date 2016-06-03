@@ -21,7 +21,8 @@ from hamcrest import equal_to, assert_that, instance_of, raises, only_contains
 
 from storops.exception import UnityHostIpInUseError, \
     UnityResourceNotFoundError, UnityHostInitiatorNotFoundError, \
-    UnityHostInitiatorUnknownType, UnityAluAlreadyAttachedError
+    UnityHostInitiatorUnknownType, UnityAluAlreadyAttachedError, \
+    UnityAttachAluExceedLimitError
 from storops.unity.enums import HostTypeEnum, HostManageEnum, \
     HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
     HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
@@ -165,17 +166,17 @@ class UnityHotTest(TestCase):
         assert_that(len(host.host_luns), equal_to(1))
 
     @patch_rest()
-    def test_has_hlu_true(self):
+    def test_has_alu_true(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun1 = UnityLun(cli=t_rest(), _id="sv_2")
-        has = host.has_hlu(lun1)
+        has = host.has_alu(lun1)
         assert_that(has, equal_to(True))
 
     @patch_rest()
-    def test_has_hlu_false(self):
+    def test_has_alu_false(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun2 = UnityLun(cli=t_rest(), _id="sv_3")
-        has = host.has_hlu(lun2)
+        has = host.has_alu(lun2)
         assert_that(has, equal_to(False))
 
     @patch_rest()
@@ -194,24 +195,24 @@ class UnityHotTest(TestCase):
         assert_that(hlu, equal_to(None))
 
     @patch_rest()
-    def test_detach_hlu_without_host_access(self):
+    def test_detach_alu_without_host_access(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun = UnityLun(cli=t_rest(), _id="sv_2")
-        resp = host.detach_hlu(lun)
+        resp = host.detach_alu(lun)
         assert_that(resp, equal_to(None))
 
     @patch_rest()
     def test_detach_attached_hlu(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun = UnityLun(cli=t_rest(), _id="sv_2")
-        resp = host.detach_hlu(lun)
+        resp = host.detach_alu(lun)
         assert_that(resp, equal_to(None))
 
     @patch_rest()
-    def test_detach_hlu(self):
+    def test_detach_alu(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun = UnityLun(cli=t_rest(), _id="sv_4")
-        resp = host.detach_hlu(lun)
+        resp = host.detach_alu(lun)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest()
@@ -220,15 +221,24 @@ class UnityHotTest(TestCase):
         lun = UnityLun(cli=t_rest(), _id="sv_2")
 
         def f():
-            host.attach_hlu(lun)
+            host.attach_alu(lun)
         assert_that(f, raises(UnityAluAlreadyAttachedError))
 
     @patch_rest()
-    def test_attach_hlu(self):
+    def test_attach_alu(self):
         host = UnityHost(cli=t_rest(), _id='Host_10')
         lun = UnityLun(cli=t_rest(), _id="sv_4")
-        resp = host.attach_hlu(lun)
-        assert_that(resp.is_ok(), equal_to(True))
+        hlu = host.attach_alu(lun)
+        assert_that(hlu, equal_to(None))
+
+    @patch_rest()
+    def test_attach_alu_excced_limit(self):
+        host = UnityHost(cli=t_rest(), _id='Host_11')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+
+        def f():
+            host.attach_alu(lun, max_retires=2)
+        assert_that(f, raises(UnityAttachAluExceedLimitError))
 
 
 class UnityHostIpPortTest(TestCase):
