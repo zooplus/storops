@@ -271,6 +271,36 @@ class UnityCimResourceNotFoundError(UnityCimException):
     pass
 
 
+class UnityHostInitiatorNotFoundError(UnityException):
+    pass
+
+
+class UnityHostInitiatorUnknownType(UnityException):
+    pass
+
+
+class UnityAttachAluError(UnityException):
+    pass
+
+
+class UnityHostNameInUseError(UnityException):
+    pass
+
+
+class UnityLunNameInUseError(UnityException):
+    pass
+
+
+@rest_exception
+class UnityAttachAluExceedLimitError(UnityAttachAluError):
+    error_code = 108008750
+    message = "Numbers of LUNs exceeds system limit"
+
+
+class UnityAluAlreadyAttachedError(UnityAttachAluError):
+    message = 'Requested LUN has already been added to this host'
+
+
 class UnityAddCifsAceError(UnityCimException):
     message = 'failed to add ace for cifs share.'
 
