@@ -95,7 +95,8 @@ class UnityHost(UnityResource):
             if self.has_alu(lun):
                 raise ex.UnityAluAlreadyAttachedError()
 
-        @retry(on_error=ex.UnityAluAlreadyAttachedError,
+        @retry(on_error=lambda e: not isinstance(
+            e, ex.UnityAluAlreadyAttachedError),
                on_retry=_update, limit=max_retires)
         def _do(lun):
             try:
@@ -144,7 +145,7 @@ class UnityHost(UnityResource):
             # Set the ISCSI or FC type
             if re.match("(\w{2}:){15}\w{2}", uid, re.I):
                 uid_type = HostInitiatorTypeEnum.FC
-            elif re.match("(iqn.\d{4}-\d{2}.\w+", uid, re.I):
+            elif re.match("iqn.\d{4}-\d{2}.\w+.\w+:\d+:[A-F0-9]+", uid, re.I):
                 # iqn.yyyy-mm.<reversed domain name>[:identifier] )
                 uid_type = HostInitiatorTypeEnum.ISCSI
             else:

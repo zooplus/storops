@@ -112,6 +112,7 @@ class UnitySystemTest(TestCase):
         unity = t_unity()
         host = unity.create_host("Hello")
         assert_that(host, instance_of(UnityHost))
+        assert_that(host.id, equal_to('Host_11'))
 
     @patch_rest()
     def test_create_host_existed(self):

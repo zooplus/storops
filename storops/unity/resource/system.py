@@ -72,11 +72,10 @@ class UnitySystem(UnitySingletonResource):
                                    name=name, **filters)
 
     def create_host(self, name, host_type=None, desc=None, os=None):
-        try:
-            host = self.get_host(name=name)
-            if host and host.existed:
-                raise ex.UnityHostNameInUseError()
-        except ex.UnityResourceNotFoundError:
+        host = UnityHostList.get(self._cli, name=name).first_item
+        if host and host.existed:
+            raise ex.UnityHostNameInUseError()
+        else:
             host = UnityHost.create(self._cli, name, host_type=None,
                                     desc=None, os=None)
 
