@@ -17,13 +17,16 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, instance_of
+from hamcrest import assert_that, equal_to, instance_of, raises
 
+from storops.exception import UnityLunNameInUseError
 from storops.unity.enums import RaidTypeEnum, FastVPStatusEnum, \
     FastVPRelocationRateEnum, PoolDataRelocationTypeEnum, \
     RaidStripeWidthEnum, TierTypeEnum, PoolUnitTypeEnum, \
     FSSupportedProtocolEnum, TieringPolicyEnum
 from storops.unity.resource.pool import UnityPool, UnityPoolList
+from storops.unity.resource.lun import UnityLun
+from storops.unity.resource.sp import UnityStorageProcessor
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
@@ -143,3 +146,33 @@ class UnityPoolTest(TestCase):
             proto=FSSupportedProtocolEnum.CIFS,
             tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(fs.get_id(), equal_to('fs_12'))
+
+    @patch_rest()
+    def test_create_lun(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        lun = pool.create_lun("LunName", 100)
+        assert_that(lun, instance_of(UnityLun))
+
+    @patch_rest()
+    def test_create_lun_with_same_name(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+
+        def f():
+            pool.create_lun("openstack_lun")
+        assert_that(f, raises(UnityLunNameInUseError))
+
+    @patch_rest()
+    def test_create_lun_on_spb(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        sp = UnityStorageProcessor(_id='spb', cli=t_rest())
+        lun = pool.create_lun("LunName", 100, sp=sp)
+        assert_that(lun, instance_of(UnityLun))
+
+    @patch_rest()
+    def test_create_lun_with_muitl_property(self):
+        pool = UnityPool(_id='pool_1', cli=t_rest())
+        lun = pool.create_lun("LunName", 100,
+                              description="Hello World", is_thin=True,
+                              is_repl_dst=True,
+                              tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
+        assert_that(lun, instance_of(UnityLun))

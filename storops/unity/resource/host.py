@@ -16,11 +16,16 @@
 from __future__ import unicode_literals
 
 import logging
+import re
+from itertools import chain
 
 import six
 
+from retryz import retry
+from storops import exception as ex
 from storops.lib import converter
-from storops.unity.enums import HostTypeEnum
+from storops.lib.common import instance_cache
+from storops.unity.enums import HostTypeEnum, HostInitiatorTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
 
@@ -58,6 +63,7 @@ class UnityHost(UnityResource):
         if isinstance(_id, six.string_types) and ('.' in _id or ':' in _id):
             # it looks like an ip address, find or create the host
             address = converter.url_to_host(_id)
+            netmask = converter.url_to_mask(_id)
             ports = UnityHostIpPortList(cli=cli, address=address)
             if len(ports) == 1:
                 ret = ports[0].host
@@ -65,14 +71,126 @@ class UnityHost(UnityResource):
                 log.info('cannot find an existing host with ip {}.  '
                          'create a new host "{}" to attach it.'
                          .format(address, address))
-                host = cls.create(cli, address)
-                host.add_ip_port(address)
+                host_type = (HostTypeEnum.SUBNET if netmask
+                             else HostTypeEnum.HOST_MANUAL)
+                host_name = ('{}_{}'.format(address, netmask) if netmask
+                             else address)
+                host = cls.create(cli, host_name, host_type=host_type)
+                host.add_ip_port(address, netmask=netmask)
                 ret = host
             else:
                 ret = None
         else:
             ret = cls.get(cli=cli, _id=_id)
         return ret
+
+    @property
+    @instance_cache
+    def lun_ids(self):
+        if not self.host_luns:
+            return []
+        host_luns = filter(lambda x: x.lun, self.host_luns)
+        return map(lambda x: x.lun.id, host_luns)
+
+    def detach_alu(self, lun):
+        return lun.detach_from(self)
+
+    def attach_alu(self, lun, max_retires=3):
+        def _update():
+            self.update()
+            # if found attach, just exit the retry
+            if self.has_alu(lun):
+                raise ex.UnityAluAlreadyAttachedError()
+
+        @retry(on_error=lambda e: not isinstance(
+            e, ex.UnityAluAlreadyAttachedError),
+               on_retry=_update, limit=max_retires)
+        def _do(lun):
+            try:
+                lun.attach_to(self)
+                self.update()
+                alu = self.get_hlu(lun)
+            except ex.UnityAttachAluExceedLimitError:
+                # The number of luns exceeds system limit
+                raise
+            except ex.UnityException:
+                # other attach error, remove this lun if already attached
+                self.detach_alu(lun)
+                raise ex.UnityAttachAluError()
+            return alu
+
+        if self.has_alu(lun):
+            raise ex.UnityAluAlreadyAttachedError()
+        else:
+            ret = _do(lun)
+
+        return ret
+
+    def has_alu(self, lun):
+        return lun.id in self.lun_ids
+
+    def get_hlu(self, lun):
+        if not self.host_luns:
+            return None
+        host_luns = [item for item in self.host_luns if item.lun]
+        which = [item for item in host_luns if item.lun.id == lun.id]
+        if not which:
+            log.debug('lun {} is not attached to host {}'
+                      .format(lun.name, self.name))
+            return None
+        return which[0].hlu
+
+    def add_initiator(self, uid, force_create=True, **kwargs):
+        initiators = UnityHostInitiatorList.get(cli=self._cli,
+                                                initiator_id=uid)
+
+        # Even if no initiators are found, the initiators object still contain
+        # one fake initiator.
+        initiator = initiators.first_item
+        if not initiator.existed:
+
+            # Set the ISCSI or FC type
+            if re.match("(\w{2}:){15}\w{2}", uid, re.I):
+                uid_type = HostInitiatorTypeEnum.FC
+            elif re.match("iqn.\d{4}-\d{2}.\w+.\w+:\d+:[A-F0-9]+", uid, re.I):
+                # iqn.yyyy-mm.<reversed domain name>[:identifier] )
+                uid_type = HostInitiatorTypeEnum.ISCSI
+            else:
+                uid_type = HostInitiatorTypeEnum.UNKNOWN
+
+            if force_create:
+                initiator = UnityHostInitiator.create(self._cli, uid,
+                                                      self, uid_type, **kwargs)
+            else:
+                raise ex.UnityHostInitiatorNotFoundError(
+                    'name {} not found under host {}.'
+                    .format(uid, self.name))
+        else:
+            log.debug('initiator {} is existed in unity system.'.format(uid))
+
+        initiator.modify(self)
+        return initiator.update()
+
+    def delete_initiator(self, uid):
+        initiators = []
+        if self.fc_host_initiators:
+            initiators += self.fc_host_initiators
+        if self.iscsi_host_initiators:
+            initiators += self.iscsi_host_initiators
+        for item in initiators:
+            if item.initiator_id == uid:
+                # remove from the host initiator list first,
+                # otherwise delete initiator will not work
+                item.modify(None)
+                resp = item.delete()
+                resp.raise_if_err()
+                break
+        else:
+            resp = None
+            raise ex.UnityHostInitiatorNotFoundError(
+                'name {} not found under host {}.'.format(uid, self.name))
+
+        return resp
 
     def add_ip_port(self, address, netmask=None, v6_prefix_length=None,
                     is_ignored=None):
@@ -108,6 +226,10 @@ class UnityHostList(UnityResourceList):
     def get_resource_class(cls):
         return UnityHost
 
+    @property
+    def ip_list(self):
+        return list(chain.from_iterable([host.ip_list for host in self]))
+
 
 class UnityHostContainer(UnityResource):
     pass
@@ -120,7 +242,47 @@ class UnityHostContainerList(UnityResourceList):
 
 
 class UnityHostInitiator(UnityResource):
-    pass
+    @classmethod
+    def create(cls, cli, uid, host, type, is_ignored=None,
+               chap_user=None, chap_secret=None, chap_secret_type=None):
+
+        if type == HostInitiatorTypeEnum.ISCSI:
+            resp = cli.post(cls().resource_class,
+                            host=host,
+                            initiatorType=type,
+                            initiatorWWNorIqn=uid,
+                            chapUser=chap_user,
+                            chapSecret=chap_secret,
+                            chapSecretType=chap_secret_type,
+                            isIgnored=is_ignored)
+        elif type == HostInitiatorTypeEnum.FC:
+            resp = cli.post(cls().resource_class,
+                            host=host,
+                            initiatorType=type,
+                            initiatorWWNorIqn=uid,
+                            isIgnored=is_ignored)
+        else:
+            raise ex.UnityHostInitiatorUnknownType(
+                '{} parameter is unknown type'.format(type))
+
+        resp.raise_if_err()
+        return cls(_id=resp.resource_id, cli=cli)
+
+    def modify(self, host, is_ignored=None, chap_user=None,
+               chap_secret=None, chap_secret_type=None):
+        req_body = {'host': host}
+        req_body['isIgnored'] = is_ignored
+
+        if self.type == HostInitiatorTypeEnum.ISCSI:
+            req_body['chapUser'] = chap_user
+            req_body['chapSecret'] = chap_secret
+            req_body['chapSecretType'] = chap_secret_type
+        # end if
+
+        resp = self._cli.modify(self.resource_class,
+                                self.get_id(), **req_body)
+        resp.raise_if_err()
+        return resp
 
 
 class UnityHostInitiatorList(UnityResourceList):

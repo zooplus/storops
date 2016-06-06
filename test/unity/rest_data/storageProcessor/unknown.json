@@ -1,0 +1,41 @@
+{
+  "content": {
+    "id": "unknown",
+    "operationalStatus": [
+      32832,
+      32834
+    ],
+    "instanceId": "root/emc:EMC_UEM_StorageProcessorLeaf%Tag=06:00:00:00:05:00:00:00:01:00:00:01:01:00:00:02",
+    "parent": {
+      "id": "dpe",
+      "resource": "dpe"
+    },
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "needsReplacement": false,
+    "isRescueMode": false,
+    "model": "OBERON CANISTER 10C 105W 2.6G",
+    "slotNumber": 1,
+    "name": "unknown",
+    "emcPartNumber": "110-297-008C-04",
+    "emcSerialNumber": "CF2HF150500023",
+    "manufacturer": "",
+    "vendorPartNumber": "",
+    "vendorSerialNumber": "",
+    "sasExpanderVersion": "2.7.1",
+    "biosFirmwareRevision": "30.89",
+    "postFirmwareRevision": "21.2",
+    "memorySize": 65536,
+    "parentDpe": {
+      "id": "dpe"
+    }
+  }
+}
+

@@ -20,8 +20,10 @@ from unittest import TestCase
 from hamcrest import assert_that, equal_to, instance_of, only_contains, \
     raises, contains_string
 
-from storops.exception import UnityResourceNotFoundError
-from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum, HealthEnum
+from storops.exception import UnityResourceNotFoundError, \
+    UnityHostNameInUseError
+from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum, HealthEnum, \
+    HostTypeEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
 from storops.unity.resource.cifs_share import UnityCifsShareList, \
     UnityCifsShare
@@ -29,16 +31,20 @@ from storops.unity.resource.dns_server import UnityFileDnsServerList
 from storops.unity.resource.filesystem import UnityFileSystemList
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.interface import UnityFileInterfaceList
-from storops.unity.resource.lun import UnityLunList
+from storops.unity.resource.host import UnityHostInitiator, \
+    UnityHostInitiatorList, UnityHost, UnityHostList
 from storops.unity.resource.nas_server import UnityNasServer, \
     UnityNasServerList
 from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
+from storops.unity.resource.lun import UnityLunList
 from storops.unity.resource.port import UnityIpPortList
 from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessor, \
     UnityStorageProcessorList
+from storops.unity.resource.port import UnityEthernetPortList, \
+    UnityIscsiPortalList
 from storops.unity.resource.system import UnitySystemList, UnitySystem, \
     UnityDpeList, UnityDpe, UnityVirusChecker, UnityVirusCheckerList, \
     UnityBasicSystemInfo, UnityBasicSystemInfoList
@@ -101,6 +107,67 @@ class UnitySystemTest(TestCase):
         lun_list = unity.get_lun()
         assert_that(lun_list, instance_of(UnityLunList))
         assert_that(len(lun_list), equal_to(5))
+
+    @patch_rest()
+    def test_create_host(self):
+        unity = t_unity()
+        host = unity.create_host("Hello")
+        assert_that(host, instance_of(UnityHost))
+        assert_that(host.id, equal_to('Host_11'))
+
+    @patch_rest()
+    def test_create_host_existed(self):
+        unity = t_unity()
+
+        def f():
+            # the 'flocker-3' is the Host_10 name
+            unity.create_host("flocker-3")
+        assert_that(f, raises(UnityHostNameInUseError))
+
+    @patch_rest()
+    def test_get_portal_list(self):
+        unity = t_unity()
+        portals = unity.get_iscsi_portal()
+        assert_that(portals, instance_of(UnityIscsiPortalList))
+
+    @patch_rest()
+    def test_get_ethernet_list(self):
+        unity = t_unity()
+        ports = unity.get_ethernet_port()
+        assert_that(ports, instance_of(UnityEthernetPortList))
+
+    @patch_rest()
+    def test_get_host_list(self):
+        unity = t_unity()
+        hosts = unity.get_host()
+        assert_that(hosts, instance_of(UnityHostList))
+        assert_that(len(hosts), equal_to(7))
+
+    @patch_rest()
+    def test_get_initiators(self):
+        unity = t_unity()
+        initiators = unity.get_initiator()
+        assert_that(initiators, instance_of(UnityHostInitiatorList))
+        assert_that(len(initiators), equal_to(4))
+
+    @patch_rest()
+    def test_get_initiator_by_id(self):
+        unity = t_unity()
+        initiator = unity.get_initiator(_id="HostInitiator_2")
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.id, equal_to("HostInitiator_2"))
+
+    @patch_rest()
+    def test_get_initiator_by_name(self):
+        unity = t_unity()
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        filtered = unity.get_initiator(initiator_id=wwn)
+        assert_that(len(filtered), equal_to(1))
+        assert_that(filtered, instance_of(UnityHostInitiatorList))
+        initiator = filtered.first_item
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(initiator.initiator_id, equal_to(wwn))
 
     @patch_rest()
     def test_get_pools(self):
@@ -193,6 +260,18 @@ class UnitySystemTest(TestCase):
         shares = unity.get_nfs_share()
         assert_that(shares, instance_of(UnityNfsShareList))
         assert_that(len(shares), equal_to(2))
+
+    @patch_rest()
+    def test_get_host_by_address_found(self):
+        unity = t_unity()
+        host = unity.get_host(address='8.8.8.8')
+        assert_that(host.type, equal_to(HostTypeEnum.SUBNET))
+
+    @patch_rest()
+    def test_get_host_by_address_not_found(self):
+        unity = t_unity()
+        hosts = unity.get_host(address='8.8.8.9')
+        assert_that(len(hosts), equal_to(0))
 
     @patch_rest()
     def test_system_info(self):

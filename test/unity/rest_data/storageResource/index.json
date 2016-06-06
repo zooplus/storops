@@ -429,6 +429,146 @@
       },
       "response": "empty.json"
     },
+  {
+    "url": "/api/instances/storageResource/sv_2/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "hostAccess": [{
+              "host": {
+                  "id": "Host_11"
+              },
+              "accessMask": 1
+          }]
+      }
+    },
+    "response":"exceed_system_limit.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "hostAccess": [{
+              "host": {
+                  "id": "Host_10"
+              },
+              "accessMask": 1
+          }, {
+              "host": {
+                  "id": "Host_1"
+              },
+              "accessMask": 3
+          }]
+      }
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+        "hostAccess": [
+          {
+              "host": {
+                  "id": "Host_1"
+              },
+              "accessMask": 3
+          }
+        ]
+      }
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+        "defaultNode": 1
+      }
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+        "lunParameters": {
+            "hostAccess": []
+        }
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+        "lunParameters": {}
+    },
+    "response":"empty.json"
+  },
+  {
+    "url": "/api/instances/storageResource/sv_4/action/modifyLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "isThinEnabled": 1
+      },
+      "description": "Lun description"
+    },
+    "response":"empty.json"
+  },  
+  {
+    "url": "/api/types/storageResource/action/createLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "pool": {
+              "id": "pool_1"
+          },
+          "size": 107374182400
+      },
+      "name": "LunName"
+    },
+    "response":"create_lun_sv2.json"
+  },
+  {
+    "url": "/api/types/storageResource/action/createLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "defaultNode": 1,
+          "pool": {
+              "id": "pool_1"
+          },
+          "size": 107374182400
+      },
+      "name": "LunName"
+    },
+    "response":"create_lun_sv2.json"
+  },
+    {
+    "url": "/api/types/storageResource/action/createLun?compact=True",
+    "body": {
+      "lunParameters": {
+          "fastVPParameters": {
+              "tieringPolicy": 0
+          },
+          "isThinEnabled": 1,
+          "pool": {
+              "id": "pool_1"
+          },
+          "size": 107374182400
+      },
+      "replicationParameters": {
+        "isReplicationDestination": 1
+      },
+      "description": "Hello World",
+      "name": "LunName"
+    },
+    "response":"create_lun_sv2.json"
+  },
+    {
+      "url": "/api/instances/storageResource/sv_4?compact=True",
+      "body": {
+        "forceSnapDeletion": true,
+        "forceVvolDeletion": true
+      },
+      "response": "empty.json"
+    },
     {
       "url": "/api/instances/storageResource/res_24/action/modifyFilesystem?compact=True",
       "body": {

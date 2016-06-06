@@ -10,7 +10,7 @@ StorOps: The Python Library for VNX & Unity
 .. image:: https://img.shields.io/pypi/v/storops.svg
     :target: https://pypi.python.org/pypi/storops
     
-VERSION: 0.2.9
+VERSION: 0.2.11
 
 A minimalist Python library to manage VNX/Unity systems.
 This document lies in the source code and go with the release.
@@ -70,6 +70,9 @@ Feature List
     - supported resources
         - show system properties
         - list storage pools
+        - list/create/delete remote hosts
+        - list/create/delete host initiator
+        - list/create/delete luns
         - list/create/delete file systems
         - list/create/delete snapshots
         - list/create/delete NAS servers
@@ -82,6 +85,7 @@ Feature List
     - supported feature/operations
         - CIFS share access control
         - NFS share access control
+        - Remote hosts access
 
 Tutorial
 --------
@@ -299,6 +303,7 @@ EMC Contributors
 
 - Cedric Zhuang <cedric.zhuang@emc.com>
 - Jay Xu <jay.xu@emc.com>
+- Ray Chen <ray.chen@emc.com>
 
 Community Contributors
 ``````````````````````

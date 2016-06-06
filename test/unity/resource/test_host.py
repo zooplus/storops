@@ -17,13 +17,23 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import equal_to, assert_that, instance_of, raises, only_contains
+from hamcrest import equal_to, assert_that, instance_of, raises, none, \
+    only_contains
+from storops.unity.resource.nfs_share import UnityNfsShare
 
-from storops.exception import UnityHostIpInUseError, UnityResourceNotFoundError
-from storops.unity.enums import HostTypeEnum, HostManageEnum, HostPortTypeEnum
+from storops.exception import UnityHostIpInUseError, \
+    UnityResourceNotFoundError, UnityHostInitiatorNotFoundError, \
+    UnityHostInitiatorUnknownType, UnityAluAlreadyAttachedError, \
+    UnityAttachAluExceedLimitError
+from storops.unity.enums import HostTypeEnum, HostManageEnum, \
+    HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
+    HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
 from storops.unity.resource.health import UnityHealth
+from storops.unity.resource.lun import UnityLun
 from storops.unity.resource.host import UnityHost, UnityHostContainer, \
-    UnityHostInitiatorList, UnityHostIpPortList, UnityHostList, UnityHostIpPort
+    UnityHostInitiator, UnityHostInitiatorList, UnityHostIpPortList, \
+    UnityHostList, UnityHostIpPort, UnityHostInitiatorPathList, \
+    UnityHostLunList
 from storops.unity.resource.vmware import UnityDataStoreList, UnityVmList
 from test.unity.rest_mock import t_rest, patch_rest
 
@@ -57,7 +67,7 @@ class UnityHotTest(TestCase):
     @patch_rest()
     def test_get_all(self):
         hosts = UnityHostList(cli=t_rest())
-        assert_that(len(hosts), equal_to(6))
+        assert_that(len(hosts), equal_to(7))
 
     @patch_rest()
     def test_get_host_with_ip(self):
@@ -68,6 +78,13 @@ class UnityHotTest(TestCase):
     def test_get_host_ip_with_mask(self):
         host = UnityHost.get_host(t_rest(), '10.244.209.90/32')
         assert_that(host.ip_list, only_contains('10.244.209.90'))
+
+    @patch_rest()
+    def test_ip_list_of_host_list(self):
+        share = UnityNfsShare(cli=t_rest(), _id='NFSShare_31')
+        assert_that(share.read_write_hosts.ip_list, only_contains('1.1.1.1'))
+        assert_that(share.read_only_hosts.ip_list, equal_to([]))
+        assert_that(share.root_access_hosts, none())
 
     @patch_rest()
     def test_create_simple_host(self):
@@ -104,6 +121,152 @@ class UnityHotTest(TestCase):
         resp = host.delete()
         assert_that(resp.is_ok(), equal_to(True))
         assert_that(ip_port.delete, raises(UnityResourceNotFoundError))
+
+    @patch_rest()
+    def test_create_subset_host(self):
+        host = UnityHost.get_host(t_rest(), '7.7.7.7/8', force_create=True)
+        assert_that(host.ip_list, only_contains('7.7.7.7'))
+        assert_that(host.type, equal_to(HostTypeEnum.SUBNET))
+
+    @patch_rest()
+    def test_add_initiator(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        initiator = host.add_initiator(wwn)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(host.fc_host_initiators,
+                    instance_of(UnityHostInitiatorList))
+
+    @patch_rest()
+    def test_add_initiator_iscsi(self):
+        host = UnityHost(cli=t_rest(), _id='Host_1')
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed19999"
+        initiator = host.add_initiator(iqn)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(host.iscsi_host_initiators,
+                    instance_of(UnityHostInitiatorList))
+
+    @patch_rest()
+    def test_add_not_exist_initiator_with_force(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
+        initiator = host.add_initiator(wwn, force_create=True)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(host.fc_host_initiators,
+                    instance_of(UnityHostInitiatorList))
+
+    @patch_rest()
+    def test_add_initiator_not_exist(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:99:99"
+
+        def f():
+            host.add_initiator(wwn, force_create=False)
+
+        assert_that(f, raises(UnityHostInitiatorNotFoundError))
+
+    @patch_rest()
+    def test_delete_initiator(self):
+        host = UnityHost(cli=t_rest(), _id='Host_1')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        resp = host.delete_initiator(wwn)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_delete_initiator_not_found(self):
+        host = UnityHost(cli=t_rest(), _id='Host_1')
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:99:99:99:99"
+
+        def f():
+            host.delete_initiator(wwn)
+
+        assert_that(f, raises(UnityHostInitiatorNotFoundError))
+
+    @patch_rest()
+    def test_host_lun(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        assert_that(host.host_luns, instance_of(UnityHostLunList))
+        assert_that(len(host.host_luns), equal_to(1))
+
+    @patch_rest()
+    def test_has_alu_true(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun1 = UnityLun(cli=t_rest(), _id="sv_2")
+        has = host.has_alu(lun1)
+        assert_that(has, equal_to(True))
+
+    @patch_rest()
+    def test_has_alu_false(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun2 = UnityLun(cli=t_rest(), _id="sv_3")
+        has = host.has_alu(lun2)
+        assert_that(has, equal_to(False))
+
+    @patch_rest()
+    def test_get_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        host_lun = UnityHostLunList.get(_id="Host_10_sv_2_prod", cli=t_rest())
+        hlu = host.get_hlu(lun)
+        assert_that(hlu, equal_to(host_lun.hlu))
+
+    @patch_rest()
+    def test_get_hlu_not_found(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_3")
+        hlu = host.get_hlu(lun)
+        assert_that(hlu, equal_to(None))
+
+    @patch_rest()
+    def test_detach_alu_without_host_access(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        resp = host.detach_alu(lun)
+        assert_that(resp, equal_to(None))
+
+    @patch_rest()
+    def test_detach_attached_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+        resp = host.detach_alu(lun)
+        assert_that(resp, equal_to(None))
+
+    @patch_rest()
+    def test_detach_alu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_4")
+        resp = host.detach_alu(lun)
+        assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest()
+    def test_attach_attached_hlu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+
+        def f():
+            host.attach_alu(lun)
+
+        assert_that(f, raises(UnityAluAlreadyAttachedError))
+
+    @patch_rest()
+    def test_attach_alu(self):
+        host = UnityHost(cli=t_rest(), _id='Host_10')
+        lun = UnityLun(cli=t_rest(), _id="sv_4")
+        hlu = host.attach_alu(lun)
+        assert_that(hlu, equal_to(None))
+
+    @patch_rest()
+    def test_attach_alu_excced_limit(self):
+        host = UnityHost(cli=t_rest(), _id='Host_11')
+        lun = UnityLun(cli=t_rest(), _id="sv_2")
+
+        def f():
+            host.attach_alu(lun, max_retires=2)
+
+        assert_that(f, raises(UnityAttachAluExceedLimitError))
 
 
 class UnityHostIpPortTest(TestCase):
@@ -144,3 +307,90 @@ class UnityHostIpPortTest(TestCase):
         ip_ports = UnityHostIpPortList(cli=t_rest(), address='10.244.209.90')
         assert_that(len(ip_ports), equal_to(1))
         assert_that(ip_ports[0].address, equal_to('10.244.209.90'))
+
+
+class UnityHostInitiatorTest(TestCase):
+    @patch_rest()
+    def test_fc_initiator_properties(self):
+        initiator = UnityHostInitiator(cli=t_rest(), _id='HostInitiator_2')
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(initiator.health, instance_of(UnityHealth))
+        assert_that(initiator.health.value, equal_to(HealthEnum.OK))
+        assert_that(initiator.type, equal_to(HostInitiatorTypeEnum.FC))
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        assert_that(initiator.initiator_id, equal_to(wwn))
+        assert_that(initiator.parent_host, instance_of(UnityHost))
+        assert_that(initiator.is_ignored, equal_to(False))
+        assert_that(initiator.is_chap_secret_enabled, equal_to(False))
+        assert_that(initiator.node_wwn, equal_to("50:00:14:40:47:B0:0C:44"))
+        assert_that(initiator.port_wwn, equal_to("50:00:14:42:D0:0C:44:10"))
+        assert_that(initiator.paths, instance_of(UnityHostInitiatorPathList))
+        assert_that(initiator.source_type,
+                    equal_to(HostInitiatorSourceTypeEnum.OPEN_NATIVE))
+
+    @patch_rest()
+    def test_iscsi_initiator_properties(self):
+        initiator = UnityHostInitiator(cli=t_rest(), _id='HostInitiator_3')
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.existed, equal_to(True))
+        assert_that(initiator.health, instance_of(UnityHealth))
+        assert_that(initiator.health.value, equal_to(HealthEnum.OK))
+        assert_that(initiator.type, equal_to(HostInitiatorTypeEnum.ISCSI))
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed14d65"
+        assert_that(initiator.initiator_id, equal_to(iqn))
+        assert_that(initiator.parent_host, instance_of(UnityHost))
+        assert_that(initiator.is_ignored, equal_to(False))
+        assert_that(initiator.is_chap_secret_enabled, equal_to(True))
+        assert_that(initiator.paths, instance_of(UnityHostInitiatorPathList))
+        assert_that(initiator.chap_user_name, equal_to(iqn))
+        assert_that(initiator.iscsi_type,
+                    equal_to(HostInitiatorIscsiTypeEnum.SOFTWARE))
+        assert_that(initiator.is_bound, equal_to(False))
+        assert_that(initiator.source_type,
+                    equal_to(HostInitiatorSourceTypeEnum.DELL))
+
+    @patch_rest()
+    def test_fc_initiator_create(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        type = HostInitiatorTypeEnum.FC
+        wwn = "50:00:14:40:47:B0:0C:44:50:00:14:42:D0:0C:44:10"
+        initiator = UnityHostInitiator.create(t_rest(), wwn, host, type)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.initiator_id, equal_to(wwn))
+
+    @patch_rest()
+    def test_iscsi_initiator_create(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        type = HostInitiatorTypeEnum.ISCSI
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed14d65"
+        initiator = UnityHostInitiator.create(t_rest(), iqn, host, type)
+        assert_that(initiator, instance_of(UnityHostInitiator))
+        assert_that(initiator.initiator_id, equal_to(iqn))
+
+    @patch_rest()
+    def test_unknown_initiator_create(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        type = HostInitiatorTypeEnum.UNKNOWN
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed14d65"
+
+        def f():
+            UnityHostInitiator.create(t_rest(), iqn, host, type)
+
+        assert_that(f, raises(UnityHostInitiatorUnknownType))
+
+    @patch_rest()
+    def test_initiator_modify(self):
+        initiator = UnityHostInitiator(cli=t_rest(), _id='HostInitiator_2')
+        assert_that(initiator.parent_host, instance_of(UnityHost))
+        assert_that(initiator.parent_host.id, equal_to("Host_1"))
+        host = UnityHost(cli=t_rest(), _id='Host_19')
+        resp = initiator.modify(host=host)
+        assert_that(resp.is_ok(), equal_to(True))
+        assert_that(initiator.parent_host, instance_of(UnityHost))
+
+    @patch_rest()
+    def test_initiator_delete(self):
+        initiator = UnityHostInitiator(cli=t_rest(), _id='HostInitiator_2')
+        resp = initiator.delete()
+        assert_that(resp.is_ok(), equal_to(True))
