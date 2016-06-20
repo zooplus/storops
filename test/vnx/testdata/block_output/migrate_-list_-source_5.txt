@@ -1,0 +1,8 @@
+Source LU Name:  LUN 5
+Source LU ID:  5
+Dest LU Name:  LUN 3
+Dest LU ID:  3
+Migration Rate:  high
+Current State:  STOPPED - Destination full
+Percent Complete:  60
+Time Remaining:  0 second(s)

@@ -17,6 +17,7 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
+import time
 from hamcrest import assert_that, equal_to, contains_string, has_item, \
     only_contains, raises, instance_of, none, is_not, not_none
 
@@ -603,6 +604,45 @@ class VNXLunTest(TestCase):
             lun.delete(force=True)
 
         assert_that(f, raises(VNXLunNotFoundError, 'may not exist'))
+
+
+class VNXLunMigrationCallbackTest(TestCase):
+    @patch_cli()
+    def test_migration_on_complete_session_not_found(self):
+        c = _Counter()
+
+        def on_complete():
+            c.increase()
+
+        l0 = VNXLun(name='lun0', cli=t_cli())
+        l1 = VNXLun(name='lun1', cli=t_cli())
+        l0.migrate(l1, on_complete=on_complete)
+        time.sleep(0.5)
+        assert_that(c.x, equal_to(1))
+
+    @patch_cli()
+    def test_migration_on_error(self):
+        c = _Counter()
+
+        def on_error():
+            c.decrease()
+
+        l0 = VNXLun(name='lun0', cli=t_cli())
+        l2 = VNXLun(name='lun2', cli=t_cli())
+        l2.migrate(l0, on_error=on_error)
+        time.sleep(0.5)
+        assert_that(c.x, equal_to(-1))
+
+
+class _Counter(object):
+    def __init__(self):
+        self.x = 0
+
+    def increase(self):
+        self.x += 1
+
+    def decrease(self):
+        self.x -= 1
 
 
 class VNXLunListTest(TestCase):

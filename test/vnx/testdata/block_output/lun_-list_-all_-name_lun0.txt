@@ -1,0 +1,86 @@
+LOGICAL UNIT NUMBER 3
+Name:  lun0
+UID:  60:06:01:60:12:60:3D:00:67:69:0A:73:CA:36:E6:11
+Current Owner:  SP A
+Default Owner:  SP A
+Allocation Owner:  SP A
+User Capacity (Blocks):  2097152
+User Capacity (GBs):  1.000
+Consumed Capacity (Blocks):  5778432
+Consumed Capacity (GBs):  2.755
+LUN Allocation (Blocks):  2097152
+LUN Allocation (GBs):  1.000
+Snapshot Allocation (Blocks):  0
+Snapshot Allocation (GBs):  0.000
+Metadata Allocation (Blocks):  3681280
+Metadata Allocation (GBs):  1.755
+Uncommitted Allocation (Blocks):  0
+Uncommitted Allocation (GBs):  0.000
+Snapshot Subscribed Capacity (Blocks):  0
+Snapshot Subscribed Capacity (GBs):  0.000
+Metadata Subscribed Capacity (Blocks):  3681280
+Metadata Subscribed Capacity (GBs):  1.755
+Compression Savings (Blocks):  N/A
+Compression Savings (GBs):  N/A
+Pool Name:  pool0
+Raid Type:  r_5
+Disk Type:  NL SAS
+Offset:  0
+Auto-Assign Enabled:  DISABLED
+Auto-Trespass Enabled:  DISABLED
+Current State:  Ready
+Status:  OK(0x0)
+Is Faulted:  false
+Is Transitioning:  false
+Current Operation:  None
+Current Operation State:  N/A
+Current Operation Status:  N/A
+Current Operation Percent Completed:  0
+Statistics Logging Current Time:  06/20/16 17:37:21
+Read Requests:  0
+Read Requests SP A:  0
+Read Requests SP B:  0
+Write Requests:  0
+Write Requests SP A:  0
+Write Requests SP B:  0
+Blocks Read:  0
+Blocks Read SP A:  0
+Blocks Read SP B:  0
+Blocks Written:  0
+Blocks Written SP A:  0
+Blocks Written SP B:  0
+Busy Ticks:  27400
+Busy Ticks SP A:  27400
+Busy Ticks SP B:  0
+Idle Ticks:  11720199
+Idle Ticks SP A:  5830104
+Idle Ticks SP B:  5890095
+Sum of Outstanding Requests:  0
+Sum of Outstanding Requests SP A:  0
+Sum of Outstanding Requests SP B:  0
+Non-Zero Request Count Arrivals:  0
+Non-Zero Request Count Arrivals SP A:  0
+Non-Zero Request Count Arrivals SP B:  0
+Implicit Trespasses:  2
+Implicit Trespasses SP A:  2
+Implicit Trespasses SP B:  0
+Explicit Trespasses:  0
+Explicit Trespasses SP A:  0
+Explicit Trespasses SP B:  0
+Is Pool LUN:  Yes
+Is Thin LUN:  No
+Is Private:  No
+Is Compressed:  No
+Deduplication State:  N/A
+Deduplication Status:  N/A
+Features:  N/A
+Initial Tier:  Optimize Pool
+Tier Distribution:
+Capacity:  100.00%
+Allow Snapshot Auto-Delete:  Yes
+Snapshot Mount Points:  N/A
+Consistency Group:  N/A
+Primary LUN:  N/A
+Attached Snapshot:  N/A
+Allow Inband Snap Attach:  N/A
+Allocation Policy:  Automatic

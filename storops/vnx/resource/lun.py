@@ -15,9 +15,11 @@
 #    under the License.
 from __future__ import unicode_literals
 
+from retryz import retry
+
 from storops.lib.converter import to_bool
 
-from storops.lib.common import check_int
+from storops.lib.common import check_int, daemon
 from storops import exception as ex
 from storops.vnx.enums import VNXLunType, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate
@@ -30,6 +32,10 @@ import storops.vnx.resource.mirror_view
 from storops.vnx.resource.snap import VNXSnap, VNXSnapList
 
 __author__ = 'Cedric Zhuang'
+
+
+class _IsMigratingError(Exception):
+    pass
 
 
 class VNXLunList(VNXCliResourceList):
@@ -184,11 +190,27 @@ class VNXLun(VNXCliResource):
     def delete_snap(self, name):
         VNXSnap(name, self._cli).delete()
 
-    def migrate(self, tgt, rate=VNXMigrationRate.HIGH):
+    def migrate(self, tgt, rate=VNXMigrationRate.HIGH, on_complete=None,
+                on_error=None):
         tgt_id = self.get_id(tgt)
         src_id = self.get_id(self)
         out = self._cli.migrate_lun(src_id, tgt_id, rate, poll=self.poll)
+        if on_complete or on_error:
+            daemon(self._wait_for_migration_complete, on_complete, on_error)
         ex.raise_if_err(out, default=ex.VNXMigrationError)
+
+    @retry(on_error=_IsMigratingError, wait=15, timeout=60 * 60 * 24 * 7)
+    def _wait_for_migration_complete(self, on_complete=None, on_error=None):
+        migration = VNXMigrationSession(source=self, cli=self._cli)
+        if migration.is_migrating:
+            raise _IsMigratingError()
+        elif migration.is_success and on_complete:
+            ret = on_complete()
+        elif on_error:
+            ret = on_error()
+        else:
+            ret = None
+        return ret
 
     def expand(self, new_size, ignore_thresholds=False):
         out = self._cli.expand_pool_lun(new_size, self.get_id(self),
