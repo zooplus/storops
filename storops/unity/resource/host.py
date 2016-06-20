@@ -21,10 +21,8 @@ from itertools import chain
 
 import six
 
-from retryz import retry
 from storops import exception as ex
 from storops.lib import converter
-from storops.lib.common import instance_cache
 from storops.unity.enums import HostTypeEnum, HostInitiatorTypeEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
@@ -84,56 +82,45 @@ class UnityHost(UnityResource):
             ret = cls.get(cli=cli, _id=_id)
         return ret
 
-    @property
-    @instance_cache
-    def lun_ids(self):
-        if not self.host_luns:
-            return []
-        host_luns = filter(lambda x: x.lun, self.host_luns)
-        return map(lambda x: x.lun.id, host_luns)
+    def _get_host_lun(self, lun=None):
+        if lun:
+            ret = UnityHostLunList.get(self._cli, host=self.id, lun=lun.id)
+        else:
+            ret = UnityHostLunList.get(self._cli, host=self.id)
+            log.debug('Found {} host luns attached to this host'
+                      .format(len(ret)))
+        return ret
 
     def detach_alu(self, lun):
         return lun.detach_from(self)
 
-    def attach_alu(self, lun, max_retires=3):
-        def _update():
-            self.update()
-            # if found attach, just exit the retry
-            if self.has_alu(lun):
-                raise ex.UnityAluAlreadyAttachedError()
-
-        @retry(on_error=lambda e: not isinstance(
-            e, ex.UnityAluAlreadyAttachedError),
-               on_retry=_update, limit=max_retires)
-        def _do(lun):
-            try:
-                lun.attach_to(self)
-                self.update()
-                alu = self.get_hlu(lun)
-            except ex.UnityAttachAluExceedLimitError:
-                # The number of luns exceeds system limit
-                raise
-            except ex.UnityException:
-                # other attach error, remove this lun if already attached
-                self.detach_alu(lun)
-                raise ex.UnityAttachAluError()
-            return alu
-
+    def attach_alu(self, lun):
         if self.has_alu(lun):
             raise ex.UnityAluAlreadyAttachedError()
-        else:
-            ret = _do(lun)
 
-        return ret
+        try:
+            lun.attach_to(self)
+            self.update()
+            hlu = self.get_hlu(lun)
+        except ex.UnityAttachAluExceedLimitError:
+            # The number of luns exceeds system limit
+            raise
+        except ex.UnityException:
+            # other attach error, remove this lun if already attached
+            self.detach_alu(lun)
+            raise ex.UnityAttachAluError()
+
+        return hlu
 
     def has_alu(self, lun):
-        return lun.id in self.lun_ids
+        alu = self.get_hlu(lun=lun)
+        if alu is None:
+            return False
+        else:
+            return True
 
     def get_hlu(self, lun):
-        if not self.host_luns:
-            return None
-        host_luns = [item for item in self.host_luns if item.lun]
-        which = [item for item in host_luns if item.lun.id == lun.id]
+        which = self._get_host_lun(lun=lun)
         if not which:
             log.debug('lun {} is not attached to host {}'
                       .format(lun.name, self.name))
@@ -144,11 +131,7 @@ class UnityHost(UnityResource):
         initiators = UnityHostInitiatorList.get(cli=self._cli,
                                                 initiator_id=uid)
 
-        # Even if no initiators are found, the initiators object still contain
-        # one fake initiator.
-        initiator = initiators.first_item
-        if not initiator.existed:
-
+        if not initiators:
             # Set the ISCSI or FC type
             if re.match("(\w{2}:){15}\w{2}", uid, re.I):
                 uid_type = HostInitiatorTypeEnum.FC
@@ -166,6 +149,7 @@ class UnityHost(UnityResource):
                     'name {} not found under host {}.'
                     .format(uid, self.name))
         else:
+            initiator = initiators.first_item
             log.debug('initiator {} is existed in unity system.'.format(uid))
 
         initiator.modify(self)

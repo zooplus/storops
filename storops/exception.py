@@ -256,7 +256,10 @@ class NoIndexException(StoropsException):
 
 
 class UnityNameNotUniqueError(UnityException):
-    pass
+    def __init__(self, message="multiple objects found", objects=None):
+        super(UnityNameNotUniqueError, self).__init__()
+        self.message = message
+        self.objects = objects
 
 
 class UnityCifsServiceNotEnabledError(UnityException):
@@ -287,8 +290,9 @@ class UnityHostNameInUseError(UnityException):
     pass
 
 
+@rest_exception
 class UnityLunNameInUseError(UnityException):
-    pass
+    error_code = 108007744
 
 
 @rest_exception

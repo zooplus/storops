@@ -40,6 +40,7 @@ from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessorList
 from storops.unity.resource.port import UnityEthernetPortList, \
     UnityIscsiPortalList
+from storops.unity.resource.vmware import UnityCapabilityProfileList
 
 __author__ = 'Jay Xu'
 
@@ -55,21 +56,24 @@ class UnitySystem(UnitySingletonResource):
         else:
             self._cli = cli
 
+    def get_capability_profile(self, _id=None, name=None, **filters):
+        return self._get_unity_rsc(UnityCapabilityProfileList,
+                                   _id=_id, name=name, **filters)
+
     def get_sp(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityStorageProcessorList, _id=_id,
                                    name=name, **filters)
 
-    def get_iscsi_portal(self, _id=None, name=None, **filters):
-        return self._get_unity_rsc(UnityIscsiPortalList, _id=_id,
-                                   name=name, **filters)
+    def get_iscsi_portal(self, _id=None, **filters):
+        return self._get_unity_rsc(UnityIscsiPortalList, _id=_id, **filters)
 
     def get_ethernet_port(self, _id=None, name=None, **filters):
         return self._get_unity_rsc(UnityEthernetPortList, _id=_id,
                                    name=name, **filters)
 
     def create_host(self, name, host_type=None, desc=None, os=None):
-        host = UnityHostList.get(self._cli, name=name).first_item
-        if host and host.existed:
+        host = UnityHostList.get(self._cli, name=name)
+        if host:
             raise ex.UnityHostNameInUseError()
         else:
             host = UnityHost.create(self._cli, name, host_type=host_type,
