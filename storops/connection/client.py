@@ -79,7 +79,7 @@ class HTTPClient(object):
             else:
                 options['data'] = kwargs['body']
 
-        self.log_request(full_url, options.get('data', None))
+        self.log_request(full_url, method, options.get('data', None))
         resp = self.session.request(method, full_url, headers=headers,
                                     **options)
 
@@ -128,8 +128,9 @@ class HTTPClient(object):
         return self._cs_request(url, 'DELETE', **kwargs)
 
     @classmethod
-    def log_request(cls, url, data=None):
-        log.debug('REQ URL: {}'.format(url))
+    def log_request(cls, url, method, data=None):
+        log.debug('REQ URL: [{method}] {url}'.format(
+            method=method, url=url))
         cls._debug_print_json(data, 'REQ BODY:')
 
     @staticmethod
