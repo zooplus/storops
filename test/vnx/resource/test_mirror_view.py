@@ -26,7 +26,7 @@ from storops.exception import VNXMirrorLunNotAvailableError, \
     VNXMirrorSyncImageError, VNXMirrorPromoteNonLocalImageError, \
     VNXMirrorPromotePrimaryError, VNXMirrorFeatureNotAvailableError, \
     VNXMirrorNotFoundError, VNXDeleteMirrorWithSecondaryError, \
-    VNXObjectNotFound
+    VNXObjectNotFound, VNXMirrorRemoveSynchronizingError
 from test.vnx.cli_mock import patch_cli
 from test.vnx.cli_mock import t_cli
 from storops.vnx.enums import VNXMirrorViewRecoveryPolicy, \
@@ -245,6 +245,15 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXDeleteMirrorWithSecondaryError,
                               'at least one secondary'))
+
+    @patch_cli()
+    def test_remove_mirror_image_is_synchronizing(self):
+        def f():
+            mv = VNXMirrorView.get(t_cli(), 'mv2')
+            mv.remove_image()
+
+        assert_that(f, raises(VNXMirrorRemoveSynchronizingError,
+                              'is being synchronized'))
 
     @patch_cli()
     def test_force_delete_mirror_has_secondary(self):

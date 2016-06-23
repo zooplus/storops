@@ -354,8 +354,9 @@ class VNXSystem(VNXCliResource):
     def get_mirror_view(self, name=None):
         return VNXMirrorView.get(self._cli, name)
 
-    def create_mirror_view(self, name, src_lun):
-        return VNXMirrorView.create(self._cli, name, src_lun)
+    def create_mirror_view(self, name, src_lun, use_write_intent_log=True):
+        return VNXMirrorView.create(self._cli, name, src_lun,
+                                    use_write_intent_log)
 
     def get_file_system(self, name=None, fs_id=None):
         return VNXFileSystem.get(cli=self._file_cli, name=name, fs_id=fs_id)

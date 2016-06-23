@@ -1,0 +1,1 @@
+Attempt to remove a secondary image while it is being synchronized (0x71058247)

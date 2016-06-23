@@ -601,11 +601,18 @@ class CliClientTest(TestCase):
                     equal_to('compression -off -l 12 -ignoreThresholds -o'))
 
     @extract_command
-    def test_create_mirror_view(self):
+    def test_create_mirror_view_default(self):
         cmd = self.client.create_mirror_view('mv1', 23)
         assert_that(cmd,
                     equal_to('mirror -sync -create -name mv1 '
                              '-lun 23 -usewriteintentlog -o'))
+
+    @extract_command
+    def test_create_mirror_view_no_write_intent_log(self):
+        cmd = self.client.create_mirror_view('mv1', 23, False)
+        assert_that(cmd,
+                    equal_to('mirror -sync -create -name mv1 '
+                             '-lun 23 -nowriteintentlog -o'))
 
     @extract_command
     def test_delete_mirror_view(self):

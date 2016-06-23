@@ -342,9 +342,9 @@ class VNXLun(VNXCliResource):
     def disable_dedup(self):
         self._update_dedup_state(False)
 
-    def create_mirror_view(self, name):
+    def create_mirror_view(self, name, use_write_intent_log=True):
         clz = storops.vnx.resource.mirror_view.VNXMirrorView
-        return clz.create(self._cli, name, self)
+        return clz.create(self._cli, name, self, use_write_intent_log)
 
     def get_mirror_view(self, as_src=None, as_tgt=None):
         src_lun = None

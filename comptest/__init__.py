@@ -42,4 +42,20 @@ def t_unity():
     return unity
 
 
+@inter_process_locked('t_vnx.lck')
+@cache
+def vnx1():
+    vnx = VNXSystem('192.168.1.52', 'sysadmin', 'sysadmin')
+    log.debug('initialize vnx system: {}'.format(vnx))
+    return vnx
+
+
+@inter_process_locked('t_vnx.lck')
+@cache
+def vnx2():
+    vnx = VNXSystem('192.168.1.94', 'sysadmin', 'sysadmin')
+    log.debug('initialize vnx system: {}'.format(vnx))
+    return vnx
+
+
 setup_log()
