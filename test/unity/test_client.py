@@ -76,7 +76,7 @@ class UnityClientTest(unittest.TestCase):
     def test_make_body_blank(self):
         param = {}
         param['fastVPParameters'] = {
-                'tieringPolicy': None
+            'tieringPolicy': None
         }
         ret = UnityClient.make_body(param)
         expected = {}
@@ -135,6 +135,12 @@ class UnityClientTest(unittest.TestCase):
     def test_dict_to_filter_string_normal(self):
         ret = UnityClient.dict_to_filter_string({'a': 1, 'b': 'c'})
         assert_that(ret, any_of('a eq 1 and b eq "c"', 'b eq "c" and a eq 1'))
+
+    def test_dict_to_filter_unity_resource(self):
+        ret = UnityClient.dict_to_filter_string(
+            {'a': 1, 'b': UnityLun(_id='lun_1')})
+        assert_that(ret, any_of('a eq 1 and b eq "lun_1"',
+                                'b eq "lun_1" and a eq 1'))
 
     def test_dict_to_filter_list(self):
         ret = UnityClient.dict_to_filter_string({'a': [2, 4]})

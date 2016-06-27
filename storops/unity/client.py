@@ -57,24 +57,26 @@ class UnityClient(object):
     def dict_to_filter_string(cls, the_filter):
         def _get_non_list_value(k, v):
             if isinstance(v, six.string_types):
-                ret = '{} eq "{}"'.format(k, v)
+                r = '{} eq "{}"'.format(k, v)
             elif isinstance(v, UnityEnum):
-                ret = '{} eq {}'.format(k, v.value[0])
+                r = '{} eq {}'.format(k, v.value[0])
+            elif isinstance(v, UnityResource):
+                r = '{} eq "{}"'.format(k, v.get_id())
             else:
-                ret = '{} eq {}'.format(k, v)
-            return ret
+                r = '{} eq {}'.format(k, v)
+            return r
 
         if the_filter:
             items = []
-            for k, v in the_filter.items():
-                if v is None:
+            for key, value in the_filter.items():
+                if value is None:
                     continue
-                if isinstance(v, (list, tuple, UnityEnumList)):
-                    list_ret = ' or '.join([_get_non_list_value(k, item)
-                                           for item in v])
+                if isinstance(value, (list, tuple, UnityEnumList)):
+                    list_ret = ' or '.join([_get_non_list_value(key, item)
+                                            for item in value])
                     items.append(list_ret)
                 else:
-                    items.append(_get_non_list_value(k, v))
+                    items.append(_get_non_list_value(key, value))
             if items:
                 ret = ' and '.join(items)
             else:
