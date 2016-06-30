@@ -466,3 +466,13 @@ def get_lock_file(name):
 
 def inter_process_locked(name):
     return process_lock.interprocess_locked(get_lock_file(name))
+
+
+def round_it(ndigits=3):
+    def inner(func):
+        @six.wraps(func)
+        def _inner(*args, **kwargs):
+            value = func(*args, **kwargs)
+            return round(value, ndigits)
+        return _inner
+    return inner

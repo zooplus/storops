@@ -284,6 +284,11 @@ class VNXSystemTest(TestCase):
 
         assert_that(f, raises(VNXCredentialError, 'invalid username'))
 
+    @patch_cli()
+    def test_get_capacity(self):
+        capacity = self.vnx.get_capacity()
+        assert_that(capacity.total, equal_to(178269.891))
+
     @property
     @patch_cli()
     @instance_cache

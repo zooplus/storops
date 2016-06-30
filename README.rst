@@ -304,6 +304,7 @@ EMC Contributors
 - Cedric Zhuang <cedric.zhuang@emc.com>
 - Jay Xu <jay.xu@emc.com>
 - Ray Chen <ray.chen@emc.com>
+- Tina Tang <tina.tang@emc.com>
 
 Community Contributors
 ``````````````````````
