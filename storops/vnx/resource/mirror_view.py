@@ -59,10 +59,10 @@ class VNXMirrorView(VNXCliResource):
         return self._cli.get_mirror_view(name=self._name, poll=self.poll)
 
     @classmethod
-    def create(cls, cli, name, src_lun):
+    def create(cls, cli, name, src_lun, use_write_intent_log=True):
         lun_clz = storops.vnx.resource.lun.VNXLun
         lun_id = lun_clz.get_id(src_lun)
-        out = cli.create_mirror_view(name, lun_id)
+        out = cli.create_mirror_view(name, lun_id, use_write_intent_log)
         raise_if_err(out, default=VNXMirrorException)
         return VNXMirrorView(name, cli=cli)
 

@@ -19,6 +19,7 @@ from retryz import retry
 
 from storops.exception import VNXDiskUsedError
 from storops.lib.common import daemon, instance_cache
+from storops.vnx.resource.host import VNXHost
 from storops.vnx.resource.nfs_share import VNXNfsShare
 from storops.vnx.resource.fs_snap import VNXFsSnap
 from storops.vnx.resource.mover import VNXMover
@@ -45,6 +46,7 @@ from storops.vnx.resource import VNXCliResource
 from storops.vnx.resource.rg import VNXRaidGroup
 from storops.vnx.resource.sg import VNXStorageGroup
 from storops.vnx.resource.snap import VNXSnap
+from storops.vnx.resource.capacity import VNXCapacity
 
 __author__ = 'Cedric Zhuang'
 
@@ -354,8 +356,15 @@ class VNXSystem(VNXCliResource):
     def get_mirror_view(self, name=None):
         return VNXMirrorView.get(self._cli, name)
 
-    def create_mirror_view(self, name, src_lun):
-        return VNXMirrorView.create(self._cli, name, src_lun)
+    def create_mirror_view(self, name, src_lun, use_write_intent_log=True):
+        return VNXMirrorView.create(self._cli, name, src_lun,
+                                    use_write_intent_log)
+
+    def get_host(self, name=None):
+        return VNXHost.get(self._cli, name)
+
+    def get_capacity(self):
+        return VNXCapacity.get(cli=self._cli)
 
     def get_file_system(self, name=None, fs_id=None):
         return VNXFileSystem.get(cli=self._file_cli, name=name, fs_id=fs_id)

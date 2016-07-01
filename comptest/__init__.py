@@ -17,9 +17,8 @@ from __future__ import unicode_literals
 
 import logging
 
-from comptest.utils import setup_log
+from comptest.utils import setup_log, inter_process_locked
 from storops import VNXSystem, UnitySystem, cache
-from storops.lib.common import inter_process_locked
 
 __author__ = 'Cedric Zhuang'
 
@@ -40,6 +39,22 @@ def t_unity():
     unity = UnitySystem('10.244.223.61', 'admin', 'Password123!')
     log.debug('initialize unity system: {}'.format(unity))
     return unity
+
+
+@inter_process_locked('t_vnx.lck')
+@cache
+def vnx1():
+    vnx = VNXSystem('192.168.1.52', 'sysadmin', 'sysadmin')
+    log.debug('initialize vnx system: {}'.format(vnx))
+    return vnx
+
+
+@inter_process_locked('t_vnx.lck')
+@cache
+def vnx2():
+    vnx = VNXSystem('192.168.1.94', 'sysadmin', 'sysadmin')
+    log.debug('initialize vnx system: {}'.format(vnx))
+    return vnx
 
 
 setup_log()

@@ -133,29 +133,37 @@ class NaviCommand(object):
         except OSError:
             raise ex.NaviseccliNotAvailableError()
         output = p.stdout.read()
-        cls._log_output(output, start)
+        cls._log_output(cmd, output, start)
         if isinstance(output, bytes):
             output = output.decode("utf-8")
         return output.strip()
 
     @classmethod
     def _log_command(cls, cmd):
+        log.info('call command: {}'.format(cls._get_cmd_str(cmd)))
+
+    @classmethod
+    def _get_cmd_str(cls, cmd):
         cmd_cpy = cmd[:]
         # shadow password
         if len(cmd_cpy) >= 7 and cmd_cpy[5] == '-password':
             cmd_cpy[6] = '***'
-        log.info('call command: {}'.format(' '.join(cmd_cpy)))
+        cmd_str = ' '.join(cmd_cpy)
+        return cmd_str
 
     @classmethod
-    def _log_output(cls, output, start):
+    def _log_output(cls, cmd, output, start):
         if log.isEnabledFor(logging.DEBUG):
             output = output.replace('\r\n', '\n').strip()
-            dt = time.time() - start
-            if output:
-                log.debug(
-                    'time consumed (s): {}, output:\n{}'.format(dt, output))
+            if not output:
+                output = 'empty'
             else:
-                log.debug('time consumed (s): {}, output: empty.'.format(dt))
+                output = '\n' + output
+
+            dt = time.time() - start
+            log.debug(
+                'command complete: {}, time consumed (s): {}, '
+                'output: {}'.format(cls._get_cmd_str(cmd), dt, output))
 
     @classmethod
     def get_security_level(cls, binary):

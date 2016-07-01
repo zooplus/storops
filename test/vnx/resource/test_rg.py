@@ -75,3 +75,9 @@ class VNXRaidGroupTest(TestCase):
         for disk in disks:
             assert_that(disk, instance_of(VNXDisk))
             assert_that(disk.existed, equal_to(True))
+
+    @patch_cli()
+    def test_available_capacity_gbs(self):
+        rg = VNXRaidGroup(4, t_cli())
+        available_capacity = rg.available_capacity_gbs
+        assert_that(available_capacity, equal_to(0.943))

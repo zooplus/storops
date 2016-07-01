@@ -16,16 +16,18 @@
 from __future__ import unicode_literals
 
 import logging
+from past.builtins import filter
 from storops.exception import UnityResourceNotFoundError, \
     UnityCifsServiceNotEnabledError
-from storops.unity.enums import FSSupportedProtocolEnum, TieringPolicyEnum
+from storops.unity.enums import FSSupportedProtocolEnum, TieringPolicyEnum, \
+    SnapStateEnum
 
 import storops.unity.resource.nas_server
 import storops.unity.resource.pool
 import storops.unity.resource.nfs_share
 import storops.unity.resource.cifs_share
 from storops.unity.resource import UnityResource, UnityResourceList
-from storops.unity.resource.snap import UnitySnap
+from storops.unity.resource.snap import UnitySnap, UnitySnapList
 from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Jay Xu'
@@ -122,6 +124,19 @@ class UnityFileSystem(UnityResource):
                                 retention_duration=retention_duration,
                                 is_read_only=is_read_only,
                                 fs_access_type=fs_access_type)
+
+    @property
+    def snapshots(self):
+        return UnitySnapList(cli=self._cli,
+                             storage_resource=self.storage_resource)
+
+    def has_snap(self):
+        """ This method won't count the snaps in "destroying" state!
+
+        :return: false if no snaps or all snaps are destroying.
+        """
+        return len(filter(lambda s: s.state != SnapStateEnum.DESTROYING,
+                          self.snapshots)) > 0
 
 
 class UnityFileSystemList(UnityResourceList):

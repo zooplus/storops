@@ -19,15 +19,16 @@ import logging
 
 import pytest
 
-from comptest.vnx import VNXGeneralFixtureManager
-from storops.lib.common import inter_process_locked
+from comptest.utils import setup_fixture
+from comptest.vnx import VNXGeneralFixtureManager, \
+    MultiVNXGeneralFixtureManager
 
 __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session')
 def vnx_gf(request):
     """ General fixture for most vnx cases
 
@@ -39,18 +40,18 @@ def vnx_gf(request):
     :param request:
     :return:
     """
+    return setup_fixture(request, VNXGeneralFixtureManager)
 
-    @inter_process_locked('vnx_gf.lck')
-    def _setup():
-        log.info('setup general fixture.')
-        return VNXGeneralFixtureManager()
 
-    manager = _setup()
+@pytest.fixture(scope='session')
+def multi_vnx_gf(request):
+    """ general fixture for multi VNX test cases
 
-    def fin():
-        log.info('tear down general fixture.')
-        if manager:
-            manager.clean_up()
+        Details including:
+            vnx - reference to the system
+            sync_mirror - a synchronized mirror
 
-    request.addfinalizer(fin)
-    return manager
+    :param request:
+    :return:
+    """
+    return setup_fixture(request, MultiVNXGeneralFixtureManager)

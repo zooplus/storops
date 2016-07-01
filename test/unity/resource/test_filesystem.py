@@ -188,3 +188,18 @@ class UnityFileSystemTest(TestCase):
             fs.create_snap('s1')
 
         assert_that(f, raises(UnitySnapNameInUseError, 'in use'))
+
+    @patch_rest()
+    def test_fs_snapshots(self):
+        fs = UnityFileSystem(_id='fs_5', cli=t_rest())
+        assert_that(len(fs.snapshots), equal_to(2))
+
+    @patch_rest()
+    def test_has_snap_destroying(self):
+        fs = UnityFileSystem(_id='fs_5', cli=t_rest())
+        assert_that(fs.has_snap(), equal_to(False))
+
+    @patch_rest()
+    def test_has_snap_true(self):
+        fs = UnityFileSystem(_id='fs_8', cli=t_rest())
+        assert_that(fs.has_snap(), equal_to(True))

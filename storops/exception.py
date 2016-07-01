@@ -867,6 +867,11 @@ class VNXMirrorPromoteNonLocalImageError(VNXMirrorException):
 
 
 @cli_exception
+class VNXMirrorRemoveSynchronizingError(VNXMirrorException):
+    error_code = 0x71058247
+
+
+@cli_exception
 class VNXMirrorPromotePrimaryError(VNXMirrorException):
     error_message = 'Cannot remove or promote a primary image.'
 

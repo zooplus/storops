@@ -40,6 +40,8 @@ class VNXMigrationSessionTest(TestCase):
         assert_that(ms.percent_complete, equal_to(50.0))
         assert_that(ms.time_remaining, equal_to('0 second(s)'))
         assert_that(ms.current_state, equal_to('MIGRATING'))
+        assert_that(ms.is_migrating, equal_to(True))
+        assert_that(ms.is_success, equal_to(False))
         assert_that(ms.existed, equal_to(True))
 
     @patch_cli()
@@ -70,6 +72,8 @@ class VNXMigrationSessionTest(TestCase):
     def test_get_no_session(self):
         ms = VNXMigrationSession(10, t_cli())
         assert_that(ms.existed, equal_to(False))
+        assert_that(ms.is_migrating, equal_to(False))
+        assert_that(ms.is_success, equal_to(True))
 
     @patch_cli()
     def test_get_lun_not_exists(self):

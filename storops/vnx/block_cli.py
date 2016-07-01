@@ -187,8 +187,11 @@ class CliClient(object):
         return cmd
 
     @command
-    def get_sg(self, name=None):
-        cmd = 'storagegroup -list -host -iscsiAttributes'.split()
+    def get_sg(self, name=None, engineering=False):
+        cmd = ['storagegroup']
+        if engineering:
+            cmd.append('-messner')
+        cmd += '-list -host -iscsiAttributes'.split()
         cmd += text_var('-gname', name)
         return cmd
 
@@ -618,11 +621,15 @@ class CliClient(object):
         return cmd
 
     @command
-    def create_mirror_view(self, name, lun_id):
+    def create_mirror_view(self, name, lun_id, use_write_intent_log=True):
         cmd = 'mirror -sync -create'.split()
         cmd += text_var('-name', name)
         cmd += int_var('-lun', lun_id)
-        cmd += ['-usewriteintentlog', '-o']
+        if use_write_intent_log:
+            cmd.append('-usewriteintentlog')
+        else:
+            cmd.append('-nowriteintentlog')
+        cmd.append('-o')
         return cmd
 
     @command

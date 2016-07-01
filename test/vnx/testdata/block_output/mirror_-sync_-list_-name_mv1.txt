@@ -1,4 +1,4 @@
-MirrorView Name:  mv0
+MirrorView Name:  mv1
 MirrorView Description:
 MirrorView UID:  50:06:01:60:B6:E0:1C:F4:3A:00:00:00:00:00:00:00
 Logical Unit Numbers:  245

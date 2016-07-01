@@ -21,12 +21,15 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 from os.path import join, dirname, abspath
+from fasteners import process_lock
 
 import errno
 from time import sleep
 
 from retryz import retry
 
+from storops.exception import StoropsException
+from storops.lib.common import get_lock_file
 from test.utils import PersistedDict
 
 __author__ = 'Cedric Zhuang'
@@ -70,6 +73,18 @@ class ResourceManager(object):
         self._names = self._init_names()
         self._name = name
         self._add_worker()
+        log.info('initialize fixture "{}"'.format(self._name))
+
+    @property
+    def name(self):
+        return self._name
+
+    def setup(self):
+        """ Detail setup should be done in this method
+
+        :return: nothing
+        """
+        pass
 
     def clean_up(self):
         log.info('wait for all workers to exit.')
@@ -154,6 +169,9 @@ class ResourceManager(object):
     def has_lun_name(self, name=None):
         return self.has_name('lun', name)
 
+    def has_mirror_name(self, name=None):
+        return self.has_name('mirror', name)
+
     def has_pool_name(self, name=None):
         return self.has_name('pool', name)
 
@@ -186,6 +204,9 @@ class ResourceManager(object):
     def add_lun_name(self, name=None):
         return self.add_name('lun', name)
 
+    def add_mirror_name(self, name=None):
+        return self.add_name('mirror', name)
+
     def add_pool_name(self, name=None):
         return self.add_name('pool', name)
 
@@ -213,3 +234,27 @@ class ResourceManager(object):
 
 def is_jenkins():
     return 'jenkins' in os.path.abspath(__file__)
+
+
+def setup_fixture(request, fixture_clz):
+    fixture = fixture_clz()
+
+    @inter_process_locked('{}.lck'.format(fixture.name))
+    def _setup():
+        try:
+            fixture.setup()
+        except StoropsException:
+            log.exception('fixture setup failed.')
+
+    def _clean_up():
+        log.info('tear down general fixture.')
+        if fixture:
+            fixture.clean_up()
+
+    request.addfinalizer(_clean_up)
+    _setup()
+    return fixture
+
+
+def inter_process_locked(name):
+    return process_lock.interprocess_locked(get_lock_file(name))

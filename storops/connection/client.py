@@ -22,6 +22,7 @@ import logging
 
 import requests
 import six
+import time
 from requests.exceptions import RequestException
 from retryz import retry
 
@@ -79,11 +80,12 @@ class HTTPClient(object):
             else:
                 options['data'] = kwargs['body']
 
-        self.log_request(full_url, options.get('data', None))
+        self.log_request(full_url, method, options.get('data', None))
+        start = time.time()
         resp = self.session.request(method, full_url, headers=headers,
                                     **options)
 
-        self.log_response(resp)
+        self.log_response(full_url, resp, start)
 
         body = None
         if resp.text:
@@ -128,9 +130,10 @@ class HTTPClient(object):
         return self._cs_request(url, 'DELETE', **kwargs)
 
     @classmethod
-    def log_request(cls, url, data=None):
-        log.debug('REQ URL: {}'.format(url))
-        cls._debug_print_json(data, 'REQ BODY:')
+    def log_request(cls, url, method, data=None):
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug('REQ URL: [{}] {}'.format(method, url))
+            cls._debug_print_json(data, 'REQ BODY:')
 
     @staticmethod
     def _debug_print_json(data, prefix=None):
@@ -149,9 +152,12 @@ class HTTPClient(object):
             log.debug('{}\n{}'.format(prefix, text))
 
     @classmethod
-    def log_response(cls, resp):
-        log.debug('RESP CODE: {}'.format(resp.status_code))
-        cls._debug_print_json(resp.text, 'RESP BODY:')
+    def log_response(cls, full_url, resp, start_time):
+        if log.isEnabledFor(logging.DEBUG):
+            dt = time.time() - start_time
+            log.debug('REQ: {}, TIME: {} RESP CODE: {}'
+                      .format(full_url, dt, resp.status_code))
+            cls._debug_print_json(resp.text, 'RESP BODY:')
 
     def update_headers(self, headers):
         self.headers.update(headers)

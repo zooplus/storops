@@ -34,9 +34,16 @@ log = logging.getLogger(__name__)
 class UnityTestResourceManager(ResourceManager):
     def __init__(self, name):
         super(UnityTestResourceManager, self).__init__(name)
+        self.unity = None
+        self.pool = None
+        self.nas_server = None
+
+    def setup(self):
+        super(UnityTestResourceManager, self).setup()
         self.unity = t_unity()
         self.pool = self._create_pool()
-        self.nas_server = self._create_nas_server('{}_nas_server'.format(name))
+        self.nas_server = self._create_nas_server(
+            '{}_nas_server'.format(self.name))
 
     def _create_pool(self, name=None):
         if name:
@@ -171,11 +178,16 @@ class UnityTestResourceManager(ResourceManager):
 
 class UnityGeneralFixture(UnityTestResourceManager):
     def __init__(self):
+        super(UnityGeneralFixture, self).__init__('ug')
+        self.cifs_share = None
+        self.nfs_share = None
+
+    def setup(self):
         clz_name = self.__class__.__name__
         log.debug('start {} setup.'.format(clz_name))
         # noinspection PyBroadException
         try:
-            super(UnityGeneralFixture, self).__init__('ug')
+            super(UnityGeneralFixture, self).setup()
 
             self._enable_nfs_service()
             self._enable_cifs_service()
@@ -189,6 +201,17 @@ class UnityGeneralFixture(UnityTestResourceManager):
 
 class UnityCifsShareFixture(UnityTestResourceManager):
     def __init__(self):
+        super(UnityCifsShareFixture, self).__init__('ucs')
+        self.domain_user = None
+        self.domain_pass = None
+        self.domain = None
+        self.domain_controller = None
+        self.ip_port = None
+        self.ip = None
+        self.gateway = None
+        self.cifs_share = None
+
+    def setup(self):
         # please make sure system level
         # NTP server and DNS server has already
         # been configured on the unity system!
@@ -205,7 +228,7 @@ class UnityCifsShareFixture(UnityTestResourceManager):
         log.debug('start {} setup.'.format(clz_name))
         # noinspection PyBroadException
         try:
-            super(UnityCifsShareFixture, self).__init__('ucs')
+            super(UnityCifsShareFixture, self).setup()
             self._enable_cifs_domain()
             self.cifs_share = self._create_cifs_share('ucs_cifs_share')
         except Exception:

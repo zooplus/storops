@@ -41,6 +41,14 @@ class VNXMigrationSession(VNXCliResource):
         source_id = storops.vnx.resource.lun.VNXLun.get_id(self._source)
         return self._cli.get_migration_session(source_id, poll=self.poll)
 
+    @property
+    def is_migrating(self):
+        return self.current_state == 'MIGRATING'
+
+    @property
+    def is_success(self):
+        return self.current_state in ('MIGRATED', None)
+
     @classmethod
     def get(cls, cli, source=None):
         if source is None:

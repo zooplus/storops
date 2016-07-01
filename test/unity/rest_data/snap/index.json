@@ -45,6 +45,14 @@
       "response": "38654705785.json"
     },
     {
+      "url": "/api/types/snap/instances?compact=True&fields=accessType,attachedWWN,creationTime,creatorSchedule,creatorType,creatorUser,description,expirationTime,id,instanceId,ioLimitPolicy,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,lun,name,operationalStatus,parentSnap,size,snapGroup,state,storageResource&filter=storageResource eq \"res_13\"",
+      "response": "snaps_of_res_13.json"
+    },
+    {
+      "url": "/api/types/snap/instances?compact=True&fields=accessType,attachedWWN,creationTime,creatorSchedule,creatorType,creatorUser,description,expirationTime,id,instanceId,ioLimitPolicy,isAutoDelete,isModifiable,isModified,isReadOnly,isSystemSnap,lastWritableTime,lun,name,operationalStatus,parentSnap,size,snapGroup,state,storageResource&filter=storageResource eq \"res_23\"",
+      "response": "snaps_of_res_23.json"
+    },
+    {
       "url": "/api/types/snap/instances?compact=True",
       "body": {
         "storageResource": {

@@ -173,14 +173,15 @@ class CliClientTest(TestCase):
 
     @extract_command
     def test_get_sg(self):
-        cmd = self.client.get_sg()
-        assert_that(cmd, equal_to('storagegroup -list -host -iscsiAttributes'))
+        cmd = self.client.get_sg(engineering=True)
+        assert_that(cmd, equal_to('storagegroup -messner -list -host '
+                                  '-iscsiAttributes'))
 
     @extract_command
     def test_get_sg_by_name(self):
         cmd = self.client.get_sg(name='test_sg')
-        assert_that(cmd, equal_to('storagegroup -list -host -iscsiAttributes '
-                                  '-gname test_sg'))
+        assert_that(cmd, equal_to('storagegroup -list -host '
+                                  '-iscsiAttributes -gname test_sg'))
 
     @extract_command
     def test_get_pool_feature(self):
@@ -601,11 +602,18 @@ class CliClientTest(TestCase):
                     equal_to('compression -off -l 12 -ignoreThresholds -o'))
 
     @extract_command
-    def test_create_mirror_view(self):
+    def test_create_mirror_view_default(self):
         cmd = self.client.create_mirror_view('mv1', 23)
         assert_that(cmd,
                     equal_to('mirror -sync -create -name mv1 '
                              '-lun 23 -usewriteintentlog -o'))
+
+    @extract_command
+    def test_create_mirror_view_no_write_intent_log(self):
+        cmd = self.client.create_mirror_view('mv1', 23, False)
+        assert_that(cmd,
+                    equal_to('mirror -sync -create -name mv1 '
+                             '-lun 23 -nowriteintentlog -o'))
 
     @extract_command
     def test_delete_mirror_view(self):

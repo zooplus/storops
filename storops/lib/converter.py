@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 from functools import partial
 from operator import is_not
 
+import bitmath
 import dateutil.parser
 from past.builtins import filter
 import six
@@ -263,3 +264,11 @@ def url_to_mask(url):
     else:
         ret = None
     return ret
+
+
+def mb_to_gb(mib):
+    return bitmath.MiB(mib).to_GiB().value
+
+
+def block_to_gb(block):
+    return bitmath.Byte(block * 512).to_GiB().value
