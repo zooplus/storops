@@ -10,7 +10,7 @@ StorOps: The Python Library for VNX & Unity
 .. image:: https://img.shields.io/pypi/v/storops.svg
     :target: https://pypi.python.org/pypi/storops
     
-VERSION: 0.2.14
+VERSION: 0.2.15
 
 A minimalist Python library to manage VNX/Unity systems.
 This document lies in the source code and go with the release.
@@ -57,6 +57,7 @@ Feature List
         - list/create/delete NFS share
         - show system domain information
         - list hosts
+        - show system capacity
     - supported feature/operations
         - list/start/cancel migration sessions
         - enable/disable LUN deduplication
@@ -306,6 +307,7 @@ EMC Contributors
 - Jay Xu <jay.xu@emc.com>
 - Ray Chen <ray.chen@emc.com>
 - Tina Tang <tina.tang@emc.com>
+- Ryan Liang <ryan.liang@emc.com>
 
 Community Contributors
 ``````````````````````
