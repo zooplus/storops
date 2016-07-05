@@ -85,7 +85,7 @@ class HTTPClient(object):
         resp = self.session.request(method, full_url, headers=headers,
                                     **options)
 
-        self.log_response(full_url, resp, start)
+        self.log_response(full_url, method, resp, start)
 
         body = None
         if resp.text:
@@ -152,11 +152,11 @@ class HTTPClient(object):
             log.debug('{}\n{}'.format(prefix, text))
 
     @classmethod
-    def log_response(cls, full_url, resp, start_time):
+    def log_response(cls, full_url, method, resp, start_time):
         if log.isEnabledFor(logging.DEBUG):
             dt = time.time() - start_time
-            log.debug('REQ: {}, TIME: {} RESP CODE: {}'
-                      .format(full_url, dt, resp.status_code))
+            log.debug('REQ URL: [{}] {}, TIME: {}, RESP CODE: {}'
+                      .format(method, full_url, dt, resp.status_code))
             cls._debug_print_json(resp.text, 'RESP BODY:')
 
     def update_headers(self, headers):
