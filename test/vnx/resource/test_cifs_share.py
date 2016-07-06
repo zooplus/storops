@@ -31,7 +31,7 @@ __author__ = 'Jay Xu'
 class VNXCifsShareTest(unittest.TestCase):
     # todo: add test for share access commands
 
-    @patch_nas()
+    @patch_nas
     def test_get_all(self):
         shares = VNXCifsShare.get(cli=t_nas())
         assert_that(len(shares), equal_to(16))
@@ -49,7 +49,7 @@ class VNXCifsShareTest(unittest.TestCase):
         assert_that(share.is_vdm, equal_to(False))
         assert_that(share.cifs_server_names, has_item('CIFS'))
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_mover(self):
         mover = self.get_mover_1()
         shares = VNXCifsShare.get(cli=t_nas(), mover=mover)
@@ -62,26 +62,26 @@ class VNXCifsShareTest(unittest.TestCase):
         mover = VNXMover(mover_id=1, cli=t_nas())
         return mover
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_share_name(self):
         shares = VNXCifsShare.get(cli=t_nas(), name='zhuanc_cifs_100g')
         assert_that(len(shares), equal_to(1))
         self.verify_share_zhuanc(shares[0])
 
-    @patch_nas()
+    @patch_nas
     def test_get_cifs_share(self):
         mover = self.get_mover_1()
         share = VNXCifsShare.get(name='zhuanc_cifs_100g', mover=mover,
                                  cli=t_nas())
         self.verify_share_zhuanc(share)
 
-    @patch_nas()
+    @patch_nas
     def test_get_not_found(self):
         mover = self.get_mover_1()
         cifs = VNXCifsShare.get(name='not_exists', mover=mover, cli=t_nas())
         assert_that(cifs.existed, equal_to(False))
 
-    @patch_nas()
+    @patch_nas
     def test_create_invalid_path(self):
         def f():
             mover = self.get_mover_1()
@@ -90,20 +90,20 @@ class VNXCifsShareTest(unittest.TestCase):
 
         assert_that(f, raises(VNXGeneralNasError, 'Invalid path'))
 
-    @patch_nas()
+    @patch_nas
     def test_create_success(self):
         fs = VNXFileSystem(name='zzz', cli=t_nas())
         mover = self.get_mover_1()
         share = VNXCifsShare.create(t_nas(), fs, 'CIFS', mover)
         assert_that(share.path, equal_to('\zzz'))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_success(self):
         share = VNXCifsShare(name='zzz', mover=self.get_mover_1(), cli=t_nas())
         resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_not_found(self):
         def f():
             share = VNXCifsShare(name='yyy', mover=self.get_mover_1(),

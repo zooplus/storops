@@ -38,47 +38,47 @@ class VXNFsSnapTest(unittest.TestCase):
         assert_that(snap.mover_id, equal_to(1))
         assert_that(snap.is_vdm, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         snap_list = VNXFsSnap.get(t_nas())
         snap = next(snap for snap in snap_list if snap.snap_id == 230)
         self.verify_snap_230(snap)
 
-    @patch_post()
+    @patch_post
     def test_get_by_name(self):
         snap = VNXFsSnap.get(name='ESA', cli=t_nas())
         self.verify_snap_230(snap)
 
-    @patch_post()
+    @patch_post
     def test_get_by_name_not_found(self):
         snap = VNXFsSnap(name='aaa', cli=t_nas())
         assert_that(snap.existed, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_get_by_id_not_found(self):
         snap = VNXFsSnap.get(snap_id=111, cli=t_nas())
         assert_that(snap.existed, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_get_by_id(self):
         snap = VNXFsSnap(snap_id=230, cli=t_nas())
         self.verify_snap_230(snap)
 
-    @patch_post()
+    @patch_post
     def test_create_success(self):
         snap = VNXFsSnap.create(t_nas(), 'test', 222, 61)
         assert_that(snap.name, equal_to('test'))
         assert_that(snap.fs_id, equal_to(222))
         assert_that(snap.snap_id, equal_to(242))
 
-    @patch_post()
+    @patch_post
     def test_create_existed(self):
         def f():
             VNXFsSnap.create(t_nas(), 'Tan_Manual_CheckPoint', 228, 61)
 
         assert_that(f, raises(VNXFsSnapNameInUseError, 'already in use'))
 
-    @patch_post()
+    @patch_post
     def test_delete(self):
         snap = VNXFsSnap(name='test', cli=t_nas())
         resp = snap.delete()

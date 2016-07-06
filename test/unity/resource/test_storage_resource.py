@@ -32,7 +32,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityStorageResourceTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         sr = UnityStorageResource(_id='res_27', cli=t_rest())
         assert_that(sr.id, equal_to('res_27'))
@@ -57,7 +57,7 @@ class UnityStorageResourceTest(TestCase):
         assert_that(sr.pools, instance_of(UnityPoolList))
         assert_that(sr.filesystem, instance_of(UnityFileSystem))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         sr_list = UnityStorageResourceList(cli=t_rest())
         assert_that(len(sr_list), equal_to(10))

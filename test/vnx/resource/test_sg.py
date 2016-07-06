@@ -33,7 +33,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXStorageGroupListTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_get_sg_list(self):
         sg_list = VNXStorageGroupList(t_cli())
         assert_that(sg_list.name,
@@ -41,7 +41,7 @@ class VNXStorageGroupListTest(TestCase):
                               'ubuntu14'))
         assert_that(len(sg_list), equal_to(4))
 
-    @patch_cli()
+    @patch_cli
     def test_detach_not_existed_lun(self):
         lun = VNXLun(name='y', cli=t_cli())
         sg_list = VNXStorageGroupList(t_cli())
@@ -55,7 +55,7 @@ class VNXStorageGroupTest(TestCase):
         sg.shuffle_hlu = False
         return sg
 
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         sg = self.test_sg()
         assert_that(sg.name, equal_to('server7'))
@@ -73,7 +73,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.has_hlu(11), equal_to(False))
         assert_that(sg.existed, equal_to(True))
 
-    @patch_cli()
+    @patch_cli
     def test_property_hosts(self):
         hosts = self.test_sg('~management').hosts
         assert_that(len(hosts), equal_to(2))
@@ -81,17 +81,17 @@ class VNXStorageGroupTest(TestCase):
                     has_items('APM00152312055-spB', 'APM00152312055-spA'))
         assert_that(hosts[0].storage_group.name, equal_to('~management'))
 
-    @patch_cli()
+    @patch_cli
     def test_property_lun_list(self):
         lun_list = self.test_sg('microsoft').lun_list
         assert_that(lun_list.name, only_contains('lun4', 'lun456'))
 
-    @patch_cli()
+    @patch_cli
     def test_property_zero_lun_list(self):
         lun_list = self.test_sg('os01').lun_list
         assert_that(len(lun_list), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_get_sg_os01(self):
         sg = VNXStorageGroup(name='os01', cli=t_cli())
         assert_that(len(sg.hba_sp_pairs), equal_to(1))
@@ -102,31 +102,31 @@ class VNXStorageGroupTest(TestCase):
                     equal_to('iqn.1993-08.org.debian:01:95bbe389e025'))
         assert_that(hba.port_id, equal_to(4))
 
-    @patch_cli()
+    @patch_cli
     def test_initiator_uid_list(self):
         sg = self.test_sg('microsoft')
         assert_that(len(sg.initiator_uid_list), equal_to(2))
         assert_that(sg.initiator_uid_list,
                     has_item('iqn.1991-05.com.microsoft:abc.def.dev'))
 
-    @patch_cli()
+    @patch_cli
     def test_hba_ports(self):
         sg = self.test_sg()
         assert_that(len(sg.hba_port_list), equal_to(15))
         assert_that(len(sg.ports), equal_to(8))
         assert_that(len(sg.initiator_uid_list), equal_to(5))
 
-    @patch_cli()
+    @patch_cli
     def test_iscsi_ports_all(self):
         sg = self.test_sg()
         assert_that(len(sg.iscsi_ports), equal_to(1))
 
-    @patch_cli()
+    @patch_cli
     def test_fc_ports_all(self):
         sg = self.test_sg()
         assert_that(len(sg.fc_ports), equal_to(7))
 
-    @patch_cli()
+    @patch_cli
     def test_get_fc_ports_with_filter_found_one(self):
         sg = self.test_sg()
         ports = sg.get_fc_ports(sp=VNXSPEnum.SP_A, port_id=2)
@@ -135,13 +135,13 @@ class VNXStorageGroupTest(TestCase):
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
         assert_that(port.port_id, equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_get_iscsi_ports_with_filter_type_not_match(self):
         sg = self.test_sg()
         ports = sg.get_iscsi_ports(sp=VNXSPEnum.SP_A, port_id=2)
         assert_that(len(ports), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_get_port_by_sp(self):
         sg = self.test_sg()
         assert_that(len(sg.get_ports(sp=VNXSPEnum.SP_A)), equal_to(5))
@@ -151,7 +151,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.get_ports(sp=VNXSPEnum.SP_A, port_id=9)),
                     equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_get_ports_by_wwn(self):
         sg = self.test_sg()
         wwn = '20:00:00:90:FA:53:4C:D0:10:00:00:90:FA:53:4C:D0'
@@ -160,13 +160,13 @@ class VNXStorageGroupTest(TestCase):
         for port in ports:
             assert_that(port.host_initiator_list, has_item(wwn))
 
-    @patch_cli()
+    @patch_cli
     def test_get_ports_no_wwn(self):
         sg = self.test_sg()
         ports = sg.get_ports()
         assert_that(len(ports), equal_to(8))
 
-    @patch_cli()
+    @patch_cli
     def test_attach_alu_success(self):
         sg = self.test_sg()
         lun = VNXLun(name='x', cli=t_cli())
@@ -176,7 +176,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.get_hlu(0), equal_to(1))
         assert_that(hlu, equal_to(1))
 
-    @patch_cli()
+    @patch_cli
     def test_attach_alu_already_attached(self):
         sg = self.test_sg()
 
@@ -188,7 +188,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.get_hlu(123), none())
         assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_attach_alu_not_found(self):
         sg = self.test_sg()
 
@@ -200,7 +200,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(sg.get_hlu(124), none())
         assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_attach_alu_already_attached_found_in_cache(self):
         sg = self.test_sg()
         assert_that(sg.get_hlu(10), equal_to(153))
@@ -212,7 +212,7 @@ class VNXStorageGroupTest(TestCase):
             assert_that(sg.get_hlu(10), equal_to(153))
             assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_attach_alu_hlu_in_use_retry(self):
         def f():
             sg = self.test_sg()
@@ -221,13 +221,13 @@ class VNXStorageGroupTest(TestCase):
         assert_that(f, raises(VNXHluNumberInUseError,
                               'LUN Number already in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_detach_hlu_success(self):
         sg = self.test_sg()
         sg.detach_alu(10)
         assert_that(sg.has_hlu(10), equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_detach_hlu_not_found(self):
         def f():
             sg = self.test_sg()
@@ -235,7 +235,7 @@ class VNXStorageGroupTest(TestCase):
 
         assert_that(f, raises(VNXDetachAluNotFoundError, 'No such Host LUN'))
 
-    @patch_cli()
+    @patch_cli
     def test_detach_hlu_not_attached(self):
         def f():
             sg = self.test_sg()
@@ -244,7 +244,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(f, raises(VNXDetachAluNotFoundError,
                               'is not attached'))
 
-    @patch_cli()
+    @patch_cli
     def test_connect_host(self):
         def f():
             sg = self.test_sg()
@@ -253,7 +253,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(f, raises(VNXStorageGroupError,
                               'Host specified is not known'))
 
-    @patch_cli()
+    @patch_cli
     def test_disconnect_host(self):
         def f():
             sg = self.test_sg()
@@ -262,14 +262,14 @@ class VNXStorageGroupTest(TestCase):
         assert_that(f, raises(VNXStorageGroupError,
                               'not currently connected'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_sg_name_in_use(self):
         def f():
             VNXStorageGroup.create('existed', t_cli())
 
         assert_that(f, raises(VNXStorageGroupNameInUseError, 'already in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_empty_sg_property(self):
         sg = VNXStorageGroup.get(t_cli(), 'sg1')
         wwn = 'BB:50:E8:2F:23:01:E6:11:83:36:00:60:16:58:B3:E9'
@@ -281,7 +281,7 @@ class VNXStorageGroupTest(TestCase):
         assert_that(len(sg.iscsi_ports), equal_to(0))
         assert_that(len(sg.hba_sp_pairs), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_get_hlu_to_add_no_shuffle(self):
         sg = self.test_sg()
         sg.shuffle_hlu = False
@@ -292,7 +292,7 @@ class VNXStorageGroupTest(TestCase):
         sg._delete_alu(12)
         assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_get_hlu_to_add_shuffle(self):
         sg = VNXStorageGroup.get(t_cli(), 'server7')
         first = sg._get_hlu_to_add(12)

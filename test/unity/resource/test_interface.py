@@ -34,7 +34,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityFileInterfaceTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         fi = UnityFileInterface('if_16', cli=t_rest())
         assert_that(fi.existed, equal_to(True))
@@ -52,12 +52,12 @@ class UnityFileInterfaceTest(TestCase):
         assert_that(fi.is_preferred, equal_to(True))
         assert_that(fi.is_disabled, equal_to(False))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         fi_list = UnityFileInterfaceList(cli=t_rest())
         assert_that(len(fi_list), equal_to(1))
 
-    @patch_rest()
+    @patch_rest
     def test_create_error_nas_server_not_found(self):
         def f():
             UnityFileInterface.create(
@@ -66,14 +66,14 @@ class UnityFileInterfaceTest(TestCase):
 
         assert_that(f, raises(UnityException, 'Cannot find'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_success(self):
         fi = UnityFileInterface.create(
             t_rest(), 'nas_2', 'spa_eth2', '1.1.1.1',
             role=FileInterfaceRoleEnum.PRODUCTION)
         assert_that(fi.ip_address, equal_to('1.1.1.1'))
 
-    @patch_rest()
+    @patch_rest
     def test_ip_address_in_use(self):
         def f():
             UnityFileInterface.create(
@@ -82,13 +82,13 @@ class UnityFileInterfaceTest(TestCase):
 
         assert_that(f, raises(UnityIpAddressUsedError, 'already in use'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_success(self):
         fi = UnityFileInterface(_id='if_20', cli=t_rest())
         resp = fi.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_not_found(self):
         def f():
             fi = UnityFileInterface(_id='if_25', cli=t_rest())
@@ -98,13 +98,13 @@ class UnityFileInterfaceTest(TestCase):
 
 
 class UnityPreferredInterfaceSettingsTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         pis = UnityPreferredInterfaceSettings('preferred_if_2', cli=t_rest())
         assert_that(pis.existed, equal_to(True))
         assert_that(pis.nas_server, instance_of(UnityNasServer))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         pis_list = UnityPreferredInterfaceSettingsList(cli=t_rest())
         assert_that(len(pis_list), equal_to(1))

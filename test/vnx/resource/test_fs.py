@@ -19,11 +19,10 @@ import unittest
 
 from hamcrest import equal_to, assert_that, raises, none, instance_of
 
-from test.vnx.nas_mock import patch_post, t_nas
-
 from storops.exception import VNXBackendError, VNXInvalidMoverID, \
     VNXFsExistedError
 from storops.vnx.resource.fs import VNXFileSystem, VNXFileSystemList
+from test.vnx.nas_mock import patch_post, t_nas
 
 __author__ = 'Jay Xu'
 
@@ -55,34 +54,42 @@ class FileSystemTest(unittest.TestCase):
         assert_that(fs.type, equal_to('uxfs'))
         assert_that(fs.volume, equal_to(150))
 
-    @patch_post()
-    def test_clz_get_fs(self):
+    @patch_post
+    def test_clz_get_fs_success(self):
         fs = VNXFileSystem.get(name='fs_src0', cli=t_nas())
         self.verify_fs_src0(fs)
 
-    @patch_post()
+    @patch_post(output='abc.xml')
+    def test_clz_get_fs_empty(self):
+        def f():
+            fs = VNXFileSystem.get(name='fs_src0', cli=t_nas())
+            assert_that(fs.existed, equal_to(False))
+
+        assert_that(f, raises(IOError))
+
+    @patch_post
     def test_clz_get_all(self):
         fs_list = VNXFileSystem.get(cli=t_nas())
         assert_that(len(fs_list), equal_to(25))
 
-    @patch_post()
+    @patch_post
     def test_get(self):
         fs = VNXFileSystem('fs_src0', cli=t_nas())
         self.verify_fs_src0(fs)
 
-    @patch_post()
+    @patch_post
     def test_get_by_id(self):
         fs = VNXFileSystem(fs_id=27, cli=t_nas())
         assert_that(fs.existed, equal_to(True))
         assert_that(fs.volume, equal_to(125))
 
-    @patch_post()
+    @patch_post
     def test_get_not_found(self):
         fs = VNXFileSystem('abc', cli=t_nas())
         assert_that(fs._get_name(), equal_to('abc'))
         assert_that(fs.existed, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         fs_list = VNXFileSystemList(t_nas())
         assert_that(len(fs_list), equal_to(25))
@@ -91,7 +98,7 @@ class FileSystemTest(unittest.TestCase):
         fs_src0 = [fs for fs in fs_list if fs.name == 'fs_src0'][0]
         self.verify_fs_src0(fs_src0)
 
-    @patch_post()
+    @patch_post
     def test_delete_fs_not_exists(self):
         def f():
             fs = VNXFileSystem(fs_id=99, cli=t_nas())
@@ -99,13 +106,13 @@ class FileSystemTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'not found'))
 
-    @patch_post()
+    @patch_post
     def test_delete_fs_success(self):
         fs = VNXFileSystem(fs_id=98, cli=t_nas())
         resp = fs.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem_invalid_vdm_id(self):
         def f():
             VNXFileSystem.create(t_nas(), 'test18', size_kb=1, pool=0,
@@ -114,7 +121,7 @@ class FileSystemTest(unittest.TestCase):
         assert_that(f, raises(VNXBackendError,
                               'VDM with id=1 not found.'))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem_invalid_pool(self):
         def f():
             VNXFileSystem.create(t_nas(), 'test17', size_kb=1, pool=0, mover=1)
@@ -122,7 +129,7 @@ class FileSystemTest(unittest.TestCase):
         assert_that(f, raises(VNXBackendError,
                               'Storage pool was not specified or invalid'))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem_invalid_size(self):
         def f():
             VNXFileSystem.create(t_nas(), 'test16', size_kb=1, pool=59,
@@ -131,7 +138,7 @@ class FileSystemTest(unittest.TestCase):
         assert_that(f, raises(VNXBackendError,
                               'specified size cannot be created'))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem_not_enough_space(self):
         def f():
             VNXFileSystem.create(t_nas(), 'test15', size_kb=1024 ** 2 * 5,
@@ -140,7 +147,7 @@ class FileSystemTest(unittest.TestCase):
         assert_that(f, raises(VNXBackendError,
                               'is not available from the pool'))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem_invalid_mover_id(self):
         def f():
             VNXFileSystem.create(t_nas(), 'test13', size_kb=1024 * 5,
@@ -149,13 +156,13 @@ class FileSystemTest(unittest.TestCase):
         assert_that(f, raises(VNXInvalidMoverID,
                               'Mover with id=6 not found.'))
 
-    @patch_post()
+    @patch_post
     def test_create_filesystem(self):
         ret = VNXFileSystem.create(t_nas(), 'test14', size_kb=1024 * 5,
                                    pool=61, mover=1)
         assert_that(ret, instance_of(VNXFileSystem))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_existed(self):
         def f():
             VNXFileSystem.create(t_nas(), 'EG_TEST_POOL',
@@ -164,13 +171,13 @@ class FileSystemTest(unittest.TestCase):
 
         assert_that(f, raises(VNXFsExistedError, 'already exists'))
 
-    @patch_post()
+    @patch_post
     def test_extend_fs(self):
         fs = VNXFileSystem(cli=t_nas(), fs_id=243)
         resp = fs.extend(1024 * 4)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_extend_fs_too_small(self):
         def f():
             fs = VNXFileSystem(cli=t_nas(), fs_id=243)
@@ -178,7 +185,7 @@ class FileSystemTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'not valid'))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_snap(self):
         fs = VNXFileSystem(cli=t_nas(), fs_id=222)
         snap = fs.create_snap('test', pool=61)

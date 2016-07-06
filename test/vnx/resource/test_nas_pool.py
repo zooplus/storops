@@ -26,22 +26,22 @@ __author__ = 'Jay Xu'
 
 
 class VNXNasPoolTest(unittest.TestCase):
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         pool_list = VNXNasPool.get(cli=t_nas())
         assert_that(len(pool_list), equal_to(6))
 
-    @patch_post()
+    @patch_post
     def test_get_by_name(self):
         pool = VNXNasPool.get(name='vnx-sg_test', cli=t_nas())
         self.verify_pool_vnx_sg_test(pool)
 
-    @patch_post()
+    @patch_post
     def test_get_by_pool_id(self):
         pool = VNXNasPool.get(pool_id=63, cli=t_nas())
         self.verify_pool_vnx_sg_test(pool)
 
-    @patch_post()
+    @patch_post
     def test_get_by_name_not_found(self):
         pool = VNXNasPool(name='not_found', cli=t_nas())
         assert_that(pool.existed, equal_to(False))

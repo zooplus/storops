@@ -32,7 +32,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnitySnapTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_properties(self):
         snap = UnitySnap(_id=171798691852, cli=t_rest())
         assert_that(snap.existed, equal_to(True))
@@ -52,12 +52,12 @@ class UnitySnapTest(TestCase):
         assert_that(snap.access_type,
                     equal_to(FilesystemSnapAccessTypeEnum.CHECKPOINT))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         snaps = UnitySnapList(cli=t_rest())
         assert_that(len(snaps), equal_to(3))
 
-    @patch_rest()
+    @patch_rest
     def test_create_snap_success(self):
         snap = UnitySnap(_id='171798691884', cli=t_rest())
         sos = snap.create_snap(name='snap_over_snap')
@@ -65,13 +65,13 @@ class UnitySnapTest(TestCase):
         assert_that(sos.storage_resource, equal_to(snap.storage_resource))
         assert_that(sos.name, equal_to('snap_over_snap'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_snap(self):
         snap = UnitySnap(_id='171798691885', cli=t_rest())
         resp = snap.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_create_nfs_share_type_error(self):
         def f():
             snap = UnitySnap(cli=t_rest(), _id='171798691852')
@@ -79,7 +79,7 @@ class UnitySnapTest(TestCase):
 
         assert_that(f, raises(UnityShareOnCkptSnapError, 'is a checkpoint'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_nfs_share_success(self):
         snap = UnitySnap(cli=t_rest(), _id='171798691896')
         share = snap.create_nfs_share('sns1')
@@ -87,7 +87,7 @@ class UnitySnapTest(TestCase):
         assert_that(share.name, equal_to('sns1'))
         assert_that(share.type, equal_to(NFSTypeEnum.NFS_SNAPSHOT))
 
-    @patch_rest()
+    @patch_rest
     def test_create_cifs_share_success(self):
         snap = UnitySnap(cli=t_rest(), _id='171798691899')
         share = snap.create_cifs_share('sns2')
@@ -95,7 +95,7 @@ class UnitySnapTest(TestCase):
         assert_that(share.name, equal_to('sns2'))
         assert_that(share.type, equal_to(CIFSTypeEnum.CIFS_SNAPSHOT))
 
-    @patch_rest()
+    @patch_rest
     def test_filesystem_snap(self):
         snap = UnitySnap(cli=t_rest(), _id='171798691852')
         fs = snap.filesystem
@@ -103,26 +103,26 @@ class UnitySnapTest(TestCase):
         assert_that(fs.storage_resource, equal_to(snap.storage_resource))
         assert_that(snap.lun, none())
 
-    @patch_rest()
+    @patch_rest
     def test_lun_snap(self):
         snap = UnitySnap(cli=t_rest(), _id='38654705785')
         lun = snap.lun
         assert_that(lun, instance_of(UnityLun))
         assert_that(snap.filesystem, none())
 
-    @patch_rest()
+    @patch_rest
     def test_copy_snap_success(self):
         snap = UnitySnap(cli=t_rest(), _id='38654705785')
         snap = snap.copy('s3')
         assert_that(snap.existed, equal_to(True))
         assert_that(snap, instance_of(UnitySnap))
 
-    @patch_rest()
+    @patch_rest
     def test_destroying_snap_existed(self):
         snap = UnitySnap(cli=t_rest(), _id='171798691953')
         assert_that(snap.existed, equal_to(False))
 
-    @patch_rest()
+    @patch_rest
     def test_not_found_snap_existed(self):
         snap = UnitySnap(cli=t_rest(), _id='12345')
         assert_that(snap.existed, equal_to(False))

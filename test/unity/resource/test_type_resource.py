@@ -26,13 +26,13 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityTypeTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_metric_type(self):
         t = UnityType(_id='metric', cli=t_rest())
         assert_that(t.name, equal_to('metric'))
         assert_that(t.existed, equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_type(self):
         t = UnityType(_id='lun', cli=t_rest())
         assert_that(t.fields, has_items('creationTime', 'name', 'snapCount'))
@@ -42,7 +42,7 @@ class UnityTypeTest(TestCase):
         assert_that(t.fields_str, starts_with(
             'name,description,documentation,type,attributes.name'))
 
-    @patch_rest()
+    @patch_rest
     def test_fields_str(self):
         t = UnityType(_id='lun', cli=t_rest())
         assert_that(t.fields_str, starts_with('auSize,creationTime,'))

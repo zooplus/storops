@@ -21,6 +21,8 @@ import os
 
 import re
 from mock import patch
+
+from storops.lib.common import allow_omit_parentheses
 from test.utils import ConnectorMock
 
 __author__ = 'Cedric Zhuang'
@@ -204,6 +206,7 @@ class MockCimConnection(ConnectorMock):
         return self.get_mock_output([url, data])
 
 
+@allow_omit_parentheses
 def patch_cim(output=None, mock_map=None):
     conn = MockCimConnection(output=output, mock_map=mock_map)
 

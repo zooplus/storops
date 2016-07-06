@@ -33,7 +33,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityLunTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_lun_sv2_simple_property(self):
         lun = UnityLun(_id='sv_2', cli=t_rest())
         assert_that(lun.existed, equal_to(True))
@@ -58,7 +58,7 @@ class UnityLunTest(TestCase):
         assert_that(lun.storage_resource, instance_of(UnityStorageResource))
         assert_that(lun.pool, instance_of(UnityPool))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_modify_host_access(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
@@ -69,7 +69,7 @@ class UnityLunTest(TestCase):
         assert_that(lun.host_access[0].access_mask,
                     equal_to(HostLUNAccessEnum.BOTH))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_modify_sp(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         sp = UnityStorageProcessor(_id='spb', cli=t_rest())
@@ -77,21 +77,21 @@ class UnityLunTest(TestCase):
         lun.update()
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPB))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_modify_none(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.modify(host_access=None)
         lun.update()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_modify_wipe_host_access(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.modify(host_access=[])
         lun.update()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_modify_muitl_property_except_sp(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         lun.modify(name="RestLun100", is_thin=True,
@@ -100,7 +100,7 @@ class UnityLunTest(TestCase):
         assert_that(lun.name, equal_to('RestLun100'))
         assert_that(lun.description, equal_to('Lun description'))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_delete(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.delete(force_snap_delete=True, force_vvol_delete=True)
@@ -108,46 +108,46 @@ class UnityLunTest(TestCase):
         assert_that(resp.is_ok(), equal_to(True))
         assert_that(resp.job.existed, equal_to(False))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_attch_to_new_host(self):
         host = UnityHost(_id="Host_10", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.attach_to(host)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_attch_to_same_host(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.attach_to(host, access_mask=HostLUNAccessEnum.BOTH)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_lun_detach_from_host(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.detach_from(host)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_sv2_nested_property_update_property(self):
         lun = UnityLun(_id='sv_2', cli=t_rest())
         sr = lun.storage_resource
         assert_that(sr._cli, equal_to(t_rest()))
         assert_that(sr.size_total, equal_to(107374182400))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_sv3_nested_property_no_update(self):
         lun = UnityLunList.get(_id='sv_3', cli=t_rest())
         sr = lun.storage_resource
         assert_that(sr._cli, equal_to(t_rest()))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_all_0(self):
         lun_list = UnityLunList.get(cli=t_rest())
         assert_that(len(lun_list), equal_to(5))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_doc(self):
         lun = UnityLun(_id='sv_2', cli=t_rest())
         doc = lun.doc
@@ -156,7 +156,7 @@ class UnityLunTest(TestCase):
         assert_that(doc, contains_string('current_node'))
         assert_that(doc, contains_string('Current SP'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_lun_with_host_access(self):
         unity = UnitySystem('10.109.22.101', 'admin', 'Password123!')
         lun = unity.get_lun(_id='sv_567')

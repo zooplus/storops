@@ -29,7 +29,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXMigrationSessionTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         ms = VNXMigrationSession(0, t_cli())
         assert_that(ms.source_lu_id, equal_to(0))
@@ -44,21 +44,21 @@ class VNXMigrationSessionTest(TestCase):
         assert_that(ms.is_success, equal_to(False))
         assert_that(ms.existed, equal_to(True))
 
-    @patch_cli()
+    @patch_cli
     def test_source_lun(self):
         ms = VNXMigrationSession(0, t_cli())
         lun = ms.source_lun
         assert_that(lun, instance_of(VNXLun))
         assert_that(lun.get_id(lun), equal_to(ms.source_lu_id))
 
-    @patch_cli()
+    @patch_cli
     def test_destination_lun(self):
         ms = VNXMigrationSession(0, t_cli())
         lun = ms.destination_lun
         assert_that(lun, instance_of(VNXLun))
         assert_that(lun.get_id(lun), equal_to(ms.dest_lu_id))
 
-    @patch_cli()
+    @patch_cli
     def test_get_all(self):
         ms_list = VNXMigrationSession.get(t_cli())
         assert_that(len(ms_list), equal_to(2))
@@ -68,19 +68,19 @@ class VNXMigrationSessionTest(TestCase):
         ms_list = VNXMigrationSession.get(t_cli())
         assert_that(len(ms_list), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_get_no_session(self):
         ms = VNXMigrationSession(10, t_cli())
         assert_that(ms.existed, equal_to(False))
         assert_that(ms.is_migrating, equal_to(False))
         assert_that(ms.is_success, equal_to(True))
 
-    @patch_cli()
+    @patch_cli
     def test_get_lun_not_exists(self):
         ms = VNXMigrationSession(1234, t_cli())
         assert_that(ms.existed, equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_cancel_migrate(self):
         def f():
             ms = VNXMigrationSession(0, t_cli())

@@ -32,11 +32,11 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXConsistencyGroupListTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_parse(self):
         assert_that(len(VNXConsistencyGroupList(t_cli())), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_not_existed_member(self):
         lun = VNXLun(name='y', cli=t_cli())
         cg_list = VNXConsistencyGroupList(t_cli())
@@ -45,13 +45,13 @@ class VNXConsistencyGroupListTest(TestCase):
 
 
 class VNXConsistencyGroupTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_list_consistency_group(self):
         cg_list = VNXConsistencyGroup.get(t_cli())
         assert_that(len(cg_list), equal_to(2))
         assert_that(cg_list.name, only_contains('another cg', 'test cg name'))
 
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         cg = VNXConsistencyGroup(name="test_cg", cli=t_cli())
         assert_that(cg.name, equal_to('test_cg'))
@@ -85,7 +85,7 @@ class VNXConsistencyGroupTest(TestCase):
         assert_that(names, has_item('test cg name'))
         assert_that(names, has_item('another cg'))
 
-    @patch_cli()
+    @patch_cli
     def test_add_member(self):
         def f():
             cg = VNXConsistencyGroup('test_cg', t_cli())
@@ -95,14 +95,14 @@ class VNXConsistencyGroupTest(TestCase):
 
         assert_that(f, raises(VNXConsistencyGroupError, 'Cannot add members'))
 
-    @patch_cli()
+    @patch_cli
     def test_has_member(self):
         cg = VNXConsistencyGroup('test_cg', t_cli())
         lun = VNXLun(lun_id=1)
         assert_that(cg.has_member(lun), equal_to(True))
         assert_that(cg.has_member(7), equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_cg_no_poll(self):
         def f():
             cg = VNXConsistencyGroup(name="test_cg", cli=t_cli())
@@ -111,7 +111,7 @@ class VNXConsistencyGroupTest(TestCase):
 
         assert_that(f, raises(VNXConsistencyGroupError, 'does not exist'))
 
-    @patch_cli()
+    @patch_cli
     def test_cg_not_found(self):
         def f():
             cg = VNXConsistencyGroup(name="cg1", cli=t_cli())
@@ -119,7 +119,7 @@ class VNXConsistencyGroupTest(TestCase):
 
         assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_cg_name_in_use(self):
         def f():
             VNXConsistencyGroup.create(cli=t_cli(), name='cg0')
@@ -127,7 +127,7 @@ class VNXConsistencyGroupTest(TestCase):
         assert_that(f, raises(VNXConsistencyGroupNameInUseError,
                               'already in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_cg_not_exists(self):
         def f():
             cg = VNXConsistencyGroup(cli=t_cli(), name='cg0')
@@ -135,7 +135,7 @@ class VNXConsistencyGroupTest(TestCase):
 
         assert_that(f, raises(VNXConsistencyGroupNotFoundError, 'Cannot find'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_cg_snap_success(self):
         cg = VNXConsistencyGroup(name="cg1", cli=t_cli())
         snap = cg.create_snap('cg1_snap')
@@ -143,7 +143,7 @@ class VNXConsistencyGroupTest(TestCase):
         assert_that(snap.source_luns, only_contains(1))
         assert_that(snap.source_cg, equal_to('cg1'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_cg_snap_name_existed(self):
         def f():
             cg = VNXConsistencyGroup(name="cg2", cli=t_cli())
@@ -151,7 +151,7 @@ class VNXConsistencyGroupTest(TestCase):
 
         assert_that(f, raises(VNXSnapNameInUseError, 'already in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_cg_empty_member_property(self):
         cg = VNXConsistencyGroup(name='cg0', cli=t_cli())
         assert_that(len(cg.lun_list), equal_to(0))

@@ -26,7 +26,7 @@ from hamcrest import assert_that, equal_to, close_to, only_contains, raises, \
 from storops.exception import EnumValueNotFoundError
 from storops.lib.common import Dict, Enum, WeightedAverage, synchronized, \
     text_var, int_var, enum_var, yes_no_var, JsonPrinter, get_lock_file, \
-    EnumList
+    EnumList, round_3
 from storops.vnx.enums import VNXRaidType
 
 log = logging.getLogger(__name__)
@@ -289,3 +289,12 @@ class CommonTest(TestCase):
         name = get_lock_file('a.lock')
         assert_that(name, contains_string('.storops'))
         assert_that(name, contains_string('a.lock'))
+
+
+class RoundItTest(TestCase):
+    def test_round3(self):
+        @round_3
+        def f():
+            return 123.45678
+
+        assert_that(f(), equal_to(123.457))

@@ -30,7 +30,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityStorageProcessorTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_properties(self):
         sp = UnityStorageProcessor(_id='spa', cli=t_rest())
         assert_that(sp.id, equal_to('spa'))
@@ -52,7 +52,7 @@ class UnityStorageProcessorTest(TestCase):
         assert_that(sp.memory_size, equal_to(65536))
         assert_that(sp.parent_dpe, instance_of(UnityDpe))
 
-    @patch_rest()
+    @patch_rest
     def test_sp_to_node_enum(self):
         sp = UnityStorageProcessor(_id='spa', cli=t_rest())
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.SPA))
@@ -61,13 +61,13 @@ class UnityStorageProcessorTest(TestCase):
         sp = UnityStorageProcessor(_id='wrong', cli=t_rest())
         assert_that(sp.to_node_enum(), equal_to(NodeEnum.UNKNOWN))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all_and_property_query(self):
         sp_list = UnityStorageProcessorList(cli=t_rest())
         assert_that(len(sp_list), equal_to(2))
         assert_that(sp_list.name, only_contains('SP A', 'SP B'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all_and_property_not_found(self):
         def f():
             sp_list = UnityStorageProcessorList(cli=t_rest())

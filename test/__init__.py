@@ -33,12 +33,12 @@ logging.basicConfig(
 
 
 class StoropsTest(unittest.TestCase):
-    @patch_cli()
+    @patch_cli
     def test_vnx_availability(self):
         vnx = storops.VNXSystem('10.244.211.30')
         assert_that(vnx, not_none())
 
-    @patch_rest()
+    @patch_rest
     def test_unity_availability(self):
         unity = storops.UnitySystem('1.1.1.1', 'admin', 'password')
         assert_that(unity, not_none())

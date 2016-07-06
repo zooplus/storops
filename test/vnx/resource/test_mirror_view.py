@@ -38,7 +38,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXMirrorViewTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_get_all(self):
         mv_list = VNXMirrorView.get(t_cli())
         assert_that(len(mv_list), equal_to(4))
@@ -51,7 +51,7 @@ class VNXMirrorViewTest(TestCase):
         mv = VNXMirrorView.get(t_cli(), 'mv_sync_2')
         assert_that(mv.existed, equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_get(self):
         mv = VNXMirrorView.get(t_cli(), 'mv_sync_2')
         assert_that(mv.uid, equal_to(
@@ -80,39 +80,39 @@ class VNXMirrorViewTest(TestCase):
         assert_that(mv.transitioning, equal_to(False))
         assert_that(mv.is_primary, equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_image_properties(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         assert_that(mv.is_primary, equal_to(True))
         assert_that(mv.primary_image.is_primary, equal_to(True))
         assert_that(mv.secondary_image.is_primary, equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_create_success(self):
         mv = VNXMirrorView.create(t_cli(), 'mv0', 245)
         assert_that(mv.name, equal_to('mv0'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_lun_not_available_for_mirror(self):
         def f():
             VNXMirrorView.create(t_cli(), 'mv0', 244)
 
         assert_that(f, raises(VNXMirrorLunNotAvailableError, 'not available'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_name_in_use(self):
         def f():
             VNXMirrorView.create(t_cli(), 'mv0', 246)
 
         assert_that(f, raises(VNXMirrorNameInUseError, 'in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_add_image_success(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         mv.add_image('192.168.1.94', 71)
         assert_that(len(mv.images), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_add_image_already_mirrored(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -120,13 +120,13 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorAlreadyMirroredError, 'exists'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_image_found(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         image = mv.get_image('50:06:01:60:88:60:05:FE')
         assert_that(image.state, equal_to(VNXMirrorImageState.SYNCHRONIZED))
 
-    @patch_cli()
+    @patch_cli
     def test_get_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -134,7 +134,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXObjectNotFound, 'not found'))
 
-    @patch_cli()
+    @patch_cli
     def test_remove_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -142,13 +142,13 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorImageNotFoundError, 'not found'))
 
-    @patch_cli()
+    @patch_cli
     def test_remove_image_success(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         # no error raised
         mv.remove_image()
 
-    @patch_cli()
+    @patch_cli
     def test_remove_image_no_secondary_image(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv1')
@@ -157,7 +157,7 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f,
                     raises(VNXMirrorImageNotFoundError, 'no secondary'))
 
-    @patch_cli()
+    @patch_cli
     def test_fracture_primary_image(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -165,13 +165,13 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorFractureImageError, 'Cannot'))
 
-    @patch_cli()
+    @patch_cli
     def test_fracture_image_success(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         # no error raised
         mv.fracture_image()
 
-    @patch_cli()
+    @patch_cli
     def test_fracture_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -179,7 +179,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorImageNotFoundError))
 
-    @patch_cli()
+    @patch_cli
     def test_sync_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -187,7 +187,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorImageNotFoundError))
 
-    @patch_cli()
+    @patch_cli
     def test_sync_image_failed(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -195,7 +195,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorSyncImageError, 'failed'))
 
-    @patch_cli()
+    @patch_cli
     def test_promote_image_not_found(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -203,7 +203,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorImageNotFoundError))
 
-    @patch_cli()
+    @patch_cli
     def test_promote_non_local_image(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -212,7 +212,7 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f, raises(VNXMirrorPromoteNonLocalImageError,
                               'not local'))
 
-    @patch_cli()
+    @patch_cli
     def test_promote_already_promoted(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv0')
@@ -220,7 +220,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorPromotePrimaryError, 'primary image'))
 
-    @patch_cli()
+    @patch_cli
     def test_mirror_view_feature_not_installed(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv9')
@@ -229,7 +229,7 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f, raises(VNXMirrorFeatureNotAvailableError,
                               'not installed'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_mirror_not_found_error(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv8')
@@ -237,7 +237,7 @@ class VNXMirrorViewTest(TestCase):
 
         assert_that(f, raises(VNXMirrorNotFoundError, 'not found'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_mirror_has_secondary(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv7')
@@ -246,7 +246,7 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f, raises(VNXDeleteMirrorWithSecondaryError,
                               'at least one secondary'))
 
-    @patch_cli()
+    @patch_cli
     def test_remove_mirror_image_is_synchronizing(self):
         def f():
             mv = VNXMirrorView.get(t_cli(), 'mv2')
@@ -255,7 +255,7 @@ class VNXMirrorViewTest(TestCase):
         assert_that(f, raises(VNXMirrorRemoveSynchronizingError,
                               'is being synchronized'))
 
-    @patch_cli()
+    @patch_cli
     def test_force_delete_mirror_has_secondary(self):
         mv = VNXMirrorView.get(t_cli(), 'mv0')
         # no error raised
@@ -263,7 +263,7 @@ class VNXMirrorViewTest(TestCase):
 
 
 class VNXMirrorViewImageTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         mv = VNXMirrorView.get(t_cli(), 'mv_sync_2')
         image = mv.get_image('50:06:01:60:88:60:05:FE')
