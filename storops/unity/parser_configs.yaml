@@ -381,6 +381,7 @@ UnityCifsShareAce:
   name: cifsShareACE
   properties:
     - label: sid
+      is_index: True
     - label: accessType
       converter: ACEAccessTypeEnum
     - label: accessLevel

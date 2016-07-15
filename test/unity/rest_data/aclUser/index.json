@@ -27,6 +27,14 @@
         "domainName": "win2012.dev"
       },
       "response": "not_found.json"
+    },
+    {
+      "url": "/api/types/aclUser/action/lookupSIDByDomainUser?compact=True",
+      "body": {
+        "userName": "SMIS_User_2",
+        "domainName": "win2012.dev"
+      },
+      "response": "search_by_name.json"
     }
   ]
 }

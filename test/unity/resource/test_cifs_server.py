@@ -28,7 +28,6 @@ from storops.unity.resource.cifs_server import UnityCifsServer, \
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.interface import UnityFileInterfaceList
 from storops.unity.resource.nas_server import UnityNasServer
-from test.unity.cim_mock import patch_cim
 from test.unity.rest_mock import t_rest, patch_rest
 
 __author__ = 'Cedric Zhuang'
@@ -146,19 +145,8 @@ class UnityCifsServerTest(TestCase):
         server = UnityCifsServer.get(cli=t_rest(), _id=cifs_2)
         assert_that(server.domain, equal_to('win2012.dev'))
 
-    @patch_cim
-    def test_cim_instance(self):
-        server = self.test_cifs_server()
-        inst = server.cim
-        assert_that(inst['name'], equal_to('nas1130'))
-
     @patch_rest
     def test_cifs_server(self):
         server = UnityCifsServer(_id='cifs_2', cli=t_rest())
         log.debug('netbios name: {}'.format(server.netbios_name))
         return server
-
-    @patch_cim
-    def test_cim_export_service_instance(self):
-        inst = self.test_cifs_server().cim_export_service
-        assert_that(inst['name'], equal_to('cifs_2'))
