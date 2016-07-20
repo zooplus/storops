@@ -33,6 +33,8 @@ __author__ = 'Cedric Zhuang'
 
 log = logging.getLogger(__name__)
 
+snap_based_share = UnityCifsShare(cli=t_rest(), _id='SMBShare_5')
+
 
 class UnityCifsShareTest(TestCase):
     @patch_rest
@@ -127,9 +129,17 @@ class UnityCifsShareTest(TestCase):
 
     @patch_rest
     def test_add_ace_success(self):
-        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_5')
-        resp = share.add_ace('win2012.dev', 'administrator')
+        share = snap_based_share
+        resp = share.add_ace(user='administrator')
         assert_that(resp.is_ok(), equal_to(True))
+
+    @patch_rest
+    def test_add_ace_no_user(self):
+        def f():
+            share = UnityCifsShare(cli=t_rest(), _id='SMBShare_5')
+            share.add_ace()
+
+        assert_that(f, raises(ValueError, 'username'))
 
     @patch_rest
     def test_enabled_ace_success(self):
@@ -159,6 +169,13 @@ class UnityCifsShareTest(TestCase):
         assert_that(removed_sid_list,
                     only_contains('S-1-5-15-be80fa7-8ddad211-d49ba5f9-45e',
                                   'S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4'))
+
+    @patch_rest
+    def test_ace_clear_access_with_white_list(self):
+        share = UnityCifsShare(cli=t_rest(), _id='SMBShare_5')
+        removed_sid_list = share.clear_access(white_list=['SMIS_User_2'])
+        assert_that(removed_sid_list,
+                    equal_to(['S-1-5-15-be80fa7-8ddad211-d49ba5f9-45e']))
 
     @patch_rest
     def test_delete_ace(self):

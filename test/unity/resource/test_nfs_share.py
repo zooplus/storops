@@ -237,7 +237,7 @@ class UnityNfsHostConfigTest(TestCase):
         assert_that(config.ro, none())
         assert_that(config.root, only_contains(host('Host_9')))
 
-    def test_clear_access(self):
+    def test_clear_access_all(self):
         config = UnityNfsHostConfig(no_access=[host('Host_9')])
         config.allow_rw(host('Host_1'))
         config.clear_all()
@@ -245,3 +245,13 @@ class UnityNfsHostConfigTest(TestCase):
         assert_that(len(config.ro), equal_to(0))
         assert_that(len(config.no_access), equal_to(0))
         assert_that(len(config.root), equal_to(0))
+
+    def test_clear_access_with_white_list(self):
+        config = UnityNfsHostConfig(no_access=[host('Host_9')])
+        config.allow_rw(host('Host_1'), host('Host_2'))
+        config.allow_root(host('Host_1'), host('Host_2'), host('Host_3'))
+        config.clear_all(host('Host_1'), host('Host_4'), host('Host_9'))
+        assert_that(len(config.rw), equal_to(0))
+        assert_that(len(config.ro), equal_to(0))
+        assert_that(len(config.no_access), equal_to(1))
+        assert_that(len(config.root), equal_to(1))

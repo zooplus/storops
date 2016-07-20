@@ -102,11 +102,18 @@ class UnityNfsHostConfig(object):
         self.root = self._delete(self.root, hosts)
         return self
 
-    def clear_all(self):
-        self.rw = []
-        self.ro = []
-        self.no_access = []
-        self.root = []
+    @staticmethod
+    def _inter(left, right):
+        if left is None:
+            left = []
+        right_ids = [host.get_id() for host in right]
+        return [host for host in left if host.get_id() in right_ids]
+
+    def clear_all(self, *white_list_hosts):
+        self.rw = self._inter(self.rw, white_list_hosts)
+        self.ro = self._inter(self.ro, white_list_hosts)
+        self.no_access = self._inter(self.no_access, white_list_hosts)
+        self.root = self._inter(self.root, white_list_hosts)
         return self
 
 
@@ -202,8 +209,12 @@ class UnityNfsShare(UnityResource):
         config = self.host_config.delete_access(*hosts)
         return self.modify(host_config=config)
 
-    def clear_access(self):
-        config = self.host_config.clear_all()
+    def clear_access(self, white_list=None, force_create_host=False):
+        if white_list is not None:
+            white_list = self._get_hosts(white_list, force_create_host)
+        else:
+            white_list = []
+        config = self.host_config.clear_all(*white_list)
         return self.modify(host_config=config)
 
     def modify(self,
