@@ -28,29 +28,29 @@ __author__ = 'Jay Xu'
 
 
 class VNXMoverRefTest(unittest.TestCase):
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         movers = VNXMoverRefList(t_nas())
         assert_that(len(movers), equal_to(2))
         dm = next(dm for dm in movers if dm.mover_id == 1)
         self.verify_dm_ref_1(dm)
 
-    @patch_post()
+    @patch_post
     def test_get(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
         self.verify_dm_ref_1(dm)
 
-    @patch_post()
+    @patch_post
     def test_get_not_existed(self):
         dm = VNXMoverRef(mover_id=5, cli=t_nas())
         assert_that(dm.existed, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_get_by_name(self):
         dm = VNXMoverRef(name='server_2', cli=t_nas())
         self.verify_dm_ref_1(dm)
 
-    @patch_post()
+    @patch_post
     def test_get_by_name_not_found(self):
         dm = VNXMoverRef(name='server_5', cli=t_nas())
         assert_that(dm.existed, equal_to(False))
@@ -72,18 +72,18 @@ class VNXMoverRefTest(unittest.TestCase):
         assert_that(dm.get_id(dm), equal_to(12))
         assert_that(dm.get_id('22'), equal_to(22))
 
-    @patch_post()
+    @patch_post
     def test_mover_host(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         VNXMoverHostTest.verify_mover_host_1(dm.host)
 
-    @patch_post()
+    @patch_post
     def test_create_dns(self):
         dm = VNXMover.get(mover_id=1, cli=t_nas())
         resp = dm.create_dns('tt', '1.1.1.1')
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_create_dns_format_error(self):
         def f():
             dm = VNXMover(mover_id=1, cli=t_nas())
@@ -91,19 +91,19 @@ class VNXMoverRefTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'not facet-valid'))
 
-    @patch_post()
+    @patch_post
     def test_create_dns_multiple(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         resp = dm.create_dns('tt', ['1.1.1.1', '2.2.2.2'])
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_delete_dns(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
         resp = dm.delete_dns('tt')
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_delete_dns_not_exist(self):
         def f():
             dm = VNXMoverRef(mover_id=1, cli=t_nas())
@@ -111,42 +111,42 @@ class VNXMoverRefTest(unittest.TestCase):
 
         assert_that(f, raises(VNXGeneralNasError, 'server_2'))
 
-    @patch_post()
+    @patch_post
     def test_physical_devices(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
         assert_that(len(dm.physical_devices), equal_to(9))
 
-    @patch_post()
+    @patch_post
     def test_fc_devices(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
         assert_that(len(dm.fc_devices), equal_to(4))
 
-    @patch_post()
+    @patch_post
     def test_ethernet_devices(self):
         dm = VNXMoverRef(mover_id=1, cli=t_nas())
         assert_that(len(dm.ethernet_devices), equal_to(4))
 
-    @patch_post()
+    @patch_post
     def test_create_interface(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         interface = dm.create_interface('cge-1-0', '1.1.1.1', '255.255.255.0')
         assert_that(interface.name, equal_to('1.1.1.1-0'))
         assert_that(interface.broadcast_addr, equal_to('1.1.1.255'))
 
-    @patch_post()
+    @patch_post
     def test_delete_interface(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         resp = dm.delete_interface('1.1.1.1')
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_get_interconnect_id(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         assert_that(dm.get_interconnect_id(), equal_to(20001))
 
 
 class VNXMoverTest(unittest.TestCase):
-    @patch_post()
+    @patch_post
     def test_create_nfs_share(self):
         dm = VNXMover(mover_id=1, cli=t_nas())
         share = dm.create_nfs_share(path='/EEE')
@@ -155,14 +155,14 @@ class VNXMoverTest(unittest.TestCase):
         assert_that(share.existed, equal_to(True))
         assert_that(share.fs_id, equal_to(243))
 
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         movers = VNXMover.get(t_nas())
         assert_that(len(movers), equal_to(2))
         mover1 = next(dm for dm in movers if dm.mover_id == 1)
         self.verify_dm_1(mover1)
 
-    @patch_post()
+    @patch_post
     def test_get(self):
         mover1 = VNXMover.get(mover_id=1, cli=t_nas())
         self.verify_dm_1(mover1)
@@ -231,19 +231,19 @@ class VNXMoverTest(unittest.TestCase):
 
 
 class VNXMoverHostTest(unittest.TestCase):
-    @patch_post()
+    @patch_post
     def test_get_by_id(self):
         mh = VNXMoverHost(host_id=1, cli=t_nas())
         self.verify_mover_host_1(mh)
 
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         mh_list = VNXMoverHostList(t_nas())
         assert_that(len(mh_list), equal_to(2))
         mh = next(mh for mh in mh_list if mh.host_id == 1)
         self.verify_mover_host_1(mh)
 
-    @patch_post()
+    @patch_post
     def test_get_by_id_not_found(self):
         mh = VNXMoverHost(host_id=5, cli=t_nas())
         assert_that(mh.existed, equal_to(False))

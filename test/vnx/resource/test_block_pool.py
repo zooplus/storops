@@ -39,7 +39,7 @@ class VNXPoolTest(TestCase):
     def get_pool_with_name(name='Pool4File'):
         return VNXPool(name=name, cli=t_cli())
 
-    @patch_cli()
+    @patch_cli
     def test_property_not_exist(self):
         def f():
             pool = VNXPool(pool_id=0)
@@ -47,39 +47,39 @@ class VNXPoolTest(TestCase):
 
         assert_that(f, raises(AttributeError))
 
-    @patch_cli()
+    @patch_cli
     def test_pool_by_id(self):
         pool = self.get_pool_with_id()
         verify_pool_0(pool)
 
-    @patch_cli()
+    @patch_cli
     def test_get_pool_get_all(self):
         pools = VNXPool.get(t_cli())
         assert_that(len(pools), equal_to(5))
 
-    @patch_cli()
+    @patch_cli
     def test_get_pool_from_list(self):
         pools = VNXPool.get(t_cli())
         pool = next(p for p in pools if p.pool_id == 4)
         # no error should be thrown here
         pool.update()
 
-    @patch_cli()
+    @patch_cli
     def test_get_pool_get_by_name(self):
         pool = VNXPool.get(t_cli(), name='Pool4File')
         verify_pool_0(pool)
 
-    @patch_cli()
+    @patch_cli
     def test_get_pool_get_by_id(self):
         pool = VNXPool.get(t_cli(), pool_id=0)
         verify_pool_0(pool)
 
-    @patch_cli()
+    @patch_cli
     def test_pool_by_name(self):
         pool = self.get_pool_with_name()
         verify_pool_0(pool)
 
-    @patch_cli()
+    @patch_cli
     def test_get_lun(self):
         pool = VNXPool(pool_id=1, cli=t_cli())
         assert_that(pool.name, equal_to('Pool_daq'))
@@ -88,7 +88,7 @@ class VNXPoolTest(TestCase):
         assert_that(pool.lun_list, equal_to(lun_list))
         assert_that(len(set(lun_list.pool_name)), equal_to(1))
 
-    @patch_cli()
+    @patch_cli
     def test_get_disk(self):
         pool = VNXPool(pool_id=1, cli=t_cli())
         disks = pool.disks
@@ -96,7 +96,7 @@ class VNXPoolTest(TestCase):
         assert_that(disks.serial_number,
                     only_contains('6XS2EAKG', 'S0PFNECC304969', '6XS2QCG1'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_pool_success(self):
         def f():
             VNXPool.create(t_cli(), 'p0', ['1_0_0', '1_0_1'])
@@ -104,61 +104,61 @@ class VNXPoolTest(TestCase):
         assert_that(f, raises(VNXCreatePoolError,
                               'less than minimum required'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_pool_name_in_use_0(self):
         def f():
             VNXPool.create(t_cli(), 'p0', ['1_0_0', '1_0_1'], 'r_6')
 
         assert_that(f, raises(VNXPoolNameInUseError, 'already in use'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_pool_name_in_use_1(self):
         def f():
             VNXPool.create(t_cli(), 'p0', ['1_0_0', '1_0_1'], 'r_0')
 
         assert_that(f, raises(VNXPoolNameInUseError, 'name is already used'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_pool_disk_used(self):
         def f():
             VNXPool.create(t_cli(), 'p0', ['1_0_0', '1_0_1'], 'r_10')
 
         assert_that(f, raises(VNXDiskUsedError, 'already part of'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_pool_invalid_disk_number(self):
         def f():
             VNXPool.create(t_cli(), 'p0', ['1_0_0', '1_0_1'], 'r_5')
 
         assert_that(f, raises(VNXCreatePoolError, 'multiple of 5'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_pool_not_found(self):
         def f():
             VNXPool(0, cli=t_cli()).delete()
 
         assert_that(f, raises(VNXPoolNotFoundError, 'may not exist'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_pool_destroying(self):
         def f():
             VNXPool(1, cli=t_cli()).delete()
 
         assert_that(f, raises(VNXPoolDestroyingError, 'is Destroying'))
 
-    @patch_cli()
+    @patch_cli
     def test_force_delete_pool(self):
         def f():
             VNXPool(0, cli=t_cli()).delete(True)
 
         assert_that(f, raises(VNXPoolNotFoundError, 'may not exist'))
 
-    @patch_cli()
+    @patch_cli
     def test_update_with_one_key_only(self):
         pool = VNXPool(0, 'p0', t_cli())
         assert_that(pool.consumed_capacity_gbs, equal_to(540.303))
 
-    @patch_cli()
+    @patch_cli
     def test_create_lun_ignore_threshold(self):
         def f():
             pool = VNXPool(1, cli=t_cli())
@@ -166,7 +166,7 @@ class VNXPoolTest(TestCase):
 
         assert_that(f, raises(VNXPoolNotFoundError, 'may not exist'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_lun_with_pool_name(self):
         def f():
             pool = VNXPool(name='p0', cli=t_cli())
@@ -180,12 +180,12 @@ class VNXPoolListTest(TestCase):
     def get_pool_list():
         return VNXPoolList(t_cli())
 
-    @patch_cli()
+    @patch_cli
     def test_pool_list(self):
         pools = self.get_pool_list()
         assert_that(len(pools), equal_to(5))
 
-    @patch_cli()
+    @patch_cli
     def test_update(self):
         pools = self.get_pool_list()
         pools.update()
@@ -195,7 +195,7 @@ class VNXPoolListTest(TestCase):
 
 
 class VNXPoolFeatureTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         f = VNXPoolFeature(t_cli())
         assert_that(f.is_virtual_provisioning_supported, equal_to(False))
@@ -217,7 +217,7 @@ class VNXPoolFeatureTest(TestCase):
         assert_that(f.background_operation_state, equal_to('None'))
         assert_that(f.background_rate, equal_to('Medium'))
 
-    @patch_cli()
+    @patch_cli
     def test_available_disks(self):
         f = VNXPoolFeature(t_cli())
         assert_that(len(f.available_disks), equal_to(5))

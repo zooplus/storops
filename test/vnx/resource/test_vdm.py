@@ -29,29 +29,29 @@ __author__ = 'Jay Xu'
 
 
 class VNXVdmTest(unittest.TestCase):
-    @patch_nas()
+    @patch_nas
     def test_get_all(self):
         vdm_list = VNXVdm.get(t_nas())
         assert_that(len(vdm_list), greater_than_or_equal_to(1))
         dm = next(dm for dm in vdm_list if dm.vdm_id == 2)
         self.verify_vdm_2(dm)
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_id_invalid(self):
         dm = VNXVdm.get(vdm_id=1, cli=t_nas())
         assert_that(dm.existed, equal_to(False))
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_id_2(self):
         dm = VNXVdm(vdm_id=2, cli=t_nas())
         self.verify_vdm_2(dm)
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_name(self):
         dm = VNXVdm.get(name='VDM_ESA', cli=t_nas())
         self.verify_vdm_2(dm)
 
-    @patch_nas()
+    @patch_nas
     def test_get_by_name_not_found(self):
         dm = VNXVdm(name='not_found', cli=t_nas())
         assert_that(dm.existed, equal_to(False))
@@ -67,14 +67,14 @@ class VNXVdmTest(unittest.TestCase):
         assert_that(dm.status, equal_to('ok'))
         assert_that(dm.is_vdm, equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_create_vdm_invalid_mover_id(self):
         def f():
             VNXVdm.create(t_nas(), 3, 'myVdm')
 
         assert_that(f, raises(VNXInvalidMoverID))
 
-    @patch_nas()
+    @patch_nas
     def test_create_vdm(self):
         dm = VNXVdm.create(t_nas(), 2, 'myVdm')
         assert_that(dm.name, equal_to('myVdm'))
@@ -82,13 +82,13 @@ class VNXVdmTest(unittest.TestCase):
         assert_that(dm.mover_id, equal_to(2))
         assert_that(dm.root_fs_id, equal_to(245))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_vdm(self):
         dm = VNXVdm(vdm_id=3, cli=t_nas())
         resp = dm.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_vdm_not_found(self):
         def f():
             dm = VNXVdm(vdm_id=5, cli=t_nas())
@@ -96,12 +96,12 @@ class VNXVdmTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'not found'))
 
-    @patch_nas()
+    @patch_nas
     def test_attach_interface_success(self):
         dm = VNXVdm(name='myvdm', cli=t_nas())
         dm.attach_nfs_interface('1.1.1.1-0')
 
-    @patch_nas()
+    @patch_nas
     def test_attach_interface_not_found(self):
         def f():
             dm = VNXVdm(name='myvdm', cli=t_nas())
@@ -109,12 +109,12 @@ class VNXVdmTest(unittest.TestCase):
 
         assert_that(f, raises(VNXMoverInterfaceNotExistsError, 'not exist'))
 
-    @patch_nas()
+    @patch_nas
     def test_detach_interface_success(self):
         dm = VNXVdm(name='myvdm', cli=t_nas())
         dm.detach_nfs_interface('1.1.1.1-0')
 
-    @patch_nas()
+    @patch_nas
     def test_detach_interface_not_found(self):
         def f():
             dm = VNXVdm(name='myvdm', cli=t_nas())
@@ -122,7 +122,7 @@ class VNXVdmTest(unittest.TestCase):
 
         assert_that(f, raises(VNXMoverInterfaceNotExistsError, 'not exist'))
 
-    @patch_nas()
+    @patch_nas
     def test_detach_interface_not_attached(self):
         def f():
             dm = VNXVdm(name='myvdm', cli=t_nas())
@@ -130,7 +130,7 @@ class VNXVdmTest(unittest.TestCase):
 
         assert_that(f, raises(VNXMoverInterfaceNotAttachedError, 'attached'))
 
-    @patch_nas()
+    @patch_nas
     def test_get_interfaces(self):
         dm = VNXVdm(name='VDM_ESA', cli=t_nas())
         ifs = dm.get_interfaces()

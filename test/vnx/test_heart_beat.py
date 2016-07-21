@@ -36,7 +36,7 @@ class NodeHeartBeatTest(TestCase):
         hb.add('spb', '1.1.1.2')
         return hb
 
-    @patch_cli()
+    @patch_cli
     def test_normal(self):
         hb = NodeHeartBeat(interval=0.2)
         hb.add('spa', '1.1.1.1')
@@ -58,21 +58,21 @@ class NodeHeartBeatTest(TestCase):
         info = NodeInfo('spa', '  \'"1.1.1.1" \'   ')
         assert_that(info.ip, equal_to('1.1.1.1'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_alive_sp_ip(self):
         hb = NodeHeartBeat(interval=0)
         hb.add('spa', '1.1.1.1', False)
         hb.add('spb', '1.1.1.2', True)
         assert_that(hb.get_alive_sp_ip(), equal_to('1.1.1.2'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_alive_sp_ip_none(self):
         hb = NodeHeartBeat(interval=0)
         hb.add('spa', '1.1.1.1', False, working=False)
         hb.add('spb', '1.1.1.2', None, working=True)
         assert_that(hb.get_alive_sp_ip(), '1.1.1.2')
 
-    @patch_cli()
+    @patch_cli
     def test_get_alive_sp_ip_down(self):
         def f():
             hb = NodeHeartBeat(interval=0)
@@ -83,14 +83,14 @@ class NodeHeartBeatTest(TestCase):
         assert_that(f, raises(VNXSystemDownError,
                               'no storage processor available'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_alive_sp_ip_no_load_balance(self):
         hb = NodeHeartBeat(interval=0)
         hb.add('spa', '1.1.1.1', True, True)
         hb.add('spb', '1.1.1.2', True, False)
         assert_that(hb.get_alive_sp_ip(), equal_to('1.1.1.1'))
 
-    @patch_cli()
+    @patch_cli
     def test_update_by_ip(self):
         hb = NodeHeartBeat(interval=0)
         hb.add('spa', '1.1.1.1', False)
@@ -98,7 +98,7 @@ class NodeHeartBeatTest(TestCase):
         hb.update_by_ip('1.1.1.1', True)
         assert_that(hb.get_alive_sp_ip(), equal_to('1.1.1.1'))
 
-    @patch_cli()
+    @patch_cli
     def test_update_by_ip_latency(self):
         hb = NodeHeartBeat(interval=0.01)
         hb.add('spa', '1.1.1.1', False)
@@ -109,7 +109,7 @@ class NodeHeartBeatTest(TestCase):
         assert_that(hb.command_count, greater_than(1))
         hb.stop()
 
-    @patch_cli()
+    @patch_cli
     def test_interval_change(self):
         hb = NodeHeartBeat(interval=0.1)
         hb.add('spa', '1.1.1.1')
@@ -127,7 +127,7 @@ class NodeHeartBeatTest(TestCase):
         assert_that(hb.command_count, greater_than_or_equal_to(8))
         hb.stop()
 
-    @patch_cli()
+    @patch_cli
     def test_interval_no_loop(self):
         hb = self.get_test_hb()
         assert_that(hb.command_count, equal_to(0))
@@ -135,7 +135,7 @@ class NodeHeartBeatTest(TestCase):
         time.sleep(0.2)
         assert_that(hb.command_count, greater_than(0))
 
-    @patch_cli()
+    @patch_cli
     def test_repr(self):
         hb = self.get_test_hb()
         string = repr(hb)

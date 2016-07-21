@@ -670,36 +670,3 @@ class ACEAccessLevelEnum(UnityEnum):
     READ = (1, 'Read')
     WRITE = (2, 'Write')
     FULL = (4, 'Full')
-
-    def to_smis_activity_value(self):
-        if self == self.READ:
-            ret = SmisActivityEnum.READ
-        elif self == self.WRITE:
-            ret = SmisActivityEnum.WRITE
-        else:
-            ret = SmisActivityEnum.FULL
-        return ret.index
-
-    @classmethod
-    def from_list(cls, values):
-        if SmisActivityEnum.FULL.index in values:
-            ret = cls.FULL
-        elif SmisActivityEnum.WRITE.index in values:
-            ret = cls.WRITE
-        elif SmisActivityEnum.READ.index in values:
-            ret = cls.READ
-        else:
-            ret = None
-        return ret
-
-
-class SmisReturnValueEnum(UnityEnum):
-    OK = (0, 'Ok')
-    NOT_SUPPORTED = (1, 'Not Supported')
-    FAILED = (2, 'Failed')
-
-
-class SmisActivityEnum(UnityEnum):
-    READ = (5, 'Read')
-    WRITE = (6, 'Write')
-    FULL = (14, 'Full Control')

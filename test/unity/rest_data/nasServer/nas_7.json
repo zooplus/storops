@@ -1,0 +1,55 @@
+{
+  "content": {
+    "id": "nas_7",
+    "replicationType": 0,
+    "type": 64,
+    "currentUnixDirectoryService": 0,
+    "instanceId": "root/emc:EMC_UEM_FileServerContainerLeaf%InstanceID=nas_7",
+    "objectId": 103079215113,
+    "name": "nas1130",
+    "health": {
+      "value": 5,
+      "descriptionIds": [
+        "ALRT_COMPONENT_OK"
+      ],
+      "descriptions": [
+        "The component is operating normally. No action is required."
+      ]
+    },
+    "sizeAllocated": 2952790016,
+    "isSystem": false,
+    "isReplicationEnabled": false,
+    "isReplicationDestination": false,
+    "isMultiProtocolEnabled": false,
+    "credentialsCacheTTL": "00:15:00.000",
+    "isExtendedUnixCredentialEnabled": false,
+    "homeSP": {
+      "id": "spa"
+    },
+    "currentSP": {
+      "id": "spa"
+    },
+    "pool": {
+      "id": "pool_5"
+    },
+    "cifsServer": [
+      {
+        "id": "cifs_7"
+      }
+    ],
+    "fileDNSServer": {
+      "id": "dns_5"
+    },
+    "fileInterface": [
+      {
+        "id": "if_21"
+      }
+    ],
+    "preferredInterfaceSettings": {
+      "id": "preferred_if_7"
+    },
+    "virusChecker": {
+      "id": "cava_7"
+    }
+  }
+}

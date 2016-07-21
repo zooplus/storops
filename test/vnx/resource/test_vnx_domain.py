@@ -17,11 +17,9 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, equal_to, contains_string, is_not, raises, \
-    none
+from hamcrest import assert_that, equal_to, contains_string, is_not, none
 
 from test.vnx.cli_mock import t_cli, patch_cli
-from storops.exception import VNXObjectNotFound
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.resource.vnx_domain import VNXDomainNodeList, \
     VNXNetworkAdmin, VNXStorageProcessor
@@ -30,7 +28,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXStorageProcessTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_sp_properties(self):
         sp = VNXStorageProcessor(t_cli(), VNXSPEnum.SP_A, '1.1.1.2')
         assert_that(sp.cabinet, equal_to('DPE9'))
@@ -75,35 +73,31 @@ class VNXStorageProcessTest(TestCase):
 
 
 class VNXDomainNodeListTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def setUp(self):
         self.dnl = VNXDomainNodeList(t_cli())
 
-    @patch_cli()
+    @patch_cli
     def test_iterable(self):
         assert_that(len(self.dnl), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_get_node(self):
         node = self.dnl.get_node('APM00153906536')
         assert_that(len(node.members), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_get_node_not_found(self):
-        def f():
-            node = self.dnl.get_node('abcde')
-            assert_that(len(node.members), equal_to(2))
+        assert_that(self.dnl.get_node('abcde'), none())
 
-        assert_that(f, raises(VNXObjectNotFound, 'abcde'))
-
-    @patch_cli()
+    @patch_cli
     def test_get_spa_check_ip(self):
         node = self.dnl.get_node('APM00152904560')
         assert_that(node.spa.ip, equal_to('192.168.1.94'))
         assert_that(node.spb.ip, equal_to('192.168.1.95'))
         assert_that(node.control_station.ip, equal_to('192.168.1.93'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_cs_ip(self):
         assert_that(VNXDomainNodeList.get_cs_ip('APM00153042305', t_cli()),
                     equal_to('10.244.211.32'))
@@ -115,21 +109,21 @@ class VNXDomainMemberListTest(TestCase):
         dnl = VNXDomainNodeList(t_cli())
         self.dml = dnl[0].members
 
-    @patch_cli()
+    @patch_cli
     def test_iterable(self):
         count = 0
         for _ in self.dml:
             count += 1
         assert_that(count, equal_to(3))
 
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         str_value = str(self.dml)
         assert_that(str_value, contains_string('VNXDomainMember'))
         assert_that(str_value, contains_string('VNXDomainMemberList'))
         assert_that(str_value, is_not(contains_string('::')))
 
-    @patch_cli()
+    @patch_cli
     def test_sp(self):
         spa = self.dml.spa
         assert_that(spa.ip, equal_to('10.244.211.30'))
@@ -142,7 +136,7 @@ class VNXDomainMemberListTest(TestCase):
 
 
 class VNXNetworkAdminTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_properties(self):
         sp = VNXNetworkAdmin(VNXSPEnum.SP_A, t_cli())
         with sp.with_no_poll():
@@ -158,12 +152,12 @@ class VNXNetworkAdminTest(TestCase):
             assert_that(sp.port_id, equal_to(0))
             assert_that(sp.vlan_id, equal_to(None))
 
-    @patch_cli()
+    @patch_cli
     def test_get_spa_ip(self):
         assert_that(VNXNetworkAdmin.get_spa_ip(t_cli()),
                     equal_to('192.168.1.52'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_spb_ip(self):
         assert_that(VNXNetworkAdmin.get_spb_ip(t_cli()),
                     equal_to('192.168.1.53'))

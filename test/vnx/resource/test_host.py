@@ -27,7 +27,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXHostTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_get_all(self):
         host_list = VNXHostList(t_cli())
         assert_that(len(host_list), equal_to(6))
@@ -35,13 +35,13 @@ class VNXHostTest(TestCase):
             'APM00152312055-spB', 'APM00152312055-spA', 'ubuntu-server11',
             'ubuntu-server7', 'Celerra_CS0_21132', 'ubuntu14'))
 
-    @patch_cli()
+    @patch_cli
     def test_name_filter_of_get_all(self):
         host_list = VNXHostList(t_cli(), names=('ubuntu-server11', 'ubuntu14'))
         assert_that(len(host_list), equal_to(2))
         assert_that(host_list.name, has_items('ubuntu-server11', 'ubuntu14'))
 
-    @patch_cli()
+    @patch_cli
     def test_host_property(self):
         host = VNXHost.get(cli=t_cli(), name='ubuntu-server7')
         assert_that(host.name, equal_to('ubuntu-server7'))
@@ -50,7 +50,7 @@ class VNXHostTest(TestCase):
         assert_that(host.storage_group.name, equal_to('ubuntu-server7'))
         assert_that(len(host.lun_list), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_host_with_lun(self):
         host = VNXHost.get(cli=t_cli(), name='ubuntu14')
         assert_that(host.lun_list.lun_id, only_contains(4, 15))
@@ -59,7 +59,7 @@ class VNXHostTest(TestCase):
         assert_that(host.alu_ids, only_contains(4, 15))
         assert_that(host.hlu_ids, only_contains(14, 154))
 
-    @patch_cli()
+    @patch_cli
     def test_host_not_found(self):
         host = VNXHost.get(cli=t_cli(), name='not_found')
         assert_that(host.existed, equal_to(False))

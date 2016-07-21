@@ -29,7 +29,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXSecurityTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_get_existed_user(self):
         user = VNXBlockUser.get(name='a', cli=t_cli())
         assert_that(user.name, equal_to('a'))
@@ -37,23 +37,23 @@ class VNXSecurityTest(TestCase):
         assert_that(user.scope, equal_to(VNXUserScopeEnum.GLOBAL))
         assert_that(user.type, equal_to('user'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_all_users(self):
         users = VNXBlockUser.get(cli=t_cli())
         assert_that(len(users), equal_to(2))
 
-    @patch_cli()
+    @patch_cli
     def test_get_user_not_found(self):
         user = VNXBlockUser(name='c', cli=t_cli())
         assert_that(user.existed, equal_to(False))
 
-    @patch_cli()
+    @patch_cli
     def test_create_user_success(self):
         user = VNXBlockUser.create(t_cli(), 'b', 'b')
         assert_that(user.name, equal_to('b'))
         assert_that(user.role, equal_to(VNXUserRoleEnum.ADMIN))
 
-    @patch_cli()
+    @patch_cli
     def test_create_user_existed(self):
         def f():
             VNXBlockUser.create(t_cli(), 'b', 'b',
@@ -61,13 +61,13 @@ class VNXSecurityTest(TestCase):
 
         assert_that(f, raises(VNXUserNameInUseError, 'failed'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_user_success(self):
         user = VNXBlockUser.get(name='b', cli=t_cli())
         # no exception
         user.delete()
 
-    @patch_cli()
+    @patch_cli
     def test_delete_user_not_found(self):
         def f():
             user = VNXBlockUser('c', cli=t_cli())

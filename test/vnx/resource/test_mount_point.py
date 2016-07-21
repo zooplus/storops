@@ -29,26 +29,26 @@ __author__ = 'Jay Xu'
 
 
 class VNXFsMountPointTest(unittest.TestCase):
-    @patch_post()
+    @patch_post
     def test_get_all(self):
         mps = VNXFsMountPointList(cli=t_nas())
         assert_that(len(mps), greater_than_or_equal_to(1))
         mp = next(mp for mp in mps if mp.path == '/zhuanc_fs_100g')
         self.verify_fs_100g(mp)
 
-    @patch_post()
+    @patch_post
     def test_get_all_by_mover(self):
         mover = VNXMover(mover_id=2, cli=t_nas())
         mps = VNXFsMountPointList(mover=mover, cli=t_nas())
         assert_that(len(mps), greater_than_or_equal_to(1))
 
-    @patch_post()
+    @patch_post
     def test_get_by_path(self):
         mover = VNXMover(mover_id=1)
         mp = VNXFsMountPoint(mover=mover, path='/zhuanc_fs_100g', cli=t_nas())
         self.verify_fs_100g(mp)
 
-    @patch_post()
+    @patch_post
     def test_get_not_found(self):
         mover = VNXMover(mover_id=1)
         mp = VNXFsMountPoint(mover=mover, path='/not_found', cli=t_nas())
@@ -64,7 +64,7 @@ class VNXFsMountPointTest(unittest.TestCase):
         assert_that(mp.fs_id, equal_to(211))
         assert_that(mp.nt_credential, equal_to(False))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_mp_path_occupied(self):
         def f():
             cli = t_nas()
@@ -73,7 +73,7 @@ class VNXFsMountPointTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'currently mounted'))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_mp_invalid_fs(self):
         def f():
             cli = t_nas()
@@ -82,7 +82,7 @@ class VNXFsMountPointTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'invalid filesystem specified'))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_mp_mounted(self):
         def f():
             cli = t_nas()
@@ -91,20 +91,20 @@ class VNXFsMountPointTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'is mounted on'))
 
-    @patch_post()
+    @patch_post
     def test_create_fs_mp_success(self):
         cli = t_nas()
         mover = VNXMover(mover_id=2, cli=cli)
         VNXFsMountPoint.create(cli, '/fs_100g', 244, mover)
 
-    @patch_post()
+    @patch_post
     def test_delete_fs_mp(self):
         cli = t_nas()
         mover = VNXMover(mover_id=2, cli=cli)
         resp = VNXFsMountPoint(mover, '/testfs', cli).delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_post()
+    @patch_post
     def test_same_path_different_mover(self):
         mps = VNXFsMountPointList(cli=t_nas(), path='/same')
         assert_that(len(mps), equal_to(2))

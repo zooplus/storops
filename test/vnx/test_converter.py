@@ -58,7 +58,7 @@ class ConverterTest(TestCase):
         snap = converter.name_to_snap('N/A')
         assert_that(snap, none())
 
-    @patch_cli()
+    @patch_cli
     def test_ids_to_lun_list_normal(self):
         lun_list = converter.ids_to_lun_list('0,1,2')
         lun_list._cli = t_cli()
@@ -71,7 +71,7 @@ class ConverterTest(TestCase):
         lun_list = converter.ids_to_lun_list(None)
         assert_that(len(lun_list), equal_to(0))
 
-    @patch_cli()
+    @patch_cli
     def test_indices_to_disk_list_normal(self):
         value = '''Bus 0 Enclosure 0  Disk A0
                    Bus 0 Enclosure 0  Disk A4'''

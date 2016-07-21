@@ -43,11 +43,11 @@ class MockCliTest(TestCase):
 
 
 class CliClientTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def setUp(self):
         self.client = CliClient('10.244.211.30', heartbeat_interval=0)
 
-    @patch_cli()
+    @patch_cli
     def test_set_binary(self):
         client = CliClient('1.1.1.1', heartbeat_interval=0,
                            naviseccli='abc')
@@ -59,7 +59,7 @@ class CliClientTest(TestCase):
             ' '.join(client._heart_beat.get_cmd_prefix('1.1.1.1')),
             equal_to('def -h 1.1.1.1'))
 
-    @patch_cli()
+    @patch_cli
     def test_password_missing(self):
         def f():
             client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)
@@ -67,7 +67,7 @@ class CliClientTest(TestCase):
 
         assert_that(f, raises(VNXCredentialError, 'missing'))
 
-    @patch_cli()
+    @patch_cli
     def test_set_credential(self):
         client = CliClient('1.1.1.1', 'a', heartbeat_interval=0)
         try:
@@ -79,7 +79,7 @@ class CliClientTest(TestCase):
         output = client.get_lun(lun_id=0)
         assert_that(output, contains_string('LOGICAL UNIT NUMBER 0'))
 
-    @patch_cli()
+    @patch_cli
     def test_get_agent(self):
         out = self.client.get_agent()
         assert_that(out, contains_string('K10'))

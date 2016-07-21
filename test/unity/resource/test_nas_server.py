@@ -40,7 +40,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityNasServerTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_properties(self):
         server = UnityNasServer(_id='nas_1', cli=t_rest())
         assert_that(server.existed, equal_to(True))
@@ -69,18 +69,18 @@ class UnityNasServerTest(TestCase):
         assert_that(server.file_interface, instance_of(UnityFileInterfaceList))
         assert_that(server.virus_checker, instance_of(UnityVirusChecker))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         nas_servers = UnityNasServerList(cli=t_rest())
         assert_that(len(nas_servers), equal_to(3))
 
-    @patch_rest()
+    @patch_rest
     def test_get_cifs_server_available(self):
         server = UnityNasServer(_id='nas_2', cli=t_rest())
         cifs_server = server.get_cifs_server()
         assert_that(cifs_server.domain, equal_to('win2012.dev'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_cifs_server_not_found(self):
         def f():
             server = UnityNasServer(_id='nas_3', cli=t_rest())
@@ -88,20 +88,20 @@ class UnityNasServerTest(TestCase):
 
         assert_that(f, raises(UnityCifsServiceNotEnabledError, 'not enabled'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_nas3_success(self):
         ret = UnityNasServer.create(t_rest(), 'nas3', 'spa', 'pool_1')
         assert_that(ret.name, equal_to('nas3'))
         assert_that(ret.existed, equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_create_name_in_use(self):
         def f():
             UnityNasServer.create(t_rest(), 'nas4', 'spa', 'pool_1')
 
         assert_that(f, raises(UnityNasServerNameUsedError, 'in use'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_not_found(self):
         def f():
             server = UnityNasServer(_id='not_found', cli=t_rest())
@@ -109,20 +109,20 @@ class UnityNasServerTest(TestCase):
 
         assert_that(f, raises(UnityResourceNotFoundError, 'not exist'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_success(self):
         server = UnityNasServer(_id='nas_3', cli=t_rest())
         resp = server.delete()
         assert_that(resp.body, equal_to({}))
 
-    @patch_rest()
+    @patch_rest
     def test_create_file_interface_success(self):
         server = UnityNasServer(_id='nas_2', cli=t_rest())
         fi = server.create_file_interface(
             'spa_eth2', '1.1.1.1', role=FileInterfaceRoleEnum.PRODUCTION)
         assert_that(fi.ip_address, equal_to('1.1.1.1'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_cifs_server_success(self):
         server = UnityNasServer(_id='nas_5', cli=t_rest())
         cifs_server = server.create_cifs_server(name='c_server1',
@@ -130,7 +130,7 @@ class UnityNasServerTest(TestCase):
                                                 local_password='Password123!')
         assert_that(cifs_server.workgroup, equal_to('CEDRIC'))
 
-    @patch_rest()
+    @patch_rest
     def test_enable_cifs_service_success(self):
         server = UnityNasServer(_id='nas_5', cli=t_rest())
         server.create_cifs_server(name='c_server1',
@@ -138,7 +138,7 @@ class UnityNasServerTest(TestCase):
                                   local_password='Password123!')
         # no exception
 
-    @patch_rest()
+    @patch_rest
     def test_create_nfs_server_success(self):
         server = UnityNasServer(_id='nas_5', cli=t_rest())
         nfs_server = server.create_nfs_server(nfs_v4_enabled=True)
@@ -146,33 +146,33 @@ class UnityNasServerTest(TestCase):
         assert_that(nfs_server.nfs_v4_enabled, equal_to(True))
         assert_that(nfs_server.host_name, none())
 
-    @patch_rest()
+    @patch_rest
     def test_enable_nfs_service_success(self):
         server = UnityNasServer(_id='nas_5', cli=t_rest())
         server.create_nfs_server(nfs_v4_enabled=True)
         # no exception
 
-    @patch_rest()
+    @patch_rest
     def test_create_dns_server_success(self):
         server = UnityNasServer.get(t_rest(), 'nas_4')
         dns = server.create_dns_server('emc.dev', '2.2.2.2', '3.3.3.3')
         assert_that(dns.addresses, only_contains('2.2.2.2', '3.3.3.3'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_dns_single_address(self):
         server = UnityNasServer.get(t_rest(), 'nas_6')
         dns = server.create_dns_server('emc.dev', '4.4.4.4')
         assert_that(dns.existed, equal_to(True))
         assert_that(dns.addresses, only_contains('4.4.4.4'))
 
-    @patch_rest()
+    @patch_rest
     def test_enable_cifs_service_default_domain_name(self):
         server = UnityNasServer(_id='nas_2', cli=t_rest())
         server.enable_cifs_service(name='c_server2',
                                    domain_username='admin@vpshere.dev',
                                    domain_password='Password123!')
 
-    @patch_rest()
+    @patch_rest
     def test_enable_cifs_service_name_in_use(self):
         def f():
             server = UnityNasServer(_id='nas_5', cli=t_rest())

@@ -18,15 +18,12 @@ from __future__ import unicode_literals
 
 import logging
 
-from pywbemReq import CIMInstance, CIMInstanceName, Uint16, CIMError
+import six
 
 import storops.unity.resource.cifs_server
 import storops.unity.resource.filesystem
 import storops.unity.resource.snap
-from storops.exception import UnityCreateCifsUserError, \
-    UnityImportCifsUserError, UnityAddCifsAceError, \
-    UnityDeleteCifsAceError, UnityAceNotFoundError, \
-    UnityCimResourceNotFoundError, UnityCreateSnapError
+from storops.exception import UnityCreateSnapError
 from storops.lib.common import instance_cache
 from storops.unity.enums import CIFSTypeEnum, ACEAccessTypeEnum, \
     ACEAccessLevelEnum, FilesystemSnapAccessTypeEnum
@@ -99,49 +96,13 @@ class UnityCifsShare(UnityResource):
         return resp
 
     def get_ace_list(self):
-        obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
-        ret = {
-            ACEAccessLevelEnum.FULL: [],
-            ACEAccessLevelEnum.READ: [],
-            ACEAccessLevelEnum.WRITE: [],
-        }
-        for obj in obj_list:
-            try:
-                sid = obj['subject']['instanceId']
-                access = ACEAccessLevelEnum.from_list(obj['activities'])
-                ret[access].append(sid)
-            except (AttributeError, IndexError, ValueError):
-                # skip, next one
-                pass
-        return ret
-
-    def get_ace_list_rest(self):
-        resp = self.action('getACEs')
-        resp.raise_if_err()
+        return UnityCifsShareAceList(cli=self._cli, cifs_share=self)
 
     def enable_ace(self):
         return self.modify(is_ace_enabled=True)
 
     def disable_ace(self):
         return self.modify(is_ace_enabled=False)
-
-    def add_ace(self, domain=None, user=None, access_level=None):
-        name = self._get_domain_user_name(domain, user)
-        if access_level is None:
-            access_level = ACEAccessLevelEnum.FULL
-        ACEAccessLevelEnum.verify(access_level)
-
-        activity = Uint16(access_level.to_smis_activity_value())
-        identity = self.get_identity_instance_name(name)
-
-        resp = self._cli.im(
-            'AssignPrivilegeToExportedShare',
-            self.cim_export_service.path,
-            Identities=[identity],
-            Activities=[activity],
-            FileShare=self.cim_instance_name)
-        resp.raise_if_err(default=UnityAddCifsAceError)
-        return resp
 
     def _get_domain_user_name(self, domain=None, user=None):
         if domain is None:
@@ -150,41 +111,32 @@ class UnityCifsShare(UnityResource):
             raise ValueError('username not specified.')
         return r'{}\{}'.format(domain, user)
 
-    def delete_ace(self, domain=None, user=None, sid=None):
-        if sid is None:
-            name = self._get_domain_user_name(domain, user)
-            sid = self.get_user_sids(self._cli, name)
-        obj_list = self._cli.ref(self.cim.path, 'CIM_AssociatedPrivilege')
-        for obj in obj_list:
-            try:
-                if sid == obj['subject']['instanceId'].strip():
-                    ret = self._cli.di(obj.path)
-                    ret.raise_if_err(default=UnityDeleteCifsAceError)
-                    break
-            except (ValueError, AttributeError, IndexError):
-                pass
-        else:
-            raise UnityAceNotFoundError()
-        return ret
-
-    def clear_access(self):
+    def clear_access(self, white_list=None):
         """ clear all ace entries of the share
 
+        :param white_list: list of username whose access entry won't be cleared
         :return: sid list of ace entries removed successfully
         """
         access_entries = self.get_ace_list()
-        ret = []
-        for sid_list in access_entries.values():
-            for sid in sid_list:
-                try:
-                    resp = self.delete_ace(sid=sid)
-                    if resp.is_ok():
-                        ret.append(sid)
-                except UnityAceNotFoundError:
-                    log.info('sid {} not found in access entries.'.format(sid))
-        return ret
+        sid_list = access_entries.sid_list
 
-    def add_ace_rest(self, domain, user, access_level=None):
+        if white_list:
+            sid_white_list = [UnityAclUser.get_sid(self._cli,
+                                                   user,
+                                                   self.cifs_server.domain)
+                              for user in white_list]
+            sid_list = list(set(sid_list) - set(sid_white_list))
+
+        resp = self.delete_ace(sid=sid_list)
+        resp.raise_if_err()
+        return sid_list
+
+    def add_ace(self, domain=None, user=None, access_level=None):
+        if domain is None:
+            domain = self.cifs_server.domain
+        if user is None:
+            raise ValueError('cifs username is not specified.')
+
         if access_level is None:
             access_level = ACEAccessLevelEnum.FULL
         sid = UnityAclUser.get_sid(self._cli, user=user, domain=domain)
@@ -194,9 +146,39 @@ class UnityCifsShare(UnityResource):
             accessLevel=access_level
         )
 
-        resp = self.modify(add_ace=[ace])
+        resp = self.action("setACEs", cifsShareACEs=[ace])
         resp.raise_if_err()
         return resp
+
+    def delete_ace(self, domain=None, user=None, sid=None):
+        """ delete ACE for the share
+
+        delete ACE for the share.  User could either supply the domain and
+        username or the sid of the user.
+
+        :param domain: domain of the user
+        :param user: username
+        :param sid: sid of the user or sid list of the user
+        :return: REST API response
+        """
+        if sid is None:
+            if domain is None:
+                domain = self.cifs_server.domain
+
+            sid = UnityAclUser.get_sid(self._cli, user=user, domain=domain)
+        if isinstance(sid, six.string_types):
+            sid = [sid]
+        ace_list = [self._make_remove_ace_entry(s) for s in sid]
+
+        resp = self.action("setACEs", cifsShareACEs=ace_list)
+        resp.raise_if_err()
+        return resp
+
+    def _make_remove_ace_entry(self, sid):
+        return self._cli.make_body(
+            sid=sid,
+            accessType=ACEAccessTypeEnum.NONE,
+            accessLevel=ACEAccessLevelEnum.FULL)
 
     def modify(self, is_read_only=None, is_ace_enabled=None, add_ace=None,
                delete_ace=None):
@@ -222,87 +204,6 @@ class UnityCifsShare(UnityResource):
         resp = sr.modify_fs(**param)
         resp.raise_if_err()
         return resp
-
-    @property
-    @instance_cache
-    def cim(self):
-        return self._cli.gi(self.cim_instance_name)
-
-    @property
-    def cim_instance_name(self):
-        return CIMInstanceName('EMC_VNXe_CIFSShareLeaf',
-                               {'InstanceID': self.get_id()},
-                               namespace='root/emc/smis')
-
-    def get_identity_instance_name(self, name):
-        sid = self.get_user_sids(self._cli, name)
-        return CIMInstanceName('EMC_VNXe_IdentityLeaf',
-                               {'InstanceID': sid})
-
-    @classmethod
-    def create_user(cls, cli, name):
-        contact_clz_name = 'CIM_UserContact'
-        user = CIMInstance(contact_clz_name,
-                           {
-                               'Name': name,
-                               'CreationClassName': contact_clz_name
-                           })
-        ret = cli.im('CreateUserContact',
-                     cli.account_management_service.path,
-                     System=cli.system.path,
-                     UserContactTemplate=user)
-        ret.raise_if_err(default=UnityCreateCifsUserError)
-        try:
-            ret = ret.value['Identities'][0]['InstanceID'].strip()
-        except (AttributeError, IndexError, ValueError):
-            raise UnityImportCifsUserError()
-        return ret
-
-    @property
-    @instance_cache
-    def cim_export_service(self):
-        inst_name = self.cim_instance_name
-        instances = self._cli.ai(inst_name, 'CIM_ServiceAffectsElement',
-                                 'CIM_FileExportService')
-        if instances:
-            ret = instances[0]
-        else:
-            raise UnityCimResourceNotFoundError(
-                'FileExportService not found for cifs share: {}'.format(
-                    self.get_id()))
-        return ret
-
-    @classmethod
-    def get_user_sids(cls, cli, name=None):
-        if name is None:
-            ret = [user['userID'].strip() for user in cls.get_user(cli, name)]
-        else:
-            ret = cls.get_user(cli, name)
-            if ret is None:
-                ret = cls.create_user(cli, name)
-            else:
-                ret = ret['userID'].strip()
-        return ret
-
-    @classmethod
-    def get_user(cls, cli, name=None):
-        if name is not None:
-            try:
-                ret = cli.gi(cls.get_user_instance_name(name))
-            except CIMError:
-                ret = None
-        else:
-            ret = cli.ei('EMC_VNXe_UserContactLeaf')
-        return ret
-
-    @classmethod
-    def get_user_instance_name(cls, name):
-        clz_name = 'EMC_VNXe_UserContactLeaf'
-        return CIMInstanceName(
-            clz_name,
-            {'CreationClassName': clz_name,
-             'Name': name},
-            namespace='root/emc/smis')
 
     @property
     @instance_cache
@@ -344,6 +245,17 @@ class UnityCifsShareAce(UnityAttributeResource):
 
 
 class UnityCifsShareAceList(UnityResourceList):
+    def __init__(self, cli=None, cifs_share=None, **the_filter):
+        super(UnityCifsShareAceList, self).__init__(
+            cli=cli, **the_filter)
+        self.cifs_share = cifs_share
+
+    def _get_raw_resource(self):
+        resp = self.cifs_share.action('getACEs')
+        resp.raise_if_err()
+        return resp.first_content['cifsShareACEs']
+
+    @property
     def sid_list(self):
         return [ace.sid for ace in self]
 
@@ -354,7 +266,7 @@ class UnityCifsShareAceList(UnityResourceList):
 
 class UnityAclUser(UnityResource):
     @classmethod
-    def get_sid(cls, cli, user, domain):
+    def get_sid(cls, cli, user, domain=None):
         resp = cli.type_action(cls().resource_class,
                                'lookupSIDByDomainUser',
                                domainName=domain,

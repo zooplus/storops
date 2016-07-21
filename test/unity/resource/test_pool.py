@@ -33,7 +33,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityPoolTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_properties(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         self.verify_pool_1(pool)
@@ -71,7 +71,7 @@ class UnityPoolTest(TestCase):
 
         assert_that(pool.pool_fast_vp._cli, equal_to(pool._cli))
 
-    @patch_rest()
+    @patch_rest
     def test_pool_fast_vp_properties(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         fast = pool.pool_fast_vp
@@ -92,7 +92,7 @@ class UnityPoolTest(TestCase):
         assert_that(str(fast.last_end_time),
                     equal_to('2016-03-14 06:00:00+00:00'))
 
-    @patch_rest()
+    @patch_rest
     def test_tier_properties(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         tier = next(t for t in pool.tiers if t.name == 'Performance')
@@ -107,7 +107,7 @@ class UnityPoolTest(TestCase):
         assert_that(tier.size_moving_within, equal_to(0))
         assert_that(tier.disk_count, equal_to(5))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         pools = UnityPoolList(cli=t_rest())
         assert_that(len(pools), equal_to(2))
@@ -115,7 +115,7 @@ class UnityPoolTest(TestCase):
         pool = next(pool for pool in pools if pool.id == 'pool_1')
         self.verify_pool_1(pool)
 
-    @patch_rest()
+    @patch_rest
     def test_get_nested_resource_properties(self):
         pools = UnityPoolList(cli=t_rest())
         pool = next(pool for pool in pools if pool.id == 'pool_1')
@@ -130,7 +130,7 @@ class UnityPoolTest(TestCase):
         assert_that(unit.size_total, equal_to(1181501882368))
         assert_that(unit.pool, instance_of(UnityPool))
 
-    @patch_rest()
+    @patch_rest
     def test_get_nested_resource_filter_by_non_id(self):
         pools = UnityPoolList(cli=t_rest())
         pool = next(pool for pool in pools if pool.id == 'pool_1')
@@ -138,7 +138,7 @@ class UnityPoolTest(TestCase):
         unit = next(u for u in tier.pool_units if u.description == '123')
         assert_that(unit.id, equal_to('rg_2'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_filesystem_success(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         fs = pool.create_filesystem(
@@ -147,13 +147,13 @@ class UnityPoolTest(TestCase):
             tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(fs.get_id(), equal_to('fs_12'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_lun(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         lun = pool.create_lun("LunName", 100)
         assert_that(lun, instance_of(UnityLun))
 
-    @patch_rest()
+    @patch_rest
     def test_create_lun_with_same_name(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
 
@@ -161,14 +161,14 @@ class UnityPoolTest(TestCase):
             pool.create_lun("openstack_lun")
         assert_that(f, raises(UnityLunNameInUseError))
 
-    @patch_rest()
+    @patch_rest
     def test_create_lun_on_spb(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         sp = UnityStorageProcessor(_id='spb', cli=t_rest())
         lun = pool.create_lun("LunName", 100, sp=sp)
         assert_that(lun, instance_of(UnityLun))
 
-    @patch_rest()
+    @patch_rest
     def test_create_lun_with_muitl_property(self):
         pool = UnityPool(_id='pool_1', cli=t_rest())
         lun = pool.create_lun("LunName", 100,

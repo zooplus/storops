@@ -40,7 +40,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityFileSystemTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_properties(self):
         fs = UnityFileSystem(_id='fs_2', cli=t_rest())
         assert_that(fs.id, equal_to('fs_2'))
@@ -81,19 +81,19 @@ class UnityFileSystemTest(TestCase):
         assert_that(len(fs.cifs_share), equal_to(1))
         assert_that(fs.nfs_share, none())
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         fs_list = UnityFileSystemList(cli=t_rest())
         assert_that(len(fs_list), equal_to(3))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_fs_9(self):
         fs = UnityFileSystem(_id='fs_9', cli=t_rest())
         resp = fs.delete(force_snap_delete=True, force_vvol_delete=True)
         assert_that(resp.is_ok(), equal_to(True))
         assert_that(resp.job.existed, equal_to(False))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_not_found(self):
         def f():
             fs = UnityFileSystem(_id='fs_99', cli=t_rest())
@@ -101,13 +101,13 @@ class UnityFileSystemTest(TestCase):
 
         assert_that(f, raises(UnityResourceNotFoundError))
 
-    @patch_rest()
+    @patch_rest
     def test_extend(self):
         fs = UnityFileSystem(_id='fs_8', cli=t_rest())
         resp = fs.extend(1024 ** 3 * 5)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_extend_size_error(self):
         def f():
             fs = UnityFileSystem(_id='fs_8', cli=t_rest())
@@ -116,7 +116,7 @@ class UnityFileSystemTest(TestCase):
         assert_that(f, raises(UnityFileSystemSizeTooSmallError,
                               'size is too small'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_success(self):
         fs = UnityFileSystem.create(
             t_rest(), 'pool_1', 'nas_2', 'fs3', 3 * 1024 ** 3,
@@ -124,7 +124,7 @@ class UnityFileSystemTest(TestCase):
             tiering_policy=TieringPolicyEnum.AUTOTIER_HIGH)
         assert_that(fs.get_id(), equal_to('fs_12'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_filesystem_async(self):
         fs = UnityFileSystem(_id='fs_14', cli=t_rest())
         resp = fs.delete(async=True)
@@ -141,7 +141,7 @@ class UnityFileSystemTest(TestCase):
         assert_that(str(job.est_remain_time), equal_to('0:00:29'))
         assert_that(job.progress_pct, equal_to(0))
 
-    @patch_rest()
+    @patch_rest
     def test_create_existed(self):
         def f():
             UnityFileSystem.create(
@@ -151,7 +151,7 @@ class UnityFileSystemTest(TestCase):
         assert_that(f, raises(UnityFileSystemNameAlreadyExisted,
                               'file system name has already'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_nfs_share_success(self):
         fs = UnityFileSystem(_id='fs_9', cli=t_rest())
         share = fs.create_nfs_share(
@@ -159,21 +159,21 @@ class UnityFileSystemTest(TestCase):
         assert_that(share.name, equal_to('ns1'))
         assert_that(share.id, equal_to('NFSShare_4'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_cifs_share_success(self):
         fs = UnityFileSystem(_id='fs_8', cli=t_rest())
         share = fs.create_cifs_share('cs1')
         assert_that(share.name, equal_to('cs1'))
         assert_that(share.existed, equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_create_snap_success(self):
         fs = UnityFileSystem(_id='fs_8', cli=t_rest())
         snap = fs.create_snap()
         assert_that(snap.existed, equal_to(True))
         assert_that(snap.storage_resource, equal_to(fs.storage_resource))
 
-    @patch_rest()
+    @patch_rest
     def test_create_snap_name_existed(self):
         def f():
             fs = UnityFileSystem(_id='fs_8', cli=t_rest())
@@ -181,7 +181,7 @@ class UnityFileSystemTest(TestCase):
 
         assert_that(f, raises(UnitySnapNameInUseError, 'in use'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_snap_fs_snap_existed(self):
         def f():
             fs = UnityFileSystem(_id='fs_8', cli=t_rest())
@@ -189,17 +189,17 @@ class UnityFileSystemTest(TestCase):
 
         assert_that(f, raises(UnitySnapNameInUseError, 'in use'))
 
-    @patch_rest()
+    @patch_rest
     def test_fs_snapshots(self):
         fs = UnityFileSystem(_id='fs_5', cli=t_rest())
         assert_that(len(fs.snapshots), equal_to(2))
 
-    @patch_rest()
+    @patch_rest
     def test_has_snap_destroying(self):
         fs = UnityFileSystem(_id='fs_5', cli=t_rest())
         assert_that(fs.has_snap(), equal_to(False))
 
-    @patch_rest()
+    @patch_rest
     def test_has_snap_true(self):
         fs = UnityFileSystem(_id='fs_8', cli=t_rest())
         assert_that(fs.has_snap(), equal_to(True))

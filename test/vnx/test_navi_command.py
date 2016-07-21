@@ -27,30 +27,30 @@ __author__ = 'Cedric Zhuang'
 
 
 class NaviCommandTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_username_password(self):
         cmd = NaviCommand('a', 'a', 1)
         assert_that(' '.join(map(str, cmd.get_credentials())),
                     equal_to('-user a -password a -scope 1'))
 
-    @patch_cli()
+    @patch_cli
     def test_default_security_file(self):
         cmd = NaviCommand()
         assert_that(cmd.get_credentials(), equal_to([]))
 
-    @patch_cli()
+    @patch_cli
     def test_security_file(self):
         cmd = NaviCommand(sec_file=r'/a/b/c.key')
         assert_that(' '.join(cmd.get_credentials()),
                     equal_to('-secfilepath /a/b/c.key'))
 
-    @patch_cli()
+    @patch_cli
     def test_username_password_timeout(self):
         cmd = NaviCommand('a', 'a', 1, timeout=20)
         assert_that(' '.join(map(str, cmd.get_credentials())),
                     equal_to('-user a -password a -scope 1 -t 20'))
 
-    @patch_cli()
+    @patch_cli
     def test_timeout_max_and_min(self):
         cmd = NaviCommand()
         cmd._timeout = 0.5

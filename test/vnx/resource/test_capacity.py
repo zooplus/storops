@@ -25,22 +25,22 @@ __author__ = 'Tina Tang'
 
 
 class VNXCapacityTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_total(self):
         capacity = VNXCapacity.get(t_cli())
         assert_that(capacity.total, equal_to(178269.891))
 
-    @patch_cli()
+    @patch_cli
     def test_free_raw_disk(self):
         capacity = VNXCapacity.get(t_cli())
         assert_that(capacity.free_raw_disk, equal_to(42170.744))
 
-    @patch_cli()
+    @patch_cli
     def test_free_storage_pool(self):
         capacity = VNXCapacity.get(t_cli())
         assert_that(capacity.free_storage_pool, equal_to(11958.398))
 
-    @patch_cli()
+    @patch_cli
     def test_used(self):
         capacity = VNXCapacity.get(t_cli())
         assert_that(capacity.used, equal_to(124140.749))

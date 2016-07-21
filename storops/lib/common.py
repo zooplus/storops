@@ -15,19 +15,20 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from enum import Enum as _Enum
 import errno
-from functools import partial
 import functools
+import inspect
 import json
 import logging
-from os import path, makedirs
-import six
 import sys
 import threading
+from functools import partial
+from os import path, makedirs
 
-from retryz import retry
 import cachez
+import six
+from enum import Enum as _Enum
+from retryz import retry
 
 import storops.exception
 
@@ -427,13 +428,29 @@ def get_lock_file(name):
     return path.join(lock_folder, name)
 
 
-def round_it(ndigits=3):
+def round_it(n_digits=3):
     def inner(func):
         @six.wraps(func)
         def _inner(*args, **kwargs):
             value = func(*args, **kwargs)
-            return round(value, ndigits)
+            return round(value, n_digits)
+
         return _inner
+
     return inner
 
+
 round_3 = round_it(3)
+
+
+def allow_omit_parentheses(func):
+    @six.wraps(func)
+    def inner(*args, **kwargs):
+        if len(args) == 1 and inspect.isfunction(args[0]):
+            # Decorator are used without parentheses, this
+            # decorator add the the parentheses
+            return func()(*args, **kwargs)
+        else:
+            return func(*args, **kwargs)
+
+    return inner

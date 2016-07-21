@@ -1,0 +1,30 @@
+{
+  "content": {
+    "id": "SMBShare_5",
+    "type": 2,
+    "offlineAvailability": 0,
+    "instanceId": "root/emc:EMC_UEM_CIFSShareLeaf%InstanceID=SMBShare_5",
+    "name": "cifs_fs_snap0",
+    "path": "/",
+    "exportPaths": [
+      "\\\\smb1130.win2012.dev\\cifs_fs_snap0",
+      "\\\\10.244.220.120\\cifs_fs_snap0"
+    ],
+    "description": "",
+    "creationTime": "2016-07-14T08:00:06.519Z",
+    "modifiedTime": "2016-07-14T08:00:06.519Z",
+    "isContinuousAvailabilityEnabled": false,
+    "isEncryptionEnabled": false,
+    "isACEEnabled": false,
+    "isABEEnabled": false,
+    "isBranchCacheEnabled": false,
+    "isDFSEnabled": false,
+    "umask": "022",
+    "filesystem": {
+      "id": "fs_399"
+    },
+    "snap": {
+      "id": "171798692265"
+    }
+  }
+}

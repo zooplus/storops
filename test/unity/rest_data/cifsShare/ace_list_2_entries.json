@@ -1,0 +1,16 @@
+{
+  "content": {
+    "cifsShareACEs": [
+      {
+        "accessLevel": 4,
+        "accessType": 1,
+        "sid": "S-1-5-15-be80fa7-8ddad211-d49ba5f9-45e"
+      },
+      {
+        "accessLevel": 1,
+        "accessType": 1,
+        "sid": "S-1-5-15-be80fa7-8ddad211-d49ba5f9-1f4"
+      }
+    ]
+  }
+}

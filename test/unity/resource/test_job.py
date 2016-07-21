@@ -33,7 +33,7 @@ class UnityJobTest(TestCase):
     def test_job():
         return UnityJob(_id='N-345', cli=t_rest())
 
-    @patch_rest()
+    @patch_rest
     def test_job_properties(self):
         job = self.test_job()
         assert_that(job.id, equal_to('N-345'))
@@ -49,7 +49,7 @@ class UnityJobTest(TestCase):
         assert_that(job.progress_pct, equal_to(100))
         assert_that(str(job.elapsed_time), equal_to('0:00:33.377000'))
 
-    @patch_rest()
+    @patch_rest
     def test_task_properties(self):
         job = self.test_job()
         tasks = job.tasks
@@ -69,7 +69,7 @@ class UnityJobTest(TestCase):
         assert_that(task.parameters_out, instance_of(dict))
         assert_that(task.parameters_out['id'], equal_to('B-2'))
 
-    @patch_rest()
+    @patch_rest
     def test_message_properties(self):
         job = self.test_job()
         messages = job.tasks[0].messages
@@ -86,7 +86,7 @@ class UnityJobTest(TestCase):
         assert_that(localized_message.locale, equal_to('en_US'))
         assert_that(localized_message.message, equal_to('Success'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         jobs = UnityJobList(cli=t_rest())
         assert_that(len(jobs), equal_to(3))

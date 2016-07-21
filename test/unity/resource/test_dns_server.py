@@ -30,7 +30,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityFileDnsServerTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         server = UnityFileDnsServer('dns_2', cli=t_rest())
         assert_that(server.existed, equal_to(True))
@@ -38,12 +38,12 @@ class UnityFileDnsServerTest(TestCase):
         assert_that(server.domain, equal_to('win2012.dev'))
         assert_that(server.nas_server, instance_of(UnityNasServer))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         servers = UnityFileDnsServerList(cli=t_rest())
         assert_that(len(servers), equal_to(1))
 
-    @patch_rest()
+    @patch_rest
     def test_create_one_dns_each_nas_server(self):
         def f():
             UnityFileDnsServer.create(t_rest(), 'nas_2', 'emc.dev',
@@ -51,14 +51,14 @@ class UnityFileDnsServerTest(TestCase):
 
         assert_that(f, raises(UnityOneDnsPerNasServerError, 'Only one DNS'))
 
-    @patch_rest()
+    @patch_rest
     def test_create_success(self):
         server = UnityNasServer.get(t_rest(), 'nas_4')
         dns = UnityFileDnsServer.create(t_rest(), server, 'emc.dev',
                                         ['2.2.2.2', '3.3.3.3'])
         assert_that(dns.addresses, only_contains('2.2.2.2', '3.3.3.3'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_not_found(self):
         def f():
             UnityFileDnsServer.get(t_rest(), 'dns_30').delete()

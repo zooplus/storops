@@ -24,7 +24,7 @@ import xmltodict as xmltodict
 from lxml import etree
 from mock import patch
 
-from storops.lib.common import cache
+from storops.lib.common import cache, allow_omit_parentheses
 from storops.vnx.nas_client import VNXNasClient
 from test.utils import ConnectorMock, read_test_file
 from test.vnx.cli_mock import MockCli
@@ -100,6 +100,7 @@ class MockXmlPost(ConnectorMock):
         return ret
 
 
+@allow_omit_parentheses
 def patch_post(output=None, mock_map=None):
     xml = MockXmlPost(output, mock_map)
 
@@ -153,6 +154,7 @@ def patch_ssh(output=None, mock_map=None):
     return decorator
 
 
+@allow_omit_parentheses
 def patch_nas(xml_output=None, xml_map=None, ssh_output=None, ssh_map=None):
     xml = MockXmlPost(xml_output, xml_map)
     ssh = MockSsh(ssh_output, ssh_map)

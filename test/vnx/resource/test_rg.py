@@ -30,12 +30,12 @@ __author__ = 'Cedric Zhuang'
 
 
 class VNXRaidGroupTest(TestCase):
-    @patch_cli()
+    @patch_cli
     def test_get_rg(self):
         rg = VNXRaidGroup.get(t_cli(), 0)
         verify_raid0(rg)
 
-    @patch_cli()
+    @patch_cli
     def test_get_rg_list(self):
         rgs = VNXRaidGroup.get(t_cli())
         assert_that(len(rgs), equal_to(7))
@@ -46,28 +46,28 @@ class VNXRaidGroupTest(TestCase):
         else:
             self.fail('RAID group 0 not found.')
 
-    @patch_cli()
+    @patch_cli
     def test_create_rg(self):
         def f():
             VNXRaidGroup.create(t_cli(), 11, ['1_0_0', '1_0_1'])
 
         assert_that(f, raises(VNXCreateRaidGroupError, 'not supported'))
 
-    @patch_cli()
+    @patch_cli
     def test_create_rg_invalid_raid_type(self):
         def f():
             VNXRaidGroup.create(t_cli(), 11, ['1_0_0', '1_0_1'], 'r12')
 
         assert_that(f, raises(ValueError, 'valid value'))
 
-    @patch_cli()
+    @patch_cli
     def test_delete_rg(self):
         def f():
             VNXRaidGroup(11, t_cli()).delete()
 
         assert_that(f, raises(VNXDeleteRaidGroupError, 'Not Found'))
 
-    @patch_cli()
+    @patch_cli
     def test_disks(self):
         rg = VNXRaidGroup(4, t_cli())
         disks = rg.disks
@@ -76,7 +76,7 @@ class VNXRaidGroupTest(TestCase):
             assert_that(disk, instance_of(VNXDisk))
             assert_that(disk.existed, equal_to(True))
 
-    @patch_cli()
+    @patch_cli
     def test_available_capacity_gbs(self):
         rg = VNXRaidGroup(4, t_cli())
         available_capacity = rg.available_capacity_gbs

@@ -19,7 +19,7 @@ from __future__ import unicode_literals
 import unittest
 
 from hamcrest import assert_that, equal_to, only_contains, none, any_of, \
-    contains_string
+    contains_string, raises
 
 from storops.unity.client import UnityClient, UnityDoc
 from storops.unity.enums import RaidTypeEnum, HealthEnum, RaidTypeEnumList, \
@@ -39,7 +39,7 @@ class UnityClientTest(unittest.TestCase):
         url = UnityClient.assemble_url('api/types', filter=None)
         assert_that(url, equal_to('/api/types?compact=True'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_fields(self):
         fields = t_rest().get_fields('metric')
         assert_that(fields, only_contains(
@@ -47,7 +47,14 @@ class UnityClientTest(unittest.TestCase):
             'description', 'isHistoricalAvailable', 'isRealtimeAvailable',
             'unitDisplayString', 'unit', 'metricGroupName', 'visibility'))
 
-    @patch_rest()
+    @patch_rest(output='abc.json')
+    def test_mock_file_not_found(self):
+        def f():
+            t_rest().get_fields('abc')
+
+        assert_that(f, raises(IOError))
+
+    @patch_rest
     def test_make_body_complex(self):
         service_levels = [ServiceLevelEnum.BASIC, ServiceLevelEnum.BRONZE]
         param = {
@@ -72,12 +79,11 @@ class UnityClientTest(unittest.TestCase):
                     'g': 'string', 'h': 0.2, 'i': [0, 1], 'j': [0, 1]}
         assert_that(ret, equal_to(expected))
 
-    @patch_rest()
+    @patch_rest
     def test_make_body_blank(self):
-        param = {}
-        param['fastVPParameters'] = {
+        param = {'fastVPParameters': {
             'tieringPolicy': None
-        }
+        }}
         ret = UnityClient.make_body(param)
         expected = {}
         assert_that(ret, equal_to(expected))
@@ -170,31 +176,31 @@ class UnityClientTest(unittest.TestCase):
 
 
 class UnityDocTest(unittest.TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_doc_of_field(self):
         unity_doc = UnityDoc(t_rest(), UnityLun)
         doc = unity_doc._get_doc(field='name')
         assert_that(doc, equal_to('Readable name'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_doc_of_resource(self):
         unity_doc = UnityDoc(t_rest(), UnityLun)
         doc = unity_doc._get_doc()
         assert_that(doc, contains_string('Represents Volume'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_doc_of_index(self):
         unity_doc = UnityDoc(t_rest(), HealthEnum)
         doc = unity_doc._get_doc(value=5)
         assert_that(doc, equal_to('OK'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_doc_enum_list(self):
         unity_doc = UnityDoc(t_rest(), RaidTypeEnumList)
         doc = unity_doc.doc
         assert_that(doc, contains_string('RAID5 has the only'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_doc_unity_resource_list(self):
         unity_doc = UnityDoc(t_rest(), UnityLunList)
         doc = unity_doc.doc

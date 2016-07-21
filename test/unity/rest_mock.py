@@ -15,16 +15,15 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import functools
 import json
 import logging
 import os
 
-import functools
-
 from mock import patch
 
 from storops.exception import MockFileNotFoundError
-from storops.lib.common import cache
+from storops.lib.common import cache, allow_omit_parentheses
 from storops.unity.client import UnityClient
 from storops.unity.resource.system import UnitySystem
 from test.utils import ConnectorMock, read_test_file
@@ -106,6 +105,7 @@ class MockRestClient(ConnectorMock):
         return ret
 
 
+@allow_omit_parentheses
 def patch_rest(output=None, mock_map=None):
     rest = MockRestClient(output, mock_map)
 

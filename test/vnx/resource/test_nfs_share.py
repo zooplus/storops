@@ -29,22 +29,31 @@ __author__ = 'Jay Xu'
 
 
 class VNXNfsShareTest(unittest.TestCase):
-    @patch_nas()
+    @patch_nas
     def test_get_all_share(self):
         shares = VNXNfsShare.get(t_nas())
         assert_that(len(shares), equal_to(26))
         share = next(s for s in shares if s.path == '/EEE')
         self.verify_share_eee(share)
 
-    @patch_nas()
-    def test_get_share_by_path(self):
+    @patch_nas(xml_output='abc.xml')
+    def test_get_share_by_path_empty(self):
+        def f():
+            path = '/EEE'
+            shares = VNXNfsShare.get(t_nas(), path=path)
+            assert_that(len(shares), equal_to(1))
+
+        assert_that(f, raises(IOError))
+
+    @patch_nas
+    def test_get_share_by_path_success(self):
         path = '/EEE'
         shares = VNXNfsShare.get(t_nas(), path=path)
         assert_that(len(shares), equal_to(1))
         share = next(s for s in shares if s.path == path)
         self.verify_share_eee(share)
 
-    @patch_nas()
+    @patch_nas
     def test_get_share_by_mover_id(self):
         mover = self.get_mover_1()
         shares = VNXNfsShare.get(t_nas(), mover=mover)
@@ -67,7 +76,7 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(len(share.ro_hosts), equal_to(41))
         assert_that(share.ro_hosts, has_item('10.110.43.94'))
 
-    @patch_nas()
+    @patch_nas
     def test_modify_not_exists(self):
         def f():
             host_config = NfsHostConfig(
@@ -81,7 +90,7 @@ class VNXNfsShareTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'does not exist'))
 
-    @patch_nas()
+    @patch_nas
     def test_modify_success(self):
         host_config = NfsHostConfig(access_hosts=['7.7.7.7'])
         mover = self.get_mover_1()
@@ -89,7 +98,7 @@ class VNXNfsShareTest(unittest.TestCase):
         resp = share.modify(ro=True, host_config=host_config)
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_create_no_host(self):
         def f():
             mover = self.get_mover_1()
@@ -97,7 +106,7 @@ class VNXNfsShareTest(unittest.TestCase):
 
         assert_that(f, raises(VNXBackendError, 'is invalid'))
 
-    @patch_nas()
+    @patch_nas
     def test_create_success(self):
         mover = self.get_mover_1()
         share = VNXNfsShare.create(cli=t_nas(), mover=mover, path='/EEE')
@@ -106,7 +115,7 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(share.existed, equal_to(True))
         assert_that(share.fs_id, equal_to(243))
 
-    @patch_nas()
+    @patch_nas
     def test_create_with_host_config(self):
         mover = self.get_mover_1()
         host_config = NfsHostConfig(
@@ -121,14 +130,14 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(share.existed, equal_to(True))
         assert_that(share.access_hosts, has_item('6.6.6.6'))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_success(self):
         mover = self.get_mover_1()
         share = VNXNfsShare(cli=t_nas(), mover=mover, path='/EEE')
         resp = share.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_delete_not_found(self):
         def f():
             mover = self.get_mover_1()
@@ -141,7 +150,7 @@ class VNXNfsShareTest(unittest.TestCase):
     def get_mover_1():
         return VNXMover(mover_id=1, cli=t_nas())
 
-    @patch_nas()
+    @patch_nas
     def test_mover_property(self):
         mover = self.get_mover_1()
         share = VNXNfsShare.get(cli=t_nas(), mover=mover, path='/EEE')
@@ -149,7 +158,7 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(mover.existed, equal_to(True))
         assert_that(mover.role, equal_to('primary'))
 
-    @patch_nas()
+    @patch_nas
     def test_fs_property(self):
         mover = self.get_mover_1()
         share = VNXNfsShare.get(cli=t_nas(), mover=mover, path='/EEE')
@@ -157,14 +166,14 @@ class VNXNfsShareTest(unittest.TestCase):
         assert_that(fs.existed, equal_to(True))
         assert_that(fs.fs_id, equal_to(243))
 
-    @patch_nas()
+    @patch_nas
     def test_allow_ro_hosts(self):
         mover = self.get_mover_1()
         share = VNXNfsShare(cli=t_nas(), mover=mover, path='/minjie_fs1')
         resp = share.allow_ro_access('1.1.1.1', '2.2.2.2')
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_nas()
+    @patch_nas
     def test_deny_hosts(self):
         mover = self.get_mover_1()
         share = VNXNfsShare(cli=t_nas(), mover=mover, path='/minjie_fs2')

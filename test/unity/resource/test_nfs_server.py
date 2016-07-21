@@ -31,7 +31,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityNfsServerTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         server = UnityNfsServer('nfs_2', t_rest())
         assert_that(server.id, equal_to('nfs_2'))
@@ -43,31 +43,31 @@ class UnityNfsServerTest(TestCase):
                     instance_of(UnityFileInterfaceList))
         assert_that(str(server.credentials_cache_ttl), equal_to('0:15:00'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         servers = UnityNfsServerList(cli=t_rest())
         assert_that(len(servers), equal_to(1))
 
-    @patch_rest()
+    @patch_rest
     def test_create_success(self):
         server = UnityNfsServer.create(t_rest(), 'nas_5', nfs_v4_enabled=True)
         assert_that(server.id, equal_to('nfs_3'))
         assert_that(server.nfs_v4_enabled, equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_create_existed(self):
         def f():
             UnityNfsServer.create(t_rest(), 'nas_5', nfs_v4_enabled=False)
 
         assert_that(f, raises(UnityNfsAlreadyEnabledError, 'already enabled'))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_success(self):
         server = UnityNfsServer(_id='nfs_3', cli=t_rest())
         resp = server.delete()
         assert_that(resp.is_ok(), equal_to(True))
 
-    @patch_rest()
+    @patch_rest
     def test_delete_not_found(self):
         def f():
             server = UnityNfsServer(_id='nfs_5', cli=t_rest())

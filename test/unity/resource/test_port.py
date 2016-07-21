@@ -27,7 +27,7 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityIpPortTest(TestCase):
-    @patch_rest()
+    @patch_rest
     def test_get_properties(self):
         port = UnityIpPort('spa_eth2', cli=t_rest())
         assert_that(port.name, equal_to('SP A Ethernet Port 2'))
@@ -36,7 +36,7 @@ class UnityIpPortTest(TestCase):
         assert_that(port.is_link_up, equal_to(True))
         assert_that(port.mac_address, equal_to('00:60:16:5C:08:E1'))
 
-    @patch_rest()
+    @patch_rest
     def test_get_all(self):
         ports = UnityIpPortList(cli=t_rest())
         assert_that(len(ports), equal_to(8))

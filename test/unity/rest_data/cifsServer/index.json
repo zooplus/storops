@@ -13,6 +13,10 @@
       "response": "cifs_3.json"
     },
     {
+      "url": "/api/instances/cifsServer/cifs_7?compact=True&fields=description,domain,fileInterfaces,health,id,instanceId,isStandalone,lastUsedOrganizationalUnit,name,nasServer,netbiosName,smbMultiChannelSupported,smbProtocolVersions,smbcaSupported,workgroup",
+      "response": "cifs_7.json"
+    },
+    {
       "url": "/api/types/cifsServer/instances?compact=True&fields=description,domain,fileInterfaces,health,id,instanceId,isStandalone,lastUsedOrganizationalUnit,name,nasServer,netbiosName,smbMultiChannelSupported,smbProtocolVersions,smbcaSupported,workgroup",
       "response": "all.json"
     },

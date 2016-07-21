@@ -266,14 +266,6 @@ class UnityCifsServiceNotEnabledError(UnityException):
     pass
 
 
-class UnityCimException(UnityException):
-    pass
-
-
-class UnityCimResourceNotFoundError(UnityCimException):
-    pass
-
-
 class UnityHostInitiatorNotFoundError(UnityException):
     pass
 
@@ -303,18 +295,6 @@ class UnityAttachAluExceedLimitError(UnityAttachAluError):
 
 class UnityAluAlreadyAttachedError(UnityAttachAluError):
     message = 'Requested LUN has already been added to this host'
-
-
-class UnityAddCifsAceError(UnityCimException):
-    message = 'failed to add ace for cifs share.'
-
-
-class UnityDeleteCifsAceError(UnityCimException):
-    message = 'failed to remove ace for cifs share.'
-
-
-class UnityAceNotFoundError(UnityCimException):
-    message = 'specified ace not found.'
 
 
 @rest_exception
@@ -411,16 +391,8 @@ class UnityFileSystemSizeTooSmallError(UnityException):
     error_code = 108008449
 
 
-class UnityImportCifsUserError(UnityException):
-    message = 'failed to import cifs user.'
-
-
 class UnityShareTypeNotSupportAccessControlError(UnityException):
     message = 'share type does not support access control.'
-
-
-class UnityCreateCifsUserError(UnityImportCifsUserError):
-    message = 'failed to import cifs user.  please make sure this user exists.'
 
 
 class UnityHostNotFoundException(UnityException):

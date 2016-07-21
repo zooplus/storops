@@ -25,7 +25,7 @@ import six
 from mock import patch
 
 from test.utils import ConnectorMock
-from storops.lib.common import cache
+from storops.lib.common import cache, allow_omit_parentheses
 from storops.vnx.block_cli import CliClient
 from storops.vnx.resource.system import VNXSystem
 
@@ -105,6 +105,7 @@ class MockCli(ConnectorMock):
         return '{}.txt'.format(name)
 
 
+@allow_omit_parentheses
 def patch_cli(output=None, mock_map=None):
     cli = MockCli(output, mock_map)
 
