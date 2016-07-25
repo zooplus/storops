@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from retryz import retry
 
 from storops.exception import VNXDiskUsedError
-from storops.lib.common import daemon, instance_cache
+from storops.lib.common import daemon, instance_cache, clear_instance_cache
 from storops.vnx.resource.host import VNXHost
 from storops.vnx.resource.nfs_share import VNXNfsShare
 from storops.vnx.resource.fs_snap import VNXFsSnap
@@ -121,6 +121,7 @@ class VNXSystem(VNXCliResource):
         return self._init_file_cli()
 
     @property
+    @instance_cache
     def _ndu_list(self):
         ret = VNXNduList(self._cli)
         ret.with_no_poll()
@@ -138,9 +139,9 @@ class VNXSystem(VNXCliResource):
         # do not use the `control_station_ip` property to avoid self loop.
         self._cli.set_ip(self.spa_ip, self.spb_ip, self._get_cs_ip())
 
+    @clear_instance_cache
     def update(self, data=None):
         super(VNXSystem, self).update(data)
-        self._ndu_list.update()
         self.update_nodes_ip()
 
     @property

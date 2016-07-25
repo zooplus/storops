@@ -660,6 +660,11 @@ class VNXLunInConsistencyGroupError(VNXDeleteLunError):
     error_code = 0x716d8025
 
 
+@cli_exception
+class VNXLunHasSnapMountPointError(VNXDeleteLunError):
+    error_code = 0x716d801a
+
+
 class VNXCompressionError(VNXLunError):
     pass
 

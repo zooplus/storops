@@ -197,7 +197,11 @@ class CliClient(object):
 
     @command
     def get_pool_feature(self):
-        return 'storagepool -feature -info -all'
+        return ('storagepool -feature -info -isVirtualProvisioningSupported '
+                '-maxPools -maxDiskDrivesPerPool -maxDiskDrivesAllPools '
+                '-maxDiskDrivesPerOp -maxPoolLUNs -minPoolLUNSize '
+                '-maxPoolLUNSize -numPools -numPoolLUNs -numThinLUNs '
+                '-numDiskDrivesAllPools -availableDisks')
 
     @classmethod
     def _get_id_name_opt(cls, _id, name, allow_empty=False):

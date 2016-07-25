@@ -278,23 +278,37 @@ class VNXLun(VNXCliResource):
             force_detach = True
             detach_from_sg = True
             detach_from_cg = True
-            self.clear_smp(force)
 
-        if detach_from_sg:
-            self.detach_from_sg()
+        while True:
+            out = self._do_delete(delete_snapshots, force_detach)
+            try:
+                ex.raise_if_err(out,
+                                'failed to remove lun {}'.format(
+                                    self._get_name()),
+                                default=ex.VNXDeleteLunError)
+                break
+            except ex.VNXLunInStorageGroupError:
+                if detach_from_sg:
+                    self.detach_from_sg()
+                else:
+                    raise
+            except ex.VNXLunInConsistencyGroupError:
+                if detach_from_cg:
+                    self.detach_from_cg()
+                else:
+                    raise
+            except ex.VNXLunHasSnapMountPointError:
+                if force:
+                    self.clear_smp(force)
+                else:
+                    raise
 
-        if detach_from_cg:
-            self.detach_from_cg()
-
-        name = self._get_name()
-        out = self._cli.delete_pool_lun(self._lun_id,
-                                        name,
-                                        delete_snapshots=delete_snapshots,
-                                        force_detach=force_detach,
-                                        poll=self.poll)
-
-        ex.raise_if_err(out, 'failed to remove lun {}'.format(name),
-                        default=ex.VNXDeleteLunError)
+    def _do_delete(self, delete_snapshots, force_detach):
+        return self._cli.delete_pool_lun(self._lun_id,
+                                         self._get_name(),
+                                         delete_snapshots=delete_snapshots,
+                                         force_detach=force_detach,
+                                         poll=self.poll)
 
     def rename(self, new_name):
         if new_name is not None and self._name != new_name:

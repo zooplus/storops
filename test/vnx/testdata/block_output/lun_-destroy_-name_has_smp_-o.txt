@@ -1,0 +1,1 @@
+SP A: The LUN cannot be destroyed because it still has snapshot mount points. Destroy the snapshot mount points then retry the LUN destroy command. (0x716d801a)

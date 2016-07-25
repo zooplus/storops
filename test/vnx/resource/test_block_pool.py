@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from hamcrest import assert_that, raises, equal_to, has_items, \
-    only_contains
+    only_contains, none
 
 from test.vnx.cli_mock import t_cli, patch_cli
 from test.vnx.resource.verifiers import verify_pool_0
@@ -198,24 +198,24 @@ class VNXPoolFeatureTest(TestCase):
     @patch_cli
     def test_properties(self):
         f = VNXPoolFeature(t_cli())
-        assert_that(f.is_virtual_provisioning_supported, equal_to(False))
-        assert_that(f.max_pools, equal_to(40))
-        assert_that(f.max_disks_per_pool, equal_to(746))
-        assert_that(f.max_disks_for_all_pools, equal_to(746))
-        assert_that(f.max_disks_per_operation, equal_to(120))
-        assert_that(f.max_pool_luns, equal_to(2100))
+        assert_that(f.is_virtual_provisioning_supported, equal_to(True))
+        assert_that(f.max_pools, equal_to(20))
+        assert_that(f.max_disks_per_pool, equal_to(121))
+        assert_that(f.max_disks_for_all_pools, equal_to(121))
+        assert_that(f.max_disks_per_operation, equal_to(40))
+        assert_that(f.max_pool_luns, equal_to(512))
         assert_that(f.min_pool_lun_size_blocks, equal_to(1))
-        assert_that(f.max_pool_lun_size_blocks, equal_to(549755813888))
-        assert_that(f.max_pool_lun_size_gbs, equal_to(262144.0))
+        assert_that(f.max_pool_lun_size_blocks, equal_to(34359738368))
+        assert_that(f.max_pool_lun_size_gbs, equal_to(16384.0))
         assert_that(f.total_number_of_pools, equal_to(4))
-        assert_that(f.total_pool_luns, equal_to(3))
-        assert_that(f.total_thin_luns, equal_to(2))
-        assert_that(f.total_non_thin_luns, equal_to(1))
-        assert_that(f.number_of_disks_used_in_pools, equal_to(15))
+        assert_that(f.total_pool_luns, equal_to(351))
+        assert_that(f.total_thin_luns, equal_to(3))
+        assert_that(f.total_non_thin_luns, none())
+        assert_that(f.number_of_disks_used_in_pools, equal_to(18))
         assert_that(f.available_disks.index,
                     has_items('0_0_B8', '0_0_B9'))
-        assert_that(f.background_operation_state, equal_to('None'))
-        assert_that(f.background_rate, equal_to('Medium'))
+        assert_that(f.background_operation_state, none())
+        assert_that(f.background_rate, none())
 
     @patch_cli
     def test_available_disks(self):
