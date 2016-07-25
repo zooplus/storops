@@ -29,7 +29,8 @@ from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXLunNameInUseError, VNXTargetNotReadyError, \
     VNXCreateSnapResourceNotFoundError, VNXLunInStorageGroupError, \
     VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
-    VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled, EnumValueNotFoundError
+    VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled, \
+    EnumValueNotFoundError, VNXLunHasSnapMountPointError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate, VNXSPEnum
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -540,7 +541,16 @@ class VNXLunTest(TestCase):
                               'member of a consistency group'))
 
     @patch_cli
-    def test_delete_lun_has_smp(self):
+    def test_delete_lun_has_smp_not_force(self):
+        def f():
+            l2 = VNXLun(name='has_smp', cli=t_cli())
+            l2.delete()
+
+        assert_that(f, raises(VNXLunHasSnapMountPointError,
+                              'has snapshot mount points'))
+
+    @patch_cli
+    def test_delete_lun_has_smp_force(self):
         l = VNXLun(lun_id=196, cli=t_cli())
         # no error raised
         l.delete(force=True)
