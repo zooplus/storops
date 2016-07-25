@@ -1,0 +1,20 @@
+Is Virtual Provisioning Supported:  true
+Max. Pools:  20
+Max. Disks Per Pool:  121
+Max. Disks for all Pools:  121
+Max. Disks Per Operation:  40
+Max. Pool LUNs:  512
+Min. Pool LUN Size(Blocks):  1
+Max. Pool LUN Size(Blocks):  34359738368
+Max. Pool LUN Size(GBs):  16384.000
+Total Number of Pools:  4
+Total Number of Pool LUNs:  351
+Total Number of all Pool LUNs that are thin:  3
+Number of Disks used in Pools:  18
+Available Disks:
+Bus 0 Enclosure 0 Disk B8
+Bus 0 Enclosure 0 Disk B9
+Bus 1 Enclosure 0  Disk E9
+Bus 1 Enclosure 0  Disk E10
+Bus 1 Enclosure 0  Disk E11
+

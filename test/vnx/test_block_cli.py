@@ -186,7 +186,14 @@ class CliClientTest(TestCase):
     @extract_command
     def test_get_pool_feature(self):
         cmd = self.client.get_pool_feature()
-        assert_that(cmd, equal_to('storagepool -feature -info -all'))
+        assert_that(cmd,
+                    equal_to('storagepool -feature -info '
+                             '-isVirtualProvisioningSupported -maxPools '
+                             '-maxDiskDrivesPerPool -maxDiskDrivesAllPools '
+                             '-maxDiskDrivesPerOp -maxPoolLUNs -minPoolLUNSize'
+                             ' -maxPoolLUNSize -numPools -numPoolLUNs '
+                             '-numThinLUNs -numDiskDrivesAllPools '
+                             '-availableDisks'))
 
     @extract_command
     def test_get_connection_port(self):

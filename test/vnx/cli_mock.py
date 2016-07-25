@@ -102,6 +102,8 @@ class MockCli(ConnectorMock):
             params = delete_flag(params, k, v)
         name = '_'.join(map(six.text_type, params))
         name = re.sub(cls.escaped_pattern, '_', name)
+        if len(name) >= 200:
+            name = name[:43] + '____' + name[-43:]
         return '{}.txt'.format(name)
 
 

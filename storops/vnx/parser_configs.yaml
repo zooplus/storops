@@ -249,7 +249,7 @@ VNXPoolFeature:
       converter: to_int
     - label: "Available Disks:"
       converter: indices_to_disk_list
-      end_pattern: "Background Operation State:"
+      end_pattern: "(?:Background Operation State:|\\Z)"
     - label: "Background Operation State:"
     - label: "Background Rate:"
   default: max_pool_luns, total_pool_luns
@@ -424,7 +424,7 @@ VNXStorageGroup:
       end_pattern: "Shareable"
     - label: "HBA/SP Pairs:"
       converter: VNXStorageGroupHBAList
-      end_pattern: "[HLU\\/ALU Pairs|Shareable]"
+      end_pattern: "(?:HLU\\/ALU Pairs|Shareable)"
 
 
 VNXStorageGroupHBA:
@@ -553,7 +553,7 @@ VNXMirrorView:
       converter: to_bool
     - label: "Images:"
       converter: VNXMirrorViewImageList
-      end_pattern: "[Recovery Policy:|\\Z]"
+      end_pattern: "(?:Recovery Policy:|\\Z)"
     - label: "Recovery Policy:"
       converter: to_mirror_view_recovery_policy
     - label: "Preferred SP:"
