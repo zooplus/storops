@@ -424,9 +424,13 @@ class VNXLockRequiredException(VNXException):
 
 @cli_exception
 class VNXSpNotAvailableError(VNXException):
-    error_message = ('End of data stream',
-                     'connection refused',
+    error_message = ('connection refused',
                      'A network error occurred while trying to connect')
+
+
+@cli_exception
+class VNXDropConnectionError(VNXException):
+    error_message = 'End of data stream'
 
 
 @cli_exception
@@ -970,3 +974,22 @@ class VNXNasCommandNoError(VNXException):
 @cli_exception
 class VNXMoverInterfaceNotExistsError(VNXMoverInterfaceError):
     error_regex = 'network interface .* does not exist'
+
+
+class UnityJobException(UnityException):
+    """Unity Job exception.
+
+    Any job related exception should inherit this exception."""
+    pass
+
+
+class JobTimeoutException(UnityJobException):
+    message = "Timeout when waiting for job completion."
+
+
+class JobStateError(UnityJobException):
+    message = "Job failed in {state}."
+
+    def __init__(self, **kwargs):
+        self.message = JobStateError.message.format(**kwargs)
+        super(JobStateError, self).__init__(self.message)

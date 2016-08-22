@@ -521,7 +521,7 @@ class CliClient(object):
 
     @command
     def create_snap(self, res_id, snap_name,
-                    allow_rw=True, auto_delete=False):
+                    allow_rw=True, auto_delete=False, keep_for=None):
         cmd = ['snap', '-create']
         try:
             cmd += int_var('-res', res_id)
@@ -533,6 +533,8 @@ class CliClient(object):
         cmd += text_var('-name', snap_name)
         cmd += yes_no_var('-allowReadWrite', allow_rw)
         cmd += yes_no_var('-allowAutoDelete', auto_delete)
+        cmd += text_var('-keepFor', keep_for)
+
         return cmd
 
     @command
@@ -550,13 +552,14 @@ class CliClient(object):
 
     @command
     def modify_snap(self, name, new_name=None, desc=None,
-                    auto_delete=None, allow_rw=None):
+                    auto_delete=None, allow_rw=None, keep_for=None):
         opt = []
         if new_name is not None and name != new_name:
             opt += text_var('-name', new_name)
         opt += text_var('-descr', desc)
         opt += yes_no_var('-allowAutoDelete', auto_delete)
         opt += yes_no_var('-allowReadWrite', allow_rw)
+        opt += text_var('-keepFor', keep_for)
         if len(opt) > 0:
             cmd = ['snap', '-modify', '-id', name] + opt
         else:
@@ -826,18 +829,18 @@ class CliClient(object):
         if params is not None and len(params) > 0:
             if ip is None:
                 ip = self.ip
-            cmd = self._heart_beat.get_cmd_prefix(ip) + params
-            output = self._heart_beat.execute_cmd(ip, cmd)
+            output = self.do(ip, params)
         else:
             log.info('no command to execute.  return empty.')
             output = ''
         return output
 
-    def execute_dual(self, params):
-        def do(sp_ip):
-            cmd_to_exec = self._heart_beat.get_cmd_prefix(sp_ip) + params
-            return self._heart_beat.execute_cmd(sp_ip, cmd_to_exec)
+    @retry(on_error=ex.VNXDropConnectionError)
+    def do(self, ip, params):
+        cmd = self._heart_beat.get_cmd_prefix(ip) + params
+        return self._heart_beat.execute_cmd(ip, cmd)
 
+    def execute_dual(self, params):
         ip_list = self._heart_beat.get_all_alive_sps_ip()
         if not self._heart_beat.is_all_sps_alive():
             raise ex.VNXSPDownError(
@@ -847,5 +850,5 @@ class CliClient(object):
         output = []
         if params is not None and len(params) > 0:
             pool = ThreadPool(len(ip_list))
-            output = pool.map(do, ip_list)
+            output = pool.map(lambda ip: self.do(ip, params), ip_list)
         return tuple(output)
