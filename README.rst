@@ -308,6 +308,7 @@ EMC Contributors
 - Ray Chen <ray.chen@emc.com>
 - Tina Tang <tina.tang@emc.com>
 - Ryan Liang <ryan.liang@emc.com>
+- Wang Peter <peter.wang13@emc.com>
 
 Community Contributors
 ``````````````````````

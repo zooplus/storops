@@ -30,7 +30,8 @@ from storops.exception import VNXModifyLunError, VNXCompressionError, \
     VNXCreateSnapResourceNotFoundError, VNXLunInStorageGroupError, \
     VNXAttachSnapLunTypeError, VNXLunInConsistencyGroupError, \
     VNXDetachSnapLunTypeError, VNXDedupAlreadyEnabled, \
-    EnumValueNotFoundError, VNXLunHasSnapMountPointError
+    EnumValueNotFoundError, VNXLunHasSnapMountPointError, \
+    VNXLunUsedByFeatureError
 from storops.vnx.enums import VNXProvisionEnum, VNXTieringEnum, \
     VNXCompressionRate, VNXSPEnum
 from storops.vnx.resource.lun import VNXLun, VNXLunList
@@ -554,6 +555,15 @@ class VNXLunTest(TestCase):
         l = VNXLun(lun_id=196, cli=t_cli())
         # no error raised
         l.delete(force=True)
+
+    @patch_cli
+    def test_delete_lun_has_migration(self):
+        def f():
+            l = VNXLun(name='lun_in_migration', cli=t_cli())
+            l.delete()
+
+        assert_that(f, raises(VNXLunUsedByFeatureError,
+                              'Cannot unbind LUN'))
 
     @patch_cli
     def test_create_snap(self):

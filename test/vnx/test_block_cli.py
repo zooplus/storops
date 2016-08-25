@@ -406,21 +406,20 @@ class CliClientTest(TestCase):
     def test_create_snap(self):
         cmd = self.client.create_snap(12, 'snap0')
         assert_that(cmd, equal_to('snap -create -res 12 -name snap0 '
-                                  '-allowReadWrite yes -allowAutoDelete no'))
+                                  '-allowAutoDelete no -allowReadWrite yes'))
 
     @extract_command
     def test_create_snap_with_keep_for(self):
         cmd = self.client.create_snap(12, 'snap0', keep_for='1h')
         assert_that(cmd, equal_to('snap -create -res 12 -name snap0 '
-                                  '-allowReadWrite yes -allowAutoDelete no '
-                                  '-keepFor 1h'))
+                                  '-keepFor 1h -allowReadWrite yes'))
 
     @extract_command
     def test_create_snap_4_cg(self):
         cmd = self.client.create_snap('cg0', 'snap1', False, True)
         assert_that(cmd, equal_to('snap -create -res cg0 -resType CG '
-                                  '-name snap1 -allowReadWrite no '
-                                  '-allowAutoDelete yes'))
+                                  '-name snap1 -allowAutoDelete yes '
+                                  '-allowReadWrite no'))
 
     @extract_command
     def test_delete_snap(self):
@@ -578,8 +577,7 @@ class CliClientTest(TestCase):
     def test_modify_snap_keep_for(self):
         cmd = self.client.modify_snap('s1', 's2', 'snap2', False, False, '1h')
         assert_that(cmd, equal_to('snap -modify -id s1 -name s2 -descr snap2 '
-                                  '-allowAutoDelete no -allowReadWrite no '
-                                  '-keepFor 1h'))
+                                  '-keepFor 1h -allowReadWrite no'))
 
     @extract_command
     def test_sg_connect_host(self):

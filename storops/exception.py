@@ -677,6 +677,12 @@ class VNXLunHasSnapMountPointError(VNXDeleteLunError):
     error_code = 0x716d801a
 
 
+@cli_exception
+class VNXLunUsedByFeatureError(VNXDeleteLunError):
+    error_message = ("Cannot unbind LUN because it's being used by a"
+                     " feature of the Storage System")
+
+
 class VNXCompressionError(VNXLunError):
     pass
 
