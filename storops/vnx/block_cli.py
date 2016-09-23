@@ -531,9 +531,12 @@ class CliClient(object):
             cmd += ['-resType', 'CG']
 
         cmd += text_var('-name', snap_name)
+        # -keepFor and -allowAutoDelete cannot co-exist
+        if keep_for:
+            cmd += text_var('-keepFor', keep_for)
+        else:
+            cmd += yes_no_var('-allowAutoDelete', auto_delete)
         cmd += yes_no_var('-allowReadWrite', allow_rw)
-        cmd += yes_no_var('-allowAutoDelete', auto_delete)
-        cmd += text_var('-keepFor', keep_for)
 
         return cmd
 
@@ -557,9 +560,12 @@ class CliClient(object):
         if new_name is not None and name != new_name:
             opt += text_var('-name', new_name)
         opt += text_var('-descr', desc)
-        opt += yes_no_var('-allowAutoDelete', auto_delete)
+        # -keepFor and -allowAutoDelete cannot co-exist
+        if keep_for:
+            opt += text_var('-keepFor', keep_for)
+        else:
+            opt += yes_no_var('-allowAutoDelete', auto_delete)
         opt += yes_no_var('-allowReadWrite', allow_rw)
-        opt += text_var('-keepFor', keep_for)
         if len(opt) > 0:
             cmd = ['snap', '-modify', '-id', name] + opt
         else:
@@ -817,6 +823,16 @@ class CliClient(object):
         cmd = ['security', '-rmuser']
         cmd += text_var('-user', name)
         cmd += enum_var('-scope', scope, VNXUserScopeEnum)
+        cmd.append('-o')
+        return cmd
+
+    @command
+    def get_array_name(self):
+        return ['arrayname']
+
+    @command
+    def set_array_name(self, new_name):
+        cmd = text_var('arrayname', new_name)
         cmd.append('-o')
         return cmd
 

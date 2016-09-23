@@ -10,7 +10,7 @@ StorOps: The Python Library for VNX & Unity
 .. image:: https://img.shields.io/pypi/v/storops.svg
     :target: https://pypi.python.org/pypi/storops
     
-VERSION: 0.2.19
+VERSION: 0.2.20
 
 A minimalist Python library to manage VNX/Unity systems.
 This document lies in the source code and go with the release.
@@ -31,6 +31,16 @@ You could use "pip" to install "storops".
     $ pip install storops
 
 Make sure naviseccli is installed if you want to manage VNX.
+
+*PIP Install Failed?*
+
+If you have trouble install the `lxml` dependency.  Please try to set
+environment variable `STATICBUILD` to `true` on your platform.
+
+If you are on windows, you could also download and install the wheel version
+of `lxml` `here
+<http://www.lfd.uci.edu/~gohlke/pythonlibs/#mysql-python>`_.
+
 
 Feature List
 ------------
@@ -308,6 +318,7 @@ EMC Contributors
 - Ray Chen <ray.chen@emc.com>
 - Tina Tang <tina.tang@emc.com>
 - Ryan Liang <ryan.liang@emc.com>
+- Wang Peter <peter.wang13@emc.com>
 
 Community Contributors
 ``````````````````````

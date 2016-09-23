@@ -1,0 +1,2 @@
+Error: arrayname command failed
+The max length of storage system name is 64

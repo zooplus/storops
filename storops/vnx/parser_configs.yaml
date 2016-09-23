@@ -25,6 +25,13 @@ VNXSystem:
     - label: "Name:"
 
 
+VNXArrayName:
+  data_src: cli
+  properties:
+    - label: "Array Name:"
+      key: name
+
+
 VNXNdu:
   data_src: cli
   properties:

@@ -17,7 +17,8 @@ from __future__ import unicode_literals
 
 from retryz import retry
 
-from storops.exception import VNXDiskUsedError
+from storops.exception import VNXDiskUsedError, raise_if_err, \
+    VNXSetArrayNameError
 from storops.lib.common import daemon, instance_cache, clear_instance_cache
 from storops.vnx.resource.host import VNXHost
 from storops.vnx.resource.nfs_share import VNXNfsShare
@@ -126,6 +127,18 @@ class VNXSystem(VNXCliResource):
         ret = VNXNduList(self._cli)
         ret.with_no_poll()
         return ret
+
+    @property
+    @instance_cache
+    def name(self):
+        inst = VNXArrayName(self._cli)
+        return inst.name
+
+    @name.setter
+    @clear_instance_cache
+    def name(self, new_name):
+        inst = VNXArrayName(self._cli)
+        inst.set_name(new_name)
 
     def set_naviseccli(self, cli_binary):
         self._cli.set_binary(cli_binary)
@@ -418,3 +431,16 @@ class VNXSystem(VNXCliResource):
 
     def __del__(self):
         del self._cli
+
+
+class VNXArrayName(VNXCliResource):
+    def __init__(self, cli=None):
+        super(VNXArrayName, self).__init__()
+        self._cli = cli
+
+    def _get_raw_resource(self):
+        return self._cli.get_array_name()
+
+    def set_name(self, new_name):
+        out = self._cli.set_array_name(new_name)
+        raise_if_err(out, default=VNXSetArrayNameError)

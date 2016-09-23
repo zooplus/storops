@@ -391,6 +391,14 @@ class UnityFileSystemSizeTooSmallError(UnityException):
     error_code = 108008449
 
 
+class UnityEthernetPortMtuSizeNotSupportError(UnityException):
+    message = "Specified MTU size is not supported."
+
+
+class UnityEthernetPortSpeedNotSupportError(UnityException):
+    message = "Specified Speed is not supported."
+
+
 class UnityShareTypeNotSupportAccessControlError(UnityException):
     message = 'share type does not support access control.'
 
@@ -406,6 +414,10 @@ class NaviseccliNotAvailableError(VNXException):
 
 class VNXObjectNotFound(VNXException):
     message = "object is not found.  {err}"
+
+
+class VNXSetArrayNameError(VNXException):
+    pass
 
 
 class OptionMissingError(VNXException):
@@ -667,6 +679,12 @@ class VNXLunInConsistencyGroupError(VNXDeleteLunError):
 @cli_exception
 class VNXLunHasSnapMountPointError(VNXDeleteLunError):
     error_code = 0x716d801a
+
+
+@cli_exception
+class VNXLunUsedByFeatureError(VNXDeleteLunError):
+    error_message = ("Cannot unbind LUN because it's being used by a"
+                     " feature of the Storage System")
 
 
 class VNXCompressionError(VNXLunError):
