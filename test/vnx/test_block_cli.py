@@ -788,3 +788,13 @@ class CliClientTest(TestCase):
         cmd = self.client.delete_iscsi_ip(VNXSPEnum.SP_A, 10)
         assert_that(cmd, equal_to(
             'connection -delport -sp a -portid 10 -vportid 0 -o'))
+
+    @extract_command
+    def test_get_array_name(self):
+        cmd = self.client.get_array_name()
+        assert_that(cmd, equal_to('arrayname'))
+
+    @extract_command
+    def test_set_array_name(self):
+        cmd = self.client.set_array_name('new_name')
+        assert_that(cmd, equal_to('arrayname new_name -o'))

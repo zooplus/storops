@@ -20,6 +20,7 @@ from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, none, instance_of, raises
 from storops.vnx.resource.mover import VNXMoverList
+from storops.vnx.resource.system import VNXArrayName
 
 from storops.vnx.resource.vdm import VNXVdmList
 
@@ -29,12 +30,12 @@ from storops.lib.common import instance_cache
 from storops.vnx.resource.mirror_view import VNXMirrorViewList
 
 from storops.exception import VNXDeleteHbaNotFoundError, VNXCredentialError, \
-    VNXUserNameInUseError, VNXBackendError
+    VNXUserNameInUseError, VNXBackendError, VNXSetArrayNameError
 from storops.vnx.resource.port import VNXSPPortList, VNXConnectionPortList
 from storops.vnx.resource.vnx_domain import VNXDomainMemberList, \
     VNXStorageProcessor
 
-from test.vnx.cli_mock import patch_cli, t_vnx
+from test.vnx.cli_mock import patch_cli, t_vnx, t_cli
 from test.vnx.nas_mock import patch_post
 from test.vnx.resource.verifiers import verify_pool_0
 from storops import VNXSystem
@@ -58,7 +59,7 @@ class VNXSystemTest(TestCase):
         assert_that(self.vnx.model_type, equal_to('Rackmount'))
         assert_that(self.vnx.serial, equal_to('APM00153042305'))
         assert_that(self.vnx.agent_rev, equal_to('7.33.8 (2.97)'))
-        assert_that(self.vnx.name, equal_to('K10'))
+        assert_that(self.vnx.name, equal_to('IT_IS_ARR_NAME'))
         assert_that(self.vnx.revision, equal_to('05.33.008.3.297'))
         assert_that(self.vnx.existed, equal_to(True))
 
@@ -377,3 +378,20 @@ class VNXSystemTest(TestCase):
         assert_that(host.name, equal_to('ubuntu14'))
         assert_that(host.existed, equal_to(True))
         assert_that(len(host.connections), equal_to(4))
+
+
+class VNXArrayNameTest(TestCase):
+    @patch_cli
+    def test_get(self):
+        array_name = VNXArrayName(t_cli())
+        assert_that(array_name.name, equal_to('IT_IS_ARR_NAME'))
+
+    @patch_cli
+    def test_set_too_long(self):
+        def f():
+            array_name = VNXArrayName(t_cli())
+            array_name.set_name(
+                '123456789_123456789_123456789_123456789'
+                '_123456789_123456789_123456789')
+
+        assert_that(f, raises(VNXSetArrayNameError, 'is 64'))

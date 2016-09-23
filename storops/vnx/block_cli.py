@@ -826,6 +826,16 @@ class CliClient(object):
         cmd.append('-o')
         return cmd
 
+    @command
+    def get_array_name(self):
+        return ['arrayname']
+
+    @command
+    def set_array_name(self, new_name):
+        cmd = text_var('arrayname', new_name)
+        cmd.append('-o')
+        return cmd
+
     @property
     def ip(self):
         return self._heart_beat.get_alive_sp_ip()

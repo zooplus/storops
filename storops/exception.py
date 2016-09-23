@@ -416,6 +416,10 @@ class VNXObjectNotFound(VNXException):
     message = "object is not found.  {err}"
 
 
+class VNXSetArrayNameError(VNXException):
+    pass
+
+
 class OptionMissingError(VNXException):
     pass
 
