@@ -245,6 +245,11 @@ class VNXStorageGroup(VNXCliResource):
             self.get_alu_hlu_map()[alu] = ret
         return ret
 
+    def _add_hlu(self, alu, hlu):
+        with self._hlu_lock:
+            self.get_alu_hlu_map()[alu] = hlu
+        return hlu
+
     def _delete_alu(self, alu):
         ret = None
         with self._hlu_lock:
@@ -252,15 +257,20 @@ class VNXStorageGroup(VNXCliResource):
                 ret = self.get_alu_hlu_map().pop(alu)
         return ret
 
-    def attach_alu(self, lun, retry_limit=None):
+    def attach_alu(self, lun, retry_limit=None, hlu=None):
         def _update():
             self.update()
 
         @retry(on_error=ex.VNXHluNumberInUseError, on_retry=_update,
                limit=retry_limit)
-        def _do(alu_id):
-            hlu = self._get_hlu_to_add(alu_id)
-            out = self._cli.sg_add_hlu(self._get_name(), hlu, alu_id,
+        def _do(alu_id, hlu_id=None):
+            if hlu_id is None:
+                hlu_id = self._get_hlu_to_add(alu_id)
+            elif hlu_id in self.used_hlu_numbers:
+                raise ex.VNXHluAlreadyUsedError('hlu id is already used.')
+            else:
+                hlu_id = self._add_hlu(alu_id, hlu_id)
+            out = self._cli.sg_add_hlu(self._get_name(), hlu_id, alu_id,
                                        poll=self.poll)
             try:
                 ex.raise_if_err(out, default=ex.VNXAttachAluError)
@@ -274,7 +284,7 @@ class VNXStorageGroup(VNXCliResource):
                 self._delete_alu(alu_id)
                 raise
 
-            return hlu
+            return hlu_id
 
         lun_clz = storops.vnx.resource.lun.VNXLun
         alu = lun_clz.get_id(lun)
@@ -282,7 +292,7 @@ class VNXStorageGroup(VNXCliResource):
             # found alu in the alu-hlu map cache, meaning already attached
             raise ex.VNXAluAlreadyAttachedError()
         else:
-            ret = _do(alu)
+            ret = _do(alu, hlu)
         return ret
 
     def detach_alu(self, lun):

@@ -1,0 +1,2 @@
+Error: storagegroup command failed
+The ALU number specified by user is not a bound ALU number
