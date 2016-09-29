@@ -24,7 +24,8 @@ from storops.vnx.resource.port import VNXStorageGroupHBAList
 from test.vnx.cli_mock import patch_cli, t_cli
 from storops.exception import VNXStorageGroupError, \
     VNXStorageGroupNameInUseError, VNXDetachAluNotFoundError, \
-    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXHluNumberInUseError
+    VNXAluAlreadyAttachedError, VNXAluNotFoundError, VNXHluNumberInUseError, \
+    VNXHluAlreadyUsedError
 from storops.vnx.enums import VNXSPEnum
 from storops.vnx.resource.lun import VNXLun
 from storops.vnx.resource.sg import VNXStorageGroupList, VNXStorageGroup
@@ -187,6 +188,32 @@ class VNXStorageGroupTest(TestCase):
                               'already been added'))
         assert_that(sg.get_hlu(123), none())
         assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+
+    @patch_cli
+    def test_attach_alu_hlu_used(self):
+        sg = self.test_sg()
+
+        def f():
+            sg.attach_alu(123, hlu=210)
+
+        assert_that(f, VNXHluAlreadyUsedError, 'already used')
+
+    @patch_cli
+    def test_attach_with_hlu_alu_not_found(self):
+        sg = self.test_sg()
+
+        def f():
+            sg.attach_alu(123, hlu=212)
+
+        assert_that(f, VNXAluNotFoundError, 'not a bound ALU number')
+
+    @patch_cli
+    def test_attach_alu_with_hlu_success(self):
+        sg = self.test_sg()
+        hlu_id = sg.attach_alu(2, hlu=1)
+        assert_that(hlu_id, equal_to(1))
+        assert_that(sg.has_alu(2), equal_to(True))
+        assert_that(sg.has_hlu(1), equal_to(True))
 
     @patch_cli
     def test_attach_alu_not_found(self):

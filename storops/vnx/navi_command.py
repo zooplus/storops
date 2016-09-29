@@ -77,7 +77,7 @@ class NaviCommand(object):
         return self._is_credential_valid
 
     def get_credentials(self):
-        if self._sec_file is not None:
+        if self._sec_file:
             # use security file
             ret = text_var('-secfilepath', self._sec_file)
         elif self._username is None and self._password is None:

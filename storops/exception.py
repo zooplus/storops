@@ -538,6 +538,10 @@ class VNXNoHluAvailableError(VNXStorageGroupError):
     pass
 
 
+class VNXHluAlreadyUsedError(VNXStorageGroupError):
+    pass
+
+
 class VNXMigrationError(VNXException):
     pass
 

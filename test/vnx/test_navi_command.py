@@ -58,6 +58,12 @@ class NaviCommandTest(TestCase):
                     equal_to('-user a -password a -scope 1 -t 20'))
 
     @patch_cli
+    def test_sec_file_empty_string(self):
+        cmd = NaviCommand('a', 'a', 1, '', timeout=20)
+        assert_that(' '.join(map(str, cmd.get_credentials())),
+                    equal_to('-user a -password a -scope 1 -t 20'))
+
+    @patch_cli
     def test_timeout_max_and_min(self):
         cmd = NaviCommand()
         cmd._timeout = 0.5
