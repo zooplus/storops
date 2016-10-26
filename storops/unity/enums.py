@@ -217,6 +217,11 @@ class SnapStateEnum(UnityEnum):
     DESTROYING = (9, 'Destroying')
 
 
+class SnapAccessLevelEnum(UnityEnum):
+    READ_ONLY = (0, 'Read Only')
+    READ_WRITE = (1, 'Read Write')
+
+
 class FilesystemSnapAccessTypeEnum(UnityEnum):
     CHECKPOINT = (1, 'Checkpoint')
     PROTOCOL = (2, 'Protocol')
@@ -544,6 +549,10 @@ class ConnectorTypeEnum(UnityEnum):
     RJ45 = (1, 'RJ45')
     LC = (2, 'LC')
     MINI_SAS_HD = (3, 'MiniSAS HD')
+    COPPER_PIGTAIL = (4, "Copper pigtail")
+    NO_SEPARABLE_CONNECTOR = (5, "No separable connector")
+    NAS_COPPER = (6, "NAS copper")
+    NOT_PRESENT = (7, "Not present")
 
 
 class EPSpeedValuesEnum(UnityEnum):
@@ -670,3 +679,14 @@ class ACEAccessLevelEnum(UnityEnum):
     READ = (1, 'Read')
     WRITE = (2, 'Write')
     FULL = (4, 'Full')
+
+
+class IOLimitPolicyStateEnum(UnityEnum):
+    GLOBAL_PAUSED = (1, 'Global Paused')
+    PAUSED = (2, 'Paused')
+    ACTIVE = (3, 'Active')
+
+
+class IOLimitPolicyTypeEnum(UnityEnum):
+    ABSOLUTE = (1, 'Absolute Value')
+    DENSITY_BASED = (2, 'Density-based Value')

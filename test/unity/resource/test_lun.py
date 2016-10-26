@@ -17,13 +17,18 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
-from hamcrest import assert_that, only_contains, instance_of, contains_string
+from hamcrest import assert_that, only_contains, instance_of, \
+    contains_string, raises, none
 from hamcrest import equal_to
 from storops.unity.resource.host import UnityBlockHostAccessList, UnityHost
 
 from storops import UnitySystem
+from storops.exception import UnitySnapNameInUseError, UnityLunNameInUseError
 from storops.unity.resource.lun import UnityLun, UnityLunList
 from storops.unity.resource.pool import UnityPool
+from storops.unity.resource.port import UnityIoLimitPolicy, \
+    UnityIoLimitRuleSetting
+from storops.unity.resource.snap import UnitySnap
 from storops.unity.enums import HostLUNAccessEnum, NodeEnum
 from storops.unity.resource.storage_resource import UnityStorageResource
 from storops.unity.resource.sp import UnityStorageProcessor
@@ -41,6 +46,7 @@ class UnityLunTest(TestCase):
         assert_that(lun.name, equal_to('openstack_lun'))
         assert_that(lun.description, equal_to('sample'))
         assert_that(lun.size_total, equal_to(107374182400))
+        assert_that(lun.total_size_gb, equal_to(100))
         assert_that(lun.size_allocated, equal_to(0))
         assert_that(lun.per_tier_size_used, only_contains(2952790016, 0, 0))
         assert_that(lun.is_thin_enabled, equal_to(True))
@@ -57,6 +63,7 @@ class UnityLunTest(TestCase):
         assert_that(lun.snap_count, equal_to(0))
         assert_that(lun.storage_resource, instance_of(UnityStorageResource))
         assert_that(lun.pool, instance_of(UnityPool))
+        assert_that(lun.io_limit_rule, none())
 
     @patch_rest
     def test_lun_modify_host_access(self):
@@ -109,14 +116,14 @@ class UnityLunTest(TestCase):
         assert_that(resp.job.existed, equal_to(False))
 
     @patch_rest
-    def test_lun_attch_to_new_host(self):
+    def test_lun_attach_to_new_host(self):
         host = UnityHost(_id="Host_10", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.attach_to(host)
         assert_that(resp.is_ok(), equal_to(True))
 
     @patch_rest
-    def test_lun_attch_to_same_host(self):
+    def test_lun_attach_to_same_host(self):
         host = UnityHost(_id="Host_1", cli=t_rest())
         lun = UnityLun(_id='sv_4', cli=t_rest())
         resp = lun.attach_to(host, access_mask=HostLUNAccessEnum.BOTH)
@@ -165,3 +172,53 @@ class UnityLunTest(TestCase):
         assert_that(access.access_mask, equal_to(HostLUNAccessEnum.PRODUCTION))
         assert_that(access.host, instance_of(UnityHost))
         assert_that(access.host.id, equal_to('Host_1'))
+
+    @patch_rest
+    def test_lun_snap_create(self):
+        lun = UnityLun(_id='sv_8', cli=t_rest())
+        snap = lun.create_snap(name='lun_snap_1')
+        assert_that(snap, instance_of(UnitySnap))
+
+    @patch_rest
+    def test_lun_snapshots(self):
+        lun = UnityLun(_id='sv_8', cli=t_rest())
+        assert_that(len(lun.snapshots), equal_to(3))
+
+    @patch_rest
+    def test_lun_snap_create_existing(self):
+        lun = UnityLun(_id='sv_9', cli=t_rest())
+        assert_that(lambda: lun.create_snap(name='lun_snap_1'),
+                    raises(UnitySnapNameInUseError))
+
+    @patch_rest
+    def test_lun_rename(self):
+        def f():
+            lun = UnityLun(_id='sv_2', cli=t_rest())
+            lun.name = 'Europa'
+
+        assert_that(f, raises(UnityLunNameInUseError, 'already exists'))
+
+    @patch_rest
+    def test_lun_max_iops_property(self):
+        lun = UnityLun(_id='sv_10', cli=t_rest())
+        assert_that(lun.max_iops, equal_to(3600))
+        assert_that(lun.max_kbps, none())
+
+    @patch_rest
+    def test_lun_max_kbps_property(self):
+        lun = UnityLun(_id='sv_11', cli=t_rest())
+        assert_that(lun.max_iops, none())
+        assert_that(lun.max_kbps, equal_to(11000))
+
+    @patch_rest
+    def test_create_with_io_limit(self):
+        cli = t_rest()
+        policy = UnityIoLimitPolicy('qp_4', cli=cli)
+        pool = UnityPool('pool_1', cli=cli)
+        lun = pool.create_lun('Himalia', io_limit_policy=policy)
+        assert_that(lun.name, equal_to('Himalia'))
+        assert_that(lun.io_limit_policy.get_id(), equal_to('qp_4'))
+        rule = lun.io_limit_rule
+        assert_that(rule, instance_of(UnityIoLimitRuleSetting))
+        assert_that(rule.max_kbps_density, equal_to(1100))
+        assert_that(rule.name, equal_to('Density_1100_KBPS_rule'))
