@@ -1,0 +1,33 @@
+{
+  "content": {
+    "description": "Current system time.  ",
+    "documentation": "https://10.244.223.61/apidocs/classes/systemTime.html",
+    "name": "systemTime",
+    "attributes": [
+      {
+        "description": "Internal identifier of the user instance.  ",
+        "displayValue": "instanceId",
+        "name": "instanceId",
+        "type": "String"
+      },
+      {
+        "description": "Unique identifier of the systemTime instance. Because systemTime is a singleton resource type, the value of this field is always 0.  ",
+        "displayValue": "id",
+        "name": "id",
+        "type": "String"
+      },
+      {
+        "description": "Current system time.  ",
+        "displayValue": "time",
+        "name": "time",
+        "type": "DateTime"
+      },
+      {
+        "description": "Indicates whether to reboot the system after modifying the system time. A reboot is required if the time shift exceeds 1000 seconds.  ",
+        "displayValue": "rebootPrivilege",
+        "name": "rebootPrivilege",
+        "type": "RebootPrivilegeEnum"
+      }
+    ]
+  }
+}

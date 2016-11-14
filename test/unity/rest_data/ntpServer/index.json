@@ -1,0 +1,42 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/ntpServer?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/ntpServer/0?compact=True&fields=addresses,id,instanceId",
+      "response": "0.json"
+    },
+    {
+      "url": "/api/instances/ntpServer/0/action/modify?compact=True",
+      "body": {
+        "rebootPrivilege": 0,
+        "addresses": [
+          "10.245.54.152",
+          "10.245.54.153",
+          "10.245.54.154"
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/ntpServer/0/action/modify?compact=True",
+      "body": {
+        "rebootPrivilege": 0,
+        "addresses": [
+          "10.245.54.152"
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/ntpServer/0/action/modify?compact=True",
+      "body": {
+        "rebootPrivilege": 0,
+        "addresses": []
+      },
+      "response": "empty.json"
+    }
+  ]
+}

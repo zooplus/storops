@@ -302,6 +302,12 @@ class UnityLunException(UnityException):
 
 
 @rest_exception
+class UnityActionNotAllowedError(UnityException):
+    error_code = 131149836
+    message = 'Action is not allowed for the resource.'
+
+
+@rest_exception
 class UnityLunNameInUseError(UnityLunException):
     error_code = 108007744
 

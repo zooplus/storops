@@ -1,0 +1,42 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/dnsServer?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/instances/dnsServer/0?compact=True&fields=addresses,domain,id,origin",
+      "response": "0.json"
+    },
+    {
+      "url": "/api/instances/dnsServer/0/action/modify?compact=True",
+      "body": {
+        "addresses": [
+          "10.245.177.15",
+          "10.245.177.16",
+          "8.8.8.8",
+          "9.9.9.9"
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/dnsServer/0/action/modify?compact=True",
+      "body": {
+        "addresses": [
+          "10.245.177.15",
+          "10.245.177.16"
+        ]
+      },
+      "response": "empty.json"
+    },
+    {
+      "url": "/api/instances/dnsServer/0/action/modify?compact=True",
+      "body": {
+        "addresses": [],
+        "origin": 2
+      },
+      "response": "empty.json"
+    }
+  ]
+}
