@@ -16,7 +16,7 @@
 from __future__ import unicode_literals
 
 from storops.exception import NoIndexException, UnityResourceNotFoundError, \
-    UnityNameNotUniqueError
+    UnityNameNotUniqueError, UnityActionNotAllowedError
 from storops.lib.resource import Resource, ResourceList
 from storops.unity import parser
 from storops.unity.parser import NestedProperties
@@ -25,7 +25,6 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityResource(Resource):
-
     def __init__(self, _id=None, cli=None):
         super(UnityResource, self).__init__()
         self._id = _id
@@ -61,6 +60,10 @@ class UnityResource(Resource):
                                 async=async)
         resp.raise_if_err()
         return resp
+
+    def modify(self, **req_body):
+        return self._cli.modify(self.resource_class,
+                                self.get_id(), **req_body)
 
     @property
     def resource_class(self):
@@ -205,6 +208,9 @@ class UnitySingletonResource(UnityResource):
         else:
             ret = _id
         return ret
+
+    def delete(self, async=False):
+        raise UnityActionNotAllowedError()
 
 
 class UnityAttributeResource(UnityResource):

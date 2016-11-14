@@ -690,3 +690,9 @@ class IOLimitPolicyStateEnum(UnityEnum):
 class IOLimitPolicyTypeEnum(UnityEnum):
     ABSOLUTE = (1, 'Absolute Value')
     DENSITY_BASED = (2, 'Density-based Value')
+
+
+class DNSServerOriginEnum(UnityEnum):
+    UNKNOWN = (0, 'Unknown')
+    STATIC = (1, 'Set Manually')
+    DHCP = (2, 'Configured by DHCP')

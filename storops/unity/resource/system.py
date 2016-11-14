@@ -20,7 +20,7 @@ import logging
 from storops import exception as ex
 from storops.lib.common import instance_cache
 from storops.unity.client import UnityClient
-from storops.unity.enums import UnityEnum
+from storops.unity.enums import UnityEnum, DNSServerOriginEnum
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnitySingletonResource
 from storops.unity.resource.cifs_server import UnityCifsServerList
@@ -41,6 +41,8 @@ from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessorList
 from storops.unity.resource.port import UnityEthernetPortList, \
     UnityIscsiPortalList, UnityFcPortList
+from storops.unity.resource.storage_resource import UnityConsistencyGroup, \
+    UnityConsistencyGroupList
 from storops.unity.resource.vmware import UnityCapabilityProfileList
 
 __author__ = 'Jay Xu'
@@ -50,7 +52,7 @@ LOG = logging.getLogger(__name__)
 
 class UnitySystem(UnitySingletonResource):
     def __init__(self, host=None, username=None, password=None,
-                 port=443, cli=None, verify=True):
+                 port=443, cli=None, verify=False):
         super(UnitySystem, self).__init__(cli=cli)
         if cli is None:
             self._cli = UnityClient(host, username, password, port,
@@ -166,12 +168,71 @@ class UnitySystem(UnitySingletonResource):
             policy_type=policy_type, is_shared=is_shared,
             description=description)
 
+    def get_cg(self, _id=None, name=None, **filters):
+        return self._get_unity_rsc(UnityConsistencyGroupList, _id=_id,
+                                   name=name, **filters)
+
+    def create_cg(self, name, description=None, lun_list=None, hosts=None):
+        return UnityConsistencyGroup.create(
+            self._cli, name, description=description, lun_list=lun_list,
+            hosts=hosts)
+
     def get_doc(self, resource):
         if isinstance(resource, (UnityResource, UnityEnum)):
             clz = resource.__class__
         else:
             clz = resource
         return self._cli.get_doc(clz)
+
+    @property
+    @instance_cache
+    def _system_time(self):
+        return UnitySystemTime(self._cli)
+
+    @property
+    def system_time(self):
+        return self._system_time.time
+
+    def set_system_time(self, new_time=None):
+        return self._system_time.set(new_time)
+
+    @property
+    @instance_cache
+    def _ntp_server(self):
+        return UnityNtpServer(self._cli)
+
+    @property
+    def ntp_server(self):
+        return self._ntp_server.addresses
+
+    def add_ntp_server(self, *addresses):
+        return self._ntp_server.add(*addresses)
+
+    def remove_ntp_server(self, *addresses):
+        return self._ntp_server.remove(*addresses)
+
+    def clear_ntp_server(self):
+        return self._ntp_server.clear()
+
+    @property
+    @instance_cache
+    def dns_server(self):
+        return UnityDnsServer(self._cli)
+
+    def add_dns_server(self, *addresses):
+        return self.dns_server.add(*addresses)
+
+    def remove_dns_server(self, *addresses):
+        return self.dns_server.remove(*addresses)
+
+    def clear_dns_server(self, use_dhcp=None):
+        """ Clear the DNS server settings.
+
+        :param use_dhcp: default to True, clear all settings and fallback to
+                         use DHCP settings.
+        :return: last settings
+        """
+        return self.dns_server.clear(use_dhcp)
 
     @property
     @instance_cache
@@ -213,3 +274,67 @@ class UnityBasicSystemInfoList(UnityResourceList):
     @classmethod
     def get_resource_class(cls):
         return UnityBasicSystemInfo
+
+
+class UnitySystemTime(UnitySingletonResource):
+    def set(self, new_time, reboot=None):
+        old_time = self.time
+
+        if reboot:
+            reboot = 1
+        else:
+            reboot = 0
+
+        time_str = new_time.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+        resp = self.modify(time=time_str, rebootPrivilege=reboot)
+        resp.raise_if_err()
+        self.update()
+        return old_time
+
+
+class _UnityNtpDnsServerCommonBase(UnitySingletonResource):
+    def _do_modify(self, *addresses):
+        raise NotImplementedError('Should be implemented by child classes.')
+
+    def set(self, *addresses):
+        exists = self.addresses
+        resp = self._do_modify(*addresses)
+        resp.raise_if_err()
+        self.update()
+        return exists
+
+    def add(self, *addresses):
+        new_addresses = set(self.addresses).union(set(addresses))
+        return self.set(*new_addresses)
+
+    def remove(self, *addresses):
+        new_addresses = set(self.addresses) - set(addresses)
+        return self.set(*new_addresses)
+
+    def clear(self):
+        return self.set()
+
+
+class UnityNtpServer(_UnityNtpDnsServerCommonBase):
+    def _do_modify(self, *addresses):
+        return self.modify(addresses=sorted(addresses), rebootPrivilege=0)
+
+
+class UnityDnsServer(_UnityNtpDnsServerCommonBase):
+    def _do_modify(self, *addresses):
+        return self.modify(addresses=sorted(addresses))
+
+    def clear(self, use_dhcp=None):
+        if use_dhcp is None:
+            use_dhcp = True
+
+        if use_dhcp:
+            origin = DNSServerOriginEnum.DHCP
+        else:
+            origin = None
+
+        exists = self.addresses
+        resp = self.modify(addresses=[], origin=origin)
+        resp.raise_if_err()
+        self.update()
+        return exists

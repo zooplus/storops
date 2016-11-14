@@ -1,0 +1,10 @@
+{
+  "content": {
+    "addresses": [
+      "10.245.54.152",
+      "10.245.54.153"
+    ],
+    "instanceId": "root/emc:EMC_NTPServer%InstanceID=NTPServer",
+    "id": "0"
+  }
+}

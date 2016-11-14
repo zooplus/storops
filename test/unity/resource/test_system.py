@@ -15,15 +15,17 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import datetime
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, instance_of, only_contains, \
-    raises, contains_string, is_in
+    raises, contains_string, is_in, has_items
 
 from storops.exception import UnityResourceNotFoundError, \
-    UnityHostNameInUseError
+    UnityHostNameInUseError, UnityActionNotAllowedError
 from storops.unity.enums import EnclosureTypeEnum, DiskTypeEnum, HealthEnum, \
-    HostTypeEnum, ServiceLevelEnum, ServiceLevelEnumList
+    HostTypeEnum, ServiceLevelEnum, ServiceLevelEnumList, \
+    StorageResourceTypeEnum, DNSServerOriginEnum
 from storops.unity.resource.cifs_server import UnityCifsServerList
 from storops.unity.resource.cifs_share import UnityCifsShareList, \
     UnityCifsShare
@@ -39,7 +41,7 @@ from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
 from storops.unity.resource.port import UnityFcPortList
-from storops.unity.resource.lun import UnityLunList
+from storops.unity.resource.lun import UnityLunList, UnityLun
 from storops.unity.resource.port import UnityIpPortList
 from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessor, \
@@ -49,7 +51,8 @@ from storops.unity.resource.port import UnityEthernetPortList, \
 from storops.unity.resource.vmware import UnityCapabilityProfileList
 from storops.unity.resource.system import UnitySystemList, UnitySystem, \
     UnityDpeList, UnityDpe, UnityVirusChecker, UnityVirusCheckerList, \
-    UnityBasicSystemInfo, UnityBasicSystemInfoList
+    UnityBasicSystemInfo, UnityBasicSystemInfoList, UnitySystemTime, \
+    UnityNtpServer
 from test.unity.rest_mock import t_rest, patch_rest, t_unity
 
 __author__ = 'Cedric Zhuang'
@@ -398,6 +401,94 @@ class UnitySystemTest(TestCase):
         setting = policy.io_limit_rule_settings[0]
         assert_that(setting.max_kbps, equal_to(1234))
 
+    @patch_rest
+    def test_create_cg(self):
+        lun1 = UnityLun(cli=t_rest(), _id='sv_3339')
+        lun2 = UnityLun(cli=t_rest(), _id='sv_3340')
+        unity = t_unity()
+        cg = unity.create_cg('Muse', lun_list=[lun1, lun2])
+        assert_that(cg.name, equal_to('Muse'))
+        assert_that(len(cg.luns), equal_to(2))
+
+    @patch_rest
+    def test_get_cg_list(self):
+        cg_list = t_unity().get_cg()
+        assert_that(len(cg_list), equal_to(2))
+
+    @patch_rest
+    def test_get_cg_by_name(self):
+        cg = t_unity().get_cg(name='Nike')
+        assert_that(cg.name, equal_to('Nike'))
+
+    @patch_rest
+    def test_get_cg_by_id(self):
+        cg = t_unity().get_cg(_id='res_13')
+        assert_that(cg.id, equal_to('res_13'))
+        cg_type = StorageResourceTypeEnum.CONSISTENCY_GROUP
+        assert_that(cg.type, equal_to(cg_type))
+
+    @patch_rest
+    def test_system_time(self):
+        assert_that(t_unity().system_time.year, equal_to(2016))
+
+    @patch_rest
+    def test_set_system_time(self):
+        unity = t_unity()
+        st = unity.system_time
+        ret = unity.set_system_time(new_time=st)
+        assert_that(ret, instance_of(datetime.datetime))
+        assert_that(ret.microsecond, equal_to(534000))
+
+    @patch_rest
+    def test_set_ntp_server(self):
+        ret = t_unity().add_ntp_server('10.245.54.154', '10.245.54.153')
+        assert_that(ret, has_items('10.245.54.152', '10.245.54.153'))
+
+    @patch_rest
+    def test_remove_ntp_server(self):
+        ret = t_unity().remove_ntp_server('10.245.54.153')
+        assert_that(ret, has_items('10.245.54.152', '10.245.54.153'))
+
+    @patch_rest
+    def test_clear_ntp_server(self):
+        ret = t_unity().clear_ntp_server()
+        assert_that(ret, has_items('10.245.54.152', '10.245.54.153'))
+
+    @patch_rest
+    def test_list_ntp_servers(self):
+        assert_that(t_unity().ntp_server,
+                    has_items('10.245.54.152', '10.245.54.153'))
+
+    @patch_rest
+    def test_delete_singleton(self):
+        def f():
+            t_unity()._ntp_server.delete()
+
+        assert_that(f, raises(UnityActionNotAllowedError, 'not allowed'))
+
+    @patch_rest
+    def test_list_dns_server(self):
+        dns_server = t_unity().dns_server
+        assert_that(dns_server.id, equal_to('0'))
+        assert_that(dns_server.origin, equal_to(DNSServerOriginEnum.DHCP))
+        assert_that(dns_server.addresses,
+                    has_items('10.245.177.15', '10.245.177.16'))
+
+    @patch_rest
+    def test_add_dns_server(self):
+        ret = t_unity().add_dns_server('8.8.8.8', '9.9.9.9')
+        assert_that(ret, has_items('10.245.177.15', '10.245.177.16'))
+
+    @patch_rest
+    def test_remove_dns_server(self):
+        ret = t_unity().remove_dns_server('8.8.8.8', '9.9.9.9')
+        assert_that(ret, has_items('10.245.177.15', '10.245.177.16'))
+
+    @patch_rest
+    def test_clear_dns_server(self):
+        ret = t_unity().clear_dns_server()
+        assert_that(ret, has_items('10.245.177.15', '10.245.177.16'))
+
 
 class UnityDpeTest(TestCase):
     @patch_rest
@@ -465,3 +556,24 @@ class UnityBasicSystemInfoTest(TestCase):
     def test_get_all(self):
         info_list = UnityBasicSystemInfoList(cli=t_rest())
         assert_that(len(info_list), equal_to(1))
+
+
+class UnitySystemTimeTest(TestCase):
+    @patch_rest
+    def test_get_system_time(self):
+        st = UnitySystemTime(t_rest()).time
+        assert_that(st, instance_of(datetime.datetime))
+        assert_that(st.year, equal_to(2016))
+        assert_that(st.month, equal_to(11))
+        assert_that(st.day, equal_to(14))
+        assert_that(st.hour, equal_to(7))
+        assert_that(st.minute, equal_to(23))
+        assert_that(st.second, equal_to(53))
+
+
+class UnityNtpServerTest(TestCase):
+    @patch_rest
+    def test_get_properties(self):
+        ntp_server = UnityNtpServer(cli=t_rest())
+        assert_that(ntp_server.addresses,
+                    has_items('10.245.54.152', '10.245.54.153'))

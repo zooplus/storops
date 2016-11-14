@@ -1402,3 +1402,31 @@ UnityAclUser:
     - label: userName
     - label: domainName
     - label: sid
+
+
+UnitySystemTime:
+  data_src: rest
+  name: systemTime
+  properties:
+    - label: id
+    - label: time
+      converter: to_datetime
+
+
+UnityNtpServer:
+  data_src: rest
+  name: ntpServer
+  properties:
+    - label: id
+    - label: addresses
+
+
+UnityDnsServer:
+  data_src: rest
+  name: dnsServer
+  properties:
+    - label: id
+    - label: domain
+    - label: addresses
+    - label: origin
+      converter: DNSServerOriginEnum
