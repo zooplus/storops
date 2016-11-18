@@ -39,6 +39,14 @@
         "speed": 100
       },
       "response": "success.json"
+    },
+    {
+      "url": "/api/instances/ethernetPort/spa_eth4?compact=True&fields=bond,cascadeNames,connectorType,health,id,instanceId,isLinkUp,isRDMACapable,isRSSCapable,linuxDeviceName,macAddress,mtu,name,needsReplacement,operationalStatus,parent,parentIOModule,parentStorageProcessor,portNumber,requestedMtu,requestedSpeed,sfpSupportedProtocols,sfpSupportedSpeeds,shortName,speed,storageProcessor,supportedMtus,supportedSpeeds",
+      "response": "spa_eth4.json"
+    },
+    {
+      "url": "/api/instances/ethernetPort/spb_eth4?compact=True&fields=bond,cascadeNames,connectorType,health,id,instanceId,isLinkUp,isRDMACapable,isRSSCapable,linuxDeviceName,macAddress,mtu,name,needsReplacement,operationalStatus,parent,parentIOModule,parentStorageProcessor,portNumber,requestedMtu,requestedSpeed,sfpSupportedProtocols,sfpSupportedSpeeds,shortName,speed,storageProcessor,supportedMtus,supportedSpeeds",
+      "response": "not_found.json"
     }
   ]
 }

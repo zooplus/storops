@@ -17,11 +17,13 @@ from __future__ import unicode_literals
 
 import logging
 
+from storops.lib.common import instance_cache
 from storops.unity.resource import UnityResource, UnityResourceList, \
     UnityAttributeResource
 from storops.exception import UnityEthernetPortMtuSizeNotSupportError
 from storops.exception import UnityEthernetPortSpeedNotSupportError
 from storops.unity.enums import EPSpeedValuesEnum, IOLimitPolicyTypeEnum
+
 
 __author__ = 'Jay Xu'
 
@@ -29,7 +31,18 @@ LOG = logging.getLogger(__name__)
 
 
 class UnityIpPort(UnityResource):
-    pass
+    def set_mtu(self, mtu):
+        if self.is_link_aggregation():
+            la = UnityLinkAggregation.get(self._cli, self.get_id())
+            la.modify(mtu=mtu)
+        else:
+            eth = UnityEthernetPort.get(self._cli, self.get_id())
+            eth.modify(mtu=mtu)
+
+    @instance_cache
+    def is_link_aggregation(self):
+        port = UnityLinkAggregation.get(self._cli, self.get_id())
+        return port.existed
 
 
 class UnityIpPortList(UnityResourceList):
@@ -129,13 +142,14 @@ class UnityIscsiPortalList(UnityResourceList):
 class UnityEthernetPort(UnityResource):
     def modify(self, speed=None, mtu=None):
         speed = EPSpeedValuesEnum.parse(speed)
-        peer = self.get_peer()
         self._modify(self, speed, mtu)
-        self._modify(peer, speed, mtu)
+        peer = self.get_peer()
+        if peer.existed:
+            self._modify(peer, speed, mtu)
 
     def get_peer(self):
-        _peer_id = self._get_peer_id(self.get_id())
-        return UnityEthernetPort(cli=self._cli, _id=_peer_id)
+        peer_id = self._get_peer_id(self.get_id())
+        return UnityEthernetPort(cli=self._cli, _id=peer_id)
 
     def _modify(self, port, speed, mtu):
         if speed is not None:
@@ -169,6 +183,35 @@ class UnityEthernetPortList(UnityResourceList):
     @classmethod
     def get_resource_class(cls):
         return UnityEthernetPort
+
+
+class UnityLinkAggregation(UnityResource):
+    @classmethod
+    def create(cls, cli, ports, mtu=None):
+        resp = cli.post(cls().resource_class,
+                        ports=ports,
+                        mtuSize=mtu)
+        resp.raise_if_err()
+        return cls(_id=resp.resource_id, cli=cli)
+
+    def modify(self, mtu=None, add_ports=None, remove_ports=None):
+        if isinstance(add_ports, UnityEthernetPort):
+            add_ports = [add_ports]
+        if isinstance(remove_ports, UnityEthernetPort):
+            remove_ports = [remove_ports]
+
+        resp = self._cli.modify(self.resource_class,
+                                self.get_id(),
+                                mtuSize=mtu,
+                                addPorts=add_ports,
+                                removePorts=remove_ports)
+        resp.raise_if_err()
+
+
+class UnityLinkAggregationList(UnityResourceList):
+    @classmethod
+    def get_resource_class(cls):
+        return UnityLinkAggregation
 
 
 class UnityIscsiNode(UnityResource):

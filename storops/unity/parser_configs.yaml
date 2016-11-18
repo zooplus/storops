@@ -1430,3 +1430,23 @@ UnityDnsServer:
     - label: addresses
     - label: origin
       converter: DNSServerOriginEnum
+
+
+UnityLinkAggregation:
+  data_src: rest
+  name: linkAggregation
+  properties:
+    - label: id
+    - label: name
+    - label: shortName
+    - label: masterPort
+      converter: UnityEthernetPort
+    - label: ports
+      converter: UnityEthernetPortList
+    - label: mtuSize
+      key: mtu
+    - label: supportedMtus
+    - label: macAddress
+    - label: isLinkUp
+    - label: parentStorageProcessor
+      converter: UnityStorageProcessor

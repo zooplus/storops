@@ -22,13 +22,14 @@ from hamcrest import assert_that, equal_to, instance_of, only_contains, \
     raises, contains_string
 from storops.exception import UnityEthernetPortSpeedNotSupportError, \
     UnityEthernetPortMtuSizeNotSupportError, UnityResourceNotFoundError, \
-    UnityPolicyNameInUseError
+    UnityPolicyNameInUseError, UnityEthernetPortAlreadyAggregatedError
 from storops.unity.enums import ConnectorTypeEnum, EPSpeedValuesEnum, \
     FcSpeedEnum, IOLimitPolicyStateEnum
 from storops.unity.resource.lun import UnityLun
 from storops.unity.resource.port import UnityEthernetPort, UnityIpPort, \
     UnityIpPortList, UnityIscsiPortal, UnityIscsiNode, UnityFcPort, \
-    UnityIoLimitRule, UnityIoLimitPolicy, UnityIoLimitPolicyList
+    UnityIoLimitRule, UnityIoLimitPolicy, UnityIoLimitPolicyList, \
+    UnityLinkAggregation
 from storops.unity.resource.sp import UnityStorageProcessor
 from test.unity.rest_mock import t_rest, patch_rest
 
@@ -49,6 +50,23 @@ class UnityIpPortTest(TestCase):
     def test_get_all(self):
         ports = UnityIpPortList(cli=t_rest())
         assert_that(len(ports), equal_to(8))
+
+    @patch_rest
+    def test_is_link_aggregation(self):
+        port = UnityIpPort('spa_eth3', cli=t_rest())
+        assert_that(port.is_link_aggregation(), equal_to(False))
+        port = UnityIpPort('spa_la_2', cli=t_rest())
+        assert_that(port.is_link_aggregation(), equal_to(True))
+
+    @patch_rest
+    def test_set_mtu_on_eth_port(self):
+        port = UnityIpPort('spa_eth3', cli=t_rest())
+        port.set_mtu(1500)
+
+    @patch_rest
+    def test_set_mtu_on_link_aggregation(self):
+        la = UnityIpPort('spa_la_2', cli=t_rest())
+        la.set_mtu(1500)
 
 
 @ddt.ddt
@@ -109,6 +127,11 @@ class UnityEthernetPortTest(TestCase):
             port.modify(speed=40000)
 
         assert_that(do, raises(UnityEthernetPortSpeedNotSupportError))
+
+    @patch_rest
+    def test_modify_when_peer_not_exist(self):
+        port = UnityEthernetPort(cli=t_rest(), _id='spa_eth4')
+        port.modify(mtu=1500)
 
     @ddt.data({'port_id': 'spa_eth2',
                'peer_id': 'spb_eth2'},
@@ -243,3 +266,40 @@ class UnityIoLimitPolicyTest(TestCase):
         lun2 = UnityLun('sv_2025', t_rest())
         resp = policy.remove_from_storage(lun1, lun2)
         assert_that(resp.is_ok(), equal_to(True))
+
+
+class UnityLinkAggregationTest(TestCase):
+    @patch_rest
+    def test_get_properties(self):
+        la = UnityLinkAggregation('spa_la_2', cli=t_rest())
+        assert_that(la.is_link_up, equal_to(False))
+        assert_that(la.mac_address, equal_to('00:60:16:5C:08:E1'))
+        assert_that(la.master_port.get_id(), "spa_eth2")
+        assert_that(la.mtu, equal_to(9000))
+        assert_that(
+            la.parent_storage_processor,
+            equal_to(UnityStorageProcessor.get(t_rest(), 'spa')))
+        assert_that(len(la.ports), equal_to(2))
+        assert_that(la.supported_mtus, only_contains(1500, 9000))
+
+    @patch_rest
+    def test_create(self):
+        eth_2 = UnityEthernetPort.get(t_rest(), 'spa_eth2')
+        eth_3 = UnityEthernetPort.get(t_rest(), 'spa_eth3')
+        la = UnityLinkAggregation.create(t_rest(), [eth_2, eth_3], 9000)
+        assert_that(la.get_id(), equal_to('spa_la_2'))
+
+    @patch_rest
+    def test_create_already_exist(self):
+        def do():
+            eth_2 = UnityEthernetPort.get(t_rest(), 'spa_eth2')
+            eth_4 = UnityEthernetPort.get(t_rest(), 'spa_eth4')
+            UnityLinkAggregation.create(t_rest(), [eth_2, eth_4], 1500)
+        assert_that(do, raises(UnityEthernetPortAlreadyAggregatedError))
+
+    @patch_rest
+    def test_modify(self):
+        la = UnityLinkAggregation.get(t_rest(), 'spa_la_2')
+        la.modify(mtu=1500,
+                  remove_ports=[UnityEthernetPort.get(t_rest(), "spa_eth2")],
+                  add_ports=[UnityEthernetPort.get(t_rest(), "spa_eth4")])

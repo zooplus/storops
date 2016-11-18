@@ -489,6 +489,21 @@ class UnitySystemTest(TestCase):
         ret = t_unity().clear_dns_server()
         assert_that(ret, has_items('10.245.177.15', '10.245.177.16'))
 
+    @patch_rest
+    def test_get_link_aggregation_list(self):
+        la_list = t_unity().get_link_aggregation()
+        assert_that(len(la_list), equal_to(2))
+
+    @patch_rest
+    def test_get_link_aggregation_by_name(self):
+        cg = t_unity().get_link_aggregation(name='SP A Link Aggregation 2')
+        assert_that(cg.name, equal_to('SP A Link Aggregation 2'))
+
+    @patch_rest
+    def test_get_link_aggregation_by_id(self):
+        cg = t_unity().get_link_aggregation(_id='spa_la_2')
+        assert_that(cg.id, equal_to('spa_la_2'))
+
 
 class UnityDpeTest(TestCase):
     @patch_rest

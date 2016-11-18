@@ -1,0 +1,79 @@
+{
+  "indices": [
+    {
+      "url": "/api/types/linkAggregation?compact=True&fields=attributes.description,attributes.displayValue,attributes.initialValue,attributes.name,attributes.type,description,documentation,name,type",
+      "response": "type.json"
+    },
+    {
+      "url": "/api/types/linkAggregation/instances?compact=True",
+      "body": {
+        "mtuSize": 9000,
+        "ports": [
+          {
+            "id": "spa_eth2"
+          },
+          {
+            "id": "spa_eth3"
+          }
+        ]
+      },
+      "response": "create_spa_la_2.json"
+    },
+    {
+      "url": "/api/instances/linkAggregation/spa_la_2?compact=True&fields=id,instanceId,isLinkUp,linuxDeviceName,macAddress,masterPort,mtuSize,name,parent,parentStorageProcessor,ports,shortName,supportedMtus",
+      "response": "spa_la_2.json"
+    },
+    {
+      "url": "/api/instances/linkAggregation/spa_la_2/action/modify?compact=True",
+      "body": {
+        "mtuSize": 1500,
+        "removePorts": [
+          {
+            "id": "spa_eth2"
+          }
+        ],
+        "addPorts": [
+          {
+            "id": "spa_eth4"
+          }
+        ]
+      },
+      "response": "modify.json"
+    },
+    {
+      "url": "/api/types/linkAggregation/instances?compact=True&fields=id,instanceId,isLinkUp,linuxDeviceName,macAddress,masterPort,mtuSize,name,parent,parentStorageProcessor,ports,shortName,supportedMtus",
+      "response": "all.json"
+    },
+    {
+      "url": "/api/types/linkAggregation/instances?compact=True&fields=id,instanceId,isLinkUp,linuxDeviceName,macAddress,masterPort,mtuSize,name,parent,parentStorageProcessor,ports,shortName,supportedMtus&filter=name eq \"SP A Link Aggregation 2\"",
+      "response": "spa_la_2.json"
+    },
+    {
+      "url": "/api/instances/linkAggregation/spa_la_2/action/modify?compact=True",
+      "body": {
+        "mtuSize": 1500
+      },
+      "response": "modify.json"
+    },
+    {
+      "url": "/api/instances/linkAggregation/spa_eth3?compact=True&fields=id,instanceId,isLinkUp,linuxDeviceName,macAddress,masterPort,mtuSize,name,parent,parentStorageProcessor,ports,shortName,supportedMtus",
+      "response": "not_found.json"
+    },
+    {
+      "url": "/api/types/linkAggregation/instances?compact=True",
+      "body": {
+        "mtuSize": 1500,
+        "ports": [
+          {
+            "id": "spa_eth2"
+          },
+          {
+            "id": "spa_eth4"
+          }
+        ]
+      },
+      "response": "port_aggregated_error.json"
+    }
+  ]
+
+}

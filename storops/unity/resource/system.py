@@ -36,7 +36,7 @@ from storops.unity.resource.nfs_server import UnityNfsServerList
 from storops.unity.resource.nfs_share import UnityNfsShareList
 from storops.unity.resource.pool import UnityPoolList
 from storops.unity.resource.port import UnityIpPortList, UnityIoLimitPolicy, \
-    UnityIoLimitPolicyList
+    UnityIoLimitPolicyList, UnityLinkAggregationList
 from storops.unity.resource.snap import UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessorList
 from storops.unity.resource.port import UnityEthernetPortList, \
@@ -238,6 +238,11 @@ class UnitySystem(UnitySingletonResource):
     @instance_cache
     def info(self):
         return UnityBasicSystemInfo.get(cli=self._cli)
+
+    def get_link_aggregation(self, _id=None, name=None, **filters):
+        return self._get_unity_rsc(UnityLinkAggregationList, _id=_id,
+                                   name=name,
+                                   **filters)
 
 
 class UnitySystemList(UnityResourceList):
