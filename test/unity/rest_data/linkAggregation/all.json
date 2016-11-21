@@ -1,0 +1,80 @@
+{
+  "@base": "https://10.244.223.66/api/types/linkAggregation/instances?fields=id,instanceId,isLinkUp,linuxDeviceName,macAddress,mtuSize,name,parent,shortName,supportedMtus,parentStorageProcessor.id,ports.id,masterPort.id&per_page=2000&compact=true",
+  "updated": "2016-11-18T06:41:42.102Z",
+  "links": [
+    {
+      "href": "&page=1",
+      "rel": "self"
+    }
+  ],
+  "entries": [
+    {
+      "content": {
+        "supportedMtus": [
+          1500,
+          9000
+        ],
+        "macAddress": "00:60:16:5C:08:E1",
+        "name": "SP A Link Aggregation 2",
+        "linuxDeviceName": "bond2",
+        "parentStorageProcessor": {
+          "id": "spa"
+        },
+        "instanceId": "root/emc:EMC_UEM_LinkAggregationLeaf%Tag=03:00:00:00",
+        "isLinkUp": false,
+        "masterPort": {
+          "id": "spa_eth2"
+        },
+        "parent": {
+          "resource": "storageProcessor",
+          "id": "spa"
+        },
+        "mtuSize": 9000,
+        "shortName": "Link Aggregation 2",
+        "id": "spa_la_2",
+        "ports": [
+          {
+            "id": "spa_eth3"
+          },
+          {
+            "id": "spa_eth2"
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "supportedMtus": [
+          1500,
+          9000
+        ],
+        "macAddress": "00:60:16:5C:0B:8F",
+        "name": "SP B Link Aggregation 2",
+        "linuxDeviceName": "bond2",
+        "parentStorageProcessor": {
+          "id": "spb"
+        },
+        "instanceId": "root/emc:EMC_UEM_LinkAggregationLeaf%Tag=03:00:01:00",
+        "isLinkUp": false,
+        "masterPort": {
+          "id": "spb_eth2"
+        },
+        "parent": {
+          "resource": "storageProcessor",
+          "id": "spb"
+        },
+        "mtuSize": 9000,
+        "shortName": "Link Aggregation 2",
+        "id": "spb_la_2",
+        "ports": [
+          {
+            "id": "spb_eth2"
+          },
+          {
+            "id": "spb_eth3"
+          }
+        ]
+      }
+    }
+  ]
+}

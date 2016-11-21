@@ -493,6 +493,11 @@ class UnityStorageResourceNameInUseError(UnityException):
     error_code = 108007952
 
 
+@rest_exception
+class UnityEthernetPortAlreadyAggregatedError(UnityException):
+    error_code = 100665643
+
+
 class NaviseccliNotAvailableError(VNXException):
     message = ("naviseccli not found.  please make sure it's installed"
                " and available in path.")

@@ -1,0 +1,34 @@
+{
+  "content": {
+    "supportedMtus": [
+      1500,
+      9000
+    ],
+    "macAddress": "00:60:16:5C:08:E1",
+    "name": "SP A Link Aggregation 2",
+    "linuxDeviceName": "bond2",
+    "parentStorageProcessor": {
+      "id": "spa"
+    },
+    "instanceId": "root/emc:EMC_UEM_LinkAggregationLeaf%Tag=03:00:00:00",
+    "isLinkUp": false,
+    "masterPort": {
+      "id": "spa_eth2"
+    },
+    "parent": {
+      "resource": "storageProcessor",
+      "id": "spa"
+    },
+    "mtuSize": 9000,
+    "shortName": "Link Aggregation 2",
+    "id": "spa_la_2",
+    "ports": [
+      {
+        "id": "spa_eth3"
+      },
+      {
+        "id": "spa_eth2"
+      }
+    ]
+  }
+}

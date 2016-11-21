@@ -1,0 +1,12 @@
+{
+  "error": {
+    "errorCode": 100665643,
+    "httpStatusCode": 409,
+    "messages": [
+      {
+        "en-US": "One of specified ethernet ports cannot be aggregated due it is already aggregated. (Error Code:0x600092b)"
+      }
+    ],
+    "created": "2016-11-21T03:21:37.134Z"
+  }
+}

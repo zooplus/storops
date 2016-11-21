@@ -11,6 +11,10 @@
     {
       "url": "/api/instances/ipPort/spa_eth2?compact=True&fields=cascadeNames,id,instanceId,isLinkUp,linuxDeviceName,macAddress,name,shortName,storageProcessor",
       "response": "spa_eth2.json"
+    },
+    {
+      "url": "/api/instances/ipPort/spa_la_2?compact=True&fields=cascadeNames,id,instanceId,isLinkUp,linuxDeviceName,macAddress,name,shortName,storageProcessor",
+      "response": "spa_la_2.json"
     }
   ]
 }

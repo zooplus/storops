@@ -1,0 +1,14 @@
+{
+    "content": {
+        "macAddress": "00:60:16:5C:08:E1",
+        "name": "SP A Link Aggregation 2",
+        "linuxDeviceName": "bond2",
+        "storageProcessor": {
+            "id": "spa"
+        },
+        "instanceId": "root/emc:EMC_UEM_LinkAggregationLeaf%Tag=03:00:00:00",
+        "isLinkUp": true,
+        "shortName": "Link Aggregation 2",
+        "id": "spa_la_2"
+    }
+}

@@ -1,0 +1,87 @@
+{
+  "content": {
+    "attributes": [
+      {
+        "displayValue": "instanceId",
+        "type": "String",
+        "name": "instanceId",
+        "description": "Internal identifier of the linkAggregation instance.  "
+      },
+      {
+        "displayValue": "id",
+        "type": "String",
+        "name": "id",
+        "description": "Unique identifier of the linkAggregation instance.  "
+      },
+      {
+        "displayValue": "name",
+        "type": "String",
+        "name": "name",
+        "description": "Link aggregation name.  "
+      },
+      {
+        "displayValue": "shortName",
+        "type": "String",
+        "name": "shortName",
+        "description": "Short name for the link aggregation.  "
+      },
+      {
+        "displayValue": "masterPort",
+        "type": "ethernetPort",
+        "name": "masterPort",
+        "description": "Master port of the link aggregation.  "
+      },
+      {
+        "displayValue": "ports",
+        "type": "List<ethernetPort>",
+        "name": "ports",
+        "description": "List of aggregated Ethernet ports, including the master port.  "
+      },
+      {
+        "displayValue": "mtuSize",
+        "type": "Integer",
+        "name": "mtuSize",
+        "description": "Maximum transmission unit (MTU) packet size for the linked ports, in bytes.  "
+      },
+      {
+        "displayValue": "supportedMtus",
+        "type": "List<Integer>",
+        "name": "supportedMtus",
+        "description": "List of MTU sizes supported by the link aggregation.  "
+      },
+      {
+        "displayValue": "linuxDeviceName",
+        "type": "String",
+        "name": "linuxDeviceName",
+        "description": "Name of linux device (bond).  "
+      },
+      {
+        "displayValue": "macAddress",
+        "type": "String",
+        "name": "macAddress",
+        "description": "MAC address of the link aggregation.  "
+      },
+      {
+        "displayValue": "isLinkUp",
+        "type": "Boolean",
+        "name": "isLinkUp",
+        "description": "Indicates whether the link aggregation has link.  "
+      },
+      {
+        "displayValue": "parent",
+        "type": "resourceRef",
+        "name": "parent",
+        "description": "Parent Storage Processor of the link aggregation.  "
+      },
+      {
+        "displayValue": "parentStorageProcessor",
+        "type": "storageProcessor",
+        "name": "parentStorageProcessor",
+        "description": "Parent SP of the link aggregation.  "
+      }
+    ],
+    "documentation": "https://10.244.223.66/apidocs/classes/linkAggregation.html",
+    "name": "linkAggregation",
+    "description": "(Applies if link aggregation is supported.) Ethernet port link aggregation settings. <p/> Link aggregation lets you link Ethernet ports (for example, port 0 and port 1) on a Storage Processor (SP) to a single logical port, and therefore lets you use up to four Ethernet ports on the SP. If your system has two SPs, and you link two physical ports, the same ports on both SPs are linked for redundancy. For example, if you link port 0 to port 1, the system creates one link aggregation for these ports on SPA and another link aggregation on SPB. <p/> <b>Note: </b>You can aggregate only Ethernet ports belonging to the same I/O module or on-board Ethernet ports. Aggregation of ports from different I/O modules is not allowed. <p/> <b>Note: </b>You can aggregate only Ethernet ports with the same MTU size. <p/> <b>Note: </b>You can not add an Ethernet port to aggregation if there are iSCSI portals on it. <p/> Link aggregation provides the following advantages: <ul> <li>Increases overall throughput, since two physical ports are linked into one logical port.</li> <li>Provides basic load balancing across linked ports, since the network traffic is distributed across multiple physical ports.</li> <li>Provides redundant ports so that if one port in a linked pair fails, the system does not lose connectivity.</li> </ul> <b>Note: </b>With link aggregation, both linked ports must be connected to the same switch, and the switch must be configured to use the link aggregation that uses the Link Aggregation Control Protocol (LACP). The documentation that came with your switch should provide more information about using LACP. <p/> The Unisphere online Help provides more details on cabling the SPs to the Disk-Array Enclosures (DAEs).  "
+  }
+}
