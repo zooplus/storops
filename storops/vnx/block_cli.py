@@ -15,18 +15,19 @@
 #    under the License.
 from __future__ import unicode_literals
 
-import logging
-
 import functools
+import logging
 from multiprocessing.pool import ThreadPool
 
 import six
 from retryz import retry
 
+import storops.vnx.resource.system
 from storops import exception as ex
 from storops.exception import OptionMissingError
 from storops.lib.common import check_int, text_var, int_var, enum_var, \
     yes_no_var
+from storops.lib.metric import PerfManager
 from storops.vnx.enums import VNXSPEnum, VNXTieringEnum, VNXProvisionEnum, \
     VNXMigrationRate, VNXCompressionRate, \
     VNXMirrorViewRecoveryPolicy, VNXMirrorViewSyncRate, VNXLunType, \
@@ -61,8 +62,14 @@ def command(f):
 
     @functools.wraps(f)
     def func_wrapper(self, *argv, **kwargs):
+        if 'ip' in kwargs:
+            ip = kwargs['ip']
+            del kwargs['ip']
+        else:
+            ip = None
+
         commands = _get_commands(f, self, *argv, **kwargs)
-        return self.execute(commands)
+        return self.execute(commands, ip=ip)
 
     return func_wrapper
 
@@ -82,13 +89,11 @@ def duel_command(f):
     return func_wrapper
 
 
-class CliClient(object):
-    def __init__(self, ip=None,
-                 username=None, password=None, scope=None,
-                 sec_file=None,
-                 timeout=None,
-                 heartbeat_interval=None,
+class CliClient(PerfManager):
+    def __init__(self, ip=None, username=None, password=None, scope=None,
+                 sec_file=None, timeout=None, heartbeat_interval=None,
                  naviseccli=None):
+        super(CliClient, self).__init__()
         if heartbeat_interval is None:
             heartbeat_interval = 60
         if scope is None:
@@ -102,6 +107,22 @@ class CliClient(object):
             timeout=timeout,
             naviseccli=naviseccli)
         self._heart_beat.add(VNXSPEnum.SP_A, ip)
+        self._system_version = None
+
+    def persist_rsc_list_metrics(self):
+        persist_rsc_list = self.get_persist_rsc_list()
+        if self.prev_counter and persist_rsc_list:
+            for rsc_list in persist_rsc_list:
+                rsc_list.persist_metric_data()
+
+    def get_persist_rsc_list(self):
+        if self.curr_counter is not None:
+            ret = [rsc_list
+                   for rsc_list in self.curr_counter.get_rsc_list_collection()
+                   if self.is_perf_metric_enabled(rsc_list)]
+        else:
+            ret = []
+        return ret
 
     def set_binary(self, binary):
         if binary is not None:
@@ -138,6 +159,10 @@ class CliClient(object):
     @property
     def heartbeat(self):
         return self._heart_beat
+
+    @command
+    def get_control(self):
+        return 'getcontrol'
 
     @command
     def get_agent(self):
@@ -836,6 +861,16 @@ class CliClient(object):
         cmd.append('-o')
         return cmd
 
+    @command
+    def set_stats(self, enable=None):
+        cmd = ['setstats']
+        if enable is not None:
+            if enable:
+                cmd.append('-on')
+            else:
+                cmd.append('-off')
+        return cmd
+
     @property
     def ip(self):
         return self._heart_beat.get_alive_sp_ip()
@@ -868,3 +903,13 @@ class CliClient(object):
             pool = ThreadPool(len(ip_list))
             output = pool.map(lambda ip: self.do(ip, params), ip_list)
         return tuple(output)
+
+    def set_system_version(self, version):
+        self._system_version = version
+
+    @property
+    def system_version(self):
+        clz = storops.vnx.resource.system.VNXAgent
+        if self._system_version is None:
+            self._system_version = clz(self).revision
+        return self._system_version

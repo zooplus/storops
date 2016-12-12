@@ -26,6 +26,7 @@ from functools import partial
 from os import path, makedirs, stat
 
 import cachez
+import math
 import six
 from enum import Enum as _Enum
 from retryz import retry
@@ -439,6 +440,12 @@ def get_lock_file(name):
     return path.join(lock_folder, name)
 
 
+def get_data_file(name):
+    data_folder = get_local_folder()
+    assure_folder(data_folder)
+    return path.join(data_folder, name)
+
+
 def round_it(n_digits=3):
     def inner(func):
         @six.wraps(func)
@@ -496,12 +503,21 @@ class RepeatedTimer(object):
             self._timer.start()
 
     def stop(self):
+        if self._timer.is_alive():
+            log.info('stop timer for {}.'.format(self.function))
         self._timer.cancel()
         self.is_running = False
-        log.info('timer stopped for {}.'.format(self.function))
 
     def is_daemon(self):
         return self._timer.isDaemon()
 
     def __del__(self):
         self.stop()
+
+
+def all_not_none(*items):
+    return all(map(lambda item: item is not None, items))
+
+
+def all_not_nan(*items):
+    return all(map(lambda item: not math.isnan(item), items))

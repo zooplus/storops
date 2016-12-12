@@ -479,6 +479,26 @@ class UnityEthernetPortSpeedNotSupportError(UnityException):
     message = "Specified Speed is not supported."
 
 
+@rest_exception
+class UnityVLANUsedByOtherTenantError(UnityException):
+    error_code = 118939688
+
+
+@rest_exception
+class UnityTenantUUIDInUse(UnityException):
+    error_code = 118939686
+
+
+@rest_exception
+class UnityTenantNameInUseError(UnityException):
+    error_code = 118939685
+
+
+@rest_exception
+class UnityVLANAlreadyHasInterfaceError(UnityException):
+    error_code = 118939689
+
+
 class UnityShareTypeNotSupportAccessControlError(UnityException):
     message = 'share type does not support access control.'
 
@@ -517,6 +537,23 @@ class UnityMetricException(UnityException):
 @rest_exception
 class UnityMetricQueryNotFoundError(UnityMetricException):
     error_code = 131153932
+
+
+class SystemAPINotSupported(StoropsException):
+    message = "System in version {version} doesn't support this API"
+
+
+@rest_exception
+class UnityHostNotInSameTenantError(StoropsException):
+    error_code = 151036194
+
+
+class VNXStatsError(VNXException):
+    pass
+
+
+class VNXPerMonNotEnabledError(VNXStatsError):
+    pass
 
 
 class NaviseccliNotAvailableError(VNXException):
@@ -896,6 +933,10 @@ class VNXUserNotFoundError(VNXSecurityException, VNXObjectNotFoundError):
     error_message = 'User does not exist'
 
 
+class VNXStatsException(VNXException):
+    pass
+
+
 class VNXRaidGroupError(VNXException):
     pass
 
@@ -917,7 +958,12 @@ class VNXCreatePoolError(VNXPoolError):
 
 
 @cli_exception
-class VNXPoolNameInUseError(VNXCreatePoolError):
+class VNXNameInUseError(VNXException):
+    error_message = 'Could not set properties:(Name).'
+
+
+@cli_exception
+class VNXPoolNameInUseError(VNXCreatePoolError, VNXNameInUseError):
     error_message = ['0x712d8501', 'Pool name is already used']
 
 

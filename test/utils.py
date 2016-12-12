@@ -18,13 +18,14 @@ from __future__ import unicode_literals
 import codecs
 import json
 import logging
+import math
 import os
-
 from os.path import dirname, abspath, join, exists, basename
 
 import fasteners
+from hamcrest.core.base_matcher import BaseMatcher
 
-from storops.lib.common import instance_cache, get_lock_file
+from storops.lib.common import instance_cache, get_lock_file, get_data_file
 
 __author__ = 'Cedric Zhuang'
 
@@ -92,7 +93,7 @@ class ConnectorMock(object):
 
 
 class PersistedDict(object):
-    def __init__(self, name=None, default=None):
+    def __init__(self, name=None, default=None, folder=None):
         if name is None:
             name = self.__hash__()
         self._name = name
@@ -105,7 +106,7 @@ class PersistedDict(object):
     @property
     @instance_cache
     def data_file_name(self):
-        return abspath('{}.json'.format(self._name))
+        return get_data_file('{}.json'.format(self._name))
 
     @property
     @instance_cache
@@ -166,3 +167,19 @@ class PersistedDict(object):
     def clear_lock_file(self):
         if exists(self.lock_file_name):
             os.remove(self.lock_file_name)
+
+
+class IsNaN(BaseMatcher):
+    def __init__(self):
+        self.value = None
+
+    def _matches(self, value):
+        self.value = value
+        return math.isnan(value)
+
+    def describe_to(self, description):
+        description.append_text('"{}" should be NaN.'.format(self.value))
+
+
+def is_nan():
+    return IsNaN()
