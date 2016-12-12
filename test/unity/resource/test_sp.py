@@ -16,12 +16,13 @@
 from __future__ import unicode_literals
 
 import os
+from os import path
 from unittest import TestCase
 
 from hamcrest import assert_that, equal_to, instance_of, only_contains, \
     raises, contains_string, greater_than, is_not
 
-from storops.lib.common import get_file_size
+from storops.lib.common import get_file_size, get_local_folder
 from storops.unity.enums import NodeEnum
 from storops.unity.resource.health import UnityHealth
 from storops.unity.resource.sp import UnityStorageProcessor, \
@@ -33,7 +34,11 @@ __author__ = 'Cedric Zhuang'
 
 
 class UnityStorageProcessorTest(TestCase):
-    sp_list = t_unity().get_sp()
+
+    @property
+    @patch_rest
+    def sp_list(self):
+        return t_unity().get_sp()
 
     @patch_rest
     def test_properties(self):
@@ -203,7 +208,8 @@ class UnityStorageProcessorTest(TestCase):
         assert_that(csv, contains_string('spa,SP A,87.0,89.0'))
         assert_that(csv, contains_string('spb,SP B,88.0,90.0'))
 
-    FILENAME = 'unittest_sp_metric_persist_csv_file.csv'
+    FILENAME = path.join(get_local_folder(),
+                         'unittest_sp_metric_persist_csv_file.csv')
 
     @classmethod
     def tearDownClass(cls):
@@ -221,13 +227,6 @@ class UnityStorageProcessorTest(TestCase):
         assert_that(new_file_size, greater_than(file_size))
 
     @patch_rest
-    def test_default_metric_csv_filename(self):
-        filename = self.sp_list.get_default_metric_csv_filename()
-        assert_that(filename, contains_string('.storops'))
-        assert_that(filename,
-                    contains_string('10.244.223.61_storageProcessor.csv'))
-
-    @patch_rest
     def test_repr_with_metric(self):
         spa, _ = self.sp_list
         assert_that(str(spa), contains_string('"nfs_write_mbps":'))
@@ -236,3 +235,11 @@ class UnityStorageProcessorTest(TestCase):
     def test_repr_without_metric(self):
         spa, _ = UnitySystem('10.244.223.61').get_sp()
         assert_that(str(spa), is_not(contains_string('"nfs_write_mbps":')))
+
+    @patch_rest
+    def test_default_metric_csv_filename(self):
+        sp_list = UnitySystem('10.244.223.61').get_sp()
+        filename = sp_list.get_default_metric_csv_filename()
+        assert_that(filename, contains_string('.storops'))
+        assert_that(filename,
+                    contains_string('10.244.223.61_storageProcessor.csv'))

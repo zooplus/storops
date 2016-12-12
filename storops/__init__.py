@@ -15,9 +15,32 @@
 #    under the License.
 from __future__ import unicode_literals
 
-from storops.vnx.resource.system import VNXSystem  # noqa
+import sys
+import logging
+
+from storops.unity.enums import *  # noqa
 from storops.unity.resource.system import UnitySystem  # noqa
 from storops.vnx.enums import *  # noqa
-from storops.unity.enums import *  # noqa
+from storops.vnx.resource.system import VNXSystem  # noqa
 
 __author__ = 'Cedric Zhuang'
+
+
+def enable_log(level=logging.DEBUG):
+    """Enable console logging.
+
+    This is a utils method for try run with storops.
+    :param level: log level, default to DEBUG
+    """
+    logger = logging.getLogger(__name__)
+    logger.setLevel(level)
+    if not logger.handlers:
+        logger.info('enabling logging to console.')
+        logger.addHandler(logging.StreamHandler(sys.stdout))
+
+
+def disable_log():
+    logger = logging.getLogger(__name__)
+    logger.info('disabling logging to console.')
+    logger.setLevel(logging.NOTSET)
+    logger.handlers = []
