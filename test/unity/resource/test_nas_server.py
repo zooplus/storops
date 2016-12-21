@@ -71,6 +71,7 @@ class UnityNasServerTest(TestCase):
         assert_that(server.file_dns_server, instance_of(UnityFileDnsServer))
         assert_that(server.file_interface, instance_of(UnityFileInterfaceList))
         assert_that(server.virus_checker, instance_of(UnityVirusChecker))
+        assert_that(server.tenant, equal_to(None))
 
     @patch_rest
     def test_get_all(self):
@@ -192,3 +193,17 @@ class UnityNasServerTest(TestCase):
                                        local_password='Password123!')
 
         assert_that(f, raises(UnitySmbNameInUseError, 'name already exists'))
+
+    @patch_rest
+    def test_shadow_copy_home_sp(self):
+        nas_servers = UnityNasServerList(cli=t_rest(), home_sp='spa')
+        assert_that(len(nas_servers), equal_to(2))
+        nas_servers = UnityNasServerList(cli=t_rest(), home_sp='spb')
+        assert_that(len(nas_servers), equal_to(1))
+
+    @patch_rest
+    def test_shadow_copy_current_sp(self):
+        nas_servers = UnityNasServerList(cli=t_rest(), current_sp='spa')
+        assert_that(len(nas_servers), equal_to(1))
+        nas_servers = UnityNasServerList(cli=t_rest(), current_sp='spb')
+        assert_that(len(nas_servers), equal_to(2))

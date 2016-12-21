@@ -197,10 +197,19 @@ class ResourceList(Resource):
         super(ResourceList, self).__init__()
         self._list = None
 
-    def shadow_copy(self):
+    def shadow_copy(self, *args, **kwargs):
         ret = super(ResourceList, self).shadow_copy()
         ret._list = self._list
+        ret.set_filter(*args, **kwargs)
         return ret
+
+    def set_filter(self, *args, **kwargs):
+        self._set_filter(*args, **kwargs)
+        self._apply_filter()
+
+    def _set_filter(self, *args, **kwargs):
+        # implemented by child classes if needed
+        pass
 
     @classmethod
     def get_rsc_clz_list(cls, rsc_list_collection):
@@ -291,6 +300,11 @@ class ResourceList(Resource):
 
     def _is_updated(self):
         return self._list is not None
+
+    def __add__(self, other):
+        if not isinstance(other, ResourceList):
+            raise TypeError
+        return self.list + other.list
 
 
 class ResourceListCollection(object):

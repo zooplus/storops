@@ -201,6 +201,7 @@ class UnitySystemTest(TestCase):
         unity = t_unity()
         ports = unity.get_ethernet_port()
         assert_that(ports, instance_of(UnityEthernetPortList))
+        assert_that(len(ports), equal_to(8))
 
     @patch_rest
     def test_get_host_list(self):
@@ -270,6 +271,36 @@ class UnitySystemTest(TestCase):
         pool = unity.get_pool(_id='pool_1')
         nas_server = unity.create_nas_server('nas3', sp, pool)
         assert_that(nas_server.existed, equal_to(True))
+
+    @patch_rest
+    def test_auto_balance_sp_one_sp(self):
+        unity = t_unity()
+
+        @patch_rest(output='auto_balance_sp_one_sp.json')
+        def inner():
+            sp = unity._auto_balance_sp()
+            assert_that(sp.get_id(), equal_to('spa'))
+
+        unity._auto_balance_sp()
+        inner()
+
+    @patch_rest
+    def test_auto_balance_sp_to_spb(self):
+        unity = t_unity()
+        sp = unity._auto_balance_sp()
+        assert_that(sp.get_id(), equal_to('spb'))
+
+    @patch_rest
+    def test_auto_balance_sp_to_spa(self):
+        unity = t_unity()
+
+        @patch_rest(output='auto_balance_sp_to_spa.json')
+        def inner():
+            sp = unity._auto_balance_sp()
+            assert_that(sp.get_id(), equal_to('spa'))
+
+        unity._auto_balance_sp()
+        inner()
 
     @patch_rest
     def test_get_ip_ports(self):
