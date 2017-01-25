@@ -19,8 +19,6 @@ import logging
 import re
 from datetime import datetime
 
-from past.builtins import filter
-
 from storops.lib.common import clear_instance_cache
 from storops.lib.converter import to_datetime
 from storops.vnx.enums import VNXSPEnum
@@ -160,7 +158,7 @@ class VNXDomainMemberList(VNXCliResourceList):
             sp = VNXSPEnum.parse(member.name)
             return sp == index
 
-        result = filter(filter_by_sp_name, self.list)
+        result = list(filter(filter_by_sp_name, self.list))
         ret = None
         if len(result) > 0:
             ret = result[0]

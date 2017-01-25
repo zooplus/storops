@@ -19,7 +19,6 @@ from __future__ import unicode_literals
 import io
 import os
 import re
-import sys
 
 from setuptools import setup, find_packages
 
@@ -54,14 +53,8 @@ def read_requirements(filename):
         return f.read().splitlines()
 
 
-def install_requirements(filename):
-    packages = read_requirements(filename)
-    if sys.version_info < (3, 4):
-        packages.append("enum34>=1.0.4")
-
-
 def get_description():
-    return "Python API for VNX and Unity."
+    return 'Python API for VNX and Unity.'
 
 
 def get_long_description():
@@ -70,29 +63,30 @@ def get_long_description():
 
 
 setup(
-    name="storops",
+    name='storops',
     version=version(),
-    author="Cedric Zhuang",
-    author_email="cedric.zhuang@gmail.com",
+    author='Cedric Zhuang',
+    author_email='cedric.zhuang@gmail.com',
+    url='https://github.com/emc-openstack/storops',
     description=get_description(),
-    license="Apache Software License",
-    keywords="VNX",
+    license='Apache Software License',
+    keywords='VNX Unity EMC Storage',
     include_package_data=True,
     packages=find_packages(),
     platforms=['any'],
     long_description=get_long_description(),
     classifiers=[
-        "Programming Language :: Python",
+        'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        "Natural Language :: English",
-        "Intended Audience :: Developers",
-        "Operating System :: OS Independent",
-        "Development Status :: 4 - Beta",
-        "Topic :: Utilities",
-        "License :: OSI Approved :: Apache Software License",
+        'Natural Language :: English',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Development Status :: 4 - Beta',
+        'Topic :: Utilities',
+        'License :: OSI Approved :: Apache Software License',
     ],
     install_requires=read_requirements('requirements.txt'),
     tests_require=read_requirements('test-requirements.txt')
