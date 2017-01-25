@@ -16,7 +16,6 @@
 from __future__ import unicode_literals
 
 import logging
-from past.builtins import filter
 from storops.exception import UnityResourceNotFoundError, \
     UnityCifsServiceNotEnabledError
 from storops.unity.enums import FSSupportedProtocolEnum, TieringPolicyEnum, \
@@ -135,8 +134,8 @@ class UnityFileSystem(UnityResource):
 
         :return: false if no snaps or all snaps are destroying.
         """
-        return len(filter(lambda s: s.state != SnapStateEnum.DESTROYING,
-                          self.snapshots)) > 0
+        return len(list(filter(lambda s: s.state != SnapStateEnum.DESTROYING,
+                               self.snapshots))) > 0
 
 
 class UnityFileSystemList(UnityResourceList):

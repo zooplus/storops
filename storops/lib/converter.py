@@ -23,7 +23,6 @@ from operator import is_not
 
 import bitmath
 import dateutil.parser
-from past.builtins import filter
 import six
 
 from storops.vnx import enums
