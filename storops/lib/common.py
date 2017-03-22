@@ -15,6 +15,7 @@
 #    under the License.
 from __future__ import unicode_literals
 
+import bitmath
 import errno
 import functools
 import inspect
@@ -283,6 +284,16 @@ def check_text(value):
     return value
 
 
+def check_list(value):
+    if not value:
+        ret = []
+    elif isinstance(value, list):
+        ret = value
+    else:
+        raise ValueError('"{}" must be list or None.'.format(value))
+    return ret
+
+
 def daemon(func_ref, *args, **kwargs):
     if not callable(func_ref):
         raise ValueError('background only accept callable inputs.')
@@ -387,10 +398,20 @@ def _var(func, name, value, *param):
     return ret
 
 
+def _list_var(func, name, value, *param):
+    value = func(value, *param)
+    if value:
+        ret = [name] + value
+    else:
+        ret = []
+    return ret
+
+
 text_var = functools.partial(_var, check_text)
 int_var = functools.partial(_var, check_int)
 enum_var = functools.partial(_var, check_enum)
 yes_no_var = functools.partial(_var, lambda b: 'yes' if b else 'no')
+list_var = functools.partial(_list_var, check_list)
 
 
 class Credential(object):
@@ -521,3 +542,18 @@ def all_not_none(*items):
 
 def all_not_nan(*items):
     return all(map(lambda item: not math.isnan(item), items))
+
+
+def supplement_filesystem(old_size, user_cap=False):
+    """Return new size accounting for the metadata."""
+    new_size = old_size
+    if user_cap:
+        if old_size <= _GiB_to_Byte(1.5):
+            new_size = _GiB_to_Byte(3)
+        else:
+            new_size += _GiB_to_Byte(1.5)
+    return int(new_size)
+
+
+def _GiB_to_Byte(size_gb):
+    return bitmath.GiB(size_gb).to_Byte().value
