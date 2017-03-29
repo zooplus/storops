@@ -1,0 +1,12 @@
+{
+    "error": {
+        "errorCode": 100663539,
+            "httpStatusCode": 422,
+            "messages": [
+            {
+                "en-US": "The specified host initiator already exists. (Error Code:0x60000f3)"
+            }
+            ],
+            "created": "2017-03-23T20:56:53.012Z"
+    }
+}

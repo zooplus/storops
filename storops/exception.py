@@ -293,6 +293,11 @@ class UnityHostInitiatorNotFoundError(UnityException):
     pass
 
 
+@rest_exception
+class UnityHostInitiatorExistedError(UnityException):
+    error_code = 100663539
+
+
 class UnityHostInitiatorUnknownType(UnityException):
     pass
 

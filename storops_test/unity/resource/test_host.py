@@ -26,7 +26,7 @@ from storops.exception import UnityHostIpInUseError, \
     UnityResourceNotFoundError, UnityHostInitiatorNotFoundError, \
     UnityHostInitiatorUnknownType, UnityAluAlreadyAttachedError, \
     UnityAttachAluExceedLimitError, UnitySnapAlreadyPromotedException, \
-    SystemAPINotSupported
+    SystemAPINotSupported, UnityHostInitiatorExistedError
 from storops.unity.enums import HostTypeEnum, HostManageEnum, \
     HostPortTypeEnum, HealthEnum, HostInitiatorTypeEnum, \
     HostInitiatorSourceTypeEnum, HostInitiatorIscsiTypeEnum
@@ -45,7 +45,7 @@ __author__ = 'Cedric Zhuang'
 
 
 @ddt.ddt
-class UnityHotTest(TestCase):
+class UnityHostTest(TestCase):
     @patch_rest
     def test_properties(self):
         host = UnityHost(_id='Host_1', cli=t_rest())
@@ -200,6 +200,15 @@ class UnityHotTest(TestCase):
         assert_that(initiator.existed, equal_to(True))
         assert_that(host.iscsi_host_initiators,
                     instance_of(UnityHostInitiatorList))
+
+    @patch_rest
+    def test_add_initiator_iscsi_already_existed(self):
+        host = UnityHost(cli=t_rest(), _id='Host_9')
+        iqn = "iqn.1993-08.org.debian:01:a4f95ed19999"
+
+        def _inner():
+            host.add_initiator(iqn)
+        assert_that(_inner, raises(UnityHostInitiatorExistedError))
 
     @patch_rest
     def test_add_not_exist_initiator_with_force(self):
