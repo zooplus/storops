@@ -293,6 +293,11 @@ class UnityHostInitiatorNotFoundError(UnityException):
     pass
 
 
+@rest_exception
+class UnityHostInitiatorExistedError(UnityException):
+    error_code = 100663539
+
+
 class UnityHostInitiatorUnknownType(UnityException):
     pass
 
@@ -357,6 +362,10 @@ class UnityResourceAlreadyAttachedError(UnityAttachError):
 @rest_exception
 class UnityResourceNotFoundError(UnityException):
     error_code = 131149829
+
+
+class UnityResourceNotSupportedError(UnityResourceNotFoundError):
+    pass
 
 
 @rest_exception

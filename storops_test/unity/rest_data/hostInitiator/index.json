@@ -93,6 +93,17 @@
         "response": "create_iscsi_initiator.json"
     },
     {
+      "url": "/api/types/hostInitiator/instances?compact=True",
+        "body":  {
+          "host": {
+              "id": "Host_9"
+          },
+          "initiatorType": 2,
+          "initiatorWWNorIqn": "iqn.1993-08.org.debian:01:a4f95ed19999"
+        },
+        "response": "initiator_already_existed.json"
+    },
+    {
       "url": "/api/instances/hostInitiator/HostInitiator_1/action/modify?compact=True",
       "body": {
         "host": []

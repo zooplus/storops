@@ -1,5 +1,5 @@
 Name: storops_os
-Version: 0.4.8
+Version: 0.4.10
 Release: 0
 Vendor: Cedric Zhuang
 Summary: Python API for VNX and Unity.
@@ -16,8 +16,7 @@ RPM package of Storops for Openstack distribution.
 # create the folders
 mkdir -p $RPM_BUILD_ROOT/tmp/storops
 
-# put files into the pip folder
-cp -a %{getenv:PWD}/pip_packs/* $RPM_BUILD_ROOT/tmp/storops
+pip download -r %{getenv:PWD}/requirements.os.txt --no-deps -d $RPM_BUILD_ROOT/tmp/storops
 
 %post
 echo Installing storops and dependencies.
@@ -31,6 +30,9 @@ rm -rf "$RPM_BUILD_ROOT/tmp"
 /tmp/storops/*
 
 %changelog
+* Fri Mar 23 2017 Denny Zhao
+- 0.4.10 for storops 0.4.10 and it's dependencies.
+
 * Fri Mar 17 2017 Denny Zhao
 - 0.4.8 for storops 0.4.8 and it's dependencies.
 
