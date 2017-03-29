@@ -1,14 +1,12 @@
 # How to publish storops rpm package
 
 - cd to `rpm_publish`.
-- Download the pypi packages which to be packaged to the rpm, and put them
-  under folder `pip_packs`.
-- Update `Version` and `Change log` in the `storops_rpm_spec`.
+- Update `Version` and `Change log` in the `storops_rpm.spec`.
 - Run command: `rpmbuild -ba storops_rpm.spec -v`
 - Follow the log on the screen to find the rpm built.
 
-*NOTE* all pypi packages under `rpm_publish/pip_packs` will be packaged to the
-rpm.
+*NOTE* all pypi packages specified in `requirements.os.txt` will be downloaded
+from `https://pypi.python.org/pypi` and packaged to the rpm.
 
 
 # How to install storops rpm package
