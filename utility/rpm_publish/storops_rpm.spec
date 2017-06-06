@@ -1,5 +1,5 @@
 Name: storops_os
-Version: 0.4.12
+Version: 0.4.13
 Release: 0
 Vendor: Cedric Zhuang
 Summary: Python API for VNX and Unity.
@@ -16,23 +16,32 @@ RPM package of Storops for Openstack distribution.
 # create the folders
 mkdir -p $RPM_BUILD_ROOT/tmp/storops
 
-cp %{getenv:PWD}/requirements.txt $RPM_BUILD_ROOT/tmp/storops
-pip download -r $RPM_BUILD_ROOT/tmp/storops/requirements.txt -d $RPM_BUILD_ROOT/tmp/storops
-pip download -d $RPM_BUILD_ROOT/tmp/storops --no-deps storops
+grep 'rpm-package' %{getenv:PWD}/requirements.txt > $RPM_BUILD_ROOT/tmp/storops/requirements.txt
+pip download -r $RPM_BUILD_ROOT/tmp/storops/requirements.txt -d $RPM_BUILD_ROOT/tmp/storops --no-binary :all: --no-deps
+pip download -d $RPM_BUILD_ROOT/tmp/storops --no-binary :all: --no-deps storops
+rm $RPM_BUILD_ROOT/tmp/storops/requirements.txt
 
 %post
 echo Installing storops and dependencies.
-pip install --no-index --find-links file:///tmp/storops storops
+cd /tmp/storops
+for i in $(ls *.tar.gz); do
+    cd /tmp/storops
+    echo Installing Python package ${i%.tar.gz}
+    tar -xzf ${i} && cd ${i%.tar.gz} && python setup.py install
+done
 
 %clean
 rm -rf "$RPM_BUILD_ROOT/tmp"
 
 %files
 %defattr (-,root,root)
-/tmp/storops/*
+/tmp/storops/*.tar.gz
 
 
 %changelog
+* Thu Jun 1 2017 Denny Zhao
+- 0.4.13 for storops 0.4.13 and it's dependencies.
+
 * Fri Apr 21 2017 Denny Zhao
 - 0.4.12 for storops 0.4.12 and it's dependencies.
 

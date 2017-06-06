@@ -17,13 +17,16 @@ from __future__ import unicode_literals
 
 import logging
 
-from storops.unity.resource import UnityResource, UnityResourceList
 import storops.unity.resource.pool
-from storops.unity.enums import TieringPolicyEnum, NodeEnum, HostLUNAccessEnum
-from storops.unity.resource.storage_resource import UnityStorageResource
 from storops.exception import UnityResourceNotFoundError
+from storops.lib.thinclone_helper import TCHelper
+from storops.lib.version import version
+from storops.unity.enums import TieringPolicyEnum, NodeEnum, \
+    HostLUNAccessEnum, ThinCloneActionEnum
+from storops.unity.resource import UnityResource, UnityResourceList
 from storops.unity.resource.snap import UnitySnap, UnitySnapList
 from storops.unity.resource.sp import UnityStorageProcessor
+from storops.unity.resource.storage_resource import UnityStorageResource
 
 __author__ = 'Jay Xu'
 
@@ -173,6 +176,9 @@ class UnityLun(UnityResource):
                                 forceVvolDeletion=force_vvol_delete,
                                 async=async)
         resp.raise_if_err()
+
+        if self.is_thin_clone:
+            TCHelper.notify(self, ThinCloneActionEnum.TC_DELETE)
         return resp
 
     def attach_to(self, host, access_mask=HostLUNAccessEnum.PRODUCTION):
@@ -185,6 +191,9 @@ class UnityLun(UnityResource):
 
         resp = self.modify(host_access=host_access)
         resp.raise_if_err()
+        log.debug('Notify TCHelper the attaching action of lun: %s.',
+                  self.get_id())
+        TCHelper.notify(self, ThinCloneActionEnum.LUN_ATTACH)
         return resp
 
     def detach_from(self, host):
@@ -205,6 +214,18 @@ class UnityLun(UnityResource):
                                 is_auto_delete=is_auto_delete,
                                 retention_duration=retention_duration,
                                 is_read_only=None, fs_access_type=None)
+
+    @version(">=4.2")
+    def thin_clone(self, name, io_limit_policy=None, description=None):
+        return TCHelper.thin_clone(self._cli, self, name, io_limit_policy,
+                                   description)
+
+    # `__getstate__` and `__setstate__` are used by Pickle.
+    def __getstate__(self):
+        return {'_id': self.get_id(), 'cli': self._cli}
+
+    def __setstate__(self, state):
+        self.__init__(**state)
 
     @property
     def snapshots(self):

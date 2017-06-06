@@ -24,7 +24,8 @@ from hamcrest import equal_to
 from storops import UnitySystem
 from storops.exception import UnitySnapNameInUseError, \
     UnityLunNameInUseError, UnityLunShrinkNotSupportedError, \
-    UnityNothingToModifyError, UnityPerfMonNotEnabledError
+    UnityNothingToModifyError, UnityPerfMonNotEnabledError, \
+    UnityThinCloneLimitExceededError
 from storops.unity.enums import HostLUNAccessEnum, NodeEnum
 from storops.unity.resource.disk import UnityDisk
 from storops.unity.resource.host import UnityBlockHostAccessList, UnityHost
@@ -114,6 +115,14 @@ class UnityLunTest(TestCase):
     @patch_rest
     def test_lun_delete(self):
         lun = UnityLun(_id='sv_4', cli=t_rest())
+        resp = lun.delete(force_snap_delete=True, force_vvol_delete=True)
+        lun.update()
+        assert_that(resp.is_ok(), equal_to(True))
+        assert_that(resp.job.existed, equal_to(False))
+
+    @patch_rest
+    def test_lun_delete_thinclone(self):
+        lun = UnityLun(_id='sv_5604', cli=t_rest())
         resp = lun.delete(force_snap_delete=True, force_vvol_delete=True)
         lun.update()
         assert_that(resp.is_ok(), equal_to(True))
@@ -268,6 +277,25 @@ class UnityLunTest(TestCase):
             return unity.get_lun(_id='sv_2').read_iops
 
         assert_that(f, raises(UnityPerfMonNotEnabledError, 'not enabled'))
+
+    @patch_rest
+    def test_thin_clone(self):
+        lun = UnityLun.get(_id='sv_2', cli=t_rest(version='4.2.0'))
+        clone = lun.thin_clone(name='test_thin_clone',
+                               description='This is description.',
+                               io_limit_policy=None)
+        assert_that(clone.id, equal_to('sv_4678'))
+
+    @patch_rest
+    def test_thin_clone_limit_exceeded(self):
+        lun = UnityLun.get(_id='sv_2', cli=t_rest(version='4.2.0'))
+
+        def _inner():
+            lun.thin_clone(name='test_thin_clone_limit_exceeded',
+                           description='This is description.',
+                           io_limit_policy=None)
+
+        assert_that(_inner, raises(UnityThinCloneLimitExceededError))
 
 
 class UnityLunEnablePerfStatsTest(TestCase):
