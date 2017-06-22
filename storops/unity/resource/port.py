@@ -23,6 +23,7 @@ from storops.unity.resource import UnityResource, UnityResourceList, \
 from storops.exception import UnityEthernetPortMtuSizeNotSupportError
 from storops.exception import UnityEthernetPortSpeedNotSupportError
 from storops.unity.enums import EPSpeedValuesEnum, IOLimitPolicyTypeEnum
+from storops.lib.converter import from_hour, from_minute
 from storops.lib.version import version
 
 __author__ = 'Jay Xu'
@@ -105,7 +106,9 @@ class UnityIoModuleList(UnityResourceList):
 class UnityIoLimitPolicy(UnityResource):
     @classmethod
     def create(cls, cli, name, max_iops=None, max_kbps=None,
-               policy_type=None, is_shared=None, description=None):
+               policy_type=None, is_shared=None, description=None,
+               max_iops_density=None, max_kbps_density=None,
+               burst_rate=None, burst_time=None, burst_frequency=None):
         if policy_type is None:
             policy_type = IOLimitPolicyTypeEnum.ABSOLUTE
         if is_shared is None:
@@ -113,7 +116,12 @@ class UnityIoLimitPolicy(UnityResource):
 
         rule = cli.make_body(name='{}_rule'.format(name),
                              maxIOPS=max_iops,
-                             maxKBPS=max_kbps)
+                             maxKBPS=max_kbps,
+                             maxIOPSDensity=max_iops_density,
+                             maxKBPSDensity=max_kbps_density,
+                             burstRate=burst_rate,
+                             burstTime=from_minute(burst_time),
+                             burstFrequency=from_hour(burst_frequency))
         resp = cli.post(cls().resource_class,
                         name=name,
                         description=description,
@@ -122,6 +130,29 @@ class UnityIoLimitPolicy(UnityResource):
                         ioLimitRules=[rule])
         resp.raise_if_err()
         return cls(_id=resp.resource_id, cli=cli)
+
+    def modify(self, name=None, policy_type=None,
+               is_paused=None, max_iops=None, max_kbps=None,
+               max_iops_density=None, max_kbps_density=None,
+               description=None, is_shared=None,
+               burst_rate=None, burst_time=None, burst_frequency=None):
+        # name = self.name if name is None else self.name
+        rule = self._cli.make_body(maxIOPS=max_iops,
+                                   maxKBPS=max_kbps,
+                                   maxIOPSDensity=max_iops_density,
+                                   maxKBPSDensity=max_kbps_density,
+                                   burstRate=burst_rate,
+                                   burstTime=from_minute(burst_time),
+                                   burstFrequency=from_hour(burst_frequency),
+                                   id=self.io_limit_rule_settings[0].get_id())
+        resp = self._cli.modify(self.resource_class, self.get_id(),
+                                name=name,
+                                description=description,
+                                isShared=is_shared,
+                                type=policy_type,
+                                ioLimitRulesToModify=[rule])
+        resp.raise_if_err()
+        return self
 
     def apply_to_storage(self, *lun_list):
         return self._cli.action(self.resource_class, self.get_id(),
@@ -162,6 +193,38 @@ class UnityIscsiPortal(UnityResource):
     @classmethod
     def get_nested_properties(cls):
         return 'iscsi_node.name'
+
+    @classmethod
+    def create(cls, cli, ethernet_port, ip, netmask=None,
+               v6_prefix_len=None, vlan=None, gateway=None):
+        if not isinstance(ethernet_port, UnityEthernetPort):
+            ethernet_port = UnityEthernetPort.get(cli, _id=ethernet_port)
+
+        req_body = cli.make_body(
+            ethernetPort=ethernet_port,
+            ipAddress=ip,
+            netmask=netmask,
+            v6PrefixLength=v6_prefix_len,
+            vlanId=vlan,
+            gateway=gateway,
+        )
+        resp = cli.post(cls().resource_class, **req_body)
+        resp.raise_if_err()
+        return cls(cli=cli, _id=resp.resource_id)
+
+    def modify(self, ip=None, netmask=None,
+               v6_prefix_len=None, vlan=None, gateway=None):
+        req_body = self._cli.make_body(
+            ipAddress=ip,
+            netmask=netmask,
+            v6PrefixLength=v6_prefix_len,
+            vlanId=vlan,
+            gateway=gateway
+        )
+        resp = self._cli.modify(self.resource_class,
+                                self.get_id(), **req_body)
+        resp.raise_if_err()
+        return resp
 
 
 class UnityIscsiPortalList(UnityResourceList):

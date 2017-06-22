@@ -22,10 +22,11 @@ from hamcrest import assert_that, equal_to, instance_of, only_contains, \
     raises, contains_string
 from storops.exception import UnityEthernetPortSpeedNotSupportError, \
     UnityEthernetPortMtuSizeNotSupportError, UnityResourceNotFoundError, \
-    UnityPolicyNameInUseError, UnityEthernetPortAlreadyAggregatedError
+    UnityPolicyNameInUseError, UnityEthernetPortAlreadyAggregatedError, \
+    UnityIPInUseException
 from storops.exception import SystemAPINotSupported
 from storops.unity.enums import ConnectorTypeEnum, EPSpeedValuesEnum, \
-    FcSpeedEnum, IOLimitPolicyStateEnum
+    FcSpeedEnum, IOLimitPolicyStateEnum, IOLimitPolicyTypeEnum
 from storops.unity.resource.lun import UnityLun
 from storops.unity.resource.port import UnityEthernetPort, \
     UnityEthernetPortList, UnityIpPort, UnityIpPortList, UnityIscsiPortal, \
@@ -207,6 +208,43 @@ class UnityIscsiPortalTest(TestCase):
                     equal_to('iqn.1992-04.com.emc:cx.fnm00150600267.a0'))
         assert_that(portal.netmask, equal_to('255.255.255.0'))
         assert_that(portal.gateway, equal_to('10.244.213.1'))
+        assert_that(portal.ethernet_port, instance_of(UnityEthernetPort))
+
+    @patch_rest
+    def test_create_iscsi_portal(self):
+        portal = UnityIscsiPortal.create(
+            cli=t_rest(), ethernet_port='spa_eth3', ip="10.244.213.244",
+            netmask="255.255.255.0", vlan=133, gateway="10.244.213.1")
+        assert_that(portal.id, equal_to("if_4"))
+
+    @patch_rest
+    def test_create_duplicate_portal(self):
+        def f():
+            UnityIscsiPortal.create(
+                cli=t_rest(), ethernet_port='spa_eth2', ip='10.244.213.244',
+                netmask="255.255.255.0", gateway="10.244.213.1")
+
+        assert_that(f, raises(UnityIPInUseException))
+
+    @patch_rest
+    def test_modify_portal(self):
+        portal = UnityIscsiPortal(cli=t_rest(), _id='if_4')
+        portal.modify(ip="10.244.21.11", netmask="255.255.252.0",
+                      vlan=111, gateway="10.244.21.1")
+
+    @patch_rest
+    def test_delete_portal(self):
+        portal = UnityIscsiPortal.get(cli=t_rest(), _id='if_4')
+        portal.delete()
+
+    @patch_rest
+    def test_delete_portal_not_found(self):
+        portal = UnityIscsiPortal.get(cli=t_rest(), _id='if_20')
+
+        def f():
+            portal.delete()
+
+        assert_that(f, raises(UnityResourceNotFoundError))
 
 
 class UnityIscsiPortalListTest(TestCase):
@@ -283,7 +321,7 @@ class UnityIoLimitPolicyTest(TestCase):
         assert_that(len(lun_list), equal_to(1))
         assert_that(rule.name, equal_to('Limit_2_MBPS'))
         assert_that(rule.state, equal_to(IOLimitPolicyStateEnum.ACTIVE))
-
+        assert_that(rule.type, equal_to(IOLimitPolicyTypeEnum.ABSOLUTE))
         settings = rule.io_limit_rule_settings
         assert_that(len(settings), equal_to(1))
 
@@ -350,6 +388,14 @@ class UnityIoLimitPolicyTest(TestCase):
         resp = policy.remove_from_storage(lun1, lun2)
         assert_that(resp.is_ok(), equal_to(True))
 
+    @patch_rest
+    def test_modify_policy(self):
+        policy = UnityIoLimitPolicy('qp_4', t_rest())
+        policy.modify(
+            name="new_name",
+            policy_type=IOLimitPolicyTypeEnum.DENSITY_BASED,
+            max_iops_density=100, max_kbps_density=1024)
+
 
 class UnityLinkAggregationTest(TestCase):
     @patch_rest
@@ -378,6 +424,7 @@ class UnityLinkAggregationTest(TestCase):
             eth_2 = UnityEthernetPort.get(t_rest(), 'spa_eth2')
             eth_4 = UnityEthernetPort.get(t_rest(), 'spa_eth4')
             UnityLinkAggregation.create(t_rest(), [eth_2, eth_4], 1500)
+
         assert_that(do, raises(UnityEthernetPortAlreadyAggregatedError))
 
     @patch_rest
@@ -391,6 +438,7 @@ class UnityLinkAggregationTest(TestCase):
     def test_list_la_unsupported(self):
         def f():
             UnityLinkAggregation.get(t_rest("4.0.0"))
+
         assert_that(f, raises(SystemAPINotSupported))
 
     @patch_rest(output='link_aggregation_not_supported.json')

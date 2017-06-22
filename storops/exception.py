@@ -262,7 +262,11 @@ class EnumValueNotFoundError(StoropsException, ValueError):
     pass
 
 
-class MockFileNotFoundError(StoropsException):
+class StoropsTestException(Exception):
+    pass
+
+
+class MockFileNotFoundError(StoropsTestException):
     pass
 
 
@@ -537,6 +541,11 @@ class UnityStorageResourceNameInUseError(UnityException):
 @rest_exception
 class UnityEthernetPortAlreadyAggregatedError(UnityException):
     error_code = 100665643
+
+
+@rest_exception
+class UnityIPInUseException(UnityException):
+    error_code = 118939658
 
 
 class UnityMetricException(UnityException):

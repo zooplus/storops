@@ -16,7 +16,7 @@ StorOps: The Python Library for VNX & Unity
 .. image:: https://landscape.io/github/emc-openstack/storops/master/landscape.svg?style=flat
     :target: https://landscape.io/github/emc-openstack/storops/
 
-VERSION: 0.4.14
+VERSION: 0.4.15
 
 A minimalist Python library to manage VNX/Unity systems.
 This document lies in the source code and go with the release.
@@ -27,9 +27,8 @@ License
 
 `Apache License version 2`_
 
-Installation
-------------
-
+Install via PIP
+---------------
 You could use "pip" to install "storops".
 
 .. code-block:: bash
@@ -37,6 +36,7 @@ You could use "pip" to install "storops".
     $ pip install storops
 
 Make sure `naviseccli` is installed if you want to manage VNX.
+Please contact with Dell/EMC support about installing the `NaviCli-Linux` rpm package.
 
 Optional package requirement
 ````````````````````````````
@@ -45,6 +45,20 @@ Optional package requirement
 
 The `paramiko` is required if you need to manage the VNX file related
 resources. please follow `install paramiko <http://www.paramiko.org/installing.html>`_ install `paramiko`.
+
+Install via RPM
+---------------
+There are two RPM packages in each release page.
+- `python-storops-<version num>`, install this if you only manage Unity systems.
+- `python-storops-vnx-<version num>-x86_64`, a virtual package depends on `python-storops` and `NaviCli-Linux`. Install this if you manage VNX systems or both.
+
+You could download the rpm package from release download page, and install it via:
+
+.. code-block:: bash
+
+    $ rpm -i <python-storops_file>
+
+Please contact with Dell/EMC support about installing the `NaviCli-Linux` rpm package.
 
 
 Feature List
@@ -121,7 +135,7 @@ Feature List
 - Manage Unity System
     - supported resources
         - show system properties
-        - list storage pools
+        - list/create/delete storage pools
         - list/create/delete remote hosts
         - list/create/delete host initiator
         - list/create/delete luns
@@ -134,6 +148,7 @@ Feature List
         - list/create/delete NFS shares
         - list/create/delete DNS servers
         - list ip ports
+        - list/create/delete iSCSI portals
         - list/create/delete link aggregations
         - list/create/delete Consistency Groups
         - list/create/delete metric real time query
@@ -145,6 +160,7 @@ Feature List
         - NFS share access control
         - Remote hosts access
         - Persist historical metric data to csv files
+        - Upload license
     - supported metrics
         - disk
             - read/write IOPS
