@@ -190,6 +190,15 @@ def delta_ps(path, prev, curr):
     return ret
 
 
+@metric_calculator
+def total_delta_ps(path, prev, curr):
+    if len(path) != 2:
+        raise ValueError('takes in "reads" and "writes" counter.')
+
+    read_path, write_path = path
+    return delta_ps(read_path, prev, curr) + delta_ps(write_path, prev, curr)
+
+
 def only_one_path(path):
     if isinstance(path, (list, tuple, set)):
         if len(path) != 1:
@@ -248,6 +257,16 @@ def sp_delta_ps(path, prev, curr):
 
 
 @metric_calculator
+def sp_total_delta_ps(path, prev, curr):
+    if len(path) != 2:
+        raise ValueError('takes in "reads" and "writes" counter.')
+
+    read_path, write_path = path
+    return sp_delta_ps(read_path, prev, curr) + sp_delta_ps(write_path, prev,
+                                                            curr)
+
+
+@metric_calculator
 def sp_mb_ps_by_byte(path, prev, curr):
     return sp_delta_ps(path, prev, curr) / (2.0 ** 20)
 
@@ -293,6 +312,195 @@ def _sp_pct(path, curr, prev):
     else:
         ret = IdValues()
     return ret
+
+
+@metric_calculator
+def system_delta_ps(path, prev, curr):
+    path = only_one_path(path)
+
+    if all_not_none(prev, curr):
+        prev_counter = prev.by_path(path)
+        curr_counter = curr.by_path(path)
+    else:
+        prev_counter = None
+        curr_counter = None
+
+    if all_not_none(prev_counter, curr_counter):
+        delta = curr_counter.sum_sp_values - prev_counter.sum_sp_values
+        ret = delta / curr.diff_seconds(prev)
+    else:
+        ret = IdValues()
+    return ret
+
+
+@metric_calculator
+def system_total_delta_ps(path, prev, curr):
+    if len(path) != 2:
+        raise ValueError('takes in "reads" and "writes" counter.')
+
+    read_path, write_path = path
+    return system_delta_ps(read_path, prev, curr) + system_delta_ps(write_path,
+                                                                    prev, curr)
+
+
+@metric_calculator
+def disk_response_time(path, prev, curr):
+    if len(path) != 5:
+        raise ValueError(
+            'takes in "busyTicks", "sumArrivalQueueLength", "reads", '
+            '"writes" and "coreCount" counter.')
+
+    busy_tick_path, sum_arr_ql_path, read_path, write_path, core_count_path = \
+        path
+    if all_not_none(prev, curr):
+        prev_busy_tick = prev.by_path(busy_tick_path)
+        prev_sum_arr_ql = prev.by_path(sum_arr_ql_path)
+        prev_read = prev.by_path(read_path)
+        prev_write = prev.by_path(write_path)
+        prev_core_count = prev.by_path(core_count_path)
+
+        curr_busy_tick = curr.by_path(busy_tick_path)
+        curr_sum_arr_ql = curr.by_path(sum_arr_ql_path)
+        curr_read = curr.by_path(read_path)
+        curr_write = curr.by_path(write_path)
+        curr_core_count = curr.by_path(core_count_path)
+
+        delta_busy_tick = curr_busy_tick.sum_sp() - prev_busy_tick.sum_sp()
+        delta_sum_arr_ql = curr_sum_arr_ql.sum_sp() - prev_sum_arr_ql.sum_sp()
+        delta_read = curr_read.sum_sp() - prev_read.sum_sp()
+        delta_write = curr_write.sum_sp() - prev_write.sum_sp()
+
+        delta_read_core_count = curr_read.combine_numeric_values(
+            curr_core_count) - prev_read.combine_numeric_values(
+            prev_core_count)
+        delta_write_core_count = curr_write.combine_numeric_values(
+            curr_core_count) - prev_write.combine_numeric_values(
+            prev_core_count)
+
+        ret = delta_busy_tick * delta_sum_arr_ql / (
+            (delta_read + delta_write) *
+            (delta_read_core_count + delta_write_core_count))
+
+    else:
+        ret = IdValues()
+
+    return ret
+
+
+def _queue_length(path, prev, curr, err_msg, func):
+    if len(path) != 3:
+        raise ValueError(err_msg)
+
+    part1, part2, part3 = path
+    if all_not_none(prev, curr):
+        prev_part1 = prev.by_path(part1)
+        prev_part2 = prev.by_path(part2)
+        prev_part3 = prev.by_path(part3)
+
+        curr_part1 = curr.by_path(part1)
+        curr_part2 = curr.by_path(part2)
+        curr_part3 = curr.by_path(part3)
+
+        delta_part1 = curr_part1.sum_sp() - prev_part1.sum_sp()
+        delta_part2 = curr_part2.sum_sp() - prev_part2.sum_sp()
+        delta_part3 = curr_part3.sum_sp() - prev_part3.sum_sp()
+
+        ret = func(delta_part1, delta_part2, delta_part3)
+
+    else:
+        ret = IdValues()
+
+    return ret
+
+
+@metric_calculator
+def disk_queue_length(path, prev, curr):
+    err_msg = 'takes in "sumArrivalQueueLength", "reads" and "writes" counter.'
+    return _queue_length(path, prev, curr, err_msg,
+                         lambda x, y, z: x / (y + z))
+
+
+@metric_calculator
+def lun_response_time(path, prev, curr):
+    err_msg = 'takes in "totalIoTime", "reads" and "writes" counter.'
+    return _queue_length(path, prev, curr, err_msg,
+                         lambda x, y, z: x / (y + z))
+
+
+@metric_calculator
+def lun_queue_length(path, prev, curr):
+    err_msg = 'takes in "currentIOCount", "busyTime" and "idleTime" counter.'
+    return _queue_length(path, prev, curr, err_msg,
+                         lambda x, y, z: x * y / (y + z))
+
+
+@metric_calculator
+def sum_sp(path, _, curr):
+    path = only_one_path(path)
+    return curr.by_path(path).sum_sp()
+
+
+def _byte_rate(path, prev, curr, err_msg, attr):
+    if len(path) != 2:
+        raise ValueError(err_msg)
+
+    part1, part2 = path
+    if all_not_none(prev, curr):
+        delta = getattr(curr.by_path(part1), attr)(
+            curr.by_path(part2)) - getattr(prev.by_path(part1), attr)(
+            prev.by_path(part2))
+        ret = delta / curr.diff_seconds(prev)
+    else:
+        ret = IdValues()
+
+    return ret
+
+
+@metric_calculator
+def byte_rate(path, prev, curr):
+    err_msg = 'takes in "Blocks" and "blockSize" counter.'
+    attr = 'combine_numeric_values'
+    return _byte_rate(path, prev, curr, err_msg, attr)
+
+
+@metric_calculator
+def sp_byte_rate(path, prev, curr):
+    err_msg = 'takes in "Blocks" and "blockSize" counter.'
+    attr = 'combine_sp_values'
+    return _byte_rate(path, prev, curr, err_msg, attr)
+
+
+@metric_calculator
+def system_byte_rate(path, prev, curr):
+    err_msg = 'takes in "Blocks" and "blockSize" counter.'
+    attr = 'sum_combined_sp_values'
+    return _byte_rate(path, prev, curr, err_msg, attr)
+
+
+def _total_byte_rate(path, prev, curr, err_msg, func):
+    if len(path) != 3:
+        raise ValueError(err_msg)
+
+    part1, part2, part3 = path
+    return func((part1, part3), prev, curr) + func((part2, part3), prev, curr)
+
+
+@metric_calculator
+def total_byte_rate(path, prev, curr):
+    err_msg = 'takes in "readBlocks", "writeBlocks" and "blockSize" counter.'
+    return _total_byte_rate(path, prev, curr, err_msg, byte_rate)
+
+
+@metric_calculator
+def sp_total_byte_rate(path, prev, curr):
+    err_msg = 'takes in "readBlocks", "writeBlocks" and "blockSize" counter.'
+    return _total_byte_rate(path, prev, curr, err_msg, sp_byte_rate)
+
+
+@metric_calculator
+def system_total_byte_rate(path, prev, curr):
+    err_msg = 'takes in "readBlocks", "writeBlocks" and "blockSize" counter.'
+    return _total_byte_rate(path, prev, curr, err_msg, system_byte_rate)
 
 
 @cache
