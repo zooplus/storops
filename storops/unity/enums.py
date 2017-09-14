@@ -326,6 +326,7 @@ class DiskTypeEnum(UnityEnum):
     NL_SAS = (10, 'Near-line SAS')
     SAS_FLASH_2 = (11, 'SAS Medium Endurance Flash')
     SAS_FLASH_3 = (12, 'SAS Low Endurance Flash')
+    SAS_FLASH_4 = (13, 'SAS Low Endurance Flash')
 
 
 class DiskTypeEnumList(UnityEnumList):
@@ -725,6 +726,7 @@ class DiskTechnologyEnum(UnityEnum):
     NL_SAS = (2, 'NL_SAS')
     SAS_FLASH_2 = (6, 'SAS_FLASH_2')
     SAS_FLASH_3 = (7, 'SAS_FLASH_3')
+    SAS_FLASH_4 = (8, 'SAS_FLASH_4')
     MIXED = (50, 'Mixed')
     VIRTUAL = (99, 'Virtual')
 
@@ -751,3 +753,9 @@ class FeatureReasonEnum(UnityEnum):
 class HotSparePolicyStatusEnum(UnityEnum):
     OK = (0, "OK")
     VIOLATED = (741, "Violated")
+
+
+class InterfaceConfigModeEnum(UnityEnum):
+    DISABLED = (0, "Disabled")
+    STATIC = (1, "Static")
+    AUTO = (2, "Auto")
