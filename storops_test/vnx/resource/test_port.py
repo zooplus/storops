@@ -238,12 +238,12 @@ class VNXConnectionPortTest(TestCase):
     @patch_cli
     def test_get_all(self):
         ports = VNXConnectionPort.get(t_cli())
-        assert_that(len(ports), equal_to(20))
+        assert_that(len(ports), equal_to(22))
 
     @patch_cli
     def test_get_by_sp(self):
         ports = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A)
-        assert_that(len(ports), equal_to(10))
+        assert_that(len(ports), equal_to(12))
 
     @patch_cli
     def test_get_by_port(self):
@@ -253,7 +253,7 @@ class VNXConnectionPortTest(TestCase):
     @patch_cli
     def test_get_by_type(self):
         ports = VNXConnectionPort.get(t_cli(), port_type=VNXPortType.ISCSI)
-        assert_that(len(ports), equal_to(16))
+        assert_that(len(ports), equal_to(18))
         ports = VNXConnectionPort.get(t_cli(), port_type=VNXPortType.FCOE)
         assert_that(len(ports), equal_to(4))
 
@@ -264,6 +264,8 @@ class VNXConnectionPortTest(TestCase):
         port = ports[0]
         assert_that(port.port_id, equal_to(4))
         assert_that(port.sp, equal_to(VNXSPEnum.SP_A))
+        assert_that(port.virtual_port_id, equal_to(0))
+        assert_that(port.vport_id, equal_to(0))
 
     @patch_cli
     def test_get_port_not_found(self):
@@ -325,6 +327,11 @@ class VNXConnectionPortTest(TestCase):
 
         assert_that(f, raises(VNXVirtualPortNotFoundError, 'not found'))
 
+    @patch_cli
+    def test_port_display_name(self):
+        port = VNXConnectionPort.get(t_cli(), VNXSPEnum.SP_A, 9, 0)
+        assert_that('A-10-0', port.display_name)
+
 
 def test_hba():
     return VNXStorageGroupHBA().update(STORAGE_GROUP_HBA)
@@ -347,8 +354,8 @@ class VNXStorageGroupHBATest(TestCase):
     def test_port_id(self):
         assert_that(test_hba().port_id, equal_to(3))
 
-    def test_vlan(self):
-        assert_that(test_hba().vlan, equal_to(1))
+    def test_vport_id(self):
+        assert_that(test_hba().vport_id, equal_to(1))
 
     def test_port_type(self):
         assert_that(test_hba().port_type,
