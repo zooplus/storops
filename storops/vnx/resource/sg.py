@@ -46,6 +46,7 @@ class VNXStorageGroup(VNXCliResource):
         self._hba_port_list = []
         self._conn = None
         self._hlu_lock = Lock()
+        self._alu_hlu_cache = {}
 
         self.shuffle_hlu = shuffle_hlu
 
@@ -231,7 +232,7 @@ class VNXStorageGroup(VNXCliResource):
     def get_alu_hlu_map(self):
         if self.alu_hlu_map is None:
             self._parsed_resource['alu_hlu_map'] = {}
-        return self.alu_hlu_map
+        return self._alu_hlu_cache
 
     @property
     def used_hlu_numbers(self):
@@ -267,6 +268,14 @@ class VNXStorageGroup(VNXCliResource):
                 ret = self.get_alu_hlu_map().pop(alu)
         return ret
 
+    def update(self, data=None):
+        ret = super(VNXStorageGroup, self).update(data)
+
+        # only update the _alu_hlu_cache incrementally.
+        if self.alu_hlu_map:
+            self._alu_hlu_cache.update(self.alu_hlu_map)
+        return ret
+
     def attach_alu(self, lun, retry_limit=None, hlu=None):
         def _update():
             self.update()
@@ -287,19 +296,28 @@ class VNXStorageGroup(VNXCliResource):
             except ex.VNXAluAlreadyAttachedError:
                 # alu no in the alu-hlu map cache but attach failed with
                 # already attached, that means the cache is out dated
+                log.info("ALU(alu=%s) is already attached, "
+                         "updating the cache.", alu)
                 self.update()
                 raise
             except ex.VNXAttachAluError:
                 # other attach error, remove hlu id from the cache
+                log.info("ALU(alu=%s) failed to attach, "
+                         "deleting from the cache.", alu)
                 self._delete_alu(alu_id)
                 raise
 
+            # update the cache with alu/hlu again, in case it was flush out
+            # by an "update" call.
+            self._add_hlu(alu_id, hlu_id)
             return hlu_id
 
         lun_clz = storops.vnx.resource.lun.VNXLun
         alu = lun_clz.get_id(lun)
         if self.has_alu(alu):
             # found alu in the alu-hlu map cache, meaning already attached
+            log.info("ALU(alu=%s) is already attached, found in the cache.",
+                     alu)
             raise ex.VNXAluAlreadyAttachedError()
         else:
             ret = _do(alu, hlu)
