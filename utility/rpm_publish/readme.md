@@ -19,6 +19,7 @@ EOF
 - Update `Version` and `Change log` in the `python-storops.spec`.
     - Update `Requires` and `BuildRequires` in the `python-storops.spec` if new dependencies are added.
 - Run command: `rpmbuild -ba python-storops.spec -v`
+    - Use `rpmbuild -ba python-storops.spec -v --define 'pre_release dev.1'` to build pre-release package.
     - It will fail quickly if any dependencies is not installed. Install them using `sudo yum install <package_name>`.
 - Follow the log on the screen to find the rpm built.
 

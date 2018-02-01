@@ -1,18 +1,20 @@
-%{!?upstream_version: %global upstream_version %{version}%{?milestone}}
 %if 0%{?fedora}
 %global with_python3 1
 %endif
 
 %global pypi_name storops
 
+# Uncomment below line to publish pre-release package
+# %%global pre_release dev.1
+
 Name:           python-%{pypi_name}
-Version:        0.5.5
-Release:        1%{?dist}
+Version:        0.5.6
+Release:        %{?pre_release:0.%{pre_release}}%{!?pre_release:1}%{?dist}
 Summary:        Library for managing Unity/VNX systems.
 
 License:        ASL 2.0
 URL:            https://pypi.python.org/pypi/storops/
-Source0:        https://github.com/emc-openstack/%{pypi_name}/archive/r%{version}/%{pypi_name}-r%{version}.tar.gz
+Source0:        https://github.com/emc-openstack/%{pypi_name}/archive/r%{version}/%{pypi_name}-r%{version}%{?pre_release:-%{pre_release}}.tar.gz
 BuildArch:      noarch
 
 %description
@@ -95,7 +97,7 @@ Library for managing Unity/VNX systems. Please refer to https://github.com/emc-o
 
 
 %prep
-%setup -q -n %{pypi_name}-r%{upstream_version}
+%setup -q -n %{pypi_name}-r%{version}%{?pre_release:-%{pre_release}}
 
 
 %build
@@ -132,6 +134,9 @@ Library for managing Unity/VNX systems. Please refer to https://github.com/emc-o
 
 
 %changelog
+* Thu Dec 28 2017 Ryan Liang <ryan.liang@dell.com> - 0.5.6-0.dev.1
+- Release v0.5.6-dev.1: https://github.com/emc-openstack/storops/releases/tag/r0.5.6-dev.1
+
 * Fri Nov 17 2017 Ryan Liang <ryan.liang@dell.com> - 0.5.5-1
 - Release v0.5.5: https://github.com/emc-openstack/storops/releases/tag/r0.5.5
 

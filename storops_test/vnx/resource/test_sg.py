@@ -80,6 +80,13 @@ class VNXStorageGroupListTest(TestCase):
         for sg in sgs:
             assert_that(sg.lun_list.timestamp, equal_to(lun_list.timestamp))
 
+    @patch_cli
+    def test_sg_list_shadow_copy(self):
+        filtered_sgs = self.sg_list.shadow_copy(attached_lun=15)
+        assert_that(len(filtered_sgs), equal_to(1))
+        assert_that(len(self.sg_list), equal_to(4))
+        assert_that(filtered_sgs.timestamp, equal_to(self.sg_list.timestamp))
+
 
 def get_sg(name='server7'):
     sg = VNXStorageGroup(name=name, cli=t_cli())
@@ -88,7 +95,11 @@ def get_sg(name='server7'):
 
 
 class VNXStorageGroupTest(TestCase):
-    sg_7 = get_sg()
+    def setUp(self):
+        self.sg_7 = get_sg()
+
+    def tearDown(self):
+        self.sg_7 = None
 
     @patch_cli
     def test_properties(self):
@@ -249,8 +260,8 @@ class VNXStorageGroupTest(TestCase):
 
         assert_that(f, raises(VNXAluAlreadyAttachedError,
                               'already been added'))
-        assert_that(sg.get_hlu(123), none())
-        assert_that(len(sg.get_alu_hlu_map()), equal_to(2))
+        assert_that(sg.get_hlu(123), equal_to(1))
+        assert_that(len(sg.get_alu_hlu_map()), equal_to(3))
 
     @patch_cli
     def test_attach_alu_hlu_used(self):
@@ -335,6 +346,18 @@ class VNXStorageGroupTest(TestCase):
                               'is not attached'))
 
     @patch_cli
+    def test_cache_update_incremental(self):
+
+        sg = get_sg()
+        # Append an alu/hlu into the cache.
+        # make sure it's not flushed out by a sg.update call
+        sg._alu_hlu_cache.update({100: 200})
+        sg.update()
+        sg.attach_alu(2, retry_limit=2)
+        assert_that(sg.get_alu_hlu_map(),
+                    equal_to({100: 200, 1032: 210, 10: 153, 2: 1}))
+
+    @patch_cli
     def test_connect_host(self):
         def f():
             sg = self.sg_7
@@ -373,7 +396,9 @@ class VNXStorageGroupTest(TestCase):
 
     @patch_cli
     def test_get_hlu_to_add_no_shuffle(self):
+
         sg = get_sg()
+
         sg.shuffle_hlu = False
         assert_that(sg._get_hlu_to_add(12), equal_to(1))
         sg._delete_alu(12)
