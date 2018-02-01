@@ -77,7 +77,7 @@ class VNXSystem(VNXCliResource):
                  timeout=None,
                  heartbeat_interval=None,
                  naviseccli=None,
-                 file_username=None, file_password=None):
+                 file_username=None, file_password=None, node_name=None):
         """ initialize a `VNXSystem` instance
 
         The `VNXSystem` instance act as a entry point for all
@@ -96,6 +96,8 @@ class VNXSystem(VNXCliResource):
         username
         :param file_password: password for control station login, default to
         password
+        :param node_name: name of the domain node from where address of control
+        station should be taken, if omitted, serial will be used instead
         :return: vnx system instance
         """
         super(VNXSystem, self).__init__()
@@ -110,6 +112,7 @@ class VNXSystem(VNXCliResource):
 
         self._file_username = file_username
         self._file_password = file_password
+        self._node_name = node_name
 
         self._cli = self._init_block_cli()
 
@@ -222,7 +225,9 @@ class VNXSystem(VNXCliResource):
         return self._get_cs_ip()
 
     def _get_cs_ip(self):
-        return VNXDomainNodeList.get_cs_ip(self.serial, self._cli)
+        if self._node_name is None:
+            self._node_name = self.serial
+        return VNXDomainNodeList.get_cs_ip(self._node_name, self._cli)
 
     @property
     def domain(self):
