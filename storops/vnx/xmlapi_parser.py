@@ -166,10 +166,14 @@ class XMLAPIParser(object):
     def start_file_system(self, elm, result):
         self._as_object(elm, result)
 
-    def start_file_system_capacity_info(self, elm, result):
+    def end_file_system_capacity_info(self, elm, result):
         identifier = 'fileSystem'
 
         self._append_elm_property(elm, result, identifier)
+
+    def start_resource_usage(self, elm, result):
+        if self._parent_tag() == 'FileSystemCapacityInfo':
+            self._copy_attrib_to_parent(elm)
 
     def start_storage_pool(self, elm, result):
         self._as_object(elm, result)

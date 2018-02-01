@@ -776,7 +776,7 @@ VNXDisk:
     - label: "Queue Avg:"
       converter: to_int
     - label: "Prct Idle:"
-      converter: to_int 
+      converter: to_int
     - label: "Prct Busy:"
       converter: to_int
     - label: "Hardware Power Savings Qualified:"
@@ -1189,6 +1189,18 @@ VNXFileSystem:
     - label: type
     - label: volumeSize
       key: size
+      converter: to_int
+    - label: spaceTotal
+      key: space_total
+      converter: to_int
+    - label: spaceUsed
+      key: space_used
+      converter: to_int
+    - label: filesTotal
+      key: files_total
+      converter: to_int
+    - label: filesUsed
+      key: files_used
       converter: to_int
     - label: storagePools
       key: pools
